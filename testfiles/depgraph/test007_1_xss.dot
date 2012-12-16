@@ -1,0 +1,19 @@
+digraph cfg {
+  label="test007_1_xss";
+  labelloc=t;
+  n1 [shape=box, label="_main.$x (7)\ntest007.php"];
+  n2 [shape=ellipse, label="_main._t0_0 (6)\ntest007.php"];
+  n3 [shape=ellipse, label="OP: . (6)\ntest007.php",style=filled,color=lightblue];
+  n4 [shape=ellipse, label="_main.$a (6)\ntest007.php"];
+  n5 [shape=ellipse, label="_main.$b (6)\ntest007.php"];
+  n6 [shape=ellipse, label="_superglobals.$_GET[x] (5)\ntest007.php"];
+  n7 [shape=ellipse, label="<uninit>"];
+  n8 [shape=ellipse, label="<uninit>"];
+  n1 -> n2;
+  n2 -> n3;
+  n3 -> n4[label="1"];
+  n3 -> n5[label="2"];
+  n4 -> n6;
+  n5 -> n7;
+  n6 -> n8;
+}

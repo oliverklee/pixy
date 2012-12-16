@@ -1,0 +1,17 @@
+Modifications to Cup 10k
+*************************
+
+- marked with "NJ"
+
+- modified files:
+  - emit.java
+
+- reasons:
+  - indices for terminals and nonterminals in the generated symbols class shall not overlap
+  - nonterminals in the generated symbols class shall be public
+  - rule actions shall have access to
+    - the production's symbol index (i.e. the index of the symbol on the left side)
+    - the production's symbol name
+    - the production's length
+    since that makes the generation of explicit parse trees much easier
+

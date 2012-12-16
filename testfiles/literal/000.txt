@@ -1,0 +1,6 @@
+- we assume that register_globals is active
+
+- the tests in this directory should work WITHOUT and WITH
+  the builtin functions file being enabled;
+  the tests in the directory "with_builtin_functions"
+  only work with builtin functions being enabled

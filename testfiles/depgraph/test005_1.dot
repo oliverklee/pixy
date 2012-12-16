@@ -1,0 +1,19 @@
+digraph cfg {
+  label="test005_1";
+  labelloc=t;
+  n1 [shape=box, label="_main.$x (14)\ntest005.php"];
+  n2 [shape=ellipse, label="<uninit>"];
+  n3 [shape=ellipse, label="_main.$a (10)\ntest005.php"];
+  n4 [shape=ellipse, label="_main.$b (12)\ntest005.php"];
+  n5 [shape=ellipse, label="_main._t0_0 (7)\ntest005.php"];
+  n6 [shape=ellipse, label="_main._t0_0 (8)\ntest005.php"];
+  n7 [shape=ellipse, label="OP: socket_read (7)\ntest005.php",style=filled,color=lightblue];
+  n8 [shape=ellipse, label="OP: fread (8)\ntest005.php",style=filled,color=lightblue];
+  n1 -> n2;
+  n1 -> n3;
+  n1 -> n4;
+  n3 -> n5;
+  n4 -> n6;
+  n5 -> n7;
+  n6 -> n8;
+}

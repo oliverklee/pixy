@@ -1,0 +1,19 @@
+digraph cfg {
+  label="test103_1";
+  labelloc=t;
+  n1 [shape=box, label="_main.$a (6)\ntest103.php"];
+  n2 [shape=ellipse, label="_main._t0_0 (5)\ntest103.php"];
+  n3 [shape=ellipse, label="_superglobals.ret_foo (5)\ntest103.php"];
+  n4 [shape=ellipse, label="foo.$fp (9)\ntest103.php"];
+  n5 [shape=ellipse, label="_main._t1_0 (5)\ntest103.php"];
+  n6 [shape=ellipse, label="_superglobals.ret_bar (5)\ntest103.php"];
+  n7 [shape=ellipse, label="bar.$bp (13)\ntest103.php"];
+  n8 [shape=ellipse, label="hi (5)\ntest103.php"];
+  n1 -> n2;
+  n2 -> n3;
+  n3 -> n4;
+  n4 -> n5;
+  n5 -> n6;
+  n6 -> n7;
+  n7 -> n8;
+}

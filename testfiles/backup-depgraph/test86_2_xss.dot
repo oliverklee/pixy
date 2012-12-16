@@ -1,0 +1,13 @@
+digraph cfg {
+  label="test86_2_xss";
+  labelloc=t;
+  n1 [shape=box, label="_main.$y (9)\ntest86.php"];
+  n2 [shape=ellipse, label="_superglobals.ret_bar (8)\ntest86.php"];
+  n3 [shape=ellipse, label="bar.$pf (18)\ntest86.php"];
+  n4 [shape=ellipse, label="_main.$evilfunction (8)\ntest86.php"];
+  n5 [shape=ellipse, label="<uninit>"];
+  n1 -> n2;
+  n2 -> n3;
+  n3 -> n4;
+  n4 -> n5;
+}

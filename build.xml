@@ -1,0 +1,148 @@
+<project name="Pixy" basedir="." default="help">
+
+    <!--
+        Directory Layout
+        *****************
+
+        - TOP
+          - build.xml
+          - run
+          
+          - BUILD
+            - CLASS
+              - generated java class files
+          
+          - CONFIG
+            - configuration files
+
+          - DOC
+            - documentation
+            
+          - LIB
+            - external libraries
+            
+          - SCRIPTS 
+            - convenience scripts
+            
+          - SRC
+            - Pixy itself
+
+    -->
+
+    <!-- PROPERTIES *************************************************************-->
+
+    <!-- java/javac properties -->
+    <property name="src.dir" value="src"/>
+    <property name="test.dir" value="test"/>
+
+    <property name="build.dir" value="build"/>
+    <property name="build.class.dir" value="${build.dir}/class"/>
+
+    <property name="lib.dir" value="lib"/>
+
+    <!-- delete properties -->
+    <!-- caution: graphs and output directory is hard-coded in main class and convenience scripts -->
+    <property name="graphs.dir" value="graphs"/>
+    <property name="output.dir" value="output"/>
+    <property name="serialfile" value="config/serialized"/>
+    <property name="echoedfile" value="echoed.txt"/>
+
+    <!-- classpath -->
+    <path id="classpath">
+        <pathelement location="${lib.dir}"/>
+        <pathelement location="${lib.dir}/junit.jar"/>
+        <pathelement location="${build.class.dir}"/>
+        <pathelement location="transducers/jauto-classes"/>
+    </path>
+
+
+    <!-- TARGETS ****************************************************************-->
+
+
+    <!-- compiles the project -->
+    <target name="build" description="Builds the whole project">
+        <mkdir dir="${build.class.dir}"/>
+        <javac destdir="${build.class.dir}" debug="on">
+            <src>
+                <pathelement path="${src.dir}"/>
+                <pathelement path="${test.dir}"/>
+            </src>
+            <classpath refid="classpath"/>
+            <compilerarg value="-Xlint:unchecked"/>
+        </javac>
+    </target>
+
+    <!-- cleans the project -->
+    <target name="clean" description="Cleans up.">
+        <!-- <delete dir="${build.java.dir}"/> -->
+        <delete dir="${build.class.dir}"/>
+        <delete dir="${graphs.dir}"/>
+        <delete dir="transducers/temp"/>
+        <delete dir="${output.dir}"/>
+        <delete file="${jar.file}"/>
+        <delete file="${serialfile}"/>
+        <delete file="${echoedfile}"/>
+    </target>
+
+    <!-- performs JUnit tests -->
+    <target name="test">
+        <java fork="yes" classname="junit.textui.TestRunner" taskname="junit" failonerror="true">
+            <arg value="at.ac.tuwien.infosys.www.pixy.AliasTestCase"/>
+            <sysproperty key="pixy.home" value="${basedir}"/>
+            <classpath refid="classpath"/>
+        </java>
+        <java fork="yes" classname="junit.textui.TestRunner" taskname="junit" failonerror="true">
+            <arg value="at.ac.tuwien.infosys.www.pixy.IncDomTestCase"/>
+            <sysproperty key="pixy.home" value="${basedir}"/>
+            <classpath refid="classpath"/>
+        </java>
+        <java fork="yes" classname="junit.textui.TestRunner" taskname="junit" failonerror="true">
+            <arg value="at.ac.tuwien.infosys.www.pixy.IncludeTestCase"/>
+            <sysproperty key="pixy.home" value="${basedir}"/>
+            <classpath refid="classpath"/>
+        </java>
+        <java fork="yes" classname="junit.textui.TestRunner" taskname="junit" failonerror="true">
+            <arg value="at.ac.tuwien.infosys.www.pixy.LiteralTestCase"/>
+            <sysproperty key="pixy.home" value="${basedir}"/>
+            <classpath refid="classpath"/>
+        </java>
+        <java fork="yes" classname="junit.textui.TestRunner" taskname="junit" failonerror="true">
+            <arg value="at.ac.tuwien.infosys.www.pixy.LiteralTestCaseBuiltin"/>
+            <sysproperty key="pixy.home" value="${basedir}"/>
+            <classpath refid="classpath"/>
+        </java>
+        <java fork="yes" classname="junit.textui.TestRunner" taskname="junit" failonerror="true">
+            <arg value="at.ac.tuwien.infosys.www.pixy.TaintTestCase"/>
+            <sysproperty key="pixy.home" value="${basedir}"/>
+            <classpath refid="classpath"/>
+        </java>
+        <java fork="yes" classname="junit.textui.TestRunner" taskname="junit" failonerror="true">
+            <arg value="at.ac.tuwien.infosys.www.pixy.TaintTestCaseBuiltin"/>
+            <sysproperty key="pixy.home" value="${basedir}"/>
+            <classpath refid="classpath"/>
+        </java>
+        <java fork="yes" classname="junit.textui.TestRunner" taskname="junit" failonerror="true">
+            <arg value="at.ac.tuwien.infosys.www.pixy.analysis.alias.tools.SccTestCase"/>
+            <sysproperty key="pixy.home" value="${basedir}"/>
+            <classpath refid="classpath"/>
+        </java>
+        <java fork="yes" classname="junit.textui.TestRunner" taskname="junit" failonerror="true">
+            <arg value="at.ac.tuwien.infosys.www.pixy.conversion.includes.IncludeGraphTestCase"/>
+            <sysproperty key="pixy.home" value="${basedir}"/>
+            <classpath refid="classpath"/>
+        </java>
+        <java fork="yes" classname="junit.textui.TestRunner" taskname="junit" failonerror="true">
+            <arg value="at.ac.tuwien.infosys.www.pixy.ExTaintTestCase"/>
+            <sysproperty key="pixy.home" value="${basedir}"/>
+            <classpath refid="classpath"/>
+        </java>
+    </target>
+
+    <!-- prints help -->
+    <target name="help">
+        <echo message="You probably want to do 'ant build'. Otherwise, type 'ant -projecthelp' for help."/>
+    </target>
+
+</project>
+
+

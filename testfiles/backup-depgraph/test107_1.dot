@@ -1,0 +1,35 @@
+digraph cfg {
+  label="test107_1";
+  labelloc=t;
+  n1 [shape=box, label="_main.$a (16)\ntest107.php"];
+  n2 [shape=ellipse, label="_main._t0_0 (13)\ntest107.php"];
+  n3 [shape=ellipse, label="_main._t0_0 (5)\ntest107.php"];
+  n4 [shape=ellipse, label="OP: . (13)\ntest107.php",style=filled,color=lightblue];
+  n5 [shape=ellipse, label="_superglobals.ret_foo (5)\ntest107.php"];
+  n6 [shape=ellipse, label="_main.$a (13)\ntest107.php"];
+  n7 [shape=ellipse, label="_main.$x (13)\ntest107.php"];
+  n8 [shape=ellipse, label="foo.$fp (19)\ntest107.php"];
+  n9 [shape=ellipse, label="OP: . (9)\ntest107.php",style=filled,color=lightblue];
+  n10 [shape=ellipse, label="two (7)\ntest107.php"];
+  n11 [shape=ellipse, label="_main.$evil (5)\ntest107.php"];
+  n12 [shape=ellipse, label="_main.$x (9)\ntest107.php"];
+  n13 [shape=ellipse, label="three (9)\ntest107.php"];
+  n14 [shape=ellipse, label="<uninit>"];
+  n1 -> n2;
+  n1 -> n3;
+  n11 -> n14;
+  n12 -> n10;
+  n12 -> n9;
+  n2 -> n4;
+  n3 -> n5;
+  n4 -> n6[label="1"];
+  n4 -> n7[label="2"];
+  n5 -> n8;
+  n6 -> n2;
+  n6 -> n3;
+  n7 -> n10;
+  n7 -> n9;
+  n8 -> n11;
+  n9 -> n12[label="1"];
+  n9 -> n13[label="2"];
+}

@@ -1,0 +1,15 @@
+digraph cfg {
+  label="test069_1";
+  labelloc=t;
+  n1 [shape=box, label="_main.$a[1][_main.$j] (9)\ntest069.php"];
+  n2 [shape=ellipse, label="7 (7)\ntest069.php"];
+  n3 [shape=ellipse, label="_main.$get (8)\ntest069.php"];
+  n4 [shape=ellipse, label="_main._t0_0 (6)\ntest069.php"];
+  n5 [shape=ellipse, label="<uninit>"];
+  n6 [shape=ellipse, label=" (6)\ntest069.php"];
+  n1 -> n2;
+  n1 -> n3;
+  n1 -> n4;
+  n3 -> n5;
+  n4 -> n6;
+}

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="project/" kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="lib" path="lib/junit.jar"/>
+	<classpathentry kind="lib" path="transducers/jauto-classes"/>
+	<classpathentry kind="src" path="test-old"/>
+	<classpathentry kind="output" path="build/class"/>
+</classpath>

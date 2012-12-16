@@ -1,0 +1,8 @@
+Transducer-related parts of the project
+*****************************************
+
+- build path of Eclipse: contains jauto-classes
+- build.xml contains jauto-classes in classpath
+- concentrated in package "transduction"
+- classpath in "run" scripts
+- build.xml cleans the transducers/temp directory

@@ -1,0 +1,9 @@
+digraph cfg {
+  label="test041_2";
+  labelloc=t;
+  n1 [shape=box, label="_main.$x (15)\ntest041.php"];
+  n2 [shape=ellipse, label="<uninit>"];
+  n3 [shape=ellipse, label="good (12)\ntest041.php"];
+  n1 -> n2;
+  n1 -> n3;
+}

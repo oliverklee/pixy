@@ -1,0 +1,27 @@
+digraph cfg {
+  label="test091_9";
+  labelloc=t;
+  n1 [shape=box, label="_main.$x (29)\ntest091.php"];
+  n2 [shape=ellipse, label="_main._t0_0 (28)\ntest091.php"];
+  n3 [shape=ellipse, label="OP: shell_exec (28)\ntest091.php",style=filled,color=lightblue];
+  n4 [shape=ellipse, label="_main._t1_0 (28)\ntest091.php"];
+  n5 [shape=ellipse, label="OP: . (28)\ntest091.php",style=filled,color=lightblue];
+  n6 [shape=ellipse, label="_main._t1_0 (28)\ntest091.php"];
+  n7 [shape=ellipse, label=" C D (28)\ntest091.php"];
+  n8 [shape=ellipse, label="OP: . (28)\ntest091.php",style=filled,color=lightblue];
+  n9 [shape=ellipse, label="_main._t1_0 (28)\ntest091.php"];
+  n10 [shape=ellipse, label="_main.$var (28)\ntest091.php"];
+  n11 [shape=ellipse, label="A B  (28)\ntest091.php"];
+  n12 [shape=ellipse, label="<uninit>"];
+  n1 -> n2;
+  n10 -> n12;
+  n2 -> n3;
+  n3 -> n4[label="1"];
+  n4 -> n5;
+  n5 -> n6[label="1"];
+  n5 -> n7[label="2"];
+  n6 -> n8;
+  n8 -> n10[label="2"];
+  n8 -> n9[label="1"];
+  n9 -> n11;
+}

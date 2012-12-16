@@ -1,0 +1,17 @@
+digraph cfg {
+  label="test054_1";
+  labelloc=t;
+  n1 [shape=box, label="multi_tb.$a (9)\ntest054.php"];
+  n2 [shape=ellipse, label="multi_tb._t1_0[1] (8)\ntest054.php"];
+  n3 [shape=ellipse, label="OP: each (8)\ntest054.php",style=filled,color=lightblue];
+  n4 [shape=ellipse, label="multi_tb._t0_0 (8)\ntest054.php"];
+  n5 [shape=ellipse, label="multi_tb.$get (8)\ntest054.php"];
+  n6 [shape=ellipse, label="_main.$get_main (6)\ntest054.php"];
+  n7 [shape=ellipse, label="<uninit>"];
+  n1 -> n2;
+  n2 -> n3;
+  n3 -> n4[label="1"];
+  n4 -> n5;
+  n5 -> n6;
+  n6 -> n7;
+}

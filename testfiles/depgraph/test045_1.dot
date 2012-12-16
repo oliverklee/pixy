@@ -1,0 +1,21 @@
+digraph cfg {
+  label="test045_1";
+  labelloc=t;
+  n1 [shape=box, label="_main.$a (11)\ntest045.php"];
+  n2 [shape=ellipse, label="_main._t0_0 (10)\ntest045.php"];
+  n3 [shape=ellipse, label="OP: ereg_replace (10)\ntest045.php",style=filled,color=lightblue];
+  n4 [shape=ellipse, label="findme (10)\ntest045.php"];
+  n5 [shape=ellipse, label="_main.$replacement (10)\ntest045.php"];
+  n6 [shape=ellipse, label="_main.$string (10)\ntest045.php"];
+  n7 [shape=ellipse, label="const1 (6)\ntest045.php"];
+  n8 [shape=ellipse, label="_main.$get2 (9)\ntest045.php"];
+  n9 [shape=ellipse, label="<uninit>"];
+  n1 -> n2;
+  n2 -> n3;
+  n3 -> n4[label="1"];
+  n3 -> n5[label="2"];
+  n3 -> n6[label="3"];
+  n5 -> n7;
+  n6 -> n8;
+  n8 -> n9;
+}

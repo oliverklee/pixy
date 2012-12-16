@@ -1,0 +1,5 @@
+digraph cfg {
+  label="test092_3";
+  labelloc=t;
+  n1 [shape=box, label="hei! (14)\ntest092.php"];
+}

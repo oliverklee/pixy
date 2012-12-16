@@ -1,0 +1,7 @@
+digraph cfg {
+  label="test006_1";
+  labelloc=t;
+  n1 [shape=box, label="_superglobals.$_GET[foo] (16)\ntest006.php"];
+  n2 [shape=ellipse, label="<uninit>"];
+  n1 -> n2;
+}

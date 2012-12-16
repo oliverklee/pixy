@@ -1,0 +1,15 @@
+Modifications to JFlex 1.4.1
+*****************************
+
+- marked with "NJ"
+
+- modified files:
+  - skeleton.default
+  - Emitter.java
+
+- reasons:
+  - emulation of Flex's yymore()
+  - in case of error: also include file name and line number in the output message
+
+- state stacks are emulated without modifying the JFlex sources, simply by
+  including the relevant data structures into the specification file
