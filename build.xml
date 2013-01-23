@@ -68,7 +68,7 @@
                 <pathelement path="${test.dir}"/>
             </src>
             <classpath refid="classpath"/>
-            <compilerarg value="-Xlint:unchecked"/>
+            <compilerarg line="-Xlint -Xmaxwarns 99999 -Xmaxerrs 99999"/>
         </javac>
     </target>
 
