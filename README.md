@@ -59,6 +59,25 @@ The most recent version of Eclipse can be obtained from <http://www.eclipse.org/
   - run! (should be successful)
 
 
+### Building and cleaning the project with Ant from within Eclipse
+
+1. Project > Properties > Builders
+2. Deactivate the Java Builder.
+3. New ...
+4. Select "Ant builder"
+3. Name it "Ant build" or "Pixy build" (or any other suitable name).
+5. In the Main tab, select the build.xml in the project directory as Buildfile and the project directory as Base directory.
+6. In the Targets tab for "Manual build", select "build".
+7. In the Targets tab for "During a clean", select "clean".
+8. OK the changes for both dialogs. 
+
+You then can build the project using Project > Build Project and Clean the project using Project > Clean ...
+
+Or you can build the project using the command line from within the project main directory:
+
+    ant build
+
+
 ### Running
 
 1. Run / Run...
