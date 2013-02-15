@@ -71,27 +71,41 @@ The most recent version of Eclipse can be obtained from <http://www.eclipse.org/
 7. In the Targets tab for "During a clean", select "clean".
 8. OK the changes for both dialogs. 
 
-You then can build the project using Project > Build Project and Clean the project using Project > Clean ...
+You then can build the project using Project > Build Project and Clean the project using Project > Clean ... (You might need to refresh to project first.)
 
 Or you can build the project using the command line from within the project main directory:
 
     ant build
 
 
-### Running
+### Running pixy from within Eclipse
 
-1. Run / Run...
-  - Java Application, New
-  - Main tab:
-    - name = Pixy default
-    - Main Class: should find Checker after pressing the Search button, accept it
-  - Arguments tab:
-    - Program arguments:
-      ${project_loc}/test.php
-    - VM Arguments:
-      -Dpixy.home=${project_loc}
-  - run!
-  - for JUnit Tests: same VM Argument
+To run the application, you first need to build it. After that is done, create a suitable run configuration:
+
+1. Run > Run Configurations...
+2. Right-click on "Java Application" > New (or double-click on "Java Application")
+3. Enter a name, e.g., "Run Pixy"
+4. The main project should be your Pixy project.
+5. As Main class, press "Search..." and select the Checker class.
+6. In the Arguments tab, set the following as Program arguments: ${project_loc}/getstarted.php
+7. Still in the Arguments tab, set the following VM arguments: -Dpixy.home=${project_loc}
+8. Click on "Run".
+
+After the configuration is complete, you can run Pixy by just using Run > Run (CTRL + F11).
+
+
+### Runnin the unit tests from within Eclipse
+
+This also requires that you have build the application.
+
+1. Run > Run Configurations...
+2. Right-click on "JUnit" > New (or double-click on "JUnit")
+3. Enter a name, e.g., "Pixy unit tests"
+4. In the Test tab, select the "Run all tests ..." radio button and select the "test" folder in your Pixy project.
+5. In the Arguments tab, set the following VM arguments: -Dpixy.home=${project_loc}
+6. Click on "Run".
+
+After the configuration is complete, you can run Pixy by right-clicking the "test" folder and selecting Run As > 3 JUnit test
 
 
 ### Development building
