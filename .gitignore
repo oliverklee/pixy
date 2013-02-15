@@ -4,3 +4,6 @@
 *.jar
 *.war
 *.ear
+
+# generated when running the unit tests
+graphs/
