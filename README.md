@@ -6,6 +6,13 @@
 Documentation on this program can be found at <http://pixybox.seclab.tuwien.ac.at/>.
 
 
+## Available Ant targets
+
+* build: builds the whole project
+* clean: cleans up
+* test: runs the JUnit unit tests
+
+
 ## Developing Pixy in Eclipse
 
 The most recent version of Eclipse can be obtained from <http://www.eclipse.org/>.
@@ -69,7 +76,7 @@ The most recent version of Eclipse can be obtained from <http://www.eclipse.org/
 5. In the Main tab, select the build.xml in the project directory as Buildfile and the project directory as Base directory.
 6. In the Targets tab for "Manual build", select "build".
 7. In the Targets tab for "During a clean", select "clean".
-8. OK the changes for both dialogs. 
+8. OK the changes for both dialogs.
 
 You then can build the project using Project > Build Project and Clean the project using Project > Clean ... (You might need to refresh to project first.)
 
@@ -136,38 +143,38 @@ After the configuration is complete, you can run Pixy by right-clicking the "tes
 Thanks to Chuck Burgess (cburgess at PROGRESSRAIL dot com) for
 contributing these instructions.
 
-To set up Pixy as an "External Tool" to use inside Eclipse (tested on 
+To set up Pixy as an "External Tool" to use inside Eclipse (tested on
 v3.1.2), perform these steps:
 
-1. From the "Run" menu, choose "External Tools", then "External Tools" 
-  again.  This brings up the dialogue where you can edit/create 
+1. From the "Run" menu, choose "External Tools", then "External Tools"
+  again.  This brings up the dialogue where you can edit/create
   "External Tools" items.
-2. On the left-side menu, highlight the "Programs" heading and click 
+2. On the left-side menu, highlight the "Programs" heading and click
   the "New" button.
-3. Populate the "Name" field on the main top-center area with whatever 
-  name you want to use to recognize this program for yourself (i.e. 
+3. Populate the "Name" field on the main top-center area with whatever
+  name you want to use to recognize this program for yourself (i.e.
   "Pixy Vulnerability Scanner for PHP").
 4. On the "Main" tab, I populated these items in this manner:
-     - Location: 			${workspace_loc}/Pixy/run.bat 
+     - Location: 			${workspace_loc}/Pixy/run.bat
      - Working Directory:  	${workspace_loc}${project_path}
      - Arguments:  		"${workspace_loc}${resource_path}"
-  Notice the quotes in the "Arguments" value... they are needed here, 
-  though not allowed in the other values.  If you physically put the 
-  Pixy code in your Eclipse workspace, you can use the ${workspace_loc} 
-  variable in the path to the "run" or "run.bat" file in the "Location" 
-  item, rather than having to hardcode the path.  Otherwise, you should 
-  hardcode the path in the "Location" item, but not in the "Working 
-  Directory" or "Arguments" items...  (these items refer to your workspace 
+  Notice the quotes in the "Arguments" value... they are needed here,
+  though not allowed in the other values.  If you physically put the
+  Pixy code in your Eclipse workspace, you can use the ${workspace_loc}
+  variable in the path to the "run" or "run.bat" file in the "Location"
+  item, rather than having to hardcode the path.  Otherwise, you should
+  hardcode the path in the "Location" item, but not in the "Working
+  Directory" or "Arguments" items...  (these items refer to your workspace
   area/items specifically).
-5. No changes should be necessary on the "Refresh", "Environment", or 
+5. No changes should be necessary on the "Refresh", "Environment", or
   "Common" tabs.
 
-To run Pixy on a workspace PHP file, just highlight the file (either on 
-the left-side Navigator menu listing, or else the opened file's tab in 
-the center view area).  Click "Run -> External Tools", and choose your 
-Pixy item's name.  The output from its run will appear in the "Console" 
-view at the bottom of the screen layout.  Remember, Pixy runs against 
-the file you have HIGHLIGHTED, which is not necessarily the one you 
+To run Pixy on a workspace PHP file, just highlight the file (either on
+the left-side Navigator menu listing, or else the opened file's tab in
+the center view area).  Click "Run -> External Tools", and choose your
+Pixy item's name.  The output from its run will appear in the "Console"
+view at the bottom of the screen layout.  Remember, Pixy runs against
+the file you have HIGHLIGHTED, which is not necessarily the one you
 have OPEN.
 
 

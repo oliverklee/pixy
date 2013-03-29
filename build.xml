@@ -7,23 +7,23 @@
         - TOP
           - build.xml
           - run
-          
+
           - BUILD
             - CLASS
               - generated java class files
-          
+
           - CONFIG
             - configuration files
 
           - DOC
             - documentation
-            
+
           - LIB
             - external libraries
-            
-          - SCRIPTS 
+
+          - SCRIPTS
             - convenience scripts
-            
+
           - SRC
             - Pixy itself
 
@@ -85,14 +85,19 @@
     </target>
 
     <!-- performs JUnit tests -->
-    <target name="test">
+    <target name="test" description="Runs the JUnit unit tests.">
         <java fork="yes" classname="junit.textui.TestRunner" taskname="junit" failonerror="true">
             <arg value="at.ac.tuwien.infosys.www.pixy.AliasTestCase"/>
             <sysproperty key="pixy.home" value="${basedir}"/>
             <classpath refid="classpath"/>
         </java>
         <java fork="yes" classname="junit.textui.TestRunner" taskname="junit" failonerror="true">
-            <arg value="at.ac.tuwien.infosys.www.pixy.IncDomTestCase"/>
+            <arg value="at.ac.tuwien.infosys.www.pixy.DepGraphTestCase"/>
+            <sysproperty key="pixy.home" value="${basedir}"/>
+            <classpath refid="classpath"/>
+        </java>
+        <java fork="yes" classname="junit.textui.TestRunner" taskname="junit" failonerror="true">
+            <arg value="at.ac.tuwien.infosys.www.pixy.DepGraphTestCaseNA"/>
             <sysproperty key="pixy.home" value="${basedir}"/>
             <classpath refid="classpath"/>
         </java>
@@ -107,32 +112,17 @@
             <classpath refid="classpath"/>
         </java>
         <java fork="yes" classname="junit.textui.TestRunner" taskname="junit" failonerror="true">
-            <arg value="at.ac.tuwien.infosys.www.pixy.LiteralTestCaseBuiltin"/>
+            <arg value="at.ac.tuwien.infosys.www.pixy.SQLTestCase"/>
             <sysproperty key="pixy.home" value="${basedir}"/>
             <classpath refid="classpath"/>
         </java>
         <java fork="yes" classname="junit.textui.TestRunner" taskname="junit" failonerror="true">
-            <arg value="at.ac.tuwien.infosys.www.pixy.TaintTestCase"/>
+            <arg value="at.ac.tuwien.infosys.www.pixy.TypeTestCase"/>
             <sysproperty key="pixy.home" value="${basedir}"/>
             <classpath refid="classpath"/>
         </java>
         <java fork="yes" classname="junit.textui.TestRunner" taskname="junit" failonerror="true">
-            <arg value="at.ac.tuwien.infosys.www.pixy.TaintTestCaseBuiltin"/>
-            <sysproperty key="pixy.home" value="${basedir}"/>
-            <classpath refid="classpath"/>
-        </java>
-        <java fork="yes" classname="junit.textui.TestRunner" taskname="junit" failonerror="true">
-            <arg value="at.ac.tuwien.infosys.www.pixy.analysis.alias.tools.SccTestCase"/>
-            <sysproperty key="pixy.home" value="${basedir}"/>
-            <classpath refid="classpath"/>
-        </java>
-        <java fork="yes" classname="junit.textui.TestRunner" taskname="junit" failonerror="true">
-            <arg value="at.ac.tuwien.infosys.www.pixy.conversion.includes.IncludeGraphTestCase"/>
-            <sysproperty key="pixy.home" value="${basedir}"/>
-            <classpath refid="classpath"/>
-        </java>
-        <java fork="yes" classname="junit.textui.TestRunner" taskname="junit" failonerror="true">
-            <arg value="at.ac.tuwien.infosys.www.pixy.ExTaintTestCase"/>
+            <arg value="at.ac.tuwien.infosys.www.pixy.XSSTestCase"/>
             <sysproperty key="pixy.home" value="${basedir}"/>
             <classpath refid="classpath"/>
         </java>
@@ -142,7 +132,4 @@
     <target name="help">
         <echo message="You probably want to do 'ant build'. Otherwise, type 'ant -projecthelp' for help."/>
     </target>
-
 </project>
-
-
