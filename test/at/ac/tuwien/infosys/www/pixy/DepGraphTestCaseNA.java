@@ -19,35 +19,35 @@ import junit.framework.*;
 
 // resembles DepGraphTestCase, but does not perform alias analysis
 // (see mySetUp()) and tests object-oriented stuff
-public class DepGraphTestCaseNA 
+public class DepGraphTestCaseNA
 extends TestCase {
 
     private String path;    // complete path to the testfile directory (with trailing slash)
-    
+
     // these are recomputed for every single test
     private DepAnalysis depAnalysis;
     private XSSAnalysis xssAnalysis;
     List<Sink> sinks;
-    
+
 //  ********************************************************************************
 //  SETUP **************************************************************************
 //  ********************************************************************************
-    
+
     // called automatically
     protected void setUp() {
         this.path = MyOptions.pixy_home + "/testfiles/depgraph/";
     }
-    
-    
+
+
     // call this at the beginning of each test; optionally uses
     // a functional analysis instead of call-string ("functional" param),
     // and uses a dummy literal analysis
     private void mySetUp(String testFile, boolean functional) {
-        
+
         Checker checker = new Checker(this.path + testFile);
         MyOptions.option_A = false;   // don't perform alias analysis
         MyOptions.setAnalyses("xss");
-        
+
         // initialize & analyze
         TacConverter tac = checker.initialize().getTac();
         checker.analyzeTaint(tac, functional);
@@ -59,7 +59,7 @@ extends TestCase {
         Collections.sort(sinks);
 
     }
-    
+
     // returns the contents of the given file as string
     private String readFile(String fileName) {
         StringBuilder ret = new StringBuilder();
@@ -78,22 +78,22 @@ extends TestCase {
         return ret.toString();
     }
 
-    
+
     // set "generate" to false if you want to generate graphs
-    // (instead of checking against existing graphs) 
-    private void performTest(String testNum, int sinkNum, int graphNum, 
+    // (instead of checking against existing graphs)
+    private void performTest(String testNum, int sinkNum, int graphNum,
             boolean generate, int vulnNum) {
         performTest(testNum, sinkNum, graphNum, generate, false, vulnNum);
     }
 
-    private void performTest(String testNum, int sinkNum, int graphNum, 
+    private void performTest(String testNum, int sinkNum, int graphNum,
             boolean generate, boolean functional, int vulnNum) {
-        
+
         //generate = true;
-        
+
         mySetUp("test" + testNum + ".php", functional);
-        
-        Assert.assertTrue("Sinks real: " + sinks.size() + ", expected: " 
+
+        Assert.assertTrue("Sinks real: " + sinks.size() + ", expected: "
                 + sinkNum, sinks.size() == sinkNum);
 
         // collect depGraphs
@@ -101,16 +101,16 @@ extends TestCase {
         for (Sink sink : sinks) {
             depGraphs.addAll(depAnalysis.getDepGraph(sink));
         }
-        
-        Assert.assertTrue("Graphs real: " + depGraphs.size() + ", expected: " 
+
+        Assert.assertTrue("Graphs real: " + depGraphs.size() + ", expected: "
                 + graphNum, depGraphs.size() == graphNum);
-        
+
         int graphCount = 0;
         int vulnCount = 0;
         for (DepGraph depGraph : depGraphs) {
-            
+
             // check depgraph
-            
+
             graphCount++;
             String fileName = "test" + testNum + "_" + graphCount;
             if (generate) {
@@ -120,16 +120,16 @@ extends TestCase {
                 String expected = this.readFile(this.path + fileName + ".dot");
                 Assert.assertEquals(expected, encountered);
             }
-            
+
             // check xssgraph
-            
+
             String xssFileName = "test" + testNum + "_" + graphCount + "_xss";
             DepGraph relevant = this.xssAnalysis.getRelevant(depGraph);
             Map<DepGraphUninitNode, DepClient.InitialTaint> dangerousUninit = this.xssAnalysis.findDangerousUninit(relevant);
             if (!dangerousUninit.isEmpty()) {
                 vulnCount++;
                 relevant.reduceWithLeaves(dangerousUninit.keySet());
-                
+
                 if (generate) {
                     relevant.dumpDotUnique(xssFileName, this.path);
                 } else {
@@ -154,10 +154,10 @@ extends TestCase {
 //  ********************************************************************************
 //  TESTS **************************************************************************
 //  ********************************************************************************
-    
+
     public void test001() {
         String testNum = "001";
-        int sinkNum = 2;        // expected number of sinks 
+        int sinkNum = 2;        // expected number of sinks
         int graphNum = 2;       // expected number of graphs
         int vulnNum = 2;        // expected number of vulnerabilities
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
@@ -178,7 +178,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test004() {
         String testNum = "004";
         int sinkNum = 2;
@@ -202,7 +202,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test007() {
         String testNum = "007";
         int sinkNum = 1;
@@ -210,7 +210,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test008() {
         String testNum = "008";
         int sinkNum = 1;
@@ -218,7 +218,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test009() {
         String testNum = "009";
         int sinkNum = 2;
@@ -226,7 +226,7 @@ extends TestCase {
         int vulnNum = 2;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test010() {
         String testNum = "010";
         int sinkNum = 1;
@@ -234,7 +234,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test011() {
         String testNum = "011";
         int sinkNum = 1;
@@ -242,7 +242,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test012() {
         String testNum = "012";
         int sinkNum = 1;
@@ -250,7 +250,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test013() {
         String testNum = "013";
         int sinkNum = 1;
@@ -274,7 +274,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test016() {
         String testNum = "016";
         int sinkNum = 1;
@@ -290,7 +290,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test018() {
         String testNum = "018";
         int sinkNum = 1;
@@ -298,7 +298,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test021() {
         String testNum = "021";
         int sinkNum = 1;
@@ -306,7 +306,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test022() {
         String testNum = "022";
         int sinkNum = 1;
@@ -314,7 +314,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test023() {
         String testNum = "023";
         int sinkNum = 1;
@@ -322,7 +322,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test024() {
         String testNum = "024";
         int sinkNum = 1;
@@ -330,7 +330,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test025() {
         String testNum = "025";
         int sinkNum = 1;
@@ -338,7 +338,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test026() {
         String testNum = "026";
         int sinkNum = 1;
@@ -346,7 +346,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test027() {
         String testNum = "027";
         int sinkNum = 1;
@@ -362,7 +362,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test035() {
         String testNum = "035";
         int sinkNum = 2;
@@ -370,7 +370,7 @@ extends TestCase {
         int vulnNum = 2;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test036() {
         String testNum = "036";
         int sinkNum = 1;
@@ -378,7 +378,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test037() {
         String testNum = "037";
         int sinkNum = 1;
@@ -386,7 +386,7 @@ extends TestCase {
         int vulnNum = 2;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test038() {
         String testNum = "038";
         int sinkNum = 1;
@@ -402,7 +402,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test040() {
         String testNum = "040";
         int sinkNum = 1;
@@ -410,7 +410,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test041b() {
         String testNum = "041b";
         int sinkNum = 2;
@@ -418,7 +418,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test042() {
         String testNum = "042";
         int sinkNum = 2;
@@ -427,7 +427,7 @@ extends TestCase {
         // use functional analysis here
         this.performTest(testNum, sinkNum, graphNum, false, true, vulnNum);
     }
-    
+
     public void test043() {
         String testNum = "043";
         int sinkNum = 1;
@@ -435,7 +435,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test044() {
         String testNum = "044";
         int sinkNum = 1;
@@ -443,7 +443,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test045() {
         String testNum = "045";
         int sinkNum = 1;
@@ -451,7 +451,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test046() {
         String testNum = "046";
         int sinkNum = 1;
@@ -459,7 +459,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test047() {
         String testNum = "047";
         int sinkNum = 1;
@@ -467,7 +467,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test048() {
         String testNum = "048";
         int sinkNum = 1;
@@ -475,7 +475,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test049() {
         String testNum = "049";
         int sinkNum = 1;
@@ -483,7 +483,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test050() {
         String testNum = "050";
         int sinkNum = 2;
@@ -491,7 +491,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test051() {
         String testNum = "051";
         int sinkNum = 2;
@@ -499,7 +499,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test052() {
         String testNum = "052";
         int sinkNum = 1;
@@ -507,7 +507,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test053() {
         String testNum = "053";
         int sinkNum = 1;
@@ -515,7 +515,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test054() {
         String testNum = "054";
         int sinkNum = 1;
@@ -524,14 +524,14 @@ extends TestCase {
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
 
-    public void test055b() { 
+    public void test055b() {
         String testNum = "055b";
         int sinkNum = 1;
         int graphNum = 1;
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test056() {
         String testNum = "056";
         int sinkNum = 1;
@@ -539,7 +539,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test057() {
         String testNum = "057";
         int sinkNum = 1;
@@ -547,7 +547,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test058() {
         String testNum = "058";
         int sinkNum = 1;
@@ -555,7 +555,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test059() {
         String testNum = "059";
         int sinkNum = 1;
@@ -563,7 +563,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test060() {
         String testNum = "060";
         int sinkNum = 1;
@@ -571,7 +571,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test061() {
         String testNum = "061";
         int sinkNum = 1;
@@ -579,7 +579,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test062() {
         String testNum = "062";
         int sinkNum = 1;
@@ -587,7 +587,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test063() {
         String testNum = "063";
         int sinkNum = 1;
@@ -595,7 +595,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test064() {
         String testNum = "064";
         int sinkNum = 1;
@@ -603,7 +603,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test065() {
         String testNum = "065";
         int sinkNum = 1;
@@ -611,7 +611,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test066() {
         String testNum = "066";
         int sinkNum = 1;
@@ -619,7 +619,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test067() {
         String testNum = "067";
         int sinkNum = 1;
@@ -627,7 +627,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test068() {
         String testNum = "068";
         int sinkNum = 1;
@@ -635,7 +635,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test069() {
         String testNum = "069";
         int sinkNum = 1;
@@ -643,7 +643,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test070() {
         String testNum = "070";
         int sinkNum = 3;
@@ -651,7 +651,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test071() {
         String testNum = "071";
         int sinkNum = 3;
@@ -659,7 +659,7 @@ extends TestCase {
         int vulnNum = 2;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test072() {
         String testNum = "072";
         int sinkNum = 3;
@@ -667,7 +667,7 @@ extends TestCase {
         int vulnNum = 2;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test073() {
         String testNum = "073";
         int sinkNum = 1;
@@ -675,7 +675,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test074() {
         String testNum = "074";
         int sinkNum = 1;
@@ -683,7 +683,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test075() {
         String testNum = "075";
         int sinkNum = 1;
@@ -691,7 +691,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test076() {
         String testNum = "076";
         int sinkNum = 1;
@@ -707,7 +707,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test078() {
         String testNum = "078";
         int sinkNum = 1;
@@ -715,7 +715,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test079() {
         String testNum = "079";
         int sinkNum = 1;
@@ -723,7 +723,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test080() {
         String testNum = "080";
         int sinkNum = 0;
@@ -731,7 +731,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test081() {
         String testNum = "081";
         int sinkNum = 3;
@@ -739,7 +739,7 @@ extends TestCase {
         int vulnNum = 2;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test082() {
         String testNum = "082";
         int sinkNum = 2;
@@ -747,7 +747,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test083() {
         String testNum = "083";
         int sinkNum = 3;
@@ -755,7 +755,7 @@ extends TestCase {
         int vulnNum = 2;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test084() {
         String testNum = "084";
         int sinkNum = 0;
@@ -763,7 +763,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test085() {
         String testNum = "085";
         int sinkNum = 3;
@@ -771,7 +771,7 @@ extends TestCase {
         int vulnNum = 2;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test086() {
         String testNum = "086";
         int sinkNum = 2;
@@ -811,7 +811,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test091() {
         String testNum = "091";
         int sinkNum = 10;
@@ -819,7 +819,7 @@ extends TestCase {
         int vulnNum = 7;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test092() {
         String testNum = "092";
         int sinkNum = 4;
@@ -827,7 +827,7 @@ extends TestCase {
         int vulnNum = 2;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test093() {
         String testNum = "093";
         int sinkNum = 1;
@@ -835,7 +835,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test094() {
         String testNum = "094";
         int sinkNum = 2;
@@ -843,7 +843,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test095() {
         String testNum = "095";
         int sinkNum = 3;
@@ -851,7 +851,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test096() {
         String testNum = "096";
         int sinkNum = 3;
@@ -859,7 +859,7 @@ extends TestCase {
         int vulnNum = 2;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test097() {
         String testNum = "097";
         int sinkNum = 2;
@@ -867,7 +867,7 @@ extends TestCase {
         int vulnNum = 2;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test098() {
         String testNum = "098";
         int sinkNum = 1;
@@ -875,7 +875,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test099() {
         String testNum = "099";
         int sinkNum = 1;
@@ -883,7 +883,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test100() {
         String testNum = "100";
         int sinkNum = 1;
@@ -891,7 +891,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test101() {
         String testNum = "101";
         int sinkNum = 1;
@@ -899,7 +899,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test102() {
         String testNum = "102";
         int sinkNum = 1;
@@ -907,7 +907,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test103() {
         String testNum = "103";
         int sinkNum = 1;
@@ -915,7 +915,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test104() {
         String testNum = "104";
         int sinkNum = 1;
@@ -923,7 +923,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test105() {
         String testNum = "105";
         int sinkNum = 1;
@@ -931,7 +931,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test106() {
         String testNum = "106";
         int sinkNum = 1;
@@ -947,7 +947,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test108() {
         String testNum = "108";
         int sinkNum = 1;
@@ -955,7 +955,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test109() {
         String testNum = "109";
         int sinkNum = 1;
@@ -963,7 +963,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test110() {
         String testNum = "110";
         int sinkNum = 0;
@@ -971,7 +971,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test111() {
         String testNum = "111";
         int sinkNum = 1;
@@ -979,7 +979,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test112() {
         String testNum = "112";
         int sinkNum = 0;
@@ -987,7 +987,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test113() {
         String testNum = "113";
         int sinkNum = 3;
@@ -995,7 +995,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test114() {
         String testNum = "114";
         int sinkNum = 4;
@@ -1003,7 +1003,7 @@ extends TestCase {
         int vulnNum = 3;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test115() {
         String testNum = "115";
         int sinkNum = 1;
@@ -1011,7 +1011,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test116() {
         String testNum = "116";
         int sinkNum = 1;
@@ -1019,7 +1019,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test117() {
         String testNum = "117";
         int sinkNum = 1;
@@ -1027,7 +1027,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test118() {
         String testNum = "118";
         int sinkNum = 2;
@@ -1035,7 +1035,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test119() {
         String testNum = "119";
         int sinkNum = 0;
@@ -1043,7 +1043,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test120() {
         String testNum = "120";
         int sinkNum = 2;
@@ -1051,7 +1051,7 @@ extends TestCase {
         int vulnNum = 2;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test121() {
         String testNum = "121";
         int sinkNum = 1;
@@ -1059,7 +1059,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test122() {
         String testNum = "122";
         int sinkNum = 1;
@@ -1067,7 +1067,8 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
+    /*
     public void test123() {
         String testNum = "123";
         int sinkNum = 1;
@@ -1075,7 +1076,8 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+    */
+
     public void test124() {
         String testNum = "124";
         int sinkNum = 3;
@@ -1083,7 +1085,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test125() {
         String testNum = "125";
         int sinkNum = 1;
@@ -1091,7 +1093,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test126() {
         String testNum = "126";
         int sinkNum = 1;
@@ -1099,7 +1101,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test127() {
         String testNum = "127";
         int sinkNum = 0;
@@ -1107,7 +1109,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test128() {
         String testNum = "128";
         int sinkNum = 3;
@@ -1115,7 +1117,7 @@ extends TestCase {
         int vulnNum = 3;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test129() {
         String testNum = "129";
         int sinkNum = 1;
@@ -1123,7 +1125,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test130() {
         String testNum = "130";
         int sinkNum = 5;
@@ -1131,7 +1133,7 @@ extends TestCase {
         int vulnNum = 2;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test131() {
         String testNum = "131";
         int sinkNum = 4;
@@ -1139,7 +1141,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test132() {
         String testNum = "132";
         int sinkNum = 1;
@@ -1147,7 +1149,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test133() {
         String testNum = "133";
         int sinkNum = 1;
@@ -1155,7 +1157,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test134() {
         String testNum = "134";
         int sinkNum = 1;
@@ -1163,7 +1165,7 @@ extends TestCase {
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test135() {
         String testNum = "135";
         int sinkNum = 1;
@@ -1171,7 +1173,7 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test136() {
         String testNum = "136";
         int sinkNum = 4;
@@ -1179,23 +1181,23 @@ extends TestCase {
         int vulnNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
-    
-    
+
+
+
     /*
      * HOW TO ADD NEW TESTS
-     * 
+     *
      * - write a php testfile and move it to the right directory (see above)
      * - copy one of the existing test methods and adjust the numbers
      *   (for an explanation, see the first test method)
      * - set the fourth parameter of "performTest" to true, and run
-     *   the test; this has the effect that dot files for the generated 
+     *   the test; this has the effect that dot files for the generated
      *   graphs are dumped to the filesystem
      * - check if the dot files look as you expected
-     * - switch the fourth parameter back to false 
-     * 
+     * - switch the fourth parameter back to false
+     *
      */
-    
+
 }
 
 
