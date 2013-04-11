@@ -18,7 +18,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.*;
 
 // dependency analysis
-public class DepAnalysis 
+public class DepAnalysis
 extends InterAnalysis {
 
     private TacConverter tac;
@@ -34,74 +34,74 @@ extends InterAnalysis {
 
     // has detectVulns() already been called?
     private boolean finishedDetection;
-    
-    
-    
+
+
+
 //  ********************************************************************************
 //  CONSTRUCTORS *******************************************************************
 //  ********************************************************************************
 
 //  ExTaintAnalysis ****************************************************************
-    
-    public DepAnalysis(TacConverter tac, 
+
+    public DepAnalysis(TacConverter tac,
             AliasAnalysis aliasAnalysis,
-            LiteralAnalysis literalAnalysis, 
+            LiteralAnalysis literalAnalysis,
             AnalysisType analysisType,
             InterWorkList workList,
             ModAnalysis modAnalysis) {
-        
+
         this.tac = tac;
         this.places = tac.getPlacesList();
         this.constantsTable = tac.getConstantsTable();
         this.superSymbolTable = tac.getSuperSymbolTable();
         this.memberPlace = tac.getMemberPlace();
         this.repos = new GenericRepos<LatticeElement>();
-        
+
         this.aliasAnalysis = aliasAnalysis;
         this.literalAnalysis = literalAnalysis;
         this.modAnalysis = modAnalysis;
-        
+
         this.finishedDetection = false;
-        
-        this.initGeneral(tac.getAllFunctions(), tac.getMainFunction(), 
+
+        this.initGeneral(tac.getAllFunctions(), tac.getMainFunction(),
                 analysisType, workList);
-        
+
     }
-    
+
 //  initLattice ********************************************************************
-    
+
     protected void initLattice() {
-        
+
         // initialize lattice
         this.lattice = new DepLattice(
-            this.places, this.constantsTable, this.functions, 
+            this.places, this.constantsTable, this.functions,
             this.superSymbolTable, this.memberPlace);
-        
-        // initialize start value: a lattice element that adds no information to 
+
+        // initialize start value: a lattice element that adds no information to
         // the default lattice element
         this.startValue = new DepLatticeElement();
 
         // initialize initial value
         this.initialValue = this.lattice.getBottom();
-        
+
     }
-    
+
 //  applyInsideBasicBlock **********************************************************
-    
+
     // takes the given invalue and applies transfer functions from the start of the
     // basic block until the beginning of "untilHere" (i.e., the transfer function
     // of this node is NOT applied);
     // only required by DepGraph
     public DepLatticeElement applyInsideBasicBlock(
             CfgNodeBasicBlock basicBlock, CfgNode untilHere, DepLatticeElement invalue) {
-        
+
         DepLatticeElement outValue = new DepLatticeElement((DepLatticeElement) invalue);
         List containedNodes = basicBlock.getContainedNodes();
         CompositeTransferFunction ctf = (CompositeTransferFunction) this.getTransferFunction(basicBlock);
-        
+
         Iterator nodesIter = containedNodes.iterator();
         Iterator tfIter = ctf.iterator();
-        
+
         while (nodesIter.hasNext() && tfIter.hasNext()) {
             CfgNode node = (CfgNode) nodesIter.next();
             TransferFunction tf = (TransferFunction) tfIter.next();
@@ -110,29 +110,29 @@ extends InterAnalysis {
             }
             outValue = (DepLatticeElement) tf.transfer(outValue);
         }
-            
+
         return outValue;
     }
 
 //  applyInsideDefaultCfg **********************************************************
-    
+
     // takes the given invalue and applies transfer functions from the start of the
-    // default cfg (given by "defaultNode") until the beginning of "untilHere" 
-    // (i.e., the transfer function of this node is NOT applied); 
+    // default cfg (given by "defaultNode") until the beginning of "untilHere"
+    // (i.e., the transfer function of this node is NOT applied);
     // only required by DepGraph
     public DepLatticeElement applyInsideDefaultCfg(CfgNode defaultNode,
             CfgNode untilHere, DepLatticeElement invalue) {
-        
+
         DepLatticeElement out = new DepLatticeElement((DepLatticeElement) invalue);
-        
+
         while (defaultNode != untilHere) {
             TransferFunction tf = this.getTransferFunction(defaultNode);
             out = (DepLatticeElement) tf.transfer(out);
             defaultNode = defaultNode.getSuccessor(0);
         }
-        
+
         return out;
-        
+
     }
 
 //  ********************************************************************************
@@ -140,18 +140,18 @@ extends InterAnalysis {
 //  ********************************************************************************
 
     // returns a transfer function for an AssignSimple cfg node;
-    // aliasInNode: 
+    // aliasInNode:
     // - if cfgNodeX is not inside a basic block: the same node
     // - else: the basic block
     protected TransferFunction assignSimple(CfgNode cfgNodeX, CfgNode aliasInNode) {
-        
+
         CfgNodeAssignSimple cfgNode = (CfgNodeAssignSimple) cfgNodeX;
         Variable left = (Variable) cfgNode.getLeft();
         Set mustAliases = this.aliasAnalysis.getMustAliases(left, aliasInNode);
         Set mayAliases = this.aliasAnalysis.getMayAliases(left, aliasInNode);
 
         return new DepTfAssignSimple(
-                        left, 
+                        left,
                         cfgNode.getRight(),
                         mustAliases,
                         mayAliases,
@@ -159,14 +159,14 @@ extends InterAnalysis {
     }
 
     protected TransferFunction assignUnary(CfgNode cfgNodeX, CfgNode aliasInNode) {
-        
+
         CfgNodeAssignUnary cfgNode = (CfgNodeAssignUnary) cfgNodeX;
         Variable left = (Variable) cfgNode.getLeft();
         Set mustAliases = this.aliasAnalysis.getMustAliases(left, aliasInNode);
         Set mayAliases = this.aliasAnalysis.getMayAliases(left, aliasInNode);
 
         return new DepTfAssignUnary(
-                        left, 
+                        left,
                         cfgNode.getRight(),
                         cfgNode.getOperator(),
                         mustAliases,
@@ -175,14 +175,14 @@ extends InterAnalysis {
     }
 
     protected TransferFunction assignBinary(CfgNode cfgNodeX, CfgNode aliasInNode) {
-        
+
         CfgNodeAssignBinary cfgNode = (CfgNodeAssignBinary) cfgNodeX;
         Variable left = (Variable) cfgNode.getLeft();
         Set mustAliases = this.aliasAnalysis.getMustAliases(left, aliasInNode);
         Set mayAliases = this.aliasAnalysis.getMayAliases(left, aliasInNode);
 
         return new DepTfAssignBinary(
-                        left, 
+                        left,
                         cfgNode.getLeftOperand(),
                         cfgNode.getRightOperand(),
                         cfgNode.getOperator(),
@@ -203,18 +203,18 @@ extends InterAnalysis {
         CfgNodeUnset cfgNode = (CfgNodeUnset) cfgNodeX;
         return new DepTfUnset(cfgNode.getOperand(), cfgNode);
     }
-    
+
     protected TransferFunction assignArray(CfgNode cfgNodeX) {
         CfgNodeAssignArray cfgNode = (CfgNodeAssignArray) cfgNodeX;
         return new DepTfAssignArray(cfgNode.getLeft(), cfgNode);
     }
-    
+
     protected TransferFunction callPrep(CfgNode cfgNodeX, TacFunction traversedFunction) {
 
         CfgNodeCallPrep cfgNode = (CfgNodeCallPrep) cfgNodeX;
         TacFunction calledFunction = cfgNode.getCallee();
         TacFunction callingFunction = traversedFunction;
-        
+
         // call to an unknown function;
         // should be prevented in practice (all functions should be
         // modeled in the builtin functions file), but if
@@ -226,13 +226,13 @@ extends InterAnalysis {
         // NOTE: in the actual version of Pixy, builtin functions are
         // represented by their own special cfg node (see callBuiltin())
         if (calledFunction == null) {
-            
+
             // at this point, unknown functions should already be represented
             // by their own special cfg node
             System.out.println(cfgNodeX.getFileName() + ", " + cfgNodeX.getOrigLineno());
             System.out.println(cfgNode.getFunctionNamePlace());
             throw new RuntimeException("SNH");
-            
+
             // how this works:
             // - propagate with ID transfer function to CfgNodeCall
             // - the analysis algorithm propagates from CfgNodeCall
@@ -256,17 +256,17 @@ extends InterAnalysis {
             // more actual than formal params; either a bug or a varargs
             // occurrence;
             // note that cfgNode.getFunctionNamePlace() returns a different
-            // result than function.getName() if "function" is 
+            // result than function.getName() if "function" is
             // the unknown function
             throw new RuntimeException(
-                "More actual than formal params for function " + 
+                "More actual than formal params for function " +
                 cfgNode.getFunctionNamePlace().toString() + " on line " + cfgNode.getOrigLineno());
-            
+
         } else {
-            tf = new DepTfCallPrep(actualParams, formalParams, 
+            tf = new DepTfCallPrep(actualParams, formalParams,
                     callingFunction, calledFunction, this, cfgNode);
         }
-            
+
         return tf;
 
     }
@@ -274,29 +274,29 @@ extends InterAnalysis {
     protected TransferFunction entry(TacFunction traversedFunction) {
         return new DepTfEntry(traversedFunction);
     }
-    
+
     protected TransferFunction callRet(CfgNode cfgNodeX, TacFunction traversedFunction) {
-        
+
         CfgNodeCallRet cfgNodeRet = (CfgNodeCallRet) cfgNodeX;
         CfgNodeCallPrep cfgNodePrep = cfgNodeRet.getCallPrepNode();
         TacFunction callingFunction = traversedFunction;
         TacFunction calledFunction = cfgNodePrep.getCallee();
-        
+
         // call to an unknown function;
         // for explanations see above (handling CfgNodeCallPrep)
         TransferFunction tf;
         if (calledFunction == null) {
-            
+
             throw new RuntimeException("SNH");
             // tf = new DepTfCallRetUnknown(cfgNodeRet, cfgNodePrep.getFunctionNamePlace());
-            
+
         } else {
 
             Set<TacPlace> modSet = null;
             if (this.modAnalysis != null) {
                 modSet = this.modAnalysis.getMod(calledFunction);
             }
-            
+
             // quite powerful transfer function, does many things
             tf = new DepTfCallRet(
                     this.interAnalysisInfo.getAnalysisNode(cfgNodePrep),
@@ -307,7 +307,7 @@ extends InterAnalysis {
                     this.aliasAnalysis,
                     modSet);
         }
-        
+
         return tf;
     }
 
@@ -320,31 +320,31 @@ extends InterAnalysis {
         CfgNodeCallUnknown cfgNode = (CfgNodeCallUnknown) cfgNodeX;
         return new DepTfCallUnknown(cfgNode);
     }
-    
+
     protected TransferFunction global(CfgNode cfgNodeX) {
-        
+
         // "global <var>";
         // equivalent to: creating a reference to the variable in the main function with
         // the same name
         CfgNodeGlobal cfgNode = (CfgNodeGlobal) cfgNodeX;
-        
+
         // operand variable of the "global" statement
         Variable globalOp = cfgNode.getOperand();
-        
+
         // retrieve the variable from the main function with the same name
         TacFunction mainFunc = this.mainFunction;
         SymbolTable mainSymTab = mainFunc.getSymbolTable();
         Variable realGlobal = mainSymTab.getVariable(globalOp.getName());
-        
+
         // trying to declare something global that doesn't occur in the main function?
         if (realGlobal == null) {
-            
+
             /*
             System.out.println("Warning: accessing non-existent global with 'global' keyword: " + globalOp.getName());
             System.out.println("File: " + cfgNodeX.getFileName());
             System.out.println("Line: " + cfgNodeX.getOrigLineno());
             */
-            
+
             // we must not simply ignore this case, since the corresponding
             // local's taint/label would remain harmless/harmless (the default value for locals);
             // => approximate by assigning unknown/unknown to the operand
@@ -356,12 +356,12 @@ extends InterAnalysis {
             return new DepTfAssignRef(globalOp, realGlobal, cfgNode);
         }
     }
-    
+
     protected TransferFunction isset(CfgNode cfgNodeX) {
-        
+
         CfgNodeIsset cfgNode = (CfgNodeIsset) cfgNodeX;
         return new DepTfIsset(
-                cfgNode.getLeft(), 
+                cfgNode.getLeft(),
                 cfgNode.getRight(),
                 cfgNode);
     }
@@ -376,7 +376,7 @@ extends InterAnalysis {
         CfgNodeTester cfgNode = (CfgNodeTester) cfgNodeX;
         return new DepTfTester(cfgNode);
     }
-    
+
     protected TransferFunction echo(CfgNode cfgNodeX, TacFunction traversedFunction) {
         return TransferFunctionId.INSTANCE;
     }
@@ -386,84 +386,84 @@ extends InterAnalysis {
 //  ********************************************************************************
 
 //  evalIf *************************************************************************
-    
+
     protected Boolean evalIf(CfgNodeIf ifNode, LatticeElement inValue) {
         return this.literalAnalysis.evalIf(ifNode);
     }
 
 //  getDepGraph ********************************************************************
-    
+
     // returns the dependency graphs for the given sink
     public List<DepGraph> getDepGraph(Sink sink) {
-        
+
         List<DepGraph> retMe = new LinkedList<DepGraph>();
-        
+
         TacFunction mainFunc = this.mainFunction;
         SymbolTable mainSymTab = mainFunc.getSymbolTable();
-        
+
         // get vulnerabilities for this sink
         List<SinkProblem> problems;
         problems = sink.getSinkProblems();
-        
+
         // if this sink has no problems: done!
         if (problems.isEmpty()) {
             return retMe;
         }
-        
+
         // create dependency graphs for all sensitive places in this sink
         for (SinkProblem problem : problems) {
-            
+
             DepGraph depGraph = DepGraph.create(problem.getPlace(),
                     sink.getNode(), this.interAnalysisInfo, mainSymTab, this);
-            
+
             // a null depGraph is returned if this sink is unreachable
             if (depGraph == null) {
                 continue;
             }
-            
+
             retMe.add(depGraph);
         }
-            
+
         return retMe;
     }
 
 //  *********************************************************************************
-    
+
     public TacConverter getTac() {
         return this.tac;
     }
-    
+
 // getDepGraphs ********************************************************************
-    
+
     // returns the dependency graphs for all given sinks;
     // this (older) function collects some nice statistics
     public List<DepGraph> getDepGraphs(List<Sink> sinks) {
 
         List<DepGraph> retMe = new LinkedList<DepGraph>();
-        
-        // sort sinks by line 
+
+        // sort sinks by line
         Collections.sort(sinks);
-        
+
         // whether to collect & print statistics
         // (can be quite time-consuming for large programs)
         boolean statistics = false;
-        
+
         // graph shape counters
         int treeCount = 0;
         int dagCount = 0;
         int cycleCount = 0;
-        
+
         // leaf stringness counters
         // note: this is only counted for trees and dags
         int stringLeafs = 0;
         int nonStringLeafs = 0;
-        
+
         TacFunction mainFunc = this.mainFunction;
         SymbolTable mainSymTab = mainFunc.getSymbolTable();
-        
+
         // map operation name -> number of occurrences
         Map<String,Integer> opMap = new HashMap<String,Integer>();
-        
+
         // for each sink...
         int i = 0;
         for (Sink sink : sinks) {
@@ -472,28 +472,28 @@ extends InterAnalysis {
             // get vulnerabilities for this sink
             List<SinkProblem> problems;
             problems = sink.getSinkProblems();
-            
+
             // if this sink has no problems: continue with the next one
             // (probably happens if a function's sensitive parameter is optional)
             if (problems.isEmpty()) {
                 continue;
             }
-            
+
             // create dependency graphs for all sensitive places in this sink
             for (SinkProblem problem : problems) {
-                
+
                 DepGraph depGraph = DepGraph.create(problem.getPlace(),
                         sink.getNode(), this.interAnalysisInfo, mainSymTab, this);
-                
+
                 // a null depGraph is returned if this sink is unreachable
                 if (depGraph == null) {
                     continue;
                 }
-                
+
                 retMe.add(depGraph);
-                
+
                 if (statistics) {
-                
+
                     // shape statistics and leaf stringness
                     System.out.println("Dep Graph Shape Info");
                     System.out.println("--------------------");
@@ -522,7 +522,7 @@ extends InterAnalysis {
                         }
                     }
                     System.out.println();
-                    
+
                     // operation counters
                     System.out.println("Dep Graph Operation Counters");
                     System.out.println("------------------------------");
@@ -541,9 +541,9 @@ extends InterAnalysis {
                         opMap.put(opName, totalCount);
                     }
                     System.out.println();
-                
+
                 }
-                
+
                 /*
                 // print call nodes
                 List callNodes = problem.getCallNodes();
@@ -553,8 +553,8 @@ extends InterAnalysis {
                         CfgNodeCall callNode = (CfgNodeCall) callsIter.next();
                         System.out.println(callNode.getFileName() + ", line " + callNode.getOrigLineno());
                     }
-                } 
-                
+                }
+
                   // print include chain
                    List includeChain = IncDomAnalysis.computeChain(sink.getFunction(), sink.getNode());
                    if (!includeChain.isEmpty()) {
@@ -569,7 +569,7 @@ extends InterAnalysis {
             }
             //System.out.println(i);
         }
-        
+
         this.finishedDetection = true;
         if (false) {
             System.out.println("cleaning dependency analysis...");
@@ -579,20 +579,20 @@ extends InterAnalysis {
             System.out.println("skipping clean-up");
             System.out.println();
         }
-        
+
         if (statistics) {
-        
+
             // print graph shape statistics
             System.out.println("Total Shape Statistics");
             System.out.println("------------------------");
             System.out.println("trees:        " + treeCount);
             System.out.println("dags:         " + dagCount);
             System.out.println("cycle graphs: " + cycleCount);
-            
+
             // leaf stringness
             System.out.println("with string leafs:     " + stringLeafs);
             System.out.println("with non-string leafs: " + nonStringLeafs);
-            
+
             // print total operation counters
             System.out.println();
             System.out.println("Total Op Statistics");
@@ -603,52 +603,52 @@ extends InterAnalysis {
                 System.out.println(opName + ": " + opCount);
             }
             System.out.println();
-        
+
         }
-            
+
         return retMe;
 
     }
-    
+
 //  detectVulns *********************************************************************
-    
+
     // call this method when the analysis is finished to detect vulnerabilities
     public void detectVulns() {
-        
+
         if (true)
         throw new RuntimeException("dummy method");
-        
+
         /*
-        // sort sinks by line; 
+        // sort sinks by line;
         // EFF: only sort sinks that have a reported vulnerability
         Collections.sort(this.sinks);
-        
+
         // total vulnerability counter
         int vulnCount = 0;
-        
+
         // graph shape counters
         int treeCount = 0;
         int dagCount = 0;
         int cycleCount = 0;
-        
+
         // leaf stringness counters
         // note: this is only counted for trees and dags
         int stringLeafs = 0;
         int nonStringLeafs = 0;
-        
+
         // map operation name -> number of occurrences
         Map<String,Integer> opMap = new HashMap<String,Integer>();
 
         // where to dump the taint graphs...
         String graphPath = this.graphDirectory();
-        
+
         // taint graph will need this
         Variable taintedVar = this.tac.getSuperGlobal("$_TAINTED");
-        
+
         // for each sink...
         List<ExTaintSink> reportedSinks = new LinkedList<ExTaintSink>();
         for (Iterator iter = this.sinks.iterator(); iter.hasNext(); ) {
-            
+
             ExTaintSink sink = (ExTaintSink) iter.next();
 
             // get vulnerabilities for this sink
@@ -657,32 +657,32 @@ extends InterAnalysis {
             List<ExTaintProblem> vulns;
             vulns = sink.detectVulns(
                     this.analysisInfo, mainSymTab, this.analysisType, taintedVar, this, this.type);
-            
+
             // if this sink has no vulnerabilities: continue with the next one
             if (vulns.isEmpty()) {
                 continue;
             }
-            
+
             reportedSinks.add(sink);
-            
+
             // report vulnerabilities for this sink
             for (Iterator vulnsIter = vulns.iterator(); vulnsIter.hasNext(); ) {
 
                 // increase vuln counter
                 vulnCount++;
-                
+
                 ExTaintProblem vuln = (ExTaintProblem) vulnsIter.next();
                 System.out.println();
-                System.out.println("Tainted variable " + vuln.getPlace() + 
-                        " entering sensitive sink in " + sink.getFileName() + 
+                System.out.println("Tainted variable " + vuln.getPlace() +
+                        " entering sensitive sink in " + sink.getFileName() +
                         ", line " + sink.getLineNo());
                 List callNodes = vuln.getCallNodes();
-                
+
                 // dump taint graph for this variable
                 vuln.dumpGraph("tg" + vulnCount, graphPath);
-                
+
                 if (this.type.equals("string") || this.type.equals("stringfile")) {
-                    
+
                     StringGraph stringGraph = vuln.getStringGraph();
 
                     // shape statistics and leaf stringness
@@ -710,7 +710,7 @@ extends InterAnalysis {
                             nonStringLeafs++;
                         }
                     }
-                    
+
                     // operation counters
                     Map<String,Integer> singleOpMap = stringGraph.getOpMap();
                     for (Map.Entry<String, Integer> entry : singleOpMap.entrySet()) {
@@ -726,12 +726,12 @@ extends InterAnalysis {
                         }
                         opMap.put(opName, totalCount);
                     }
-                    
+
                     // dump automaton; this also eliminates cycles!
                     stringGraph.dumpDotAuto("auto" + vulnCount, graphPath);
 
                 }
-                
+
                 // print call nodes
                 if (!callNodes.isEmpty()) {
                     System.out.println("called by: ");
@@ -751,10 +751,10 @@ extends InterAnalysis {
                         System.out.println(includeNode.getFileName() + ", " + includeNode.getOrigLineno());
                     }
                 }
-                
+
             }
         }
-        
+
         this.finishedDetection = true;
         if (false) {
             System.out.println("cleaning taint analysis...");
@@ -764,13 +764,13 @@ extends InterAnalysis {
         }
 
         if (this.type.equals("string") || this.type.equals("stringfile")) {
-            
+
             // print graph shape statistics
             System.out.println();
             System.out.println("trees:        " + treeCount);
             System.out.println("dags:         " + dagCount);
             System.out.println("cycle graphs: " + cycleCount);
-            
+
             // leaf stringness
             System.out.println();
             System.out.println("with string leafs:     " + stringLeafs);
@@ -786,24 +786,24 @@ extends InterAnalysis {
         }
 
         System.out.println("\nDetected " + vulnCount + " vulnerabilities");
-        
+
         */
     }
 
 //  recycle ************************************************************************
-    
+
     public LatticeElement recycle(LatticeElement recycleMe) {
         return this.repos.recycle(recycleMe);
     }
 
 //  getMainFunction ****************************************************************
-    
+
     public TacFunction getMainFunction() {
         return this.tac.getMainFunction();
     }
-    
+
 //  clean **************************************************************************
-    
+
     // performs post-analysis cleanup operations to save memory
     public void clean() {
         // although we don't perform recycling during the analysis, we
@@ -815,32 +815,32 @@ extends InterAnalysis {
             throw new RuntimeException("Refusing to clean extaint analysis: no detection yet");
         }
     }
-    
+
 //  ********************************************************************************
-    
+
     // checks if the callgraph contains unreachable code (i.e., nodes that have not
     // been associated with analysis information)
     public void checkReachability() {
-        
+
         if (!(this.analysisType instanceof CSAnalysis)) {
             // in this case, we do not have a callgraph, and can't check for
             // unreachable code
             System.out.println("Warning: Can't check for unreachable code");
             return;
         }
-        
+
         ConnectorComputation cc = ((CSAnalysis) this.analysisType).getConnectorComputation();
         CallGraph callGraph = cc.getCallGraph();
 
         // for each function in the call graph...
         for (TacFunction f : callGraph.getFunctions()) {
             CfgNode head = f.getCfg().getHead();
-            
+
             // make a depth-first traversal
-            
+
             // the number of contexts for this function
             int numContexts = cc.getNumContexts(f);
-            
+
             // auxiliary stack and visited set
             LinkedList<CfgNode> stack = new LinkedList<CfgNode>();
             Set<CfgNode> visited = new HashSet<CfgNode>();
@@ -861,10 +861,10 @@ extends InterAnalysis {
             // - if there is such a successor: push it on the stack and continue
             // - else: pop the stack
             while (!stack.isEmpty()) {
-                
+
                 // inspect the top stack element
                 current = stack.getLast();
-                
+
                 // we will try to get an unvisited successor element
                 CfgNode next = null;
                 for (int i = 0; (i < 2) && (next == null); i++) {
@@ -879,14 +879,14 @@ extends InterAnalysis {
                         }
                     }
                 }
-            
+
                 if (next == null) {
                     // pop from stack
                     stack.removeLast();
                 } else {
                     // visit next
                     visited.add(next);
-                    
+
                     if (!this.isReachable(next, numContexts)) {
                         this.warnUnreachable(next);
                     } else {
@@ -896,7 +896,7 @@ extends InterAnalysis {
             }
         }
     }
-    
+
     private boolean isReachable(CfgNode cfgNode, int numContexts) {
         Map<Context, LatticeElement> phi = this.interAnalysisInfo.getAnalysisNode(cfgNode).getPhi();
         if (phi.size() == 0) {
@@ -920,7 +920,7 @@ extends InterAnalysis {
         }
         return true;
     }
-    
+
     private void warnUnreachable(CfgNode cfgNode) {
         System.out.println("Warning: Unreachable code");
         System.out.println("- " + cfgNode.getLoc());
@@ -931,5 +931,4 @@ extends InterAnalysis {
             System.out.println("- " + cfgNode);
         }
     }
-    
 }

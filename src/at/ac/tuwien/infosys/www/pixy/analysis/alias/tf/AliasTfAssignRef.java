@@ -11,26 +11,26 @@ extends TransferFunction {
 
     private Variable left;
     private Variable right;
-    
+
     private boolean supported;
     private AliasAnalysis aliasAnalysis;
-    
-// *********************************************************************************    
+
+// *********************************************************************************
 // CONSTRUCTORS ********************************************************************
-// *********************************************************************************     
+// *********************************************************************************
 
     public AliasTfAssignRef(TacPlace left, TacPlace right, AliasAnalysis aliasAnalysis, CfgNode cfgNode) {
-        
+
         // both arguments are variables if the PHP input is correct
         this.left = (Variable) left;
         this.right = (Variable) right;
-        
+
         this.aliasAnalysis= aliasAnalysis;
-        
+
         // check for unsupported features
-        this.supported = 
+        this.supported =
             AliasAnalysis.isSupported(this.left, this.right, true, cfgNode.getOrigLineno());
-        
+
         /* moved to AliasAnalysis.isSupported()
         this.supported = true;
 
@@ -78,12 +78,12 @@ extends TransferFunction {
         }
         */
 
-        
+
     }
 
-// *********************************************************************************    
+// *********************************************************************************
 // OTHER ***************************************************************************
-// *********************************************************************************  
+// *********************************************************************************
 
     public LatticeElement transfer(LatticeElement inX) {
 
@@ -91,7 +91,7 @@ extends TransferFunction {
         if (!this.supported) {
             return inX;
         }
-        
+
         // ignore useless statements like "$a =& $a"
         if (this.left == this.right) {
             return inX;
@@ -99,7 +99,7 @@ extends TransferFunction {
 
         AliasLatticeElement in = (AliasLatticeElement) inX;
         AliasLatticeElement out = new AliasLatticeElement(in);
-        
+
         // perform redirect operation on "out"
         out.redirect(this.left, this.right);
 

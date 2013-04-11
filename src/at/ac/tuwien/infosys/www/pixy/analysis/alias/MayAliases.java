@@ -8,7 +8,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 // a set of may-alias-pairs
 // EFF: a number of things could be done faster with more effort
 public class MayAliases {
-    
+
     // contains MayAliasPair's
     private Set<MayAliasPair> pairs;
 
@@ -20,28 +20,28 @@ public class MayAliases {
     public MayAliases() {
         this.pairs = new HashSet<MayAliasPair>();
     }
-    
+
     // clones the given object
     // (but no need to clone the underlying pairs)
     public MayAliases(MayAliases cloneMe) {
         this.pairs = new HashSet<MayAliasPair>(cloneMe.getPairs());
     }
-    
+
 //  ********************************************************************************
 //  GET ****************************************************************************
 //  ********************************************************************************
-    
+
     public Set<MayAliasPair> getPairs() {
         return this.pairs;
     }
-    
+
     // returns the global variables that are may-aliases of the given variable
     // (a set of Variables)
     public Set<Variable> getGlobalAliases(Variable var) {
         Set<Variable> retMe = new HashSet<Variable>();
         for (Iterator iter = this.pairs.iterator(); iter.hasNext();) {
             MayAliasPair pair = (MayAliasPair) iter.next();
-            Variable globalMayAlias = pair.getGlobalMayAlias(var); 
+            Variable globalMayAlias = pair.getGlobalMayAlias(var);
             if (globalMayAlias != null) {
                 retMe.add(globalMayAlias);
             }
@@ -55,20 +55,20 @@ public class MayAliases {
         Set<Variable> retMe = new HashSet<Variable>();
         for (Iterator iter = this.pairs.iterator(); iter.hasNext();) {
             MayAliasPair pair = (MayAliasPair) iter.next();
-            Variable localMayAlias = pair.getLocalMayAlias(var); 
+            Variable localMayAlias = pair.getLocalMayAlias(var);
             if (localMayAlias != null) {
                 retMe.add(localMayAlias);
             }
         }
         return retMe;
     }
-    
+
     // returns a set of variables that are may-aliases of the given variable
     public Set<Variable> getAliases(Variable var) {
         Set<Variable> retMe = new HashSet<Variable>();
         for (Iterator iter = this.pairs.iterator(); iter.hasNext();) {
             MayAliasPair pair = (MayAliasPair) iter.next();
-            Variable mayAlias = pair.getMayAlias(var); 
+            Variable mayAlias = pair.getMayAlias(var);
             if (mayAlias != null) {
                 retMe.add(mayAlias);
             }
@@ -85,11 +85,11 @@ public class MayAliases {
     public void add(MayAliases addUs) {
         this.pairs.addAll(addUs.getPairs());
     }
-    
+
     public void add(MayAliasPair pair) {
         this.pairs.add(pair);
     }
-    
+
     // copies all pairs in which "right" appears and replaces "right"
     // through "left" in these copies
     public void addAliasFor(Variable left, Variable right) {
@@ -104,7 +104,7 @@ public class MayAliases {
         }
         this.pairs.addAll(newPairs);
     }
-    
+
     // removes all pairs that contain the given variable
     public void removePairsWith(Variable var) {
         // EFF: it would be faster to locate the pairs to be
@@ -117,7 +117,7 @@ public class MayAliases {
             }
         }
     }
-    
+
     public void removeLocals() {
         for (Iterator iter = this.pairs.iterator(); iter.hasNext();) {
             MayAliasPair pair = (MayAliasPair) iter.next();
@@ -153,39 +153,39 @@ public class MayAliases {
     // a copy of this pair is added, and "findMe" is replaced by "replacer" in
     // the copy
     public void createAdjustedPairCopies(Variable findMe, Variable replacer) {
-        
+
         // EFF: there must be faster ways to do this
-        
+
         // start by cloning the pair set; we will add adjusted copies to the
         // new pair set and in the end, put it in place of the old pair set
         Set<MayAliasPair> newPairs = new HashSet<MayAliasPair>(this.pairs);
-        
+
         // for each pair...
         for (Iterator iter = this.pairs.iterator(); iter.hasNext();) {
             MayAliasPair pair = (MayAliasPair) iter.next();
-            
+
             // if it contains the searched variable...
             if (pair.contains(findMe)) {
-                
+
                 // create a copy of this set to work on
                 Set<Variable> pairSet = new HashSet<Variable>(pair.getPair());
-                
+
                 // we are only interested in the other member of the pair
                 pairSet.remove(findMe);
                 if (pairSet.size() != 1) {
                     throw new RuntimeException("SNH");
                 }
-                
+
                 // create the adjusted copy and add it to the new set of pairs
-                MayAliasPair newPair = 
+                MayAliasPair newPair =
                     new MayAliasPair(replacer, (Variable) pairSet.iterator().next());
                 newPairs.add(newPair);
             }
         }
-        
+
         this.pairs = newPairs;
     }
-    
+
     public void replace(Map replacements) {
         for (Iterator iter = this.pairs.iterator(); iter.hasNext();) {
             MayAliasPair pair = (MayAliasPair) iter.next();
@@ -200,10 +200,8 @@ public class MayAliases {
             return false;
         }
     }
-    
+
     public int structureHashCode() {
         return this.pairs.hashCode();
     }
-
-
 }

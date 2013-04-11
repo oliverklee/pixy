@@ -17,19 +17,19 @@ extends CfgNode {
 
     // name of the called builtin function
     private String functionName;
-    
+
     // parameter list
     private List<TacActualParam> paramList;
-    
+
     // temporary variable to hold the return value
     private Variable tempVar;
 
-    
-// CONSTRUCTORS ********************************************************************    
 
-    public CfgNodeCallBuiltin(String functionName, 
+// CONSTRUCTORS ********************************************************************
+
+    public CfgNodeCallBuiltin(String functionName,
             List<TacActualParam> paramList, TacPlace tempPlace, ParseNode node) {
-        
+
         super(node);
         this.functionName = functionName.toLowerCase();
         this.paramList = paramList;
@@ -37,7 +37,7 @@ extends CfgNode {
     }
 
 // GET *****************************************************************************
-    
+
     public String getFunctionName() {
         return this.functionName;
     }
@@ -49,7 +49,7 @@ extends CfgNode {
     public Variable getTempVar() {
         return this.tempVar;
     }
-    
+
     public List<Variable> getVariables() {
         List<Variable> retMe = new LinkedList<Variable>();
         for (Iterator iter = this.paramList.iterator(); iter.hasNext();) {
@@ -65,11 +65,9 @@ extends CfgNode {
     }
 
 // SET *****************************************************************************
-    
+
     public void replaceVariable(int index, Variable replacement) {
         TacActualParam param = (TacActualParam) this.paramList.get(index);
         param.setPlace(replacement);
     }
-    
 }
-

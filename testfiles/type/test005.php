@@ -27,7 +27,7 @@ class MyClass {
 }
 
 class SomeClass {
-    
+
     function bar() {
         echo $_GET['two'];
     }

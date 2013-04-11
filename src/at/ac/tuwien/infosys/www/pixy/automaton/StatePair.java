@@ -1,9 +1,9 @@
 /*
  * dk.brics.automaton
- * 
+ *
  * Copyright (c) 2001-2006 Anders Moeller
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -14,7 +14,7 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. The name of the author may not be used to endorse or promote products
  *    derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
  * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -37,13 +37,13 @@ public class StatePair {
 	State s;
 	State s1;
 	State s2;
-	
+
 	StatePair(State s, State s1, State s2) {
 		this.s = s;
 		this.s1 = s1;
 		this.s2 = s2;
 	}
-	
+
 	/**
 	 * Constructs new state pair.
 	 * @param s1 first state
@@ -53,7 +53,7 @@ public class StatePair {
 		this.s1 = s1;
 		this.s2 = s2;
 	}
-	
+
 	/**
 	 * Returns first component of this pair.
 	 * @return first state
@@ -61,7 +61,7 @@ public class StatePair {
 	public State getFirstState() {
 		return s1;
 	}
-	
+
 	/**
 	 * Returns second component of this pair.
 	 * @return second state
@@ -69,8 +69,8 @@ public class StatePair {
 	public State getSecondState() {
 		return s2;
 	}
-	
-	/** 
+
+	/**
 	 * Checks for equality.
 	 * @param obj object to compare with
 	 * @return true if <tt>obj</tt> represents the same pair of states as this pair
@@ -84,8 +84,8 @@ public class StatePair {
 		else
 			return false;
 	}
-	
-	/** 
+
+	/**
 	 * Returns hash code.
 	 * @return hash code
 	 */

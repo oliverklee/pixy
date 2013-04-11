@@ -17,5 +17,4 @@ function b(&$bp1, &$bp2) {
                     // a{(b.bp1, b.bp2) (b.bp1, b.bp2_fs) (b.bp2, b.bp1_fs) (b.bp1_fs, b.bp2_fs)}
 
 }
-
 ?>

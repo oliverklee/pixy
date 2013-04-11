@@ -8,15 +8,15 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
 public class CallGraphNode {
 
     private TacFunction function;
-    
+
     // contained call nodes -> target call graph node
     private Map<CfgNodeCall,CallGraphNode> outEdges;
-    
+
     // call nodes from callers -> caller's call graph node
     private Map<CfgNodeCall,CallGraphNode> inEdges;
-    
+
 //  ********************************************************************************
-    
+
     CallGraphNode(TacFunction function) {
         this.function = function;
         //this.successors = new HashSet<CallGraphNode>();
@@ -24,29 +24,29 @@ public class CallGraphNode {
         this.outEdges = new HashMap<CfgNodeCall,CallGraphNode>();
         this.inEdges = new HashMap<CfgNodeCall,CallGraphNode>();
     }
-    
+
 //  ********************************************************************************
-    
+
     public TacFunction getFunction() {
         return this.function;
     }
-    
+
     Collection<CallGraphNode> getSuccessors() {
         return this.outEdges.values();
     }
-    
+
     Collection<CallGraphNode> getPredecessors() {
         return this.inEdges.values();
     }
-    
+
     Set<CfgNodeCall> getCallsTo() {
         return this.inEdges.keySet();
     }
-    
+
 //  ********************************************************************************
-    
+
     public boolean equals(Object compX) {
-        
+
         if (compX == this) {
             return true;
         }
@@ -59,7 +59,7 @@ public class CallGraphNode {
     }
 
 //  ********************************************************************************
-    
+
     public int hashCode() {
         return this.function.hashCode();
     }
@@ -75,6 +75,4 @@ public class CallGraphNode {
         //this.predecessors.add(callerNode);
         this.inEdges.put(callNode, callerNode);
     }
-    
-
 }

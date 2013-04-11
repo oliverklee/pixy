@@ -9,7 +9,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
 // (i.e., it does not only contain edges between functions,
 // but also edges between call nodes and functions)
 public class CallGraph {
-    
+
     private Map<TacFunction,CallGraphNode> nodes;
     private TacFunction mainFunction;
 
@@ -18,44 +18,44 @@ public class CallGraph {
         this.mainFunction = mainFunction;
         this.nodes.put(mainFunction, new CallGraphNode(mainFunction));
     }
-    
+
     public void add(TacFunction caller, TacFunction callee, CfgNodeCall callNode) {
-        
+
         // add caller node (if necessary)
         CallGraphNode callerNode = this.nodes.get(caller);
         if (callerNode == null) {
             callerNode = new CallGraphNode(caller);
             this.nodes.put(caller, callerNode);
         }
-        
+
         // add callee node (if necessary)
         CallGraphNode calleeNode = this.nodes.get(callee);
         if (calleeNode == null) {
             calleeNode = new CallGraphNode(callee);
             this.nodes.put(callee, calleeNode);
         }
-        
+
         callerNode.addCallee(callNode, calleeNode);
         calleeNode.addCaller(callNode, callerNode);
     }
-    
+
     // computes the postorder on the call graph
     public Map<TacFunction,Integer> getPostOrder() {
-        
+
         List<CallGraphNode> postorder = new LinkedList<CallGraphNode>();
-        
+
         // auxiliary stack and visited set
         LinkedList<CallGraphNode> stack = new LinkedList<CallGraphNode>();
         Set<CallGraphNode> visited = new HashSet<CallGraphNode>();
 
         stack.add(this.nodes.get(this.mainFunction));
-        
+
         while (!stack.isEmpty()) {
-            
+
             // mark the top stack element as visited
             CallGraphNode node = stack.getLast();
             visited.add(node);
-            
+
             // we will try to get an unvisited successor element
             CallGraphNode nextNode = null;
             Iterator<CallGraphNode> calleeIter = node.getSuccessors().iterator();
@@ -65,7 +65,7 @@ public class CallGraph {
                     nextNode = callee;
                 }
             }
-            
+
             if (nextNode == null) {
                 // pop from stack and add it to the postorder list
                 postorder.add(stack.removeLast());
@@ -74,7 +74,7 @@ public class CallGraph {
                 stack.add(nextNode);
             }
         }
-        
+
         Map<TacFunction,Integer> retMe = new HashMap<TacFunction,Integer>();
         int i = 0;
         for (CallGraphNode f : postorder) {
@@ -86,21 +86,21 @@ public class CallGraph {
     public Collection<TacFunction> getFunctions() {
         return this.nodes.keySet();
     }
-    
+
     public Collection<CallGraphNode> getCallers(TacFunction f) {
         return this.nodes.get(f).getPredecessors();
     }
-    
+
     public Set<CfgNodeCall> getCallsTo(TacFunction f) {
         return this.nodes.get(f).getCallsTo();
     }
-    
+
     // is the given function reachable from the main function?
     // (i.e., is it part of the call graph?)
     public boolean reachable(TacFunction f) {
         return this.nodes.containsKey(f);
     }
-    
+
     public String dump() {
         StringBuilder b = new StringBuilder();
         for (CallGraphNode n : this.nodes.values()) {
@@ -112,9 +112,7 @@ public class CallGraph {
                 b.append("\n");
             }
         }
-        
+
         return b.toString();
     }
-
-    
 }

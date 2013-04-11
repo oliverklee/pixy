@@ -21,6 +21,4 @@ function b(&$bp) {  // u{} a{}
     $bp =& $x;
 }
 
-
-
 ?>

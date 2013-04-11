@@ -6,7 +6,6 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 import java.util.*;
 
-
 // *********************************************************************************
 // CfgNodeUnset ********************************************************************
 // *********************************************************************************
@@ -16,20 +15,20 @@ public class CfgNodeUnset
 extends CfgNode {
 
     private Variable operand;
-    
-// CONSTRUCTORS ********************************************************************    
+
+// CONSTRUCTORS ********************************************************************
 
     public CfgNodeUnset(TacPlace operand, ParseNode node) {
         super(node);
         this.operand = (Variable) operand;  // must be a variable
     }
-    
+
 // GET *****************************************************************************
-    
+
     public Variable getOperand() {
         return this.operand;
     }
-    
+
     public List<Variable> getVariables() {
         List<Variable> retMe = new LinkedList<Variable>();
         if (this.operand instanceof Variable) {
@@ -39,7 +38,7 @@ extends CfgNode {
         }
         return retMe;
     }
-    
+
 //  SET ****************************************************************************
 
     public void replaceVariable(int index, Variable replacement) {
@@ -51,7 +50,4 @@ extends CfgNode {
             throw new RuntimeException("SNH");
         }
     }
-
 }
-
-

@@ -16,24 +16,24 @@ extends TransferFunction {
     private TacPlace right;
     private Set mustAliases;
     private Set mayAliases;
-    
-// *********************************************************************************    
+
+// *********************************************************************************
 // CONSTRUCTORS ********************************************************************
-// *********************************************************************************     
+// *********************************************************************************
 
     // mustAliases, mayAliases: of setMe
-    public LiteralTfAssignSimple(TacPlace left, TacPlace right, 
+    public LiteralTfAssignSimple(TacPlace left, TacPlace right,
             Set mustAliases, Set mayAliases) {
-        
+
         this.left = (Variable) left;  // must be a variable
         this.right = right;
         this.mustAliases = mustAliases;
         this.mayAliases = mayAliases;
     }
 
-// *********************************************************************************    
+// *********************************************************************************
 // OTHER ***************************************************************************
-// *********************************************************************************  
+// *********************************************************************************
 
     public LatticeElement transfer(LatticeElement inX) {
 
@@ -42,7 +42,7 @@ extends TransferFunction {
 
         // let the lattice element handle the details
         out.assignSimple(left, right, mustAliases, mayAliases);
-        
+
         return out;
     }
 }

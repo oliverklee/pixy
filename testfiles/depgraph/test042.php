@@ -11,8 +11,8 @@ if ($u) {
    echo $x;
    UserValid();
    echo $x;      // FALSE POSITIVE: regarded as tainted here
-} 
-UserValid();  
+}
+UserValid();
 
 function UserValid()  {
    foo();
@@ -20,7 +20,4 @@ function UserValid()  {
 
 function foo() {
 }
-
-
-
 ?>

@@ -17,5 +17,3 @@ $x6 = _junit_test_03($_UNTAINTED, $_TAINTED);
                     // x6:T/D
 
 ?>
-
-

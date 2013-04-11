@@ -2,12 +2,11 @@ package at.ac.tuwien.infosys.www.pixy.conversion;
 
 import java.util.*;
 
-
-public class Variable 
+public class Variable
 extends TacPlace {
 
     // EFF: check for unnecessary fields / methods
-    
+
     private String name;
     private SymbolTable symbolTable; // the symbol table this variable belongs to;
     private boolean isSuperGlobal;   // member of the superglobals symboltable?
@@ -15,7 +14,7 @@ extends TacPlace {
     private boolean isGlobal;   // local variable of the main function?
                                 // (temporaries excluded);
                                 // hence, globals and superglobals are different
-    
+
     // a variable is either local or global or superglobal
 
     // array properties; array elements can also be arrays, if they have
@@ -38,21 +37,21 @@ extends TacPlace {
 
     // additional information for variable variables
     private TacPlace dependsOn;
-    
+
     // list of array elements whose LAST index is this variable
     private List<Variable> indexFor;
-    
+
     // is this a temporary variable?
     private boolean isTemp;
-    
+
     // is this an object member variable?
     private boolean isMember;
-    
+
     // is this a function return variable?
     private boolean isReturnVariable;
 
 // *********************************************************************************
-// CONSTRUCTORS ********************************************************************    
+// CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
     public Variable(String name, SymbolTable symbolTable) {
@@ -66,7 +65,7 @@ extends TacPlace {
             this.isLocal = true;
             this.isGlobal = false;
         }
-        
+
         this.isArray = false;
         this.elements = null;
         this.literalElements = null;
@@ -79,7 +78,7 @@ extends TacPlace {
 
         this.dependsOn = null;
         this.indexFor = new LinkedList<Variable>();
-        
+
         this.isTemp = false;
         this.isMember = false;
         this.isReturnVariable = false;
@@ -93,11 +92,11 @@ extends TacPlace {
         }
     }
 
-    
+
 // *********************************************************************************
-// GET *****************************************************************************    
+// GET *****************************************************************************
 // *********************************************************************************
-    
+
     public String getName() {
         return this.name;
     }
@@ -110,8 +109,8 @@ extends TacPlace {
         return this.isSuperGlobal;
     }
 
-    
-    
+
+
     public boolean isArray() {
         return this.isArray;
     }
@@ -124,7 +123,7 @@ extends TacPlace {
             return new LinkedList<Variable>(this.elements.values());
         }
     }
-    
+
     // returns all elements recursively (i.e., the whole array tree, without
     // the root)
     public List<Variable> getElementsRecursive() {
@@ -138,19 +137,19 @@ extends TacPlace {
         }
         return retMe;
     }
-    
+
     public Variable getElement(TacPlace index) {
         if (this.elements == null) {
             return null;
         }
         return (Variable) this.elements.get(index);
     }
-    
+
     public List<Variable> getLiteralElements() {
         return this.literalElements;
     }
-   
-    
+
+
     public boolean isArrayElement() {
         return this.isArrayElement;
     }
@@ -162,11 +161,11 @@ extends TacPlace {
     public Variable getTopEnclosingArray() {
         return this.topEnclosingArray;
     }
-    
+
     public TacPlace getIndex() {
         return this.index;
     }
-    
+
     public List<TacPlace> getIndices() {
         if (this.indices == null) {
             return new LinkedList<TacPlace>();
@@ -174,14 +173,14 @@ extends TacPlace {
             return new LinkedList<TacPlace>(this.indices);
         }
     }
-    
+
     // does this array element have non-literal indices?
     public boolean hasNonLiteralIndices() {
         return this.hasNonLiteralIndices;
     }
 
 
-    
+
     public TacPlace getDependsOn() {
         return this.dependsOn;
     }
@@ -194,31 +193,31 @@ extends TacPlace {
     public String toString() {
         return this.symbolTable.getName() + "." + this.name;
     }
-    
+
     public boolean isTemp() {
         return this.isTemp;
     }
-    
+
     public boolean isMember() {
         return this.isMember;
     }
-    
+
     public boolean isReturnVariable() {
         return this.isReturnVariable;
     }
-    
+
     public boolean isLocal() {
         return this.isLocal;
     }
-    
+
     public boolean isGlobal() {
         return this.isGlobal;
     }
-    
+
     public boolean belongsTo(SymbolTable symTab) {
         return (symTab == this.symbolTable);
     }
-    
+
     // is this a variable variable (such as "$$x")?
     public boolean isVariableVariable() {
         if (this.dependsOn == null) {
@@ -227,9 +226,9 @@ extends TacPlace {
             return true;
         }
     }
-    
+
     public boolean isArrayElementOf(Variable array) {
-        // if we don't even have an enclosing array: can't be true 
+        // if we don't even have an enclosing array: can't be true
         if (this.enclosingArray == null) {
             return false;
         }
@@ -242,9 +241,9 @@ extends TacPlace {
     }
 
 // *********************************************************************************
-// SET *****************************************************************************    
+// SET *****************************************************************************
 // *********************************************************************************
-   
+
     void setIsSuperGlobal(boolean isSuperGlobal) {
         this.isSuperGlobal = isSuperGlobal;
         if (isSuperGlobal) {
@@ -263,7 +262,7 @@ extends TacPlace {
         }
     }
 
-    
+
     void addElement(Variable variable) {
         if (!variable.isArrayElement()) {
             throw new RuntimeException("SNH");
@@ -274,9 +273,9 @@ extends TacPlace {
         }
     }
 
-    
+
     void setArrayElementAttributes(Variable enclosingArray, TacPlace index) {
-        
+
         this.isArrayElement = true;
         this.indices = new LinkedList<TacPlace>();
         this.hasNonLiteralIndices = enclosingArray.hasNonLiteralIndices();
@@ -292,17 +291,17 @@ extends TacPlace {
         if (!(index instanceof Literal)) {
             this.hasNonLiteralIndices = true;
         }
-        
+
         if (index.isVariable()) {
             ((Variable) index).addIndexFor(this);
         }
-        
+
         // if the enclosing array is a temporary, then this
         // one also has to be a temporary
         if (enclosingArray.isTemp()) {
             this.isTemp = true;
         }
-        
+
         // if the enclosing array is a global, then this
         // one also has to be a global
         if (enclosingArray.isGlobal()) {
@@ -313,38 +312,38 @@ extends TacPlace {
     void setDependsOn(TacPlace dependsOn) {
         this.dependsOn = dependsOn;
     }
-    
+
     void setSymbolTable(SymbolTable symbolTable) {
         this.symbolTable = symbolTable;
         // this.resetHashCode();
     }
-    
+
     void addIndexFor(Variable var) {
         this.indexFor.add(var);
     }
-    
+
     void setIsMember(boolean isMember) {
         this.isMember = isMember;
     }
-    
+
     void setIsReturnVariable(boolean isReturnVariable) {
         this.isReturnVariable = isReturnVariable;
     }
-    
+
     void setIsGlobal() {
         this.isGlobal = true;
         this.isLocal = false;
     }
-    
+
     void setIsLocal() {
         this.isLocal = true;
         this.isGlobal = false;
     }
-  
+
 // *********************************************************************************
-// OTHER ***************************************************************************    
+// OTHER ***************************************************************************
 // *********************************************************************************
-    
+
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -361,11 +360,10 @@ extends TacPlace {
 
     // EFF: hashcode caching
     public int hashCode() {
-        
+
         int hashCode = 17;
         hashCode = 37*hashCode + this.name.hashCode();
         hashCode = 37*hashCode + this.symbolTable.hashCode();
         return hashCode;
     }
-    
 }

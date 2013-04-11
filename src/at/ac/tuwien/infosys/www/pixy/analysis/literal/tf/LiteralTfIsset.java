@@ -11,24 +11,24 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 // transfer function for "isset" tests
 // LATER: make it intelligent
-public class LiteralTfIsset 
+public class LiteralTfIsset
 extends TransferFunction{
-    
+
     private Variable setMe;
     private TacPlace testMe;
-    
-// *********************************************************************************    
+
+// *********************************************************************************
 // CONSTRUCTORS ********************************************************************
-// *********************************************************************************     
+// *********************************************************************************
 
     public LiteralTfIsset(TacPlace setMe, TacPlace testMe) {
         this.setMe = (Variable) setMe;  // must be a variable
         this.testMe = testMe;
     }
 
-// *********************************************************************************    
+// *********************************************************************************
 // OTHER ***************************************************************************
-// *********************************************************************************  
+// *********************************************************************************
 
     public LatticeElement transfer(LatticeElement inX) {
 
@@ -39,14 +39,14 @@ extends TransferFunction{
         if (!setMe.isTemp()) {
             throw new RuntimeException("SNH");
         }
-        
+
         // not so intelligent, but sound;
         // "setMe" is a temporary variable, which has no aliases
         Set<Variable> mustAliases = new HashSet<Variable>();
         mustAliases.add(setMe);
         Set mayAliases = Collections.EMPTY_SET;
         out.assignSimple(setMe, Literal.TOP, mustAliases, mayAliases);
-        
+
         return out;
     }
 }

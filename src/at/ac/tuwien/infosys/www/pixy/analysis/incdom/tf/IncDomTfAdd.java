@@ -12,26 +12,26 @@ extends TransferFunction {
 
     private CfgNode cfgNode;
     private IncDomAnalysis incDomAnalysis;
-    
-// *********************************************************************************    
+
+// *********************************************************************************
 // CONSTRUCTORS ********************************************************************
-// *********************************************************************************     
+// *********************************************************************************
 
     public IncDomTfAdd(CfgNode cfgNode, IncDomAnalysis incDomAnalysis) {
         this.cfgNode = cfgNode;
         this.incDomAnalysis = incDomAnalysis;
     }
 
-// *********************************************************************************    
+// *********************************************************************************
 // OTHER ***************************************************************************
-// *********************************************************************************  
+// *********************************************************************************
 
     public LatticeElement transfer(LatticeElement inX) {
 
         IncDomLatticeElement in = (IncDomLatticeElement) inX;
         IncDomLatticeElement out = new IncDomLatticeElement(in);
         out.add(this.cfgNode);
-        
+
         // recycle
         out = (IncDomLatticeElement) this.incDomAnalysis.recycle(out);
 

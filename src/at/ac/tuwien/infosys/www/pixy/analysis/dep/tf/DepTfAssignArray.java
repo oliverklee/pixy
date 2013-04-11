@@ -14,10 +14,10 @@ extends TransferFunction {
     private Variable left;
     private boolean supported;
     private CfgNode cfgNode;
-    
-// *********************************************************************************    
+
+// *********************************************************************************
 // CONSTRUCTORS ********************************************************************
-// *********************************************************************************     
+// *********************************************************************************
 
     public DepTfAssignArray(TacPlace left, CfgNode cfgNode) {
 
@@ -30,12 +30,12 @@ extends TransferFunction {
         } else {
             this.supported = true;
         }
-        
+
     }
 
-// *********************************************************************************    
+// *********************************************************************************
 // OTHER ***************************************************************************
-// *********************************************************************************  
+// *********************************************************************************
 
     public LatticeElement transfer(LatticeElement inX) {
 
@@ -44,7 +44,7 @@ extends TransferFunction {
         if (!supported) {
             return inX;
         }
-        
+
         DepLatticeElement in = (DepLatticeElement) inX;
         DepLatticeElement out = new DepLatticeElement(in);
 
@@ -53,7 +53,7 @@ extends TransferFunction {
         // NOTE:
         // "$x = array()" is translated to "_t0 = array(); $x = _t0", and
         // since there are no known array elements of _t0, the elements of
-        // $x become would become TAINTED instead of UNTAINTED; 
+        // $x become would become TAINTED instead of UNTAINTED;
         // this is solved by using array flags
         out.assignArray(left, cfgNode);
         return out;

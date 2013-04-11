@@ -42,13 +42,13 @@ makeDepGraph():
       by this dependency (see "getUsedPlaces()" below)
     - for each of these places:
       recursively call makeDepGraph() and connect dgn with the returned node
-  
+
 getUsedPlaces():
 * this function is quite straightforward in most cases, but the handling
-  of arrays might be a bit confusing; for this reason, here is an 
+  of arrays might be a bit confusing; for this reason, here is an
   explanation of what is going on when the inspected cfg node is either
   AssignSimple or CfgNodeCallPrep
-  
+
 AssignSimple:
 * left = right;
   ...
@@ -59,7 +59,7 @@ AssignSimple:
   => we simply return right
 - alternatively, victim could also be an array element of left, e.g.:
     $left = $right;
-    echo($left[0]);    
+    echo($left[0]);
   here, we must not return $right, but $right[0]
 - in the previous case, it might happen that $right[0] does not
   explicitly appear in the source code (=> a "hidden" array element),
@@ -68,7 +68,7 @@ AssignSimple:
   missing indices (in this case, only "0") into the list "newIndices"
   for later use
   => this list will correspond to "oldIndices" for the next call of
-  getUsedPlaces(); if you look at the code of getUsedPlaces() 
+  getUsedPlaces(); if you look at the code of getUsedPlaces()
   (case AssignSimple) below, you will see that the first check is
   whether oldIndices is empty or not; if it is not empty, it means
   that we must take such hidden indices into account, e.g., look at
@@ -78,7 +78,7 @@ AssignSimple:
     $a = $b;        // there is no $b[0], so we return $b (one line up) and memorize index 0
     echo($a[0]);    // the dependency for $a[0] leads us one line up
   the method responsible for correctly resolving old indices is called "getCorresponding()";
-  look at its description below to get a better feeling for what is going on 
+  look at its description below to get a better feeling for what is going on
 
 CfgNodeCallPrep:
 * "victim" is a formal param here;
@@ -101,43 +101,43 @@ CfgNodeCallPrep:
       => victim (with a.i.) is an array element of this formal
     - none of the above:
       continue with the next formal
-  
+
 
 */
 
 public class DepGraph {
-    
+
     // map from a node to *the same* node;
-    // necessary due to the usual limitation of java.util.Set 
+    // necessary due to the usual limitation of java.util.Set
     private Map<DepGraphNode, DepGraphNode> nodes;
-    
+
     // the root node (is also contained in "nodes")
     private DepGraphNormalNode root;
-    
+
     // edges (from -> to)
     private Map<DepGraphNode, List<DepGraphNode>> edges;
-    
+
     // required for building the graph
     private InterAnalysisInfo analysisInfo;
-    
+
     // symbol table of the main function
     private SymbolTable mainSymTab;
-    
+
     private DepAnalysis depAnalysis;
-    
+
     // just a helper for SCC computation
     private int n;
-    
+
     // set to true if reduceWithLeaves() is called
     private boolean leavesReduced = false;
-    
+
 //  *********************************************************************************
-    
+
     private DepGraph() {
     }
-    
+
 //  *********************************************************************************
-    
+
     // creates a single-element graph
     public DepGraph(DepGraphNormalNode root) {
         this.nodes = new LinkedHashMap<DepGraphNode, DepGraphNode>();
@@ -150,25 +150,25 @@ public class DepGraph {
     }
 
 //  *********************************************************************************
-    
+
     // place: this will be the root of the dependency graph
     // start: point in the program for which the graph shall be generated
     //        (necessary since we are flow-sensitive, of course)
     // analysisInfo: we need the results of data flow analysis before we can
     //          draw a data dependency graph
     // returns null if the start node is not reachable
-    public static DepGraph create(TacPlace place, CfgNode start, InterAnalysisInfo analysisInfo, 
+    public static DepGraph create(TacPlace place, CfgNode start, InterAnalysisInfo analysisInfo,
             SymbolTable mainSymTab, DepAnalysis depAnalysis) {
-        
+
         DepGraph depGraph = new DepGraph();
         depGraph.nodes = new LinkedHashMap<DepGraphNode, DepGraphNode>();
         depGraph.edges = new LinkedHashMap<DepGraphNode, List<DepGraphNode>>();
         depGraph.analysisInfo = analysisInfo;
         depGraph.mainSymTab = mainSymTab;
         depGraph.depAnalysis = depAnalysis;
-        
+
         List<TacPlace> indices = new LinkedList<TacPlace>();
-        
+
         try {
             // start with all contexts of the start node
             Set<Context> allC = analysisInfo.getAnalysisNode(start).getContexts();
@@ -178,17 +178,17 @@ public class DepGraph {
             debug("not reachable!!!");
             return null;
         }
-        
+
         return depGraph;
-        
+
     }
-    
+
 //  *********************************************************************************
-    
+
     // clones the given DepGraph
     // (nodes are reused)
     public DepGraph(DepGraph orig) {
-        
+
         this.nodes = new LinkedHashMap<DepGraphNode, DepGraphNode>(orig.nodes);
         this.root = orig.root;
         // this would not be real cloning due to list reuse:
@@ -197,38 +197,38 @@ public class DepGraph {
         for (Map.Entry<DepGraphNode, List<DepGraphNode>> origEntry : orig.edges.entrySet()) {
             DepGraphNode origFrom = origEntry.getKey();
             List<DepGraphNode> origTos = origEntry.getValue();
-            
+
             List<DepGraphNode> myTos = new LinkedList<DepGraphNode>(origTos);
             /*
             List<DepGraphNode> myTos = new LinkedList<DepGraphNode>();
             for (DepGraphNode origTo : origTos) {
                 myTos.add(origTo);
             }*/
-            
+
             // we can reuse the nodes from the original graph, but we must
-            // not reuse its lists 
+            // not reuse its lists
             this.edges.put(origFrom, myTos);
         }
-        
+
         this.analysisInfo = orig.analysisInfo;
         this.mainSymTab = orig.mainSymTab;
         this.depAnalysis = orig.depAnalysis;
     }
- 
+
 //  ********************************************************************************
-    
+
     private static void debug(String s) {
         if (false) {
             System.out.println(s);
         }
     }
-    
+
 //  *********************************************************************************
-    
+
     // draws a dependency graph for the given input
     // and returns the root of the graph;
     // - funcName: name the function that contains "current"
-    private DepGraphNode makeDepGraph(TacPlace place, CfgNode current, TacFunction function, 
+    private DepGraphNode makeDepGraph(TacPlace place, CfgNode current, TacFunction function,
             List<TacPlace> indices, Set<Context> contexts) throws NotReachableException {
 
         debug("  visiting: " + current.getClass() + ", " + current.getOrigLineno() + ", " + place);
@@ -243,28 +243,28 @@ public class DepGraph {
 
         // create a graph node for the combination of (current cfg node, place)
         DepGraphNode dgn = new DepGraphNormalNode(place, current);
-        
+
         // if there already is such a graph node: reuse it and end recursion
         if (this.nodes.containsKey(dgn)) {
             debug("loop!");
             return this.nodes.get(dgn);
         }
-        
+
         // now that we know that there is no such graph node yet, we can add
         // it to the graph
         addNode(dgn);
-        
+
         // if this place is a simple literal, we don't have to continue here
         // (a literal has no further data dependencies)
         if (place instanceof Literal) {
             debug("literal!");
             return dgn;
         }
-        
+
         // get the dep value of the given place for the current cfg node under
-        // the given contexts 
+        // the given contexts
         DepSet depSet = this.getDepSet(current, place, contexts);
-        
+
         // a dep set is basically nothing but a set of cfg nodes at which
         // a variable's value has been modified; now we go and visit these cfg nodes...
         debug("start going to nodes...");
@@ -277,13 +277,13 @@ public class DepGraph {
                 addEdge(dgn, uninitNode);
             } else {
                 debug("getting used places for " + dep.getCfgNode().getOrigLineno());
-                
+
                 // we retrieve the places that were "used" (read) at the given cfg node
                 // and recursively continue the graph construction algorithm
-                
+
                 // the node we will have to visit next
                 CfgNode targetNode = dep.getCfgNode();
-                
+
                 // tweak to add appropriate operation nodes
                 DepGraphNode connectWith = this.checkOp(targetNode);
                 if (connectWith == null) {
@@ -303,55 +303,55 @@ public class DepGraph {
 
                 // used for our increased array-awareness
                 List<TacPlace> newIndices = new LinkedList<TacPlace>();
-                
+
                 // context and function switching!
                 ContextSwitch cswitch = this.switchContexts(function, contexts, current, targetNode);
                 TacFunction targetFunction = cswitch.targetFunction;
                 Set<Context> targetContexts = cswitch.targetContexts;
-                
+
                 // for every used place...
                 for (TacPlace used : this.getUsedPlaces(targetNode, place, indices, newIndices)) {
-                    
-                    addEdge(connectWith,  
-                            makeDepGraph(used, targetNode, targetFunction, 
+
+                    addEdge(connectWith,
+                            makeDepGraph(used, targetNode, targetFunction,
                                     newIndices, targetContexts));
                 }
             }
         }
         debug("...end going to nodes");
-        
+
         return dgn;
     }
-    
+
 //  ********************************************************************************
 
     // returns the dep set of the given place for the given cfg node under
-    // the given contexts, 
+    // the given contexts,
     // considering basic blocks and function default cfg's (in these cases,
     // the cfg node has no directly associated analysis info)
     private DepSet getDepSet(CfgNode cfgNode, TacPlace place, Set<Context> contexts)
     throws NotReachableException {
-        
+
         DepSet depSet = null;
         CfgNode enclosingX = cfgNode.getSpecial();
         if (enclosingX instanceof CfgNodeBasicBlock) {
             // the current node is enclosed by a basic block
-                        
+
             // we have to apply the transfer functions inside this basic block
             // until we reach the current node
-            
+
             // note: in theory, it should not matter whether we fold first and then
             // apply until we reach the node, or vice versa (apply for the whole
             // table, and fold afterwards)
-            
+
             Map bbPhi = this.analysisInfo.getAnalysisNode(enclosingX).getPhi();
-            
+
             if (bbPhi.isEmpty()) {
                 throw new NotReachableException();
             }
 
             DepLatticeElement latticeElement = this.newFold(bbPhi, contexts);
-            
+
             DepLatticeElement propagated = this.depAnalysis.applyInsideBasicBlock(
                     (CfgNodeBasicBlock) enclosingX, cfgNode, latticeElement);
             depSet = propagated.getDep(place);
@@ -359,29 +359,29 @@ public class DepGraph {
         } else if (enclosingX instanceof CfgNodeEntry) {
             // the current node is inside a function's default cfg
             // (i.e., we want to retrieve the value of a default parameter)
-            
+
             if (place.isConstant()) {
-                
-                // if this is a constant, we simply look up the analysis 
+
+                // if this is a constant, we simply look up the analysis
                 // info in the function's entry node
-                
+
                 Map phi = this.analysisInfo.getAnalysisNode(enclosingX).getPhi();
                 if (phi.isEmpty()) {
                     throw new NotReachableException();
                 }
-                
+
                 depSet = this.newFold(phi, place, contexts);
-                
+
             } else {
-                
+
                 // this happens if the default parameter is assigned
                 // some static array (e.g., $p = array('1', '2')) in the function's head;
                 // in analogy to a basic block, we have to apply the transfer
                 // functions inside this default cfg
-                
+
                 // start at the default cfg's head
                 CfgNode defaultHead = Cfg.getHead(cfgNode);
-                
+
                 // use the value at the function's entry node as start value
                 // (since we only have static stuff inside default cfgs, this is
                 // a valid method)
@@ -392,19 +392,19 @@ public class DepGraph {
                         defaultHead, cfgNode, latticeElement);
                 depSet = propagated.getDep(place);
             }
-            
+
         } else {
             // none of the above applies, so the current node has
             // directly associated analysis info
-            
+
             Map phi = this.analysisInfo.getAnalysisNode(cfgNode).getPhi();
-            
+
             // if the map is empty, it means that the function containing
             // this node is never called;
             if (phi.isEmpty()) {
                 throw new NotReachableException();
             }
-            
+
             try {
                 depSet = this.newFold(phi, place, contexts);
             } catch (NullPointerException e) {
@@ -414,34 +414,34 @@ public class DepGraph {
                 throw e;
             }
         }
-        
+
         return depSet;
     }
 
 //  ********************************************************************************
-    
-    // performs context and function switching, making the 
+
+    // performs context and function switching, making the
     // depgraph construction algorithm context-sensitive;
     // the target function and the target contexts are returned
-    private ContextSwitch switchContexts(TacFunction function, Set<Context> contexts, 
+    private ContextSwitch switchContexts(TacFunction function, Set<Context> contexts,
             CfgNode current, CfgNode targetNode) {
 
         ContextSwitch retMe = new ContextSwitch();
-        
+
         // function and contexts of the target cfg node;
         // at the beginning, assume that we are remaining in the same function
         TacFunction targetFunction = function;
         Set<Context> targetContexts = contexts;
-        
+
         // check whether we are jumping from caller to callee
         // (i.e., since we are creating the depgraph backwards, we are
         // jumping from the function call to the end of the callee);
         // adjust targetFunction and targetContexts accordingly
-        
+
         if (current instanceof CfgNodeCallRet) {
 
             // determine callee and context inside the callee;
-            
+
             CfgNodeCallRet callRet = (CfgNodeCallRet) current;
             CfgNodeCall callNode = callRet.getCallNode();
             targetFunction = callNode.getCallee();
@@ -476,7 +476,7 @@ public class DepGraph {
             }
             debug("target contexts: " + targetContexts);
         }
-        
+
         // if the target node is a define node, we cannot be sure
         // about the target contexts; the constant that we are looking
         // up might have been defined in a completely different function;
@@ -489,7 +489,7 @@ public class DepGraph {
                 throw new RuntimeException("SNH");
             }
         }
-        
+
         // check if the target cfg node is located in a different function
         // than the current cfg node; this case can happen, for instance, if
         // a global variable is written in some function, and later read in some
@@ -503,20 +503,20 @@ public class DepGraph {
                 throw new RuntimeException("SNH");
             }
         }
-        
+
         retMe.targetFunction = targetFunction;
         retMe.targetContexts = targetContexts;
         return retMe;
-        
+
     }
 
 //  *********************************************************************************
-    
+
     // checks if the given targetNode is an operation node;
     // if it is, it creates a corresponding node and returns it; otherwise,
     // it returns null
     private DepGraphNode checkOp(CfgNode targetNode) {
-        
+
         if (targetNode instanceof CfgNodeAssignBinary) {
             CfgNodeAssignBinary inspectMe = (CfgNodeAssignBinary) targetNode;
             return new DepGraphOpNode(targetNode, TacOperators.opToName(inspectMe.getOperator()), true);
@@ -524,7 +524,7 @@ public class DepGraph {
             CfgNodeAssignUnary inspectMe = (CfgNodeAssignUnary) targetNode;
             return new DepGraphOpNode(targetNode, TacOperators.opToName(inspectMe.getOperator()), true);
         } else if (targetNode instanceof CfgNodeCallRet) {
-            
+
             CfgNodeCallRet inspectMe = (CfgNodeCallRet) targetNode;
             CfgNodeCallPrep prepNode = inspectMe.getCallPrepNode();
 
@@ -549,13 +549,13 @@ public class DepGraph {
                 // the depgraph with nodes for these calls
                 return null;
             }
-            
+
         } else if (targetNode instanceof CfgNodeCallBuiltin) {
             // a builtin function
             CfgNodeCallBuiltin cfgNode = (CfgNodeCallBuiltin) targetNode;
             String functionName = cfgNode.getFunctionName();
             return new DepGraphOpNode(targetNode, functionName, true);
-            
+
         } else if (targetNode instanceof CfgNodeCallUnknown) {
             // a function / method for which no definition could be found
             CfgNodeCallUnknown callNode = (CfgNodeCallUnknown) targetNode;
@@ -563,11 +563,11 @@ public class DepGraph {
             boolean builtin = false;
             return new DepGraphOpNode(targetNode, functionName, builtin);
         }
-        
+
         return null;
-        
+
     }
-    
+
 //  *********************************************************************************
 
     // never add an already existing node
@@ -578,15 +578,15 @@ public class DepGraph {
         this.nodes.put(node, node);
         return node;
     }
-    
+
 //  *********************************************************************************
-    
+
     public boolean containsNode(DepGraphNode node) {
         return this.nodes.containsKey(node);
     }
-    
+
 //  *********************************************************************************
-    
+
     // you must only draw edges between already existing nodes in the graph
     public void addEdge(DepGraphNode from, DepGraphNode to) {
         if (!this.nodes.containsKey(from) || !this.nodes.containsKey(to)) {
@@ -603,9 +603,9 @@ public class DepGraph {
             toList.add(to);
         //}
     }
-    
+
 //  *********************************************************************************
-    
+
     // returns the places *used* in this node (e.g., those on the *right*
     // side of an assignment); if there are no such places (e.g., in the case
     // of CfgNodeEmpty), returns a
@@ -614,30 +614,30 @@ public class DepGraph {
     // for concat nodes: returns the places in the right order
     private List<TacPlace> getUsedPlaces(CfgNode cfgNodeX, TacPlace victim,
             List<TacPlace> oldIndices, List<TacPlace> newIndices) {
-        
+
         List<TacPlace> retMe = new LinkedList<TacPlace>();
-        
+
         // the node types for which an exception is raised are those
         // that should not even be visited by the algorithm in the first
         // place, since they don't change the value of a variable
-        
+
         // LATER: you should treat this analogously to a builtin function
         // without any parameters; also take care that it is correctly modeled
         // by client analyses
         if (cfgNodeX instanceof CfgNodeAssignArray) {
             retMe.add(new Literal(""));
-            
+
         } else if (cfgNodeX instanceof CfgNodeAssignBinary) {
             CfgNodeAssignBinary cfgNode = (CfgNodeAssignBinary) cfgNodeX;
             retMe.add(cfgNode.getLeftOperand());
             retMe.add(cfgNode.getRightOperand());
-            
+
         } else if (cfgNodeX instanceof CfgNodeAssignRef) {
             CfgNodeAssignRef cfgNode = (CfgNodeAssignRef) cfgNodeX;
             retMe.add(cfgNode.getRight());
-            
+
         } else if (cfgNodeX instanceof CfgNodeAssignSimple) {
-            
+
             CfgNodeAssignSimple cfgNode = (CfgNodeAssignSimple) cfgNodeX;
             Variable left = (Variable) cfgNode.getLeft();
             TacPlace right = cfgNode.getRight();
@@ -646,18 +646,18 @@ public class DepGraph {
             // if there are some old indices hanging around
             if (!oldIndices.isEmpty() && right.isVariable()) {
                 retMe.add(getCorresponding(left,
-                        victim.getVariable(), 
-                        right.getVariable(), 
+                        victim.getVariable(),
+                        right.getVariable(),
                         oldIndices, newIndices));
-                
+
             // if the victim is an array element of left
-            } else if (victim.isVariable() && victim.getVariable().isArrayElement() && 
+            } else if (victim.isVariable() && victim.getVariable().isArrayElement() &&
                     victim.getVariable().isArrayElementOf(left)) {
-                
+
                 if (!right.isVariable()) {
                     // approx
                     retMe.add(right);
-                    
+
                     // the above happens in cases such as this one;
                     // here, "right" == FALSE (a constant)
                     /*
@@ -670,19 +670,19 @@ public class DepGraph {
                         echo $x[0];
                     }
                     */
-                
+
                 } else {
-                    retMe.add(getCorresponding(left, 
-                            victim.getVariable(), 
-                            right.getVariable(), 
+                    retMe.add(getCorresponding(left,
+                            victim.getVariable(),
+                            right.getVariable(),
                             oldIndices, newIndices));
                 }
-                
+
             // else: no need for array awareness
             } else {
                 retMe.add(right);
             }
-            
+
         } else if (cfgNodeX instanceof CfgNodeAssignUnary) {
             CfgNodeAssignUnary cfgNode = (CfgNodeAssignUnary) cfgNodeX;
             retMe.add(cfgNode.getRight());
@@ -692,21 +692,21 @@ public class DepGraph {
         } else if (cfgNodeX instanceof CfgNodeCall) {
             throw new RuntimeException("SNH");
         } else if (cfgNodeX instanceof CfgNodeCallPrep) {
-            
+
             // return corresponding actual param ("victim" is the formal param here)
             CfgNodeCallPrep cfgNode = (CfgNodeCallPrep) cfgNodeX;
             List<TacActualParam> actualParams = cfgNode.getParamList();
             List<TacFormalParam> formalParams = cfgNode.getCallee().getParams();
             int index = -1;
             int i = 0;
-            
+
             // for each formal parameter...
             for (TacFormalParam formalParam : formalParams) {
                 TacActualParam actualParam = actualParams.get(i);
-                
+
                 // if the victim equals the formal parameter...
                 if (formalParam.getVariable().equals(victim)) {
-                    
+
                     // if there are no old indices hanging around...
                     if (oldIndices.isEmpty()) {
                         retMe.add(actualParam.getPlace());
@@ -715,13 +715,13 @@ public class DepGraph {
                             // evil case: the actual param is not a variable!
                             retMe.add(actualParam.getPlace());
                         } else {
-                            retMe.add(getCorresponding(formalParam.getVariable(), 
-                                    victim.getVariable(), 
-                                    actualParam.getPlace().getVariable(), 
+                            retMe.add(getCorresponding(formalParam.getVariable(),
+                                    victim.getVariable(),
+                                    actualParam.getPlace().getVariable(),
                                     oldIndices, newIndices));
                         }
                     }
-                    
+
                     index = i;
                     break;
                 }
@@ -734,36 +734,36 @@ public class DepGraph {
                         // evil case: the actual param is not a variable!
                         retMe.add(actualParam.getPlace());
                     } else {
-                        retMe.add(getCorresponding(formalParam.getVariable(), 
-                                victim.getVariable(), 
+                        retMe.add(getCorresponding(formalParam.getVariable(),
+                                victim.getVariable(),
                                 actualParam.getPlace().getVariable(),
                                 oldIndices, newIndices));
                     }
-                    
+
                     index = i;
                     break;
                 }
 
                 i++;
             }
-            
+
             // note: even though it is not obvious from the above code, default
             // parameters are also handled
-            
+
             if (index == -1) {
                 // could not find formal parameter
                 System.out.println("victim: " + victim);
                 throw new RuntimeException("SNH");
             }
-            
+
         } else if (cfgNodeX instanceof CfgNodeCallRet) {
-            
+
             // either a call to a user-defined function
             return this.getUsedPlacesForCall((CfgNodeCallRet) cfgNodeX, victim, oldIndices, newIndices);
-            
+
         } else if (cfgNodeX instanceof CfgNodeCallBuiltin) {
             return this.getUsedPlacesForBuiltin((CfgNodeCallBuiltin) cfgNodeX);
-            
+
         } else if (cfgNodeX instanceof CfgNodeCallUnknown) {
             // call to an unknown function;
             // simply add all parameters;
@@ -824,11 +824,11 @@ public class DepGraph {
         }
         return retMe;
     }
-    
+
 //  ********************************************************************************
-    
+
     // left:   some array (might also be an array element itself),
-    //         on the left side of an assignment 
+    //         on the left side of an assignment
     // victim: an element of left; additional, deeper indices might be
     //         specified in oldIndices
     // right:  some variable on the right side of an assignment
@@ -837,9 +837,9 @@ public class DepGraph {
     // ONLY WORKS FINE IF THERE ARE NO NON-LITERAL INDICES INVOLVED
     // to fix this, it would be the best to replace the "array label" mechanism
     // with special array variables that have the same purpose
-    // 
-    // tries to find an element retMe of right such that the relationship 
-    // "left : victim" corresponds to the relationship "right : retMe", 
+    //
+    // tries to find an element retMe of right such that the relationship
+    // "left : victim" corresponds to the relationship "right : retMe",
     // where additional indices of retMe can be written
     // into newIndices (pass an empty list to this method for this purpose);
     // e.g., if left = $a[1][2], $victim = $a[1][2][3], oldIndices = [4], and
@@ -855,7 +855,7 @@ public class DepGraph {
         System.out.println("right: " + right);
         System.out.println("victim: " + victim);
         */
-        
+
         if (!victim.isArrayElementOf(left)) {
             // can happen for "return" statements (assignments to a
             // superglobal return variable)
@@ -866,10 +866,10 @@ public class DepGraph {
             */
             victim = left;
         }
-        
+
         List<TacPlace> leftIndices = left.getIndices();
         List<TacPlace> victimIndices = victim.getIndices();
-       
+
         /*
         System.out.println();
         System.out.println("giveMeAName:");
@@ -880,16 +880,16 @@ public class DepGraph {
         System.out.println("old indices: " + oldIndices);
         System.out.println("victim indices: " + victimIndices);
         */
-        
+
         // add oldIndices to victimIndices
         for (Iterator oldIter = oldIndices.iterator(); oldIter.hasNext();) {
             TacPlace oldIndex = (TacPlace) oldIter.next();
             victimIndices.add(oldIndex);
         }
-        
+
         //System.out.println("merged old and victim: " + victimIndices);
-        
-        
+
+
         // "cut" the start of victimIndices depending on the length of
         // leftIndices
         // -> the resulting indices of victim correspond to the
@@ -899,7 +899,7 @@ public class DepGraph {
             //System.out.println("i-left-index: " + leftIndices.get(i));
             victimIter.next();
         }
-        
+
         // the least you can return is right itself;
         // try to descend into it as deeply as possible
         Variable retMe = right;
@@ -922,54 +922,54 @@ public class DepGraph {
             TacPlace victimIndex = (TacPlace) victimIter.next();
             newIndices.add(victimIndex);
         }
-        
+
         //System.out.println("computed target: " + retMe);
         //System.out.println("new indices: " + newIndices);
-        
+
         return retMe;
-            
+
     }
-    
+
 //  ********************************************************************************
 
-    // helper function for retrieving the used places for calls to 
+    // helper function for retrieving the used places for calls to
     // user-defined functions / methods
     private List<TacPlace> getUsedPlacesForCall(CfgNodeCallRet retNode,
-            TacPlace victim, 
+            TacPlace victim,
             List<TacPlace> oldIndices, List<TacPlace> newIndices) {
-        
+
         List<TacPlace> retMe = new LinkedList<TacPlace>();
-        
+
         CfgNodeCallPrep prepNode = retNode.getCallPrepNode();
         if (prepNode.getCallee() == null) {
             throw new RuntimeException("SNH");
         }
 
         Variable retVar = retNode.getRetVar();
-        
+
         if (!oldIndices.isEmpty()) {
             // if there are some old indices hanging around
-            
+
             retMe.add(getCorresponding(victim.getVariable(),
-                    victim.getVariable(), 
-                    retVar, 
+                    victim.getVariable(),
+                    retVar,
                     oldIndices, newIndices));
         } else {
             // else: no need for array-awareness
             retMe.add(retVar);
         }
-        
+
         return retMe;
     }
 
 //  ********************************************************************************
-    
+
     // helper function for retrieving the used places for calls to builtin functions
     private List<TacPlace> getUsedPlacesForBuiltin(CfgNodeCallBuiltin cfgNode) {
 
         List<TacPlace> retMe = new LinkedList<TacPlace>();
         String functionName = cfgNode.getFunctionName();
-        
+
         if (functionName.equals("mysql_query")) {
             // do nothing;
             // it is not appropriate to say that the value of the params
@@ -981,12 +981,12 @@ public class DepGraph {
             }
         }
 
-        
+
         /*
         if (functionName.equals("each")) {
 
             // TODO:
-            // this "quick fix" doesn't work because the param to each 
+            // this "quick fix" doesn't work because the param to each
             // does not have to be a known array; here we have a problem with
             // the limitation that we have only one "newIndices" list, but multiple
             // elements in the returned list
@@ -997,30 +997,30 @@ public class DepGraph {
                 retMe.add(param);
             }
             return retMe;
-            
+
 
             // the following does not do what it should
-    
+
             // creating an analogy between "each" and AssignSimple
             Variable left = prepNode.getCallRetNode().getTempVar();     // the temporary catching the return value
             TacPlace right = prepNode.getParamList().get(0).getPlace(); // the param of "each"
-            
+
             // if there are some old indices hanging around
             if (!oldIndices.isEmpty() && right.isVariable()) {
                 retMe.add(getCorresponding(left,
-                        victim.getVariable(), 
-                        right.getVariable(), 
+                        victim.getVariable(),
+                        right.getVariable(),
                         oldIndices, newIndices));
-                
+
             // if the victim is an array element of left
-            } else if (victim.isVariable() && victim.getVariable().isArrayElement() && 
+            } else if (victim.isVariable() && victim.getVariable().isArrayElement() &&
                     victim.getVariable().isArrayElementOf(left)) {
-                
-                retMe.add(getCorresponding(left, 
-                        victim.getVariable(), 
-                        right.getVariable(), 
+
+                retMe.add(getCorresponding(left,
+                        victim.getVariable(),
+                        right.getVariable(),
                         oldIndices, newIndices));
-                
+
             // else: no need for array awareness
             } else {
                 retMe.add(right);
@@ -1029,18 +1029,18 @@ public class DepGraph {
         } else {
         */
 
-        
+
         return retMe;
     }
 
 //  *********************************************************************************
-    
+
     // determines the "folded" dep set of the given place by lubbing over
     // the given contexts
     private DepSet newFold(Map phi, TacPlace place, Set<Context> contexts) {
-        
+
         DepSet depSet = null;
-        
+
         for (Context context : contexts) {
             DepLatticeElement element = (DepLatticeElement) phi.get(context);
             if (element == null) {
@@ -1057,17 +1057,17 @@ public class DepGraph {
                 depSet = DepSet.lub(depSet, element.getDep(place));
             }
         }
-        
+
         return depSet;
     }
-    
+
 //  *********************************************************************************
-    
+
     // determines the "folded" lattice element by lubbing over the given contexts
     private DepLatticeElement newFold(Map phi, Set<Context> contexts) {
-        
+
         DepLatticeElement retMe = null;
-        
+
         for (Context context : contexts) {
             DepLatticeElement element = (DepLatticeElement) phi.get(context);
             if (retMe == null) {
@@ -1080,12 +1080,12 @@ public class DepGraph {
                 retMe = (DepLatticeElement) this.depAnalysis.getLattice().lub(element, retMe);
             }
         }
-        
+
         return retMe;
     }
 
 //  ********************************************************************************
-    
+
     // checks whether this graph is a tree or not
     public boolean isTree() {
         int edgeCount = 0;
@@ -1102,33 +1102,33 @@ public class DepGraph {
             return false;
         }
     }
-    
+
 //  ********************************************************************************
-    
+
     // cycle detection
     public boolean hasCycles() {
-        
+
         // color map (white 0, grey 1, black 2)
         HashMap<DepGraphNode,Integer> colorMap = new HashMap<DepGraphNode,Integer>();
-        
+
         // initialize all nodes with white
         for (DepGraphNode node : this.nodes.keySet()) {
             colorMap.put(node, 0);
         }
-        
+
         for (DepGraphNode node : this.nodes.keySet()) {
             if (hasCyclesHelper(node, colorMap)) {
                 return true;
             }
         }
         return false;
-        
+
     }
-    
+
 //  ********************************************************************************
-    
+
     private boolean hasCyclesHelper(DepGraphNode node, HashMap<DepGraphNode,Integer> colorMap) {
-        
+
         // mark as grey
         colorMap.put(node, 1);
 
@@ -1146,16 +1146,16 @@ public class DepGraph {
                 }
             }
         }
-        
+
         // all successors visited, mark as black
         colorMap.put(node, 2);
-        
+
         return false;
     }
-    
+
 //  ********************************************************************************
-    
-    // returns a map that gives the number of occurrences for each type of 
+
+    // returns a map that gives the number of occurrences for each type of
     // operation node
     public Map<String,Integer> getOpMap() {
         Map<String,Integer> retMe = new HashMap<String,Integer>();
@@ -1165,7 +1165,7 @@ public class DepGraph {
             }
             DepGraphOpNode opNode = (DepGraphOpNode) node;
             String opName = opNode.getName();
-            Integer opCount = retMe.get(opName); 
+            Integer opCount = retMe.get(opName);
             if (opCount == null) {
                 opCount = new Integer(1);
             } else {
@@ -1173,12 +1173,12 @@ public class DepGraph {
             }
             retMe.put(opName, opCount);
         }
-        
+
         return retMe;
     }
-    
+
 //  ********************************************************************************
-    
+
     // returns true if all leafs contain literal (string) places,
     // and false otherwise
     public boolean leafsAreStrings() {
@@ -1196,18 +1196,18 @@ public class DepGraph {
         }
         return true;
     }
-    
+
 //  ********************************************************************************
-    
+
     // returns all the nodes of this graph
     public List<DepGraphNode> getNodes() {
         // return a copy of our node set
         List<DepGraphNode> retMe = new LinkedList<DepGraphNode>(this.nodes.keySet());
         return retMe;
     }
-    
+
 //  ********************************************************************************
-    
+
     // returns the leaf nodes of this graph
     public Set<DepGraphNode> getLeafNodes() {
         Set<DepGraphNode> leafCandidates = new HashSet<DepGraphNode>(this.nodes.keySet());
@@ -1215,9 +1215,9 @@ public class DepGraph {
         leafCandidates.removeAll(nonLeafs);
         return leafCandidates;
     }
-    
+
 //  ********************************************************************************
-    
+
     // returns all uninit nodes
     public Set<DepGraphUninitNode> getUninitNodes() {
         Set<DepGraphUninitNode> uninitNodes = new HashSet<DepGraphUninitNode>();
@@ -1228,13 +1228,13 @@ public class DepGraph {
         }
         return uninitNodes;
     }
-    
+
 //  ********************************************************************************
-    
+
     public DepGraphNormalNode getRoot() {
         return this.root;
     }
-    
+
 //  ********************************************************************************
 
     // returns a string representation of this depgraph (in dot syntax)
@@ -1283,10 +1283,10 @@ public class DepGraph {
             e.printStackTrace();
         }
     }
-    
+
 //  ********************************************************************************
 
-    public void writeDot(String graphName, Set fillUs, Writer outWriter, DepClientInfo dci) 
+    public void writeDot(String graphName, Set fillUs, Writer outWriter, DepClientInfo dci)
     throws IOException {
 
         // distinguish between verbose and normal output
@@ -1296,27 +1296,27 @@ public class DepGraph {
             writeDotNormal(graphName, fillUs, outWriter);
         }
     }
-    
+
     // writes a dot representation of this depgraph to the given writer
-    public void writeDotVerbose(String graphName, Set fillUs, Writer outWriter, DepClientInfo dci) 
+    public void writeDotVerbose(String graphName, Set fillUs, Writer outWriter, DepClientInfo dci)
     throws IOException {
-        
+
         outWriter.write("digraph cfg {\n  label=\"");
         outWriter.write(Dumper.escapeDot(graphName, 0));
         outWriter.write("\";\n");
         outWriter.write("  labelloc=t;\n");
-        
+
         // print nodes
         int idCounter = 0;
         HashMap<DepGraphNode, Integer> node2Int = new HashMap<DepGraphNode,Integer>();
         for (DepGraphNode tgn : this.nodes.keySet()) {
             node2Int.put(tgn, ++idCounter);
-            
+
             String styleString = "";
             if (fillUs.contains(tgn)) {
                 styleString = ",style=filled";
             }
-            
+
             boolean isModelled = true;
             String shapeString = "shape=box";
             if (tgn == this.root) {
@@ -1327,13 +1327,13 @@ public class DepGraph {
                     isModelled = dci.isModelled(((DepGraphOpNode) tgn).getName());
                 }
             }
-            
+
             String name = tgn.dotNameVerbose(isModelled);
-            outWriter.write("  n" + idCounter + " [" + shapeString + ", label=\"" + 
+            outWriter.write("  n" + idCounter + " [" + shapeString + ", label=\"" +
                     name + "\"" + styleString + "];\n");
-            
+
         }
-        
+
         // print edges
         for (Map.Entry<DepGraphNode,List<DepGraphNode>> entry : this.edges.entrySet()) {
             DepGraphNode from = entry.getKey();
@@ -1356,45 +1356,45 @@ public class DepGraph {
                 }
             }
         }
-        
+
         outWriter.write("}\n");
     }
 
     // writes a dot representation of this depgraph to the given writer
-    public void writeDotNormal(String graphName, Set fillUs, Writer outWriter) 
+    public void writeDotNormal(String graphName, Set fillUs, Writer outWriter)
     throws IOException {
-        
+
         outWriter.write("digraph cfg {\n  label=\"");
         outWriter.write(Dumper.escapeDot(graphName, 0));
         outWriter.write("\";\n");
         outWriter.write("  labelloc=t;\n");
-        
+
         // print nodes
         int idCounter = 0;
         HashMap<DepGraphNode, Integer> node2Int = new HashMap<DepGraphNode,Integer>();
         for (DepGraphNode tgn : this.nodes.keySet()) {
             node2Int.put(tgn, ++idCounter);
-            
+
             String styleString = "";
             if (fillUs.contains(tgn)) {
                 styleString = ",style=filled";
             }
-            
+
             if (tgn instanceof DepGraphOpNode) {
                 styleString = ",style=filled,color=lightblue";
             }
-            
+
             String shapeString = "shape=ellipse";
             if (tgn == this.root) {
                 shapeString = "shape=box";
             }
-            
+
             String name = tgn.dotName();
-            outWriter.write("  n" + idCounter + " [" + shapeString + ", label=\"" + 
+            outWriter.write("  n" + idCounter + " [" + shapeString + ", label=\"" +
                     name + "\"" + styleString + "];\n");
-            
+
         }
-        
+
         // print edges
         for (Map.Entry<DepGraphNode,List<DepGraphNode>> entry : this.edges.entrySet()) {
             DepGraphNode from = entry.getKey();
@@ -1417,54 +1417,54 @@ public class DepGraph {
                 }
             }
         }
-        
+
         outWriter.write("}\n");
     }
 
-    
+
     // writes a dot representation of this depgraph to the given writer;
     // use this one if you need a UNIQUE representation
-    public void writeDotUnique(String graphName, Set fillUs, boolean shortName, Writer outWriter) 
+    public void writeDotUnique(String graphName, Set fillUs, boolean shortName, Writer outWriter)
     throws IOException {
-        
+
         outWriter.write("digraph cfg {\n  label=\"");
         outWriter.write(Dumper.escapeDot(graphName, 0));
         outWriter.write("\";\n");
         outWriter.write("  labelloc=t;\n");
-        
+
         // print nodes
         int idCounter = 0;
         HashMap<DepGraphNode, Integer> node2Int = new HashMap<DepGraphNode,Integer>();
-        
+
         for (DepGraphNode tgn : this.bfIterator()) {
-            
+
             node2Int.put(tgn, ++idCounter);
-            
+
             String styleString = "";
             if (fillUs.contains(tgn)) {
                 styleString = ",style=filled";
             }
-            
+
             if (tgn instanceof DepGraphOpNode) {
                 styleString = ",style=filled,color=lightblue";
             }
-            
+
             String shapeString = "shape=ellipse";
             if (tgn == this.root) {
                 shapeString = "shape=box";
             }
-            
+
             String name;
             if (shortName) {
                 name = tgn.dotNameShort();
             } else {
                 name = tgn.dotName();
             }
-            outWriter.write("  n" + idCounter + " [" + shapeString + ", label=\"" + 
+            outWriter.write("  n" + idCounter + " [" + shapeString + ", label=\"" +
                     name + "\"" + styleString + "];\n");
-            
+
         }
-        
+
         // print edges
         List<String> lines = new LinkedList<String>();
         for (Map.Entry<DepGraphNode,List<DepGraphNode>> entry : this.edges.entrySet()) {
@@ -1491,13 +1491,13 @@ public class DepGraph {
         outWriter.write("}\n");
     }
 
-    
+
 //  ********************************************************************************
-    
+
     // eliminates cycles (SCCs) from this string graph, replacing them with
     // special DepGraphSccNodes
     public void eliminateCycles() {
-        
+
         if (!this.hasCycles()) {
             return;
         }
@@ -1505,12 +1505,12 @@ public class DepGraph {
         // for each SCC...
         List<List<DepGraphNode>> sccs = this.getSccs();
         for (List<DepGraphNode> scc : sccs) {
-            
+
             // one-element sccs are no problem
             if (scc.size() < 2) {
                 continue;
             }
-            
+
             // determine edges pointing into this SCC
             Set<DepGraphNode> sccPredecessors = new HashSet<DepGraphNode>();
             for (DepGraphNode sccMember : scc) {
@@ -1518,7 +1518,7 @@ public class DepGraph {
                 predecessors.removeAll(scc);  // don't take predecessors that are inside the SCC
                 sccPredecessors.addAll(predecessors);
             }
-            
+
             // determine edges going out of this SCC
             Set<DepGraphNode> sccSuccessors = new HashSet<DepGraphNode>();
             for (DepGraphNode sccMember : scc) {
@@ -1526,18 +1526,18 @@ public class DepGraph {
                 successors.removeAll(scc);  // don't take predecessors that are inside the SCC
                 sccSuccessors.addAll(successors);
             }
-            
+
             // remove scc members
             for (DepGraphNode sccMember : scc) {
                 //this.remove(sccMember, new HashSet<DepGraphNode>());
                 this.nodes.remove(sccMember);
                 this.edges.remove(sccMember);
             }
-            
+
             // the replacement node
             DepGraphSccNode sccNode = new DepGraphSccNode();
             this.addNode(sccNode);
-            
+
             // adjust nodes coming in to the SCC
             for (DepGraphNode pre : sccPredecessors) {
                 // remove stale nodes from the out-list
@@ -1551,18 +1551,18 @@ public class DepGraph {
                 // add new replacement node to the out-list
                 out.add(sccNode);
             }
-            
+
             // adjust nodes going out of the SCC
             this.edges.put(sccNode, new LinkedList<DepGraphNode>(sccSuccessors));
-            
+
             // done!
-            
+
         }
 
     }
 
 //  ********************************************************************************
-    
+
     // returns a list of strongly connected components;
     // uses the algorithm from "The Design and Analysis of Computer Algorithms"
     // (Aho, Hopcroft, Ullman), Chapter 5.5 ("Strong Connectivity")
@@ -1570,28 +1570,28 @@ public class DepGraph {
         n = 1;
         List<List<DepGraphNode>> sccs = new LinkedList<List<DepGraphNode>>();
         List<DepGraphNode> stack = new LinkedList<DepGraphNode>();
-        Map<DepGraphNode,Integer> dfsnum = new HashMap<DepGraphNode,Integer>(); 
+        Map<DepGraphNode,Integer> dfsnum = new HashMap<DepGraphNode,Integer>();
         Map<DepGraphNode,Integer> low = new HashMap<DepGraphNode,Integer>();
         Set<DepGraphNode> old = new HashSet<DepGraphNode>();
         sccVisit(this.root, stack, dfsnum, low, old, sccs);
         return sccs;
     }
-    
+
 //  ********************************************************************************
-    
+
     // helper function for SCC computation
     private void sccVisit(DepGraphNode v, List<DepGraphNode> stack,
-            Map<DepGraphNode,Integer> dfsnum, 
+            Map<DepGraphNode,Integer> dfsnum,
             Map<DepGraphNode,Integer> low,
             Set<DepGraphNode> old,
             List<List<DepGraphNode>> sccs) {
-        
+
         old.add(v);
         dfsnum.put(v, n);
         low.put(v, n);
         n++;
         stack.add(v);
-        
+
         for (DepGraphNode w : this.getSuccessors(v)) {
             if (!old.contains(w)) {
                 sccVisit(w, stack, dfsnum, low, old, sccs);
@@ -1607,7 +1607,7 @@ public class DepGraph {
                 }
             }
         }
-        
+
         if (low.get(v).equals(dfsnum.get(v))) {
             List<DepGraphNode> scc = new LinkedList<DepGraphNode>();
             DepGraphNode x;
@@ -1618,9 +1618,9 @@ public class DepGraph {
             sccs.add(scc);
         }
     }
-    
+
 //  ********************************************************************************
-    
+
     public List<DepGraphNode> getSuccessors(DepGraphNode node) {
         List<DepGraphNode> retMe = this.edges.get(node);
         if (retMe == null) {
@@ -1630,7 +1630,7 @@ public class DepGraph {
     }
 
 //  ********************************************************************************
-    
+
     // EFF: could be much faster
     public Set<DepGraphNode> getPredecessors(DepGraphNode node) {
         Set<DepGraphNode> retMe = new HashSet<DepGraphNode>();
@@ -1641,36 +1641,36 @@ public class DepGraph {
                 retMe.add(from);
             }
         }
-        
+
         return retMe;
     }
 
-// bfIterator **********************************************************************    
-    
+// bfIterator **********************************************************************
+
     // breadth first iterator
     public List<DepGraphNode> bfIterator() {
 
         // list for the iterator
         LinkedList<DepGraphNode> list = new LinkedList<DepGraphNode>();
-        
+
         // queue for nodes that still have to be visited
         LinkedList<DepGraphNode> queue = new LinkedList<DepGraphNode>();
-        
+
         // already visited
         Set<DepGraphNode> visited = new HashSet<DepGraphNode>();
-        
+
         queue.add(this.root);
         visited.add(this.root);
-        
+
         Comparator<DepGraphNode> comp = new NodeComparator<DepGraphNode>();
         this.bfIteratorHelper(list, queue, visited, comp);
-        
+
         return list;
     }
 
 // bfIteratorHelper ****************************************************************
-    
-    private void bfIteratorHelper(List<DepGraphNode> list, 
+
+    private void bfIteratorHelper(List<DepGraphNode> list,
             LinkedList<DepGraphNode> queue, Set<DepGraphNode> visited,
             Comparator<DepGraphNode> comp) {
 
@@ -1699,24 +1699,24 @@ public class DepGraph {
             bfIteratorHelper(list, queue, visited, comp);
         }
     }
-    
+
 //  ********************************************************************************
-    
+
     public boolean isRoot(DepGraphNode node) {
         return node.equals(this.root);
     }
-    
+
 //  ********************************************************************************
-    
+
     // makes the depgraph smaller in two ways:
-    // - reduces it to those nodes that are on a path from the root 
+    // - reduces it to those nodes that are on a path from the root
     //   to any of the given leaves
     // - removes unnecessary temporary nodes that precede those nodes that
     //   represent function return variables
     public void reduceWithLeaves(Collection<? extends DepGraphNode> leaves) {
-        
+
         this.leavesReduced = true;
-        
+
         // mark reachable nodes
         // and nodes representing return variables
         Set<DepGraphNode> reachable = new HashSet<DepGraphNode>();
@@ -1724,9 +1724,9 @@ public class DepGraph {
         for (DepGraphNode leaf : leaves) {
             reduceWithLeavesHelper(leaf, reachable, retVars);
         }
-        
+
         // delete all unreachable nodes
-        
+
         // delete from nodes map
         for (Iterator iter = this.nodes.entrySet().iterator(); iter.hasNext();) {
             Map.Entry entry = (Map.Entry) iter.next();
@@ -1736,7 +1736,7 @@ public class DepGraph {
             }
         }
         // delete from edges map
-        for (Iterator<Map.Entry<DepGraphNode, List<DepGraphNode>>> iter = 
+        for (Iterator<Map.Entry<DepGraphNode, List<DepGraphNode>>> iter =
             this.edges.entrySet().iterator(); iter.hasNext();) {
             Map.Entry<DepGraphNode, List<DepGraphNode>> entry = iter.next();
             DepGraphNode node = entry.getKey();
@@ -1752,15 +1752,15 @@ public class DepGraph {
                 }
             }
         }
-        
+
         // collapse return variable nodes with their predecessors;
         // explanation: due to the way how depgraph construction is implemented,
         // every node that represents a function return value has one or more
         // predecessors that represent the temporary that is responsible for
         // catching its value after the completed function invokation;
         // these temporary nodes can be removed from the graph
-        
-        // EFF: we are calling "getPredecessors" quite often in this method, 
+
+        // EFF: we are calling "getPredecessors" quite often in this method,
         // it would probably pay to make this call faster
         for (DepGraphNormalNode retVarNode : retVars) {
             Set<DepGraphNode> tempNodes = this.getPredecessors(retVarNode);
@@ -1769,19 +1769,19 @@ public class DepGraph {
                 throw new RuntimeException("SNH");
             }
             DepGraphNode tempNode = tempNodes.iterator().next();
-            
+
             if (tempNode == this.root) {
                 // leave the root alone!
                 continue;
             }
-            
+
             // retrieve the predecessors before you remove the temporary node
             Set<DepGraphNode> preds = this.getPredecessors(tempNode);
-            
+
             // remove the temporary node
             this.nodes.remove(tempNode);
             this.edges.remove(tempNode);
-            for (Iterator<Map.Entry<DepGraphNode, List<DepGraphNode>>> iter = 
+            for (Iterator<Map.Entry<DepGraphNode, List<DepGraphNode>>> iter =
                 this.edges.entrySet().iterator(); iter.hasNext();) {
                 Map.Entry<DepGraphNode, List<DepGraphNode>> entry = iter.next();
                 List<DepGraphNode> successors = entry.getValue();
@@ -1792,7 +1792,7 @@ public class DepGraph {
                     }
                 }
             }
-            
+
             // turn the former predecessors of the temporary node into
             // the predecessors of the retVarNode
             for (DepGraphNode pred : preds) {
@@ -1800,20 +1800,20 @@ public class DepGraph {
             }
         }
     }
-    
+
 //  ********************************************************************************
-    
-    private void reduceWithLeavesHelper(DepGraphNode node, 
+
+    private void reduceWithLeavesHelper(DepGraphNode node,
             Set<DepGraphNode> reachable, Set<DepGraphNormalNode> retVars) {
-        
+
         // stop recursion if we were already there
         if (reachable.contains(node)) {
             return;
         }
-        
+
         // add to reachable set
         reachable.add(node);
-        
+
         // detect function return variables
         if (node instanceof DepGraphNormalNode) {
             DepGraphNormalNode normalNode = (DepGraphNormalNode) node;
@@ -1822,7 +1822,7 @@ public class DepGraph {
                 retVars.add(normalNode);
             }
         }
-        
+
         // recurse
         for (DepGraphNode pre : this.getPredecessors(node)) {
             reduceWithLeavesHelper(pre, reachable, retVars);
@@ -1830,25 +1830,25 @@ public class DepGraph {
     }
 
 //  ********************************************************************************
-    
+
     // removes all uninit nodes and returns their predecessors
     public Set<DepGraphNode> removeUninitNodes() {
-        
+
         Set<DepGraphNode> retme = new HashSet<DepGraphNode>();
-        
+
         Set<DepGraphUninitNode> uninitNodes = getUninitNodes();
         for (DepGraphUninitNode uninitNode : uninitNodes) {
-            
+
             Set<DepGraphNode> preds = this.getPredecessors(uninitNode);
             if (preds.size() != 1) {
                 throw new RuntimeException("SNH");
             }
-            
-            DepGraphNode pre = preds.iterator().next(); 
-            
+
+            DepGraphNode pre = preds.iterator().next();
+
             // add predecessor to return set
             retme.add(pre);
-            
+
             // remove uninit node
             this.nodes.remove(uninitNode);
             // this.edges.remove(uninitNode);   // unnecessary, because: leaf node
@@ -1862,39 +1862,39 @@ public class DepGraph {
                 }
             }
         }
-        
+
         return retme;
     }
-    
+
 //  ********************************************************************************
-    
+
     // removes all nodes that represent temporary variables and that have
     // exactly 1 predecessor and 1 successor
     public void removeTemporaries() {
         Set<DepGraphNormalNode> temporaries = this.getTemporaries();
         for (DepGraphNormalNode temp : temporaries) {
-            
+
             Set<DepGraphNode> preds = this.getPredecessors(temp);
             List<DepGraphNode> succs = this.edges.get(temp);
-            
+
             if (preds == null || succs == null || preds.size() != 1 || succs.size() != 1) {
                 continue;
             }
 
             DepGraphNode pre = preds.iterator().next();
             DepGraphNode succ = succs.iterator().next();
-            
+
             // redirect incoming edge
             List<DepGraphNode> outEdges = this.edges.get(pre);
             int outIndex = outEdges.indexOf(temp);
             outEdges.remove(outIndex);
             outEdges.add(outIndex, succ);
-            
+
             this.nodes.remove(temp);
             this.edges.remove(temp);
         }
     }
-    
+
     // returns all nodes that represent temporary variables
     private Set<DepGraphNormalNode> getTemporaries() {
         Set<DepGraphNormalNode> retme = new HashSet<DepGraphNormalNode>();
@@ -1910,21 +1910,21 @@ public class DepGraph {
         }
         return retme;
     }
-    
+
     /*
     // removes the given node;
     // only works for nodes that have exactly one predecessor
     private void removeNode(DepGraphNode node) {
-        
+
         this.nodes.remove(node);
-        
+
         Set<DepGraphNode> preds = this.getPredecessors(node);
         if (preds == null || preds.size() != 1) {
             throw new RuntimeException("SNH");
         }
-        
+
         List<DepGraphNode> succs = this.edges.get(node);
-        
+
         if (succs == null || succs.isEmpty()) {
             // no successors, simply remove incoming edges
             for (DepGraphNode pre : preds) {
@@ -1944,27 +1944,27 @@ public class DepGraph {
                 for () {
                 }
             }
-            
-            
+
+
             this.edges.remove(node);
         }
 
     }
     */
-    
-    
+
+
 //  ********************************************************************************
 
     // reduces this depgraph to the ineffective sanitization stuff;
     // returns the number of ineffective border sanitizations
     public int reduceToIneffectiveSanit(Map<DepGraphNode,FSAAutomaton> deco,
             SanitAnalysis sanitAnalysis) {
-        
+
         // get the "custom sanitization border"
         List<DepGraphNode> border = new LinkedList<DepGraphNode>();
         Set<DepGraphNode> visited = new HashSet<DepGraphNode>();
         this.getCustomSanitBorder(this.root, visited, border);
-        
+
         // identify ineffective border sanitizations
         List<DepGraphNode> ineffectiveBorder = new LinkedList<DepGraphNode>();
         for (DepGraphNode customSanit : border) {
@@ -1972,52 +1972,52 @@ public class DepGraph {
                 ineffectiveBorder.add(customSanit);
             }
         }
-        
+
         // reduce this depgraph to these ineffective sanitizations
         this.reduceToInnerNodes(ineffectiveBorder);
-        
+
         return ineffectiveBorder.size();
-        
+
     }
-    
-    private void getCustomSanitBorder(DepGraphNode node, 
+
+    private void getCustomSanitBorder(DepGraphNode node,
             Set<DepGraphNode> visited, List<DepGraphNode> border) {
-        
+
         // stop if we were already there
         if (visited.contains(node)) {
             return;
         }
         visited.add(node);
-        
+
         // reached the border?
         if (SanitAnalysis.isCustomSanit(node)) {
             border.add(node);
             return;
         }
-        
+
         // recurse downwards
         for (DepGraphNode succ : this.getSuccessors(node)) {
             getCustomSanitBorder(succ, visited, border);
         }
 
     }
-    
+
 //  ********************************************************************************
-    
+
     // makes the depgraph smaller in the following way:
     // - reduces it to those nodes that are on a path that contains
     //   one of the given nodes (may be inner nodes)
     public void reduceToInnerNodes(Collection<? extends DepGraphNode> nodes) {
-        
+
         // mark reachable nodes (upwards and downwards, starting from
         // the sanitization nodes)
         Set<DepGraphNode> reachable = new HashSet<DepGraphNode>();
         for (DepGraphNode sanitNode : nodes) {
             reduceToInnerHelper(sanitNode, reachable);
         }
-        
+
         // delete all unreachable nodes
-        
+
         // delete from nodes map
         for (Iterator iter = this.nodes.entrySet().iterator(); iter.hasNext();) {
             Map.Entry entry = (Map.Entry) iter.next();
@@ -2027,7 +2027,7 @@ public class DepGraph {
             }
         }
         // delete from edges map
-        for (Iterator<Map.Entry<DepGraphNode, List<DepGraphNode>>> iter = 
+        for (Iterator<Map.Entry<DepGraphNode, List<DepGraphNode>>> iter =
             this.edges.entrySet().iterator(); iter.hasNext();) {
             Map.Entry<DepGraphNode, List<DepGraphNode>> entry = iter.next();
             DepGraphNode node = entry.getKey();
@@ -2044,12 +2044,12 @@ public class DepGraph {
             }
         }
     }
-    
+
 //  ********************************************************************************
 
-    private void reduceToInnerHelper(DepGraphNode node, 
+    private void reduceToInnerHelper(DepGraphNode node,
             Set<DepGraphNode> reachable) {
-     
+
         // recurse upwards
         for (DepGraphNode pre : this.getPredecessors(node)) {
             reduceToInnerHelperUp(pre, reachable);
@@ -2061,19 +2061,19 @@ public class DepGraph {
     }
 
 //  ********************************************************************************
-    
+
     // upwards reachability
-    private void reduceToInnerHelperUp(DepGraphNode node, 
+    private void reduceToInnerHelperUp(DepGraphNode node,
             Set<DepGraphNode> reachable) {
-        
+
         // stop recursion if we were already there
         if (reachable.contains(node)) {
             return;
         }
-        
+
         // add to reachable set
         reachable.add(node);
-        
+
         // recurse
         for (DepGraphNode pre : this.getPredecessors(node)) {
             reduceToInnerHelperUp(pre, reachable);
@@ -2082,25 +2082,25 @@ public class DepGraph {
     }
 
 //  ********************************************************************************
-    
+
     // downwards reachability
-    private void reduceToSanitInnerDown(DepGraphNode node, 
+    private void reduceToSanitInnerDown(DepGraphNode node,
             Set<DepGraphNode> reachable) {
-        
+
         // stop recursion if we were already there
         if (reachable.contains(node)) {
             return;
         }
-        
+
         // add to reachable set
         reachable.add(node);
-        
+
         // recurse
         for (DepGraphNode succ : this.getSuccessors(node)) {
             reduceToSanitInnerDown(succ, reachable);
         }
     }
-    
+
 //  ********************************************************************************
 
     // counts the number of paths through this dependence graph;
@@ -2110,7 +2110,7 @@ public class DepGraph {
     }
 
 //  ********************************************************************************
-    
+
     // BEWARE: eliminates cycles first, so this changes the depgraph
     private int countPathsDestructive() {
         this.eliminateCycles();
@@ -2120,12 +2120,12 @@ public class DepGraph {
     }
 
 //  ********************************************************************************
-    
+
     private void pathCounterHelper(DepGraphNode node, Map<DepGraphNode,Integer> node2p,
             Set<DepGraphNode> visited) {
-        
+
         visited.add(node);
-        
+
         List<DepGraphNode> successors = this.getSuccessors(node);
         if (successors != null && !successors.isEmpty()) {
             // if this node has successors, decorate them first (if not done yet)
@@ -2148,12 +2148,12 @@ public class DepGraph {
 
 //  ********************************************************************************
 //  ********************************************************************************
-    
-    private class NotReachableException 
+
+    private class NotReachableException
     extends Exception {
-        
+
     }
-    
+
     private class NodeComparator<T>
     implements Comparator<T> {
 
@@ -2166,8 +2166,8 @@ public class DepGraph {
             return n1.comparableName().compareTo(n2.dotName());
         }
     }
-    
-    // just a data storage to allow for an extended return value of the 
+
+    // just a data storage to allow for an extended return value of the
     // switchContexts() method
     private class ContextSwitch {
         TacFunction targetFunction;
@@ -2180,15 +2180,15 @@ public class DepGraph {
 
     /*
     private List<TacPlace> getUsedPlacesForBuiltin(CfgNodeCallBuiltin cfgNode) {
-        
+
         List<TacPlace> retMe = new LinkedList<TacPlace>();
         String functionName = cfgNode.getFunctionName();
-        
+
         List<Integer> multiList = new LinkedList<Integer>();
         List<TacActualParam> paramList = cfgNode.getParamList();
-        
+
         if (isMulti(functionName, multiList)) {
-            
+
             for (Integer index : multiList) {
                 try {
                     retMe.add(paramList.get(index).getPlace());
@@ -2196,9 +2196,9 @@ public class DepGraph {
                     // optional argument, do nothing
                 }
             }
-            
+
         } else if (isInverseMulti(functionName, multiList)) {
-            
+
             int index = -1;
             for (TacActualParam param : paramList) {
                 index++;
@@ -2207,7 +2207,7 @@ public class DepGraph {
                 }
                 retMe.add(param.getPlace());
             }
-            
+
         } else {
             // simply add all parameters, but tell the user about it;
             // DCG == DepGraphConstruction
@@ -2217,13 +2217,13 @@ public class DepGraph {
                 retMe.add(param.getPlace());
             }
         }
-        
+
         return retMe;
     }
     */
 
 //  ********************************************************************************
-    
+
     /*
     // if the given operation is a multi-dependency operation, it returns true
     // and fills the given indices list with the appropriate index numbers
@@ -2232,9 +2232,9 @@ public class DepGraph {
                 opName.equals("microtime") ||
                 opName.equals("mt_rand") ||
                 opName.equals("mysql_error") ||
-                opName.equals("mysql_query") || 
-                opName.equals("ob_get_clean") || 
-                opName.equals("phpversion") || 
+                opName.equals("mysql_query") ||
+                opName.equals("ob_get_clean") ||
+                opName.equals("phpversion") ||
                 opName.equals("rand") ||
                 opName.equals("time")
                 ) {
@@ -2310,15 +2310,15 @@ public class DepGraph {
             return true;
         }else if (
                 opName.equals("ereg_replace") ||
-                opName.equals("eregi_replace") || 
-                opName.equals("preg_replace") || 
+                opName.equals("eregi_replace") ||
+                opName.equals("preg_replace") ||
                 opName.equals("str_replace")
                 ) {
             indices.add(1);
             indices.add(2);
             return true;
         } else if (
-                opName.equals("number_format") 
+                opName.equals("number_format")
                 ) {
             indices.add(0);
             indices.add(2);
@@ -2340,7 +2340,7 @@ public class DepGraph {
     */
 
 //  ********************************************************************************
-    
+
     /*
     // analogous to isMulti, but inverse: e.g., if some function is an inverse
     // multi-dependency with a returned index "2", then all its parameters are
@@ -2361,11 +2361,11 @@ public class DepGraph {
     */
 
 //  *********************************************************************************
-    
+
     /*
     // determines the "folded" dep set of the given place by lubbing over all contexts
     private DepSet oldFold(Map phi, TacPlace place) {
-        
+
         DepSet depSet = null;
         for (Iterator iter = phi.entrySet().iterator(); iter.hasNext();) {
             Map.Entry entry = (Map.Entry) iter.next();
@@ -2383,16 +2383,16 @@ public class DepGraph {
     }
     */
 //  *********************************************************************************
-    
+
     /*
     // determines the "folded" lattice element by lubbing over all contexts
     private DepLatticeElement oldFold(Map phi) {
-        
+
         DepLatticeElement retMe = null;
         for (Iterator iter = phi.entrySet().iterator(); iter.hasNext();) {
             Map.Entry entry = (Map.Entry) iter.next();
             DepLatticeElement element = (DepLatticeElement) entry.getValue();
-            
+
             if (retMe == null) {
                 // EFF: it should also be possible to say "retMe = element"
                 retMe = new DepLatticeElement(element);
@@ -2406,7 +2406,4 @@ public class DepGraph {
         return retMe;
     }
     */
-
-
-    
 }

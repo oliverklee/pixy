@@ -18,18 +18,18 @@ import java.util.*;
 public class CfgNodeCallPrep
 extends CfgNode {
 
-// CONSTRUCTORS ********************************************************************    
+// CONSTRUCTORS ********************************************************************
 
     public CfgNodeCallPrep(ParseNode node) {
         super(node);
     }
-    
+
 // GET *****************************************************************************
-    
+
     public TacFunction getCallee() {
         return this.getCallNode().getCallee();
     }
-    
+
     public TacFunction getCaller() {
         return this.getCallNode().getEnclosingFunction();
     }
@@ -37,19 +37,19 @@ extends CfgNode {
     public TacPlace getFunctionNamePlace() {
         return this.getCallNode().getFunctionNamePlace();
     }
-    
+
     public List<TacActualParam> getParamList() {
         return this.getCallNode().getParamList();
     }
-    
+
     public CfgNodeCallRet getCallRetNode() {
         return (CfgNodeCallRet) this.getSuccessor(0).getSuccessor(0);
     }
-    
+
     public CfgNodeCall getCallNode() {
         return (CfgNodeCall) this.getSuccessor(0);
     }
-    
+
     public List<Variable> getVariables() {
         return Collections.emptyList();
     }
@@ -61,11 +61,8 @@ extends CfgNode {
     }
 
 // SET *****************************************************************************
-    
+
     public void replaceVariable(int index, Variable replacement) {
         // do nothing
     }
-    
 }
-
-

@@ -10,6 +10,4 @@ extends InterAnalysisNode {
     public CSAnalysisNode(CfgNode node, TransferFunction tf) {
         super(tf);
     }
-
 }
-

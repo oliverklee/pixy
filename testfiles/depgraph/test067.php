@@ -5,10 +5,4 @@
 $a = array();
 $a[$i] = $get;
 echo $a[$i];
-
-
-
-
-
-
 ?>

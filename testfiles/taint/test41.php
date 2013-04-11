@@ -10,7 +10,7 @@ $x2 = bar();
 
 if ($cond) {
     function foo() {
-        return 'harmless'; 
+        return 'harmless';
     }
     function bar() {
         return $GLOBALS['evil'];
@@ -20,7 +20,7 @@ if ($cond) {
         return $GLOBALS['evil'];
     }
     function bar() {
-        return 'harmless'; 
+        return 'harmless';
     }
 }
 

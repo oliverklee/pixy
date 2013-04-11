@@ -5,9 +5,9 @@ public abstract class TacPlace {
     // protected int hashCode = 0;
 
 // *********************************************************************************
-// GET *****************************************************************************    
+// GET *****************************************************************************
 // *********************************************************************************
-    
+
     public boolean isVariable() {
         return (this instanceof Variable);
     }
@@ -34,7 +34,7 @@ public abstract class TacPlace {
 
     // shortcut methods
     public abstract String toString();
-    
+
 // *********************************************************************************
 // OTHER ***************************************************************************
 // *********************************************************************************
@@ -44,12 +44,10 @@ public abstract class TacPlace {
     // CAUTION: hashCode has to be reset if any of the significant attributes are changed;
     // should be included in the corresponding methods
     public abstract int hashCode();
-    
+
     /*
     public void resetHashCode() {
         this.hashCode = 0;
     }
     */
-    
-    
 }

@@ -18,17 +18,17 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeEcho;
 import at.ac.tuwien.infosys.www.pixy.sanit.SanitAnalysis;
 
 // XSS detection
-public class XSSAnalysis 
-extends DepClient { 
+public class XSSAnalysis
+extends DepClient {
 
 //  ********************************************************************************
-    
+
     public XSSAnalysis(DepAnalysis depAnalysis) {
         super(depAnalysis);
     }
-    
+
 //  ********************************************************************************
-    
+
     // how it works:
     // - extracts the "relevant subgraph" (see there for an explanation)
     // - this relevant subgraph has the nice property that we can check for
@@ -36,7 +36,7 @@ extends DepClient {
     //   if all these nodes belong to variables that are initially harmless,
     //   everything is OK; otherwise, we have a vulnerability
     public List<Integer> detectVulns() {
-        
+
         System.out.println();
         System.out.println("*****************");
         System.out.println("XSS Analysis BEGIN");
@@ -44,14 +44,14 @@ extends DepClient {
         System.out.println();
 
         List<Integer> retMe = new LinkedList<Integer>();
-        
+
         // collect sinks
         List<Sink> sinks = this.collectSinks();
         Collections.sort(sinks);
-        
+
         System.out.println("Number of sinks: " + sinks.size());
         System.out.println();
-        
+
         System.out.println("XSS Analysis Output");
         System.out.println("--------------------");
         System.out.println();
@@ -59,37 +59,37 @@ extends DepClient {
         // for the web interface
         StringBuilder sink2Graph = new StringBuilder();
         StringBuilder quickReport = new StringBuilder();
-        
+
         String fileName = MyOptions.entryFile.getName();
-        
+
         int graphcount = 0;
         int vulncount = 0;
         for (Sink sink : sinks) {
-            
+
             Collection<DepGraph> depGraphs = depAnalysis.getDepGraph(sink);
-            
+
             for (DepGraph depGraph : depGraphs) {
 
                 graphcount++;
-                
+
                 String graphNameBase = "xss_" + fileName + "_" + graphcount;
-                
+
                 if (!MyOptions.optionW) {
                     depGraph.dumpDot(graphNameBase + "_dep", MyOptions.graphPath, this.dci);
                 }
-                
+
                 // create the relevant subgraph
                 DepGraph relevant = this.getRelevant(depGraph);
-                
+
                 // find those uninit nodes that are dangerous
                 Map<DepGraphUninitNode, InitialTaint> dangerousUninit = this.findDangerousUninit(relevant);
-                
+
                 // if there are any dangerous uninit nodes...
                 if (!dangerousUninit.isEmpty()) {
-                    
+
                     // make the relevant subgraph smaller
                     relevant.reduceWithLeaves(dangerousUninit.keySet());
-                    
+
                     Set<? extends DepGraphNode> fillUs;
                     if (MyOptions.option_V) {
                         relevant.removeTemporaries();
@@ -97,7 +97,7 @@ extends DepClient {
                     } else {
                         fillUs = dangerousUninit.keySet();
                     }
-                    
+
                     vulncount++;
                     DepGraphNormalNode root = depGraph.getRoot();
                     CfgNode cfgNode = root.getCfgNode();
@@ -113,13 +113,13 @@ extends DepClient {
                     System.out.println("- Graph: xss" + graphcount);
                     relevant.dumpDot(graphNameBase + "_min", MyOptions.graphPath, fillUs, this.dci);
                     System.out.println();
-                    
+
                     if (MyOptions.optionW) {
                         sink2Graph.append(sink.getLineNo());
                         sink2Graph.append(":");
                         sink2Graph.append(graphNameBase + "_min");
                         sink2Graph.append("\n");
-                        
+
                         quickReport.append("Line ");
                         quickReport.append(sink.getLineNo());
                         quickReport.append("\nSources:\n");
@@ -143,14 +143,14 @@ extends DepClient {
                 }
             }
         }
-        
+
         // initial sink count and final graph count may differ (e.g., if some sinks
         // are not reachable)
         if (MyOptions.optionV) {
             System.out.println("Total Graph Count: " + graphcount);
         }
         System.out.println("Total Vuln Count: " + vulncount);
-        
+
         System.out.println();
         System.out.println("*****************");
         System.out.println("XSS Analysis END");
@@ -161,53 +161,53 @@ extends DepClient {
             Utils.writeToFile(sink2Graph.toString(), MyOptions.graphPath + "/xssSinks2Urls.txt");
             Utils.writeToFile(quickReport.toString(), MyOptions.graphPath + "/xssQuickReport.txt");
         }
-        
+
         return retMe;
     }
-    
+
 //  ********************************************************************************
-    
+
     // alternative to detectVulns;
     // returns those depgraphs for which a vulnerability was detected
     public VulnInfo detectAlternative() {
 
         // will contain depgraphs for which a vulnerability was detected
         VulnInfo retMe = new VulnInfo();
-        
+
         // collect sinks
         List<Sink> sinks = this.collectSinks();
         Collections.sort(sinks);
-        
+
         int graphcount = 0;
         int totalPathCount = 0;
         int basicPathCount = 0;
         int hasCustomSanitCount = 0;
         int customSanitThrownAwayCount = 0;
         for (Sink sink : sinks) {
-            
+
             Collection<DepGraph> depGraphs = depAnalysis.getDepGraph(sink);
-            
+
             for (DepGraph depGraph : depGraphs) {
 
                 graphcount++;
-                
+
                 // create the relevant subgraph
                 DepGraph relevant = this.getRelevant(depGraph);
-                
+
                 // find those uninit nodes that are dangerous
                 Map<DepGraphUninitNode, InitialTaint> dangerousUninit = this.findDangerousUninit(relevant);
-                
+
                 // if there are any dangerous uninit nodes...
                 boolean tainted = false;
                 if (!dangerousUninit.isEmpty()) {
                     tainted = true;
-                    
+
                     // make the relevant subgraph smaller
                     relevant.reduceWithLeaves(dangerousUninit.keySet());
 
                     retMe.addDepGraph(depGraph, relevant);
                 }
-                
+
                 if (MyOptions.countPaths) {
                     int pathNum = depGraph.countPaths();
                     totalPathCount += pathNum;
@@ -215,7 +215,7 @@ extends DepClient {
                         basicPathCount += pathNum;
                     }
                 }
-                
+
                 if (!SanitAnalysis.findCustomSanit(depGraph).isEmpty()) {
                     hasCustomSanitCount++;
                     if (!tainted) {
@@ -223,9 +223,9 @@ extends DepClient {
                     }
                 }
             }
-            
+
         }
-        
+
         retMe.setInitialGraphCount(graphcount);
         retMe.setTotalPathCount(totalPathCount);
         retMe.setBasicPathCount(basicPathCount);
@@ -236,54 +236,54 @@ extends DepClient {
     }
 
 //  ********************************************************************************
-    
+
     // checks if the given node (inside the given function) is a sensitive sink;
     // adds an appropriate sink object to the given list if it is a sink
     protected void checkForSink(CfgNode cfgNodeX, TacFunction traversedFunction,
             List<Sink> sinks) {
-        
+
         if (cfgNodeX instanceof CfgNodeEcho) {
-            
+
             // echo() or print()
             CfgNodeEcho cfgNode = (CfgNodeEcho) cfgNodeX;
 
             // create sink object for this node
             Sink sink = new Sink(cfgNode, traversedFunction);
             sink.addSensitivePlace(cfgNode.getPlace());
-            
+
             // add it to the list of sensitive sinks
             sinks.add(sink);
 
         } else if (cfgNodeX instanceof CfgNodeCallBuiltin) {
-            
+
             // builtin function sinks
-            
+
             CfgNodeCallBuiltin cfgNode = (CfgNodeCallBuiltin) cfgNodeX;
             String functionName = cfgNode.getFunctionName();
 
             checkForSinkHelper(functionName, cfgNode, cfgNode.getParamList(), traversedFunction, sinks);
 
         } else if (cfgNodeX instanceof CfgNodeCallPrep) {
-            
+
             CfgNodeCallPrep cfgNode = (CfgNodeCallPrep) cfgNodeX;
             String functionName = cfgNode.getFunctionNamePlace().toString();
-            
+
             // user-defined custom sinks
-                
+
             checkForSinkHelper(functionName, cfgNode, cfgNode.getParamList(), traversedFunction, sinks);
-            
+
         } else {
             // not a sink
         }
     }
-    
+
 //  ********************************************************************************
-    
+
     // LATER: this method looks very similar in all client analyses;
     // possibility to reduce code redundancy
-    private void checkForSinkHelper(String functionName, CfgNode cfgNode, 
+    private void checkForSinkHelper(String functionName, CfgNode cfgNode,
             List<TacActualParam> paramList, TacFunction traversedFunction, List<Sink> sinks) {
-        
+
         if (this.dci.getSinks().containsKey(functionName)) {
             Sink sink = new Sink(cfgNode, traversedFunction);
             Set<Integer> indexList = this.dci.getSinks().get(functionName);
@@ -313,10 +313,10 @@ extends DepClient {
     }
 
 //  ********************************************************************************
-    
+
     /*
     protected boolean isStrongSanit(String opName) {
-        
+
         if (opName.equals("htmlspecialchars") ||
                 opName.equals("htmlentities") ||
                 opName.equals("intval") ||
@@ -360,7 +360,7 @@ extends DepClient {
                 // "clean environment" policy
                 opName.equals("getenv") ||
                 // harmless operators
-                opName.equals("+") || // both binary and unary 
+                opName.equals("+") || // both binary and unary
                 opName.equals("-") || // both binary and unary
                 opName.equals("*") ||
                 opName.equals("/") ||
@@ -389,17 +389,17 @@ extends DepClient {
         }
     }
     */
-    
+
 //  ********************************************************************************
-    
+
     /*
     protected boolean isWeakSanit(String opName, List<Integer> indices) {
         // no weak sanitization for XSS
         return false;
     }*/
-    
+
 //  ********************************************************************************
-    
+
     /*
     protected boolean isEvil(String opName) {
         if (opName.equals("urldecode") ||
@@ -411,9 +411,9 @@ extends DepClient {
             return false;
         }
     }*/
-    
+
 //  ********************************************************************************
-    
+
     /*
     // if the given operation is a multi-dependency operation, it returns true
     // and fills the given indices list with the appropriate index numbers
@@ -468,15 +468,15 @@ extends DepClient {
             return true;
         }else if (
                 opName.equals("ereg_replace") ||
-                opName.equals("eregi_replace") || 
-                opName.equals("preg_replace") || 
+                opName.equals("eregi_replace") ||
+                opName.equals("preg_replace") ||
                 opName.equals("str_replace")
                 ) {
             indices.add(1);
             indices.add(2);
             return true;
         } else if (
-                opName.equals("number_format") 
+                opName.equals("number_format")
                 ) {
             indices.add(0);
             indices.add(2);
@@ -494,9 +494,9 @@ extends DepClient {
             return false;
         }
     }*/
-    
+
 //  ********************************************************************************
-    
+
     /*
     protected boolean isInverseMulti(String opName, List<Integer> indices) {
         if (
@@ -510,5 +510,4 @@ extends DepClient {
             return false;
         }
     }*/
-    
 }

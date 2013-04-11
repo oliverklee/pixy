@@ -5,8 +5,4 @@
 $a = $get;
 $b = htmlspecialchars($a);
 echo $b;
-
-
-
-
 ?>

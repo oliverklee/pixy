@@ -14,7 +14,7 @@ $x2["01"] = 'string-val';
 //var_dump($x2);           // array(2) { [1]=>  string(7) "int-val" ["01"]=>  string(10) "string-val" }
 
 
-/* TODO:  
+/* TODO:
 $x3[1] = 'int-val';
 $x3[1.0] = 'float-val';
 ~_hotspot2;             // x3[1]:float-val

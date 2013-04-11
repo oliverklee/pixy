@@ -5,7 +5,7 @@ import java.util.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 // this interprocedural worklist uses a better order (interprocedural reverse postorder)
-public final class InterWorkListBetter 
+public final class InterWorkListBetter
 implements InterWorkList {
 
     private InterWorkListOrder order;
@@ -14,7 +14,7 @@ implements InterWorkList {
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
-    
+
     public InterWorkListBetter(InterWorkListOrder order) {
         this.order = order;
         this.sortedWorkList = new TreeMap<Integer, InterWorkListElement>();
@@ -30,7 +30,7 @@ implements InterWorkList {
             throw new RuntimeException("SNH");
         }
         InterWorkListElement element = new InterWorkListElement(cfgNode, context);
-        
+
         Integer rpo = this.order.getReversePostOrder(element);
         if (rpo == null) {
             throw new RuntimeException("SNH");

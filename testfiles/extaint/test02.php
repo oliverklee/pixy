@@ -40,7 +40,7 @@ $x1 = 5;
 ~_hotspot1;     // x1:h/h, x4:h/h, x5:h/h, x6:{(h),(u)}/{(h),(u)}
 
 $x1 = $x6;
-~_hotspot2;     // x1:{(h),(x6,42)}/{(h),(x6/42)}, x4:the_same, x5:the_same, 
+~_hotspot2;     // x1:{(h),(x6,42)}/{(h),(x6/42)}, x4:the_same, x5:the_same,
                 // x6:{(<harmless>,none)(<uninit>,none)($x6,42)}/repeat
 
 

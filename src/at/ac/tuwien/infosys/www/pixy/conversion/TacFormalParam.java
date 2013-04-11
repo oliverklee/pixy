@@ -7,9 +7,9 @@ public class TacFormalParam {
     private boolean hasDefault;
     private Cfg defaultCfg;
 
-// ********************************************************************************* 
-// CONSTRUCTORS ********************************************************************    
-// ********************************************************************************* 
+// *********************************************************************************
+// CONSTRUCTORS ********************************************************************
+// *********************************************************************************
 
     TacFormalParam(Variable variable) {
         this.variable = variable;
@@ -24,7 +24,7 @@ public class TacFormalParam {
         this.hasDefault = false;
         this.defaultCfg = null;
     }
-    
+
     TacFormalParam(Variable variable, boolean hasDefault, Cfg defaultCfg) {
         this.variable = variable;
         this.isReference = false;
@@ -32,7 +32,7 @@ public class TacFormalParam {
         this.defaultCfg = defaultCfg;
     }
 
-// ********************************************************************************* 
+// *********************************************************************************
 // GET *****************************************************************************
 // *********************************************************************************
 
@@ -51,7 +51,4 @@ public class TacFormalParam {
     public Cfg getDefaultCfg() {
         return this.defaultCfg;
     }
-
 }
-
-

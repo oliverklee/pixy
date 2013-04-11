@@ -9,7 +9,4 @@ function foo() {
     global $a;
     $a = 'you';
 }
-
-
-
 ?>

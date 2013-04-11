@@ -6,29 +6,27 @@ import at.ac.tuwien.infosys.www.phpparser.ParseNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
-
 //*********************************************************************************
 //CfgNodeDefine ******************************************************************
 //*********************************************************************************
-
 
 public class CfgNodeDefine
 extends CfgNode {
 
     // the first parameter (the name of the constant to be set)
     private TacPlace setMe;
-    
+
     // the second parameter (the value that the constant shall be set to)
     private TacPlace setTo;
-    
+
     // the third parameter
     private TacPlace caseInsensitive;
-    
-// CONSTRUCTORS ********************************************************************    
+
+// CONSTRUCTORS ********************************************************************
 
     public CfgNodeDefine(TacPlace setMe, TacPlace setTo, TacPlace caseInsensitive,
             ParseNode node) {
-        
+
         super(node);
         this.setMe = setMe;
         this.setTo = setTo;
@@ -36,7 +34,7 @@ extends CfgNode {
     }
 
 // GET *****************************************************************************
-    
+
     public TacPlace getSetMe() {
         return this.setMe;
     }
@@ -48,7 +46,7 @@ extends CfgNode {
     public TacPlace getCaseInsensitive() {
         return this.caseInsensitive;
     }
-    
+
     public List<Variable> getVariables() {
         List<Variable> retMe = new LinkedList<Variable>();
         if (this.setMe instanceof Variable) {
@@ -66,10 +64,10 @@ extends CfgNode {
         } else {
             retMe.add(null);
         }
-        
+
         return retMe;
     }
-    
+
 //  SET ****************************************************************************
 
     public void replaceVariable(int index, Variable replacement) {
@@ -87,6 +85,4 @@ extends CfgNode {
             throw new RuntimeException("SNH");
         }
     }
-
 }
-

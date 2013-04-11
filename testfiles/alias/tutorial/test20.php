@@ -9,11 +9,11 @@ function a() {
         $a2 =& $a3;
     }
     b(&$a3);
-    ~_hotspot1;                 // u{ (a.a1, a.a3, main.x1) } 
+    ~_hotspot1;                 // u{ (a.a1, a.a3, main.x1) }
                                 // a{ (a.a2, a.a1) (a.a2, a.a3) (a.a2, main.x1)
-                                //    (main.x1, main.x2) 
+                                //    (main.x1, main.x2)
                                 //    (main.x2, a.x2_gs) (main.x2, a.a1) (main.x2, a.a2) (main.x2, a.a3) }
- 
+
 }
 
 function b(&$bp) {
@@ -23,7 +23,4 @@ function b(&$bp) {
     }
 }
 
-
-
 ?>
-

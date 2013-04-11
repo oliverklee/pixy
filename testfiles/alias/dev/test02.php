@@ -9,6 +9,4 @@ if ($unknown) {
 }
 ~_hotspot2;         // u{} a{(a,b)}
 
-
-
 ?>

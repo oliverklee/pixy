@@ -1,5 +1,4 @@
 <?php
-
 /*
 
 this test (for literals analysis) sometimes fails (at
@@ -32,7 +31,7 @@ function a() {                  // u{ } a{ }
     }                           // u{ (main.x1, a.x1_gs) (main.x2, a.x2_gs) } a{ (main.x1, a.a1) (main.x1_gs, a.a1) }
     if ($GLOBALS['v']) {
         $a1 =& $GLOBALS['x2'];  // u{ (main.x1, a.x1_gs) (main.x2, a.x2_gs, a.a1) } a{ }
-    }                           
+    }
     ~_hotspot0;                 // u{ (main.x1, a.x1_gs) (main.x2, a.x2_gs) } a{ (main.x1, a.a1) (main.x1_gs, a.a1) (main.x2, a.a1) (main.x2_gs, a.a1)}
     b();
     ~_hotspot1;                 // (nothing has changed for alias analysis)

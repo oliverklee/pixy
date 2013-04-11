@@ -11,8 +11,8 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 public class FSAUtils {
 
     private static String mohri = MyOptions.fsa_home + "/Examples/MohriSproat96/ops.pl";
-    
-    public static FSAAutomaton reg_replace(FSAAutomaton phpPatternAuto, 
+
+    public static FSAAutomaton reg_replace(FSAAutomaton phpPatternAuto,
             FSAAutomaton replaceAuto, FSAAutomaton subjectAuto, boolean preg,
             CfgNode cfgNode) {
 
@@ -28,7 +28,7 @@ public class FSAUtils {
             // => be conservative
             return FSAAutomaton.makeAnyString();
         }
-        
+
         // convert the PHP pattern into a prolog regexp
         boolean approximate = false;
         FSAAutomaton prologPatternAuto = null;
@@ -40,7 +40,7 @@ public class FSAUtils {
             System.err.println("- " + cfgNode.getLoc());
             approximate = true;
         } catch (Exception e) {
-            // if anything else goes wrong: 
+            // if anything else goes wrong:
             // - also return .*
             // - but generate a different warning
             System.err.println("Exception during regex conversion");
@@ -57,31 +57,31 @@ public class FSAUtils {
             String patternFile = prologPatternAuto.toFile("temp1.auto");
             String replaceFile = replaceAuto.toFile("temp2.auto");
             String subjectFile = subjectAuto.toFile("temp3.auto");
-            
+
             String c = MyOptions.fsa_home + "/" +
                 "fsa -aux "+mohri+" -r compose(file('"+subjectFile+"'),replace(file('"+patternFile+"'),file('"+replaceFile+"'))) ";
             String autoString = Utils.exec(c);
             retMe = new FSAAutomaton(autoString);
-            
+
             // projection to the output side (turning a transducer into a recognizer)
             retMe = retMe.projectOut();
-            
+
 //            System.out.println(retMe.getString());
 //            Utils.quickDot(retMe.toDot());
 //            Utils.e();
 
         }
 
-        
+
         return retMe;
 
     }
-    
-    public static FSAAutomaton str_replace(FSAAutomaton searchAuto, 
+
+    public static FSAAutomaton str_replace(FSAAutomaton searchAuto,
             FSAAutomaton replaceAuto, FSAAutomaton subjectAuto, CfgNode cfgNode) {
-        
+
         // current approximation:
-        // if the search automaton does not encode a finite string, 
+        // if the search automaton does not encode a finite string,
         // we use .* for the replace automaton;
         // alternatively (and more precisely), we could also use the following for
         // the replace automaton:
@@ -97,14 +97,14 @@ public class FSAUtils {
         String searchFile = searchAuto.toFile("temp1.auto");
         String replaceFile = replaceAuto.toFile("temp2.auto");
         String subjectFile = subjectAuto.toFile("temp3.auto");
-        
+
         String c = MyOptions.fsa_home + "/" +
         "fsa -aux "+mohri+" -r compose(file('"+subjectFile+"'),replace(file('"+searchFile+"'),file('"+replaceFile+"'))) ";
-        
+
         String autoString = Utils.exec(c);
-        
+
         FSAAutomaton retMe = new FSAAutomaton(autoString);
-        
+
         // projection to the output side (turning a transducer into a recognizer)
         retMe = retMe.projectOut();
 
@@ -112,24 +112,24 @@ public class FSAUtils {
 //        System.out.println(autoString);
 //        System.out.println(retMe.getString());
 //        if (true) throw new RuntimeException();
-        
+
         return retMe;
-        
+
     }
-    
+
     public static FSAAutomaton addslashes(FSAAutomaton subjectAuto, CfgNode cfgNode) {
-        
+
         /*
         FSAAutomaton searchAuto = FSAAutomaton.makeString("b");
         FSAAutomaton replaceAuto = FSAAutomaton.makeString("bb");
         subjectAuto = str_replace(searchAuto, replaceAuto, subjectAuto, cfgNode);
-        
+
         //System.out.println(searchAuto.getString());
         //System.out.println(replaceAuto.getString());
         //System.out.println(subjectAuto.getString());
         if (true) throw new RuntimeException();
         */
-        
+
         /*
         // ' -> \'
         searchAuto = FSAAutomaton.makeString("q");
@@ -137,7 +137,7 @@ public class FSAUtils {
         subjectAuto = str_replace(searchAuto, replaceAuto, subjectAuto, cfgNode);
         */
 
-        
+
         // the easy way: addslashes is the same as applying str_replace
         // several times:
         // \ -> \\
@@ -152,26 +152,22 @@ public class FSAUtils {
         searchAuto = FSAAutomaton.makeString("\"");
         replaceAuto = FSAAutomaton.makeString("\\\"");
         subjectAuto = str_replace(searchAuto, replaceAuto, subjectAuto, cfgNode);
-        
+
         return subjectAuto;
-        
+
         /*
         String subjectFile = subjectAuto.toFile("temp1.auto");
         String transducerFile = FSAAutomaton.addslashes().toFile("temp2.auto");
-        
+
         String c = MyOptions.fsa_home + "/" +
         "fsa -aux "+mohri+" -r compose(file('"+subjectFile+"'),file('"+transducerFile+"')) ";
         String autoString = Utils.exec(c);
         FSAAutomaton retMe = new FSAAutomaton(autoString);
-        
+
         // projection to the output side (turning a transducer into a recognizer)
         retMe = retMe.projectOut();
-        
+
         return retMe;
         */
-        
     }
-    
-
-    
 }

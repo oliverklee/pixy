@@ -15,16 +15,16 @@ public class TacAttributes {
 
     private List<TacActualParam> actualParamList;
     private List<TacFormalParam> formalParamList;
-    
+
     private EncapsList encapsList;
-    
+
     private boolean isKnownCall;
-    
+
     TacAttributes() {
     }
-    
+
 // GET *****************************************************************************
-    
+
     TacPlace getPlace() {
         return this.place;
     }
@@ -52,13 +52,13 @@ public class TacAttributes {
     public EncapsList getEncapsList() {
         return encapsList;
     }
-    
+
     public boolean isKnownCall() {
         return this.isKnownCall;
     }
 
 // SET *****************************************************************************
-    
+
     void setPlace(TacPlace place) {
         this.place = place;
     }
@@ -94,15 +94,8 @@ public class TacAttributes {
     public void setEncapsList(EncapsList encapsList) {
         this.encapsList = encapsList;
     }
-    
+
     public void setIsKnownCall(boolean isKnownCall) {
         this.isKnownCall = isKnownCall;
     }
-
-
-    
-
 }
-
-
-

@@ -1,7 +1,7 @@
 <?
 
 // was a bug in method backpatching
-    
+
 include('./' . 'test007a.php');
 
 init();

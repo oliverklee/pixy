@@ -14,14 +14,11 @@ function foo() {
     if ($rand) {
         $f =& $a;
     }
-    bar(); 
+    bar();
     echo $f;
 }
 function bar() {
     global $a;
     $a = 'three';
 }
-
-
-
 ?>

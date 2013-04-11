@@ -4,10 +4,6 @@
 
 $a = $_GET['x'];
 $b = $_GET['y'];
-echo($a); 
+echo($a);
 echo($b);
-
-
-
-
 ?>

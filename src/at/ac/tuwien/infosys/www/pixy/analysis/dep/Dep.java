@@ -6,30 +6,30 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 // corresponds to one dependency label, consisting of
 // <source descriptor (e.g., variable or function name)>, <location (cfg node)>
-public class Dep 
+public class Dep
 implements Recyclable {
 
-    public static GenericRepos<Dep> repos = 
+    public static GenericRepos<Dep> repos =
         new GenericRepos<Dep>();
-    
+
     // special, parameterized label
-    public static final Dep UNINIT = 
+    public static final Dep UNINIT =
         new Dep(null);
-    
+
     private CfgNode cfgNode;
 
 //  ********************************************************************************
 //  CONSTRUCTORS *******************************************************************
 //  ********************************************************************************
-    
+
 //  ********************************************************************************
-    
+
     private Dep(CfgNode cfgNode) {
         this.cfgNode = cfgNode;
     }
-    
+
 //  ********************************************************************************
-    
+
     public static Dep create(CfgNode cfgNode) {
         Dep ret = new Dep(cfgNode);
         ret = repos.recycle(ret);
@@ -41,13 +41,13 @@ implements Recyclable {
 //  ********************************************************************************
 
 //  ********************************************************************************
-    
+
     public CfgNode getCfgNode() {
         return this.cfgNode;
     }
-    
+
 //  ********************************************************************************
-    
+
     public String toString() {
         if (this == UNINIT) {
             return " <uninit> ";
@@ -74,9 +74,9 @@ implements Recyclable {
         }
         return (this.cfgNode.getOrigLineno() == line);
     }
-    
+
 //  ********************************************************************************
-    
+
     public boolean structureEquals(Object compX) {
         if (compX == this) {
             return true;
@@ -93,14 +93,12 @@ implements Recyclable {
         }
         return true;
     }
-    
+
 //  ********************************************************************************
-    
+
     public int structureHashCode() {
         int hashCode = 17;
         hashCode = 37*hashCode + this.cfgNode.hashCode();
         return hashCode;
     }
-
 }
-

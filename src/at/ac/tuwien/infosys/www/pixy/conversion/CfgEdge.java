@@ -8,13 +8,13 @@ public final class CfgEdge {
     static final int TRUE_EDGE = 1;
     static public final int NORMAL_EDGE = 2;
     static final int NO_EDGE = 3;
-    
+
     private final int type;
     private final CfgNode source;
     private CfgNode dest;
 
 // CONSTRUCTORS ********************************************************************
-    
+
     CfgEdge(CfgNode source, CfgNode dest, int type) {
         this.source = source;
         this.dest = dest;
@@ -57,7 +57,3 @@ public final class CfgEdge {
         this.dest = dest;
     }
 }
-
-
-
-

@@ -8,7 +8,4 @@ function foo() {
     $x = 'hi';
     return $x;
 }
-
-
-
 ?>

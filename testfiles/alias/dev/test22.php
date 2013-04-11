@@ -8,7 +8,7 @@ $x->field =& $y;
 $y =& $x->field;
 ~_hotspot1;         // u{} a{}
 
-unset($x->field);   
+unset($x->field);
 ~_hotspot2;         // u{} a{}
 
 ?>

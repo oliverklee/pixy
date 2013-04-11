@@ -10,22 +10,22 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeTester;
 // transfer function for special ~_test_ node
 public class LiteralTfTester
 extends TransferFunction {
-    
+
     // provides access to the return variable of the function enclosing
     // this ~_test_ node
     private Variable retVar;
-    
-// *********************************************************************************    
+
+// *********************************************************************************
 // CONSTRUCTORS ********************************************************************
-// *********************************************************************************     
+// *********************************************************************************
 
     public LiteralTfTester(CfgNodeTester cfgNode) {
         this.retVar = (Variable) cfgNode.getEnclosingFunction().getRetVar();
     }
 
-// *********************************************************************************    
+// *********************************************************************************
 // OTHER ***************************************************************************
-// *********************************************************************************  
+// *********************************************************************************
 
     public LatticeElement transfer(LatticeElement inX) {
 

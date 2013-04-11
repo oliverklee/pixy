@@ -12,16 +12,16 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 // transfer function for "isset" tests
 // LATER: make it intelligent
-public class DepTfIsset 
+public class DepTfIsset
 extends TransferFunction{
-    
+
     private Variable setMe;
     private TacPlace testMe;
     private CfgNode cfgNode;
-    
-// *********************************************************************************    
+
+// *********************************************************************************
 // CONSTRUCTORS ********************************************************************
-// *********************************************************************************     
+// *********************************************************************************
 
     public DepTfIsset(TacPlace setMe, TacPlace testMe, CfgNode cfgNode) {
         this.setMe = (Variable) setMe;  // must be a variable
@@ -29,9 +29,9 @@ extends TransferFunction{
         this.cfgNode = cfgNode;
     }
 
-// *********************************************************************************    
+// *********************************************************************************
 // OTHER ***************************************************************************
-// *********************************************************************************  
+// *********************************************************************************
 
     public LatticeElement transfer(LatticeElement inX) {
 
@@ -42,14 +42,14 @@ extends TransferFunction{
         if (!setMe.isTemp()) {
             throw new RuntimeException("SNH");
         }
-        
+
         // always results in a boolean, which is always untainted/clean;
         // not so elegant, but working: simply use Literal.FALSE
         Set<Variable> mustAliases = new HashSet<Variable>();
         mustAliases.add(setMe);
         Set mayAliases = Collections.EMPTY_SET;
         out.assign(setMe, mustAliases, mayAliases, cfgNode);
-        
+
         return out;
     }
 }

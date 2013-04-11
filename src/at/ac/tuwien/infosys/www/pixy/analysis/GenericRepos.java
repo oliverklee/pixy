@@ -11,8 +11,8 @@ import java.util.*;
 // it first checks its repository to see if there already is such
 // an object; in this case, a reference to the already existing
 // object is returned; otherwise, a new object is created, added to
-// the repository, and returned; 
-// advantages: saves memory (no redundant objects) and allows 
+// the repository, and returned;
+// advantages: saves memory (no redundant objects) and allows
 // users of this class to perform quick comparisons with "=="
 
 // guide for how to design such a class:
@@ -21,7 +21,7 @@ import java.util.*;
 // - make the constructor private
 // - use a static factory method instead
 // - make sure that the private constructor is ONLY called by
-//   factory methods (and perhaps by static field initializers), 
+//   factory methods (and perhaps by static field initializers),
 //   and that these methods perform recycling by means of the repository
 // - do not override its default equals and hashCode
 //   (would destroy the advantages mentioned above)
@@ -29,7 +29,7 @@ public class GenericRepos<E extends Recyclable> {
 
     // structure hash code (Integer) -> List of Recyclable's
     private Map<Integer,List<E>> repos;
-    
+
     public GenericRepos() {
         this.repos = new HashMap<Integer,List<E>>();
     }
@@ -38,7 +38,7 @@ public class GenericRepos<E extends Recyclable> {
     // repository element is returned; else: the element is
     // entered into the repository and returned
     public E recycle(E recycleMe) {
-        
+
         if (recycleMe == null) {
             return recycleMe;
         }
@@ -52,7 +52,7 @@ public class GenericRepos<E extends Recyclable> {
             this.repos.put(structureHashCode, recycleMeList);
             return recycleMe;
         }
-        
+
         // search the candidates list
         for (E candidate : candidates) {
             if (candidate.structureEquals(recycleMe)) {
@@ -60,7 +60,7 @@ public class GenericRepos<E extends Recyclable> {
                 return candidate;
             }
         }
-        
+
         // no candidate matches: add recycleMe to this list and return it
         candidates.add(recycleMe);
         return recycleMe;
@@ -72,7 +72,7 @@ public class GenericRepos<E extends Recyclable> {
 
     // structure hash code (Integer) -> List of Recyclable's
     private Map<Integer,List<Recyclable>> repos;
-    
+
     public GenericRepos() {
         this.repos = new HashMap<Integer,List<Recyclable>>();
     }
@@ -81,7 +81,7 @@ public class GenericRepos<E extends Recyclable> {
     // repository element is returned; else: the element is
     // entered into the repository and returned
     public Recyclable recycle(Recyclable recycleMe) {
-        
+
         if (recycleMe == null) {
             return recycleMe;
         }
@@ -95,7 +95,7 @@ public class GenericRepos<E extends Recyclable> {
             this.repos.put(structureHashCode, recycleMeList);
             return recycleMe;
         }
-        
+
         // search the candidates list
         for (Iterator iter = candidates.iterator(); iter.hasNext(); ) {
             Recyclable candidate = (Recyclable) iter.next();
@@ -104,11 +104,10 @@ public class GenericRepos<E extends Recyclable> {
                 return candidate;
             }
         }
-        
+
         // no candidate matches: add recycleMe to this list and return it
         candidates.add(recycleMe);
         return recycleMe;
     }
 }
-
 */

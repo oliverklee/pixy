@@ -10,13 +10,12 @@ import java.util.*;
 // CfgNodeGlobal ********************************************************************
 // *********************************************************************************
 
-
 public class CfgNodeGlobal
 extends CfgNode {
 
     private Variable operand;
-    
-// CONSTRUCTORS ********************************************************************    
+
+// CONSTRUCTORS ********************************************************************
 
     public CfgNodeGlobal(TacPlace operand, ParseNode node) {
         super(node);
@@ -24,11 +23,11 @@ extends CfgNode {
     }
 
 //  GET *****************************************************************************
-    
+
     public Variable getOperand() {
         return this.operand;
     }
-    
+
     public List<Variable> getVariables() {
         List<Variable> retMe = new LinkedList<Variable>();
         if (this.operand instanceof Variable) {
@@ -38,7 +37,7 @@ extends CfgNode {
         }
         return retMe;
     }
-    
+
 //  SET ****************************************************************************
 
     public void replaceVariable(int index, Variable replacement) {
@@ -50,7 +49,4 @@ extends CfgNode {
             throw new RuntimeException("SNH");
         }
     }
-
-
 }
-

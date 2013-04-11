@@ -1,6 +1,5 @@
 package at.ac.tuwien.infosys.www.pixy;
 
-
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -18,35 +17,35 @@ import junit.framework.*;
 // all methods named "testXX" are executed automatically when choosing
 // "Run / Run as... / JUnit Test"
 
-public class IncludeTestCase 
+public class IncludeTestCase
 extends TestCase {
 
     private String path;    // complete path to the testfile directory (with trailing slash)
-    
+
     // these are recomputed for every single test
     private DepAnalysis depAnalysis;
     private XSSAnalysis xssAnalysis;
     List<Sink> sinks;
-    
+
 //  ********************************************************************************
 //  SETUP **************************************************************************
 //  ********************************************************************************
-    
+
     // called automatically
     protected void setUp() {
         this.path = MyOptions.pixy_home + "/testfiles/includes/";
     }
-    
-    
+
+
     // call this at the beginning of each test; optionally uses
     // a functional analysis instead of call-string ("functional" param),
     // and uses a dummy literal analysis
     private void mySetUp(String testFile, boolean functional) {
-        
+
         Checker checker = new Checker(this.path + testFile);
         MyOptions.option_A = true;    // perform alias analysis!
         MyOptions.setAnalyses("xss");
-        
+
         // initialize & analyze
         TacConverter tac = checker.initialize().getTac();
         checker.analyzeTaint(tac, functional);
@@ -86,21 +85,21 @@ extends TestCase {
         return ret.toString();
     }
 
-    
+
     // set "generate" to false if you want to generate graphs
-    // (instead of checking against existing graphs) 
+    // (instead of checking against existing graphs)
     private void performTest(String testNum, int sinkNum, int graphNum, boolean generate) {
-        
+
         performTest(testNum, sinkNum, graphNum, generate, false);
     }
 
     private void performTest(String testNum, int sinkNum, int graphNum, boolean generate, boolean functional) {
-        
+
         //generate = true;
-        
+
         mySetUp("test" + testNum + ".php", functional);
-        
-        Assert.assertTrue("Sinks real: " + sinks.size() + ", expected: " 
+
+        Assert.assertTrue("Sinks real: " + sinks.size() + ", expected: "
                 + sinkNum, sinks.size() == sinkNum);
 
         // collect depGraphs
@@ -108,10 +107,10 @@ extends TestCase {
         for (Sink sink : sinks) {
             depGraphs.addAll(depAnalysis.getDepGraph(sink));
         }
-        
-        Assert.assertTrue("Graphs real: " + depGraphs.size() + ", expected: " 
+
+        Assert.assertTrue("Graphs real: " + depGraphs.size() + ", expected: "
                 + graphNum, depGraphs.size() == graphNum);
-        
+
         int graphCount = 0;
         for (DepGraph depGraph : depGraphs) {
             graphCount++;
@@ -138,127 +137,120 @@ extends TestCase {
 
     public void test01() {
         String testNum = "01";
-        int sinkNum = 1;        // expected number of sinks 
+        int sinkNum = 1;        // expected number of sinks
         int graphNum = 1;       // expected number of graphs
         this.performTest(testNum, sinkNum, graphNum, false);
     }
-    
+
     public void test02() {
         String testNum = "02";
-        int sinkNum = 1; 
+        int sinkNum = 1;
         int graphNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false);
     }
-    
+
     public void test03() {
         String testNum = "03";
-        int sinkNum = 2; 
+        int sinkNum = 2;
         int graphNum = 2;
         this.performTest(testNum, sinkNum, graphNum, false);
     }
-    
+
     public void test04() {
         String testNum = "04";
-        int sinkNum = 1; 
+        int sinkNum = 1;
         int graphNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false);
     }
-    
+
     public void test05() {
         String testNum = "05";
-        int sinkNum = 1; 
+        int sinkNum = 1;
         int graphNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false);
     }
-    
+
     public void test06() {
         String testNum = "06";
-        int sinkNum = 1; 
+        int sinkNum = 1;
         int graphNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false);
     }
-    
+
     public void test07() {
         String testNum = "07";
-        int sinkNum = 1; 
+        int sinkNum = 1;
         int graphNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false);
     }
-    
+
     public void test08() {
         String testNum = "08";
-        int sinkNum = 0; 
+        int sinkNum = 0;
         int graphNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false);
     }
-    
+
     public void test09() {
         String testNum = "09";
-        int sinkNum = 3; 
+        int sinkNum = 3;
         int graphNum = 3;
         this.performTest(testNum, sinkNum, graphNum, false);
     }
-    
+
     public void test10() {
         String testNum = "10";
-        int sinkNum = 1; 
+        int sinkNum = 1;
         int graphNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false);
     }
-    
+
     public void test11() {
         String testNum = "11";
-        int sinkNum = 1; 
+        int sinkNum = 1;
         int graphNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false);
     }
-    
+
     public void test12() {
         String testNum = "12";
-        int sinkNum = 1; 
+        int sinkNum = 1;
         int graphNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false);
     }
-    
+
     public void test13() {
         String testNum = "13";
-        int sinkNum = 1; 
+        int sinkNum = 1;
         int graphNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false);
     }
-    
+
     public void test14() {
         String testNum = "14";
-        int sinkNum = 0; 
+        int sinkNum = 0;
         int graphNum = 0;
         this.performTest(testNum, sinkNum, graphNum, false);
     }
-    
+
     public void test15() {
         String testNum = "15";
-        int sinkNum = 1; 
+        int sinkNum = 1;
         int graphNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false);
     }
-    
+
     /*
      * HOW TO ADD NEW TESTS
-     * 
+     *
      * - write a php testfile and move it to the right directory (see above)
      * - copy one of the existing test methods and adjust the numbers
      *   (for an explanation, see the first test method)
      * - set the fourth parameter of "performTest" to true, and run
-     *   the test; this has the effect that dot files for the generated 
+     *   the test; this has the effect that dot files for the generated
      *   graphs are dumped to the filesystem
      * - check if the dot files look as you expected
-     * - switch the fourth parameter back to false 
-     * 
+     * - switch the fourth parameter back to false
+     *
      */
-    
 }
-
-
-
-
-
-

@@ -4,7 +4,7 @@
 $a = 'a';
 while ($get) {
     $a .= 'b';
-} 
+}
 mysql_query($a);
 
 

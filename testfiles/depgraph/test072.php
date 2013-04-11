@@ -14,9 +14,4 @@ function foo($fp) {
     echo $f1[2];    // 7
     echo $f1[3];    // uninitialized, tainted
 }
-
-
-
-
-
 ?>

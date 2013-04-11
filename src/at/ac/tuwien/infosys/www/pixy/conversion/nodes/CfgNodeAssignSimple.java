@@ -6,11 +6,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 import java.util.*;
 
-
 // *********************************************************************************
 // CfgNodeAssignSimple *************************************************************
 // *********************************************************************************
-
 
 // "left = right"
 public class CfgNodeAssignSimple
@@ -18,25 +16,25 @@ extends CfgNode {
 
     private Variable left;
     private TacPlace right;
-    
-//  CONSTRUCTORS *******************************************************************    
+
+//  CONSTRUCTORS *******************************************************************
 
     public CfgNodeAssignSimple(Variable left, TacPlace right, ParseNode parseNode) {
         super(parseNode);
         this.left = left;
         this.right = right;
     }
-    
+
 //  GET ****************************************************************************
-    
+
     public Variable getLeft() {
         return this.left;
     }
-    
+
     public TacPlace getRight() {
         return this.right;
     }
-    
+
     public List<Variable> getVariables() {
         List<Variable> retMe = new LinkedList<Variable>();
         retMe.add(this.left);
@@ -47,9 +45,9 @@ extends CfgNode {
         }
         return retMe;
     }
-    
+
 //  SET ****************************************************************************
-    
+
     public void replaceVariable(int index, Variable replacement) {
         switch (index) {
         case 0:
@@ -63,4 +61,3 @@ extends CfgNode {
         }
     }
 }
-

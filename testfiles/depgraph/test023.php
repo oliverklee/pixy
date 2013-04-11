@@ -7,5 +7,4 @@ foo($a);
 function foo($x) {
     echo $x;
 }
-
 ?>

@@ -5,8 +5,7 @@ import java.util.regex.Pattern;
 
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
-
-public class Literal 
+public class Literal
 extends TacPlace {
 
     public static final Literal TRUE = new Literal("_true");
@@ -21,21 +20,21 @@ extends TacPlace {
     private static Pattern strtod = Pattern.compile("\\s*[+-]?((\\d+(\\.\\d*)?)|\\d*\\.\\d+)([eE][+-]?\\d+)?");
 
     // EFF: caching for getXyValue methods;
-    
+
 // *********************************************************************************
-// CONSTRUCTORS ********************************************************************    
+// CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
     public Literal(String literal) {
         this(literal, true);
     }
-    
+
     // "trim": trim single/double quotes from the ends?
     public Literal(String literal, boolean trim) {
 
         boolean in_double_quotes = false;
         boolean in_single_quotes = false;
-        
+
         if (literal.length() > 1) {
             if ((literal.charAt(0) == '"' && literal.charAt(literal.length()-1) == '"')) {
                 in_double_quotes = true;
@@ -43,24 +42,24 @@ extends TacPlace {
                 in_single_quotes = true;
             }
         }
-        
+
         if (trim && (in_double_quotes || in_single_quotes)) {
             // strip double / single quotes
             literal = literal.substring(1, literal.length() - 1);
         }
 
-        // handle backslash escapes if inside single quotes; 
+        // handle backslash escapes if inside single quotes;
         // currently handled:
         // \\ -> \
         // \' -> '
         if (in_single_quotes && literal.contains("\\")) {
-            
+
             StringBuilder buf = new StringBuilder();
             Integer backSlash = literal.indexOf('\\');
             buf.append(literal.substring(0, backSlash));
-            
+
             while (backSlash != null) {
-                
+
                 char escapedCharOld = literal.charAt(backSlash+1);
                 String escapedResult;
                 switch (escapedCharOld) {
@@ -74,7 +73,7 @@ extends TacPlace {
                     escapedResult = "\\" + escapedCharOld;
                 }
                 buf.append(escapedResult);
-                
+
                 int nextBackSlash = literal.indexOf('\\', backSlash+2);
                 if (nextBackSlash == -1) {
                     buf.append(literal.substring(backSlash+2));
@@ -84,23 +83,23 @@ extends TacPlace {
                     backSlash = nextBackSlash;
                 }
             }
-            
+
             literal = buf.toString();
         }
 
-        // handle backslash escapes if inside double quotes; 
+        // handle backslash escapes if inside double quotes;
         // currently handled:
         // \\ -> \
         // \$ -> $
         // \" -> "
         else if (in_double_quotes && literal.contains("\\")) {
-            
+
             StringBuilder buf = new StringBuilder();
             Integer backSlash = literal.indexOf('\\');
             buf.append(literal.substring(0, backSlash));
-            
+
             while (backSlash != null) {
-                
+
                 char escapedCharOld = literal.charAt(backSlash+1);
                 String escapedResult;
                 switch (escapedCharOld) {
@@ -117,7 +116,7 @@ extends TacPlace {
                     escapedResult = "\\" + escapedCharOld;
                 }
                 buf.append(escapedResult);
-                
+
                 int nextBackSlash = literal.indexOf('\\', backSlash+2);
                 if (nextBackSlash == -1) {
                     buf.append(literal.substring(backSlash+2));
@@ -127,29 +126,29 @@ extends TacPlace {
                     backSlash = nextBackSlash;
                 }
             }
-            
+
             literal = buf.toString();
         }
-        
+
         this.literal = literal;
     }
-    
+
 // *********************************************************************************
-// GET *****************************************************************************    
+// GET *****************************************************************************
 // *********************************************************************************
 
 // toString ************************************************************************
-    
+
     public String toString() {
         return this.literal;
     }
-    
+
 // getBoolValueLiteral *************************************************************
-    
-    // returns Literal.TRUE, Literal.FALSE or Literal.TOP (if the boolean value 
+
+    // returns Literal.TRUE, Literal.FALSE or Literal.TOP (if the boolean value
     // can't be determined)
     public Literal getBoolValueLiteral() {
-        
+
         if (this == Literal.TOP) {
             return Literal.TOP;
         }
@@ -163,8 +162,8 @@ extends TacPlace {
 
             return Literal.FALSE;
         }
-        
-        // if I am completely numeric and my float value is 0, I could 
+
+        // if I am completely numeric and my float value is 0, I could
         // evaluate to both true and false,
         // depending on my internal PHP type (string or float), which is
         // not tracked (would require an additional data-flow analysis...);
@@ -177,10 +176,10 @@ extends TacPlace {
 
         return Literal.TRUE;
     }
-    
+
 // isCompletelyNumeric *************************************************************
-    
-    // returns true if the contained literal is completely numeric 
+
+    // returns true if the contained literal is completely numeric
     // (e.g. contains no trailing characters) or is a special literal
     // that can be converted to a numeric value (NULL, TRUE, FALSE)
     boolean isCompletelyNumeric() {
@@ -195,7 +194,7 @@ extends TacPlace {
             return false;
         }
     }
-    
+
 // getFloatValue *******************************************************************
 
     // assumes that this Literal is not Literal.TOP, so check that before the call
@@ -212,7 +211,7 @@ extends TacPlace {
         }
 
         Matcher matcher = Literal.strtod.matcher(this.literal);
-        
+
         if (matcher.find()) {
             String prefix = this.literal.substring(0, matcher.end());
             return Float.parseFloat(prefix);
@@ -224,13 +223,13 @@ extends TacPlace {
 
 //  getIntValue ********************************************************************
 
-    // analogous to getFloatValue() 
+    // analogous to getFloatValue()
     int getIntValue() {
         return (int) this.getFloatValue();
     }
-    
+
 // getFloatValueLiteral ************************************************************
-    
+
     public Literal getFloatValueLiteral() {
 
         if (this == Literal.TOP) {
@@ -246,32 +245,32 @@ extends TacPlace {
         if (this == Literal.FALSE || this == Literal.NULL) {
             return new Literal("0");
         }
-        
+
         return new Literal(Literal.numberToString(this.getFloatValue()));
     }
-    
+
 // getIntValueLiteral **************************************************************
-    
+
     // analogous to getFloatValueLiteral()
     public Literal getIntValueLiteral() {
-        
+
         if (this == Literal.TOP) {
             return Literal.TOP;
         }
         return new Literal(Literal.numberToString(this.getIntValue()));
     }
-    
+
 // getStringValueLiteral ***********************************************************
-    
+
     public Literal getStringValueLiteral() {
         if (this == Literal.TOP) {
             return Literal.TOP;
         }
         return new Literal(this.getStringValue());
     }
-    
+
 // getStringValue ******************************************************************
-    
+
     // assumes that this Literal is not Literal.TOP, so check that before the call
     public String getStringValue() {
         if (this == Literal.TRUE) {
@@ -282,21 +281,21 @@ extends TacPlace {
         }
         return this.literal;
     }
-    
+
 // numberToString ******************************************************************
-    
+
     // LATER: better simulation of PHP's conversion of number to string;
     // don't use Float.toString(); tedious because of missing specification
     public static String numberToString(float in) {
         return Float.toString(in);
     }
-    
+
     static String numberToString(int in) {
         return Integer.toString(in);
     }
-    
+
 // isSmallerLiteral ****************************************************************
-    
+
     // tests if left < right and returns the resulting literal (can also be
     // Literal.TOP in case of unspecified semantics)
     public static Literal isSmallerLiteral(Literal left, Literal right, CfgNode cfgNode) {
@@ -312,14 +311,14 @@ extends TacPlace {
             // fuzzy explanations in the PHP manual and contradictions
             // to observed behavior
             /*
-            throw new RuntimeException("Unspecified PHP semantics, line " + 
+            throw new RuntimeException("Unspecified PHP semantics, line " +
                     cfgNode.getOrigLineno());*/
             return Literal.TOP;
         }
     }
 
 // isGreaterLiteral ****************************************************************
-    
+
     // tests if left > right and returns the resulting literal;
     // analogous to isSmallerLiteral
     public static Literal isGreaterLiteral(Literal left, Literal right, CfgNode cfgNode) {
@@ -335,29 +334,29 @@ extends TacPlace {
             throw new RuntimeException(
                 "Unspecified PHP semantics, line " + cfgNode.getOrigLineno());*/
             return Literal.TOP;
-            
+
         }
     }
 
 // isEqualLiteral ******************************************************************
-    
+
     // tests the two operands for loose equality and returns the resulting literal
     public static Literal isEqualLiteral(Literal left, Literal right) {
-        
+
         // check this before
         if (left == Literal.TOP || right == Literal.TOP) {
             throw new RuntimeException("SNH");
         }
-        
-        // if at least one of the operands is boolean 
+
+        // if at least one of the operands is boolean
         if (left.isBool() || right.isBool()) {
             if (left.getBoolValueLiteral() == right.getBoolValueLiteral()) {
                 return Literal.TRUE;
             } else {
                 return Literal.FALSE;
             }
-        } 
-        
+        }
+
         // if the left or the right operand is NULL:
         if (left == Literal.NULL) {
             return right.isEqualToNullLiteral();
@@ -365,21 +364,21 @@ extends TacPlace {
         if (right == Literal.NULL) {
             return left.isEqualToNullLiteral();
         }
-        
+
         // both operands are strings/numbers;
         // watch out for weird cases:
         // '042' == '42.0' (true)
         // '042' == 42 (true)
         // '42' == '42xz' (false)
         // 42 == '42xz' (true)
-        
+
         // easiest case: if they are completely equal
         if (left.toString().equals(right.toString())) {
             return Literal.TRUE;
         }
         boolean leftNumeric = left.isCompletelyNumeric();
         boolean rightNumeric = right.isCompletelyNumeric();
-        
+
         // if both operands are completely numeric, we can compare their float values
         if (leftNumeric && rightNumeric) {
             if (left.getFloatValue() == right.getFloatValue()) {
@@ -388,28 +387,28 @@ extends TacPlace {
                 return Literal.FALSE;
             }
         }
-        
+
         // if both operands are NOT completely numeric, we know that they
         // are strings and therefore have to be different
         if (!leftNumeric && !rightNumeric) {
             return Literal.FALSE;
         }
-        
+
         // one of the operands is completely numeric, the other is not;
         // we don't know whether to completely numeric operand is a string or
         // not, so we don't know if they are equal (see example below)
         return Literal.TOP;
     }
-    
+
 // isIdenticalLiteral **************************************************************
-    
+
     // tests the two operands for strict equality and returns the resulting literal
     public static Literal isIdenticalLiteral(Literal left, Literal right) {
-        
+
         if (left == Literal.TOP || right == Literal.TOP) {
             throw new RuntimeException("SNH");
         }
-        
+
         // if any of the two operands is boolean or null
         if (left == Literal.TRUE || left == Literal.FALSE ||
             right == Literal.TRUE || right == Literal.FALSE ||
@@ -424,11 +423,11 @@ extends TacPlace {
         // in all other cases, we don't know the exact result since we aren't
         // performing type analysis
         return Literal.TOP;
-        
+
     }
-    
+
 // invert **************************************************************************
-    
+
     // inverts TRUE and FALSE, leaves TOP as it is
     public static Literal invert(Literal lit) {
         if (lit == Literal.FALSE) {
@@ -441,9 +440,9 @@ extends TacPlace {
             throw new RuntimeException("SNH");
         }
     }
-    
+
 // isEqualToNullLiteral ************************************************************
-    
+
     // returns the literal resulting from a loose comparison to NULL
     Literal isEqualToNullLiteral() {
         // NULL is equal to NULL, FALSE, and the number 0
@@ -463,7 +462,7 @@ extends TacPlace {
     }
 
 // isBool **************************************************************************
-    
+
     // returns true if this is Literal.TRUE or Literal.FALSE, false otherwise
     boolean isBool() {
         if (this == Literal.TRUE || this == Literal.FALSE) {
@@ -472,19 +471,19 @@ extends TacPlace {
             return false;
         }
     }
-    
+
 // *********************************************************************************
-// SET *****************************************************************************    
+// SET *****************************************************************************
 // *********************************************************************************
-     
+
     void setLiteral(String literal) {
         this.literal = literal;
     }
-    
+
 // *********************************************************************************
-// OTHER ***************************************************************************    
+// OTHER ***************************************************************************
 // *********************************************************************************
-  
+
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -506,5 +505,4 @@ extends TacPlace {
         return this.hashCode;
         */
     }
-
 }

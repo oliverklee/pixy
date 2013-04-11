@@ -9,8 +9,8 @@ public class Utils {
     public static String basename(String s) {
         return (new File(s).getName());
     }
- 
-    // writes the given string to a file with the given name 
+
+    // writes the given string to a file with the given name
     // (provide full path)
     public static void writeToFile(String s, String fileName) {
         try {
@@ -23,7 +23,7 @@ public class Utils {
         }
     }
 
-    // appends the given string to a file with the given name 
+    // appends the given string to a file with the given name
     // (provide full path)
     public static void appendToFile(String s, String fileName) {
         try {
@@ -42,10 +42,10 @@ public class Utils {
     public static String readFile(String fileName) {
         return readFile(new File(fileName));
     }
-    
+
     // reads the given file into a string and returns it
     public static String readFile(File file) {
-        
+
         StringBuilder retme = new StringBuilder();
         try {
             FileReader reader = new FileReader(file);
@@ -61,12 +61,12 @@ public class Utils {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
+
         return retme.toString();
-        
+
     }
-    
-    
+
+
 
     // - input: the name of some file
     // - output: a list with all files (canonical) located in the
@@ -88,11 +88,11 @@ public class Utils {
         fileListHelper(rootDir, retMe);
         return retMe;
     }
-    
+
     private static void fileListHelper(File dir, List<File> retMe) {
-        
+
         try {
-            
+
             List<File> dirList = new LinkedList<File>();
             File[] fileList = dir.listFiles();
             for (File f : fileList) {
@@ -105,12 +105,12 @@ public class Utils {
             for (File d : dirList) {
                 fileListHelper(d, retMe);
             }
-        
+
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage());
         }
     }
-    
+
     // prints the arguments to System.err and exits with code 1;
     // don't use System.exit directly, since chances are that you
     // will write the error message to System.out (not good)
@@ -120,7 +120,7 @@ public class Utils {
         }
         System.exit(1);
     }
-    
+
     // converts an input stream to string;
     // might lead to slight changes in linebreaks
     public static String inputStreamToString(InputStream instream) {
@@ -134,21 +134,21 @@ public class Utils {
             }
             inreader.close();
         } catch (IOException e) {
-            throw new RuntimeException(e);        
+            throw new RuntimeException(e);
         }
         return retMe.toString();
     }
-    
+
     // executes the given command and returns the output;
     // error output is written to a logfile
     public static String exec(String command) {
-        
+
         String execErrorLog = MyOptions.graphPath + "/exec-errors.txt";
 
         StringBuilder retMe = new StringBuilder();
         try {
             Process p = Runtime.getRuntime().exec(command);
-            
+
             InputStream instream = p.getInputStream();      // standard output of prog
             InputStream errstream = p.getErrorStream();     // error output of prog
             p.waitFor();
@@ -163,24 +163,24 @@ public class Utils {
                 }
                 inreader.close();
             } catch (IOException e) {
-                throw new RuntimeException(e.getMessage());        
+                throw new RuntimeException(e.getMessage());
             }
-            
+
             // read and print errors
             Writer outWriter = new FileWriter(execErrorLog, true);
             try {
                 BufferedReader inreader = new BufferedReader(new InputStreamReader(errstream));
                 String line;
-                
+
                 while ((line = inreader.readLine()) != null) {
                     outWriter.append(line + "\n");
                     //System.err.println(line);
                 }
                 inreader.close();
             } catch (IOException e) {
-                throw new RuntimeException(e.getMessage());        
+                throw new RuntimeException(e.getMessage());
             }
-            
+
             if (p.exitValue() != 0) {
                 System.err.println("Exit value: " + p.exitValue());
                 System.err.println("- " + command);
@@ -189,8 +189,8 @@ public class Utils {
                 new RuntimeException().printStackTrace();
             }
             outWriter.close();
-            
-            
+
+
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException();
@@ -198,7 +198,7 @@ public class Utils {
             e.printStackTrace();
             throw new RuntimeException();
         }
-        
+
         return retMe.toString();
 
     }
@@ -207,23 +207,23 @@ public class Utils {
     public static void e() {
         throw new RuntimeException();
     }
-    
+
     // feeds the given string into dotty
     public static void quickDot(String s) {
 
         try {
             Process p = Runtime.getRuntime().exec("dotty -");
-            
+
             OutputStream outstream = p.getOutputStream();    // standard input of prog
-            
+
             Writer outwriter = new OutputStreamWriter(outstream);
             outwriter.write(s);
             outwriter.flush();
             outwriter.close();
             p.waitFor();
-            
+
             p.waitFor();
-            
+
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException();
@@ -233,7 +233,7 @@ public class Utils {
         }
 
     }
-    
+
     public static void copyFile(String src, String dst) {
         // from "GoToJava"
         try {
@@ -251,7 +251,7 @@ public class Utils {
             //throw new RuntimeException();
         }
     }
-    
+
     // deletes a directory, even if it is non-empty
     public static void deleteDirectory (File dir) {
         for (File entry : dir.listFiles()) {

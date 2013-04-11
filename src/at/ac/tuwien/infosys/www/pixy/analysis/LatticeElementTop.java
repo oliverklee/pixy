@@ -1,14 +1,13 @@
 package at.ac.tuwien.infosys.www.pixy.analysis;
 
-
 public class LatticeElementTop
 extends LatticeElement {
 
     public static final LatticeElementTop INSTANCE = new LatticeElementTop();
-    
-// *********************************************************************************    
+
+// *********************************************************************************
 // CONSTRUCTORS ********************************************************************
-// *********************************************************************************     
+// *********************************************************************************
 
     // singleton class
     private LatticeElementTop() {
@@ -23,13 +22,13 @@ extends LatticeElement {
     }
 
     public boolean structureEquals(Object compX) {
-        throw new RuntimeException("SNH");    
+        throw new RuntimeException("SNH");
     }
 
     public int structureHashCode() {
         throw new RuntimeException("SNH");
     }
-    
+
     public void dump() {
         System.out.println("<top>");
     }
@@ -47,5 +46,4 @@ extends LatticeElement {
         return (((Object) this).hashCode());
     }
     */
-
 }

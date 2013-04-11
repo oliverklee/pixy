@@ -1,9 +1,9 @@
 /*
  * dk.brics.automaton
- * 
+ *
  * Copyright (c) 2001-2006 Anders Moeller
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -14,7 +14,7 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. The name of the author may not be used to endorse or promote products
  *    derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
  * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -32,34 +32,34 @@ package at.ac.tuwien.infosys.www.pixy.automaton;
 import java.util.*;
 import java.io.*;
 
-/** 
- * <tt>Automaton</tt> transition. 
+/**
+ * <tt>Automaton</tt> transition.
  * <p>
  * A transition, which belongs to a source state, consists of a Unicode character interval
  * and a destination state.
  * @author Anders M&oslash;ller &lt;<a href="mailto:amoeller@brics.dk">amoeller@brics.dk</a>&gt;
  */
 public class Transition implements Serializable, Cloneable {
-	
+
     // Indirectly: tainted through sanitization function;
     // forms a lattice: Untainted -> Indirectly -> Directly
 	public static enum Taint {Untainted, Indirectly, Directly}
 
     static final long serialVersionUID = 40001;
-	
+
     Transition.Taint taint;
 
-	/* 
+	/*
 	 * CLASS INVARIANT: min<=max
 	 */
-	
+
 	char min;
 	char max;
-	
+
 	State to;
-	
-	/** 
-	 * Constructs new singleton interval transition. 
+
+	/**
+	 * Constructs new singleton interval transition.
 	 * @param c transition character
 	 * @param to destination state
 	 */
@@ -73,8 +73,8 @@ public class Transition implements Serializable, Cloneable {
         this.taint = taint;
     }
 
-	/** 
-	 * Constructs new transition. 
+	/**
+	 * Constructs new transition.
 	 * Both end points are included in the interval.
 	 * @param min transition interval minimum
 	 * @param max transition interval maximum
@@ -100,21 +100,21 @@ public class Transition implements Serializable, Cloneable {
 	public char getMin() {
 		return min;
 	}
-	
+
 	/** Returns maximum of this transition interval. */
 	public char getMax() {
 		return max;
 	}
-	
+
 	/** Returns destination of this transition. */
 	public State getDest() {
 		return to;
 	}
-	
-	/** 
+
+	/**
 	 * Checks for equality.
 	 * @param obj object to compare with
-	 * @return true if <tt>obj</tt> is a transition with same 
+	 * @return true if <tt>obj</tt> is a transition with same
 	 *         character interval and destination state as this transition.
 	 */
 	@Override
@@ -125,8 +125,8 @@ public class Transition implements Serializable, Cloneable {
 		} else
 			return false;
 	}
-	
-	/** 
+
+	/**
 	 * Returns hash code.
 	 * The hash code is based on the character interval (not the destination state).
 	 * @return hash code
@@ -135,9 +135,9 @@ public class Transition implements Serializable, Cloneable {
 	public int hashCode() {
 		return min * 2 + max * 3;
 	}
-	
-	/** 
-	 * Clones this transition. 
+
+	/**
+	 * Clones this transition.
 	 * @return clone with same character interval and destination state
 	 */
 	@Override
@@ -148,7 +148,7 @@ public class Transition implements Serializable, Cloneable {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	public static void appendCharString(char c, StringBuilder b) {
 		if (c >= 0x21 && c <= 0x7e && c != '\\' && c != '"')
 			b.append(c);
@@ -165,8 +165,8 @@ public class Transition implements Serializable, Cloneable {
 				b.append(s);
 		}
 	}
-    
-    // reverses the transformation that is performed in appendCharString() 
+
+    // reverses the transformation that is performed in appendCharString()
     public static char reverseCharString(String s) {
         if (s.length() == 1) {
             return s.charAt(0);
@@ -181,10 +181,10 @@ public class Transition implements Serializable, Cloneable {
         String dec = new java.math.BigInteger(hexString, 16).toString();
         return (char) Integer.valueOf(dec).intValue();
     }
-	
-	/** 
-	 * Returns string describing this state. Normally invoked via 
-	 * {@link Automaton#toString()}. 
+
+	/**
+	 * Returns string describing this state. Normally invoked via
+	 * {@link Automaton#toString()}.
 	 */
 	@Override
 	public String toString() {
@@ -217,7 +217,7 @@ public class Transition implements Serializable, Cloneable {
         }
 		b.append("\"" + color + "]\n");
 	}
-    
+
     // returns true if this transition represents a ".*" transition (@)
     boolean isDotStar() {
         if (min == Character.MIN_VALUE && max == Character.MAX_VALUE) {
@@ -231,13 +231,13 @@ public class Transition implements Serializable, Cloneable {
 class TransitionComparator implements Comparator<Transition> {
 
 	boolean to_first;
-	
+
 	TransitionComparator(boolean to_first) {
 		this.to_first = to_first;
 	}
-	
-	/** 
-	 * Compares by (min, reverse max, to) or (to, min, reverse max). 
+
+	/**
+	 * Compares by (min, reverse max, to) or (to, min, reverse max).
 	 */
 	public int compare(Transition t1, Transition t2) {
 		if (to_first) {

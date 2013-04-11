@@ -11,20 +11,20 @@ public class ConstantsTable {
     // lowercase Constant label -> list of Constants;
     // each list contains Constants whose labels only differ in case
     private Map<String,List<Constant>> insensitiveGroups;
-    
+
 // *********************************************************************************
-// CONSTRUCTORS ********************************************************************    
+// CONSTRUCTORS ********************************************************************
 // *********************************************************************************
-    
+
     ConstantsTable() {
         this.constants = new LinkedHashMap<String,Constant>();
         this.insensitiveGroups = new HashMap<String,List<Constant>>();
     }
 
 // *********************************************************************************
-// GET *****************************************************************************    
+// GET *****************************************************************************
 // *********************************************************************************
-    
+
     public Constant getConstant(String label) {
         return ((Constant) this.constants.get(label));
     }
@@ -47,15 +47,15 @@ public class ConstantsTable {
     public List getInsensitiveGroup(Literal name) {
         return (List) this.insensitiveGroups.get(name.toString().toLowerCase());
     }
-    
+
     public int size() {
         return this.constants.size();
     }
- 
+
 // *********************************************************************************
-// OTHER ***************************************************************************    
+// OTHER ***************************************************************************
 // *********************************************************************************
-    
+
     // don't call this method if the constant to be put is already in the table
     void add(Constant newConst) {
         this.constants.put(newConst.getLabel(), newConst);
@@ -73,7 +73,7 @@ public class ConstantsTable {
             oldList.add(newConst);
         }
     }
-    
+
     // adds all constants from the given constants table to this table (leaving out
     // duplicates)
     void addAll(ConstantsTable sourceTable) {
@@ -88,4 +88,3 @@ public class ConstantsTable {
         }
     }
 }
-

@@ -15,7 +15,4 @@ function foo($fp) {
 function bar($bp) {
     echo $bp;
 }
-
-
-
 ?>

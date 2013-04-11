@@ -11,7 +11,4 @@ foo($b);
 function foo($fp) {
     echo $fp;
 }
-
-
-
 ?>

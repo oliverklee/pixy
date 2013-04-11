@@ -5,7 +5,7 @@
 
 // pseudo-declarations (to get an overview)
 $a[1]; $a[2];
-$b[1]; 
+$b[1];
 
 $a[1] = 7;
 ~_hotspot0;  // $a[1] is untainted, $a is still tainted

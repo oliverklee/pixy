@@ -5,6 +5,6 @@
 $includeMe = 'test03a.php';
 $x1 = 'good';
 $x2 = $evil;
-include $includeMe;  
+include $includeMe;
 
 ?>

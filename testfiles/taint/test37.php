@@ -5,7 +5,7 @@
 // $x1 is tainted in the end; functional analysis or call-string analysis
 // with k > 1 is more precise and can determine that it is untainted
 
-foo(); 
+foo();
 $x1 = 'good';
 foo();
 ~_hotspot0;     // x1: <see explanation above>

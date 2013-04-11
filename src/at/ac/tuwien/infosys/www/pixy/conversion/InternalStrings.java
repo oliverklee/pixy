@@ -1,4 +1,3 @@
-
 package at.ac.tuwien.infosys.www.pixy.conversion;
 
 // contains a number of internal names, prefixes, and suffixes
@@ -12,31 +11,31 @@ public class InternalStrings {
 
     // prefix for function return variables
     public static final String returnPrefix = "ret_";
-    
+
     // name of the "main" function; don't use uppercase characters
     public static final String mainFunctionName = "_main";
-    
+
     // name of the unknown method; don't use uppercase characters
     //public static final String unknownMethodName = "<somemethod>";
-    
+
     // name of the unknown function; don't use uppercase characters
     //public static final String unknownFunctionName = "<unknownfunction>";
-    
+
     // internal name for member variables
     public static final String memberName = "_member";
-    
+
     // suffix for methods
     public static final String methodSuffix = "<m>";
-    
+
     // the name of Pixy's suppression function;
     // use it to get rid of false positives during the analysis;
     // for reverting your application to production mode, simply
     // run a search-replace over it and remove (or comment out) all
     // lines that contain a call to this function
     public static final String suppression = "pixy_sanit";
-    
+
     // CONFIG.TXT ****************************
-    
+
     public static final String includePath = "includePath";
     public static final String phpBin = "phpBin";
     public static final String fsaHome = "fsaHome";

@@ -9,8 +9,8 @@ import at.ac.tuwien.infosys.www.pixy.conversion.*;
 public class MustAliases {
 
     // contains MustAliasGroup's
-    private Set<MustAliasGroup> groups; 
-    
+    private Set<MustAliasGroup> groups;
+
 //  ********************************************************************************
 //  CONSTRUCTORS *******************************************************************
 //  ********************************************************************************
@@ -19,7 +19,7 @@ public class MustAliases {
     public MustAliases() {
         this.groups = new HashSet<MustAliasGroup>();
     }
-    
+
     // clones the given object
     public MustAliases(MustAliases cloneMe) {
         this.groups = new HashSet<MustAliasGroup>();
@@ -29,7 +29,7 @@ public class MustAliases {
             this.groups.add(new MustAliasGroup(group));
         }
     }
-    
+
 //  ********************************************************************************
 //  GET ****************************************************************************
 //  ********************************************************************************
@@ -37,8 +37,8 @@ public class MustAliases {
     public Set<MustAliasGroup> getGroups() {
         return this.groups;
     }
-    
-    // returns a set of all variables that occur in the contained groups 
+
+    // returns a set of all variables that occur in the contained groups
     public Set<Variable> getVariables() {
         Set<Variable> variables = new HashSet<Variable>();
         for (Iterator iter = this.groups.iterator(); iter.hasNext();) {
@@ -47,7 +47,7 @@ public class MustAliases {
         }
         return variables;
     }
-    
+
     // returns the MustAliasGroup that contains the given
     // variable, or NULL if there is no such explicit group
     public MustAliasGroup getMustAliasGroup(Variable x) {
@@ -61,7 +61,7 @@ public class MustAliases {
         }
         return null;
     }
-    
+
     // returns all global variables that are must-aliases of the given variable
     // (a set of Variables)
     public Set<Variable> getGlobalAliases(Variable var) {
@@ -72,17 +72,17 @@ public class MustAliases {
         }
         return retMe;
     }
-    
+
     // returns true if the given variables are must-aliases, and false otherwise
     public boolean isMustAlias(Variable x, Variable y) {
-        
+
         MustAliasGroup groupX = this.getMustAliasGroup(x);
-        
+
         // if x's group is implicit, x isn't a must-alias of anyone
         if (groupX == null) {
             return false;
         }
-        
+
         if (groupX.contains(y)) {
             return true;
         } else {
@@ -94,13 +94,13 @@ public class MustAliases {
 //  OTHER **************************************************************************
 //  ********************************************************************************
 
-    // merges the must-alias-groups that the given variables belong to (also 
+    // merges the must-alias-groups that the given variables belong to (also
     // considering implicit one-element groups)
     public void merge(Variable x, Variable y) {
-        
+
         MustAliasGroup groupX = this.getMustAliasGroup(x);
         MustAliasGroup groupY = this.getMustAliasGroup(y);
-        
+
         if (groupX == null) {
             if (groupY == null) {
                 // both variables only have implicit groups;
@@ -123,14 +123,14 @@ public class MustAliases {
             }
         }
     }
-    
+
     public void removeLocals() {
-        
+
         List<MustAliasGroup> keepUs = new LinkedList<MustAliasGroup>();
         for (Iterator iter = this.groups.iterator(); iter.hasNext();) {
             MustAliasGroup group = (MustAliasGroup) iter.next();
             group.removeLocals();
-            
+
             /* very strange: doesn't work
             // if the group now has less than two members: remove it
             if (group.size() < 2) {
@@ -145,14 +145,14 @@ public class MustAliases {
         }
         this.groups = new HashSet<MustAliasGroup>(keepUs);
     }
-    
+
     public void removeGlobals() {
-        
+
         List<MustAliasGroup> keepUs = new LinkedList<MustAliasGroup>();
         for (Iterator iter = this.groups.iterator(); iter.hasNext();) {
             MustAliasGroup group = (MustAliasGroup) iter.next();
             group.removeGlobals();
-            
+
             /* very strange: doesn't work
             // if the group now has less than two members: remove it
             if (group.size() < 2) {
@@ -168,12 +168,12 @@ public class MustAliases {
     }
 
     public void removeVariables(SymbolTable symTab) {
-        
+
         List<MustAliasGroup> keepUs = new LinkedList<MustAliasGroup>();
         for (Iterator iter = this.groups.iterator(); iter.hasNext();) {
             MustAliasGroup group = (MustAliasGroup) iter.next();
             group.removeVariables(symTab);
-            
+
             if (group.size() > 1) {
                 keepUs.add(group);
             }
@@ -187,7 +187,7 @@ public class MustAliases {
     public void remove(Variable var) {
         MustAliasGroup group = this.getMustAliasGroup(var);
         if (group != null) {
-            MustAliasGroup groupCopy = new MustAliasGroup(group); 
+            MustAliasGroup groupCopy = new MustAliasGroup(group);
             groupCopy.remove(var);
             if (groupCopy.size() < 2) {
                 this.groups.remove(group);
@@ -196,13 +196,13 @@ public class MustAliases {
             }
         }
     }
-    
+
     // adds "addMe" to the group of "host"; if the host has no
     // group (i.e., it is contained in an implicit one-element group),
     // a new two-element group with addMe and host as members is created
     public void addToGroup(Variable addMe, Variable host) {
         MustAliasGroup hostGroup = this.getMustAliasGroup(host);
-        
+
         if (hostGroup == null) {
             hostGroup = new MustAliasGroup(addMe, host);
             this.groups.add(hostGroup);
@@ -218,16 +218,16 @@ public class MustAliases {
 
     // adds the groups of "source" to this.groups
     // (without deep copy);
-    // the caller has to make sure that they are disjoint 
+    // the caller has to make sure that they are disjoint
     public void add(MustAliases source) {
         Set<MustAliasGroup> sourceGroups = source.getGroups();
         this.groups.addAll(sourceGroups);
     }
-    
+
     public void add(MustAliasGroup group) {
         this.groups.add(group);
     }
-    
+
     public void replace(Map replacements) {
         for (Iterator iter = this.groups.iterator(); iter.hasNext();) {
             MustAliasGroup group = (MustAliasGroup) iter.next();
@@ -238,7 +238,7 @@ public class MustAliases {
     public boolean structureEquals(MustAliases comp) {
 
         Set compGroupSet = comp.getGroups();
-        
+
         if (this.groups.size() != compGroupSet.size()) {
             // System.out.println("Sizes don't match");
             return false;
@@ -247,7 +247,7 @@ public class MustAliases {
         // for each of my own groups: check if it is contained in the other group set
         for (Iterator iter = this.groups.iterator(); iter.hasNext();) {
             MustAliasGroup group = (MustAliasGroup) iter.next();
-            
+
             // linear, slow implementation; but unfortunately, contains() doesn't
             // do what it should; for instance, uncomment the debug output inside
             // the "if" construct and run the analysis on the
@@ -268,10 +268,10 @@ public class MustAliases {
             }
             return false;
         }
-        
+
         return true;    // we come here if both sizes are 0
 
-        
+
         // here is another implementation that doesn't work...
         // the "contains" method is responsible for that
         /*
@@ -282,7 +282,7 @@ public class MustAliases {
         }
         for (Iterator iter = this.groups.iterator(); iter.hasNext();) {
             MustAliasGroup group = (MustAliasGroup) iter.next();
-            
+
             if (!compGroupSet.contains(group)) {
                 return false;
             }
@@ -290,7 +290,7 @@ public class MustAliases {
         return true;
         */
 
-        
+
         // for unknown reasons, the following implementation doesn't work
         // properly; it sometimes returns false although it should
         // return true; according to the API, it should do exactly the
@@ -303,11 +303,11 @@ public class MustAliases {
         }
         */
     }
-    
+
     public int structureHashCode() {
         return this.groups.hashCode();
     }
-    
+
 }
 
 /* Example PHP Program
@@ -319,5 +319,4 @@ function a($ap1, $ap2) {
         a(&$ap1, &$ap1);
     }
 }
-     
 */

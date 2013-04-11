@@ -1,19 +1,18 @@
 package at.ac.tuwien.infosys.www.pixy.analysis;
 
-
 public class LatticeElementBottom
 extends LatticeElement {
 
     public static final LatticeElementBottom INSTANCE = new LatticeElementBottom();
-    
-// *********************************************************************************    
+
+// *********************************************************************************
 // CONSTRUCTORS ********************************************************************
-// *********************************************************************************     
+// *********************************************************************************
 
     // singleton class
     private LatticeElementBottom() {
     }
-    
+
     public LatticeElement cloneMe() {
         throw new RuntimeException("SNH");
     }
@@ -29,11 +28,11 @@ extends LatticeElement {
     public int structureHashCode() {
         throw new RuntimeException("SNH");
     }
-    
+
     public void dump() {
         System.out.println("<bottom>");
     }
-    
+
 
     /*
     public boolean equals(Object obj) {
@@ -47,5 +46,4 @@ extends LatticeElement {
         return (((Object) this).hashCode());
     }
     */
-
 }

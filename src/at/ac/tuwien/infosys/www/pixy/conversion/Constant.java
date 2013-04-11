@@ -18,9 +18,9 @@ extends TacPlace {
     // literal for the special constants above
     private Literal specialLiteral;
 
-    
+
 // *********************************************************************************
-// CONSTRUCTORS ********************************************************************    
+// CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
     // use getInstance() instead of constructor:
@@ -30,15 +30,15 @@ extends TacPlace {
         this.label = label;
         this.isSpecial = false;
     }
-    
+
     // only used for the special constants above
     private Constant(String label, Literal specialLiteral) {
         this.label = label;
         this.isSpecial = true;
         this.specialLiteral = specialLiteral;
     }
-    
-    
+
+
 
     static Constant getInstance(String label) {
         if (label.equalsIgnoreCase("true")) {
@@ -53,9 +53,9 @@ extends TacPlace {
     }
 
 // *********************************************************************************
-// GET *****************************************************************************    
+// GET *****************************************************************************
 // *********************************************************************************
-    
+
     public String getLabel() {
         return this.label;
     }
@@ -63,19 +63,19 @@ extends TacPlace {
     public String toString() {
         return this.label;
     }
-    
+
     public boolean isSpecial() {
         return this.isSpecial;
     }
-    
+
     public Literal getSpecialLiteral() {
         return this.specialLiteral;
     }
-    
+
 // *********************************************************************************
-// OTHER ***************************************************************************    
+// OTHER ***************************************************************************
 // *********************************************************************************
-    
+
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -97,5 +97,4 @@ extends TacPlace {
         return this.hashCode;
         */
     }
-
 }

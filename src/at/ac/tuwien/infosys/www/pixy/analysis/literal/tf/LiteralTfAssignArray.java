@@ -12,10 +12,10 @@ extends TransferFunction {
 
     private Variable left;
     private boolean supported;
-    
-// *********************************************************************************    
+
+// *********************************************************************************
 // CONSTRUCTORS ********************************************************************
-// *********************************************************************************     
+// *********************************************************************************
 
     public LiteralTfAssignArray(TacPlace left) {
 
@@ -27,12 +27,12 @@ extends TransferFunction {
         } else {
             this.supported = true;
         }
-        
+
     }
 
-// *********************************************************************************    
+// *********************************************************************************
 // OTHER ***************************************************************************
-// *********************************************************************************  
+// *********************************************************************************
 
     public LatticeElement transfer(LatticeElement inX) {
 
@@ -41,7 +41,7 @@ extends TransferFunction {
         if (!supported) {
             return inX;
         }
-        
+
         LiteralLatticeElement in = (LiteralLatticeElement) inX;
         LiteralLatticeElement out = new LiteralLatticeElement(in);
 
@@ -53,7 +53,7 @@ extends TransferFunction {
         // $x become TOP instead of NULL; for taint analysis, this issue
         // is handled by using array labels; could also be done here
         out.assignArray(left);
-        
+
         return out;
     }
 }

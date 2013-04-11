@@ -17,15 +17,15 @@ extends TransferFunction {
     private int op;
     private Set mustAliases;
     private Set mayAliases;
-    
-// *********************************************************************************    
+
+// *********************************************************************************
 // CONSTRUCTORS ********************************************************************
-// *********************************************************************************     
+// *********************************************************************************
 
     // mustAliases, mayAliases: of setMe
-    public LiteralTfAssignUnary(TacPlace left, TacPlace right, int op, 
+    public LiteralTfAssignUnary(TacPlace left, TacPlace right, int op,
             Set mustAliases, Set mayAliases) {
-        
+
         this.left = (Variable) left;  // must be a variable
         this.right = right;
         this.op = op;
@@ -33,9 +33,9 @@ extends TransferFunction {
         this.mayAliases = mayAliases;
     }
 
-// *********************************************************************************    
+// *********************************************************************************
 // OTHER ***************************************************************************
-// *********************************************************************************  
+// *********************************************************************************
 
     public LatticeElement transfer(LatticeElement inX) {
 
@@ -44,7 +44,7 @@ extends TransferFunction {
 
         // let the lattice element handle the details
         out.assignUnary(left, right, op, mustAliases, mayAliases);
-        
+
         return out;
     }
 }

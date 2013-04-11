@@ -8,7 +8,7 @@ public class MustAliasGroup {
 
     // contains Variable's
     Set<Variable> group;
-    
+
 //  ********************************************************************************
 //  CONSTRUCTORS *******************************************************************
 //  ********************************************************************************
@@ -19,22 +19,22 @@ public class MustAliasGroup {
         this.group.add(a);
         this.group.add(b);
     }
-    
+
     public MustAliasGroup(Set<Variable> group) {
         this.group = group;
     }
-    
+
     public MustAliasGroup(MustAliasGroup cloneMe) {
         this.group = new HashSet<Variable>(cloneMe.getVariables());
     }
-    
+
     // creates a must-alias-group that consists of the given groups
     public MustAliasGroup(MustAliasGroup x, MustAliasGroup y) {
         this.group = new HashSet<Variable>();
         this.group.addAll(x.getVariables());
         this.group.addAll(y.getVariables());
     }
-    
+
 //  ********************************************************************************
 //  GET ****************************************************************************
 //  ********************************************************************************
@@ -46,7 +46,7 @@ public class MustAliasGroup {
     public int size() {
         return this.group.size();
     }
-    
+
     public boolean contains(Variable var) {
         return this.group.contains(var);
     }
@@ -78,7 +78,7 @@ public class MustAliasGroup {
         return false;
     }
     */
-    
+
     // returns an arbitrary global variable from this group, or null if there
     // are no global variables in this group
     public Variable getArbitraryGlobal() {
@@ -104,7 +104,7 @@ public class MustAliasGroup {
         return null;
     }
     */
-    
+
     // returns all local variables in this group
     public Set<Variable> getLocals() {
         Set<Variable> retMe = new HashSet<Variable>();
@@ -116,7 +116,7 @@ public class MustAliasGroup {
         }
         return retMe;
     }
-    
+
     // returns all global variables in this group
     public Set<Variable> getGlobals() {
         Set<Variable> retMe = new HashSet<Variable>();
@@ -173,7 +173,7 @@ public class MustAliasGroup {
     public boolean remove(Variable var) {
         return this.group.remove(var);
     }
-    
+
     public void add(Variable var) {
         this.group.add(var); // uniqueness of members is already guaranteed by
                              // the underlying HashSet
@@ -181,7 +181,7 @@ public class MustAliasGroup {
 
     // expects a map Variable -> Variable (replaceMe -> replaceBy)
     public void replace(Map replacements) {
-        
+
         for (Iterator iter = replacements.entrySet().iterator(); iter.hasNext(); ) {
             Map.Entry entry = (Map.Entry) iter.next();
             Variable replaceMe = (Variable) entry.getKey();
@@ -194,7 +194,7 @@ public class MustAliasGroup {
     }
 
     public boolean equals(Object obj) {
-        
+
         if (obj == this) {
             return true;
         }
@@ -204,9 +204,8 @@ public class MustAliasGroup {
         MustAliasGroup comp = (MustAliasGroup) obj;
         return this.group.equals(comp.getVariables());
     }
-    
+
     public int hashCode() {
         return this.group.hashCode();
     }
-
 }

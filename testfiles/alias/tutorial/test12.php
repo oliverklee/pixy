@@ -12,7 +12,4 @@ function a() {
 function b() {
     $GLOBALS['x2'] =& $GLOBALS['x1'];
 }
-
-
-
 ?>

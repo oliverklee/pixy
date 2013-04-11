@@ -8,13 +8,10 @@ echo $a;
 function foo() {
     global $a;
     $f =& $a;
-    bar(); 
+    bar();
 }
 function bar() {
     global $a;
     $a = 'you';
 }
-
-
-
 ?>

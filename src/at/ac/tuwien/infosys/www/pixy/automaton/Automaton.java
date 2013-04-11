@@ -1,9 +1,9 @@
 /*
  * dk.brics.automaton
- * 
+ *
  * Copyright (c) 2001-2006 Anders Moeller
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -14,7 +14,7 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. The name of the author may not be used to endorse or promote products
  *    derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
  * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -33,12 +33,11 @@ import java.util.*;
 import java.io.*;
 import java.net.*;
 
-
 /* Class invariants:
  *
  * - An automaton is either represented explicitly (with State and Transition objects)
  *   or with a singleton string in case the automaton accepts exactly one string.
- * - Automata are always reduced (see reduce()) 
+ * - Automata are always reduced (see reduce())
  *   and have no transitions to dead states (see removeDeadTransitions()).
  * - If an automaton is nondeterministic, then isDeterministic() returns false (but
  *   the converse is not required).
@@ -50,61 +49,61 @@ import java.net.*;
  * Automata are represented using {@link State} and {@link Transition} objects.
  * Implicitly, all states and transitions of an automaton are reachable from its initial state.
  * If the states or transitions are manipulated manually, the {@link #restoreInvariant()}
- * and {@link #setDeterministic(boolean)} methods should be used afterwards to restore 
+ * and {@link #setDeterministic(boolean)} methods should be used afterwards to restore
  * certain representation invariants that are assumed by the built-in automata operations.
  * @author Anders M&oslash;ller &lt;<a href="mailto:amoeller@brics.dk">amoeller@brics.dk</a>&gt;
  */
-public class Automaton 
+public class Automaton
 implements Serializable, Cloneable {
-	
+
 	static final long serialVersionUID = 10001;
-	
+
 	/**
-	 * Minimize using Huffman's O(n<sup>2</sup>) algorithm. 
+	 * Minimize using Huffman's O(n<sup>2</sup>) algorithm.
 	 * This is the standard text-book algorithm.
 	 * @see #setMinimization(int)
 	 */
 	public static final int MINIMIZE_HUFFMAN = 0;
-	
+
 	/**
-	 * Minimize using Brzozowski's O(2<sup>n</sup>) algorithm. 
+	 * Minimize using Brzozowski's O(2<sup>n</sup>) algorithm.
 	 * This algorithm uses the reverse-determinize-reverse-determinize trick, which has a bad
-	 * worst-case behavior but often works very well in practice 
+	 * worst-case behavior but often works very well in practice
 	 * (even better than Hopcroft's!).
 	 * @see #setMinimization(int)
 	 */
 	public static final int MINIMIZE_BRZOZOWSKI = 1;
-	
+
 	/**
 	 * Minimize using Hopcroft's O(n log n) algorithm.
 	 * This is regarded as one of the most generally efficient algorithms that exist.
 	 * @see #setMinimization(int)
 	 */
 	public static final int MINIMIZE_HOPCROFT = 2;
-	
+
 	/** Selects minimization algorithm (default: <code>MINIMIZE_HOPCROFT</code>). */
 	static int minimization = MINIMIZE_HOPCROFT;
-	
+
 	/** Initial state of this automaton. */
 	State initial;
-	
-	/** If true, then this automaton is definitely deterministic 
+
+	/** If true, then this automaton is definitely deterministic
 	 (i.e., there are no choices for any run, but a run may crash). */
 	boolean deterministic;
-	
+
 	/** Extra data associated with this automaton. */
 	Object info;
-	
+
 	/** Hash code. Recomputed by {@link #minimize()}. */
 	int hash_code;
-	
+
 	/** Singleton string. Null if not applicable. */
 	String singleton;
-	
+
 	/** Minimize always flag. */
 	static boolean minimize_always;
-	
-	/** 
+
+	/**
 	 * Constructs new automaton that accepts the empty language.
 	 * Using this constructor, automata can be constructed manually from
 	 * {@link State} and {@link Transition} objects.
@@ -116,10 +115,10 @@ implements Serializable, Cloneable {
 		initial = new State();
 		deterministic = true;
 	}
-    
+
     // performs a simple data flow analysis that maps states to [open,closed]
     // (with respect to "apostrophe areas"); if there are indirectly tainted
-    // transitions with a [closed] source state, it means that we have a 
+    // transitions with a [closed] source state, it means that we have a
     // problem => returns true; else: false
     public boolean hasDangerousIndirectTaint() {
 
@@ -128,14 +127,14 @@ implements Serializable, Cloneable {
         int open = 0;
         int closed = 1;
         dfi.put(this.initial, closed);
-        
+
         // initialize worklist with start state
         LinkedList<State> worklist = new LinkedList<State>();
         worklist.add(this.initial);
-        
+
         while (worklist.size() > 0) {
             State source = worklist.removeFirst();
-            
+
             for (Transition t : source.transitions) {
                 int sourceInfo = dfi.get(source);
                 // the value that is to be propagated
@@ -158,7 +157,7 @@ implements Serializable, Cloneable {
                 } else {
                     propagate = sourceInfo;
                 }
-                
+
                 // propagate to target state
                 State target = t.getDest();
                 Integer targetInfo = dfi.get(target);
@@ -178,7 +177,7 @@ implements Serializable, Cloneable {
                 }
             }
         }
-        
+
         for (Map.Entry<State,Integer> entry : dfi.entrySet()) {
             State s = entry.getKey();
             Integer info = entry.getValue();
@@ -195,7 +194,7 @@ implements Serializable, Cloneable {
         }
         return false;
     }
-    
+
     // helper for hasDangerousIndirectTaint()
     private int lub(int a, int b) {
         if (a == 1 || b == 1) {
@@ -204,7 +203,7 @@ implements Serializable, Cloneable {
             return 0;
         }
     }
-    
+
     // returns true if this automaton contains at least one transition
     // that is directly tainted
     public boolean hasDirectlyTaintedTransitions() {
@@ -259,18 +258,18 @@ implements Serializable, Cloneable {
         }
         return reverse;
     }
-	
+
     // converts this automaton to a regular expression (without touching the automaton)
     // problems:
     // generated regular expression is sometimes less readable than the underlying
     // automaton; if the automaton is minimized, things get even worse
     public RegExp toRegExp() {
-        
+
         // automaton to work on
         Automaton work = this.clone();
         // BEWARE: minimization can lead to an automaton that is less human-readable
         //work.minimize();
-        
+
         /*
         // create an auxiliary map for incoming transitions: to -> fromSet
         Map<State, Set<State>> reverse = new HashMap<State, Set<State>>();
@@ -284,11 +283,11 @@ implements Serializable, Cloneable {
             }
         }
         */
-        
+
         // create an auxiliary map for incoming transitions: to -> fromSet
         Set<State> states = work.getStates();
         Map<State, Set<State>> reverse = this.getReverseTransitions(states);
-        
+
         // maps each state to a set of outgoing regex transitions;
         // will be a replacement for "State.getTransitions"
         Map<State,Set<TransitionRegExp>> state2Tre = new HashMap<State,Set<TransitionRegExp>>();
@@ -300,7 +299,7 @@ implements Serializable, Cloneable {
                 state2Tre.get(r).add(new TransitionRegExp(t));
             }
         }
-        
+
         // we don't want an initial state that is also an accepting state
         State initialState = work.initial;
         if (work.initial.isAccept()) {
@@ -323,7 +322,7 @@ implements Serializable, Cloneable {
 
         // for each state...
         for (State state_s : work.getStates()) {
-            
+
             // do not eliminate the accept or initial state
             if (state_s.isAccept()) {
                 continue;
@@ -332,7 +331,7 @@ implements Serializable, Cloneable {
                 continue;
             }
 
-            
+
             // determine loop regex
             RegExp regexp_s = RegExp.makeEmpty();
             for (TransitionRegExp t : state2Tre.get(state_s)) {
@@ -340,19 +339,19 @@ implements Serializable, Cloneable {
                     regexp_s = RegExp.makeUnion(regexp_s, t.regExp);
                 }
             }
-            
+
             // for all predecessor states (except loops) of s
             for (State state_qi : reverse.get(state_s)) {
-                
+
                 if (state_qi.equals(state_s)) {
                     continue;
                 }
-                
+
                 if (state2Tre.get(state_qi) == null) {
                     System.out.println(state_qi);
                     throw new RuntimeException("SNH");
                 }
-                
+
                 // find transition qi
                 //TransitionRegExp trans_qi = RegExp.makeEmpty();
                 RegExp regexp_qi = RegExp.makeEmpty();
@@ -361,7 +360,7 @@ implements Serializable, Cloneable {
                         regexp_qi = RegExp.makeUnion(regexp_qi, t.regExp);
                     }
                 }
-                
+
                 // for all successor states (except loops) of s
                 for (TransitionRegExp trans_pj : state2Tre.get(state_s)) {
                     State state_pj = trans_pj.to;
@@ -372,7 +371,7 @@ implements Serializable, Cloneable {
                     System.out.println(state_s);
                     System.out.println(state_pj);
                     */
-                    
+
                     // find transition rij
                     //TransitionRegExp trans_rij = null;
                     RegExp regexp_rij = RegExp.makeEmpty();
@@ -381,41 +380,41 @@ implements Serializable, Cloneable {
                             regexp_rij = RegExp.makeUnion(regexp_rij, t.regExp);
                         }
                     }
-                    
+
                     // assemble new transition from qi to pj:
                     // rij + regexp_qi regexp_s* regexp_pj
                     //RegExp regexp_rij = trans_rij.regExp;
                     RegExp regexp_pj = trans_pj.regExp;
-                    
-                    RegExp regexp_total = RegExp.makeRepeat(regexp_s); 
+
+                    RegExp regexp_total = RegExp.makeRepeat(regexp_s);
                     regexp_total = RegExp.makeConcatenation(regexp_qi, regexp_total);
                     regexp_total = RegExp.makeConcatenation(regexp_total, regexp_pj);
                     regexp_total = RegExp.makeUnion(regexp_rij, regexp_total);
                     TransitionRegExp trans_total = new TransitionRegExp(regexp_total, state_pj);
 
                     // add this regexp transition from qi to pj
-                    
+
                     if (reverse.get(state_pj) == null) {
                         System.out.println("not there: " + state_pj.toString());
                         throw new RuntimeException("SNH");
                     }
-                    
+
                     state2Tre.get(state_qi).add(trans_total);
                     reverse.get(state_pj).add(state_qi);
-                    
+
                 }
-                
+
             } // end "for each predecessor"
-            
-            // we have now processed all incoming and outgoing edges, 
+
+            // we have now processed all incoming and outgoing edges,
             // so we can remove the current state
-            
+
             Set<TransitionRegExp> outTranss = state2Tre.get(state_s);
             for (TransitionRegExp outTrans : outTranss)  {
                 State succ = outTrans.to;
                 reverse.get(succ).remove(state_s);
             }
-            
+
             Set<State> preStates = reverse.get(state_s);
             for (State preState : preStates) {
                 Set<TransitionRegExp> preTranss = state2Tre.get(preState);
@@ -426,10 +425,10 @@ implements Serializable, Cloneable {
                     }
                 }
             }
-            
+
             state2Tre.remove(state_s);
             reverse.remove(state_s);
-            
+
         } // end "for each state"
 
         Set<TransitionRegExp> initialTrans = state2Tre.get(initialState);
@@ -439,17 +438,17 @@ implements Serializable, Cloneable {
         }
         retMe.simplify();
         return retMe;
-        
+
     }
-    
-	/** 
-	 * Selects minimization algorithm (default: <code>MINIMIZE_HOPCROFT</code>). 
+
+	/**
+	 * Selects minimization algorithm (default: <code>MINIMIZE_HOPCROFT</code>).
 	 * @param algorithm minimization algorithm
 	 */
 	static public void setMinimization(int algorithm) {
 		minimization = algorithm;
 	}
-	
+
 	/**
 	 * Sets or resets minimize always flag.
 	 * If this flag is set, then {@link #minimize()} will automatically
@@ -460,12 +459,12 @@ implements Serializable, Cloneable {
 	static public void setMinimizeAlways(boolean flag) {
 		minimize_always = flag;
 	}
-	
+
 	void checkMinimizeAlways() {
 		if (minimize_always)
 			minimize();
 	}
-	
+
 	public boolean isSingleton() {
 		return singleton!=null;
 	}
@@ -479,25 +478,25 @@ implements Serializable, Cloneable {
 	public String getSingleton() {
 		return singleton;
 	}
-	
-	/** 
-	 * Sets initial state. 
+
+	/**
+	 * Sets initial state.
 	 * @param s state
 	 */
 	public void setInitialState(State s) {
 		initial = s;
 		singleton = null;
 	}
-	
-	/** 
-	 * Gets initial state. 
+
+	/**
+	 * Gets initial state.
 	 * @return state
 	 */
 	public State getInitialState() {
 		expandSingleton();
 		return initial;
 	}
-	
+
 	/**
 	 * Returns deterministic flag for this automaton.
 	 * @return true if the automaton is definitely deterministic, false if the automaton
@@ -506,7 +505,7 @@ implements Serializable, Cloneable {
 	public boolean isDeterministic() {
 		return deterministic;
 	}
-	
+
 	/**
 	 * Sets deterministic flag for this automaton.
 	 * This method should (only) be used if automata are constructed manually.
@@ -516,25 +515,25 @@ implements Serializable, Cloneable {
 	public void setDeterministic(boolean deterministic) {
 		this.deterministic = deterministic;
 	}
-	
+
 	/**
-	 * Associates extra information with this automaton. 
+	 * Associates extra information with this automaton.
 	 * @param info extra information
 	 */
 	public void setInfo(Object info) {
 		this.info = info;
 	}
-	
+
 	/**
-	 * Returns extra information associated with this automaton. 
+	 * Returns extra information associated with this automaton.
 	 * @return extra information
 	 * @see #setInfo(Object)
 	 */
 	public Object getInfo()	{
 		return info;
 	}
-	
-	/** 
+
+	/**
 	 * Returns the set states that are reachable from the initial state.
 	 * @return set of {@link State} objects
 	 */
@@ -554,9 +553,9 @@ implements Serializable, Cloneable {
 		}
 		return visited;
 	}
-	
-	/** 
-	 * Returns the set of reachable accept states. 
+
+	/**
+	 * Returns the set of reachable accept states.
 	 * @return set of {@link State} objects
 	 */
 	public Set<State> getAcceptStates() {
@@ -578,9 +577,9 @@ implements Serializable, Cloneable {
 		}
 		return accepts;
 	}
-	
-	/** 
-	 * Assigns consecutive numbers to the given states. 
+
+	/**
+	 * Assigns consecutive numbers to the given states.
 	 */
 	static void setStateNumbers(Set<State> states) {
 		int number = 0;
@@ -590,30 +589,30 @@ implements Serializable, Cloneable {
 
     void setStateNumbersUnique() {
         expandSingleton();
-        
+
         // queue for nodes that still have to be visited
         LinkedList<State> queue = new LinkedList<State>();
-        
+
         Set<State> visited = new HashSet<State>();
-        
+
         initial.number = 0;
         queue.add(initial);
         visited.add(initial);
-        
+
         Comparator<Transition> comp = new TransComparator<Transition>();
         this.bfIteratorHelper(queue, visited, comp);
     }
 
-    private void bfIteratorHelper( 
+    private void bfIteratorHelper(
             LinkedList<State> queue, Set<State> visited,
             Comparator<Transition> comp) {
 
         State node = queue.removeFirst();
-        
+
         // handle successors
         List<Transition> successors = new LinkedList<Transition>(node.transitions);
         Collections.sort(successors, comp);
-        
+
         for (Transition succ : successors) {
             // for all successors that have not been visited yet...
             if (!visited.contains(succ.to)) {
@@ -678,10 +677,10 @@ implements Serializable, Cloneable {
             return new Integer(n1.number).compareTo(n2.number);
         }
     }
-    
-	/** 
-	 * Checks whether there is a loop containing s. (This is sufficient since 
-	 * there are never transitions to dead states.) 
+
+	/**
+	 * Checks whether there is a loop containing s. (This is sufficient since
+	 * there are never transitions to dead states.)
 	 */
 	boolean isFinite(State s, HashSet<State> path) {
 		path.add(s);
@@ -691,10 +690,10 @@ implements Serializable, Cloneable {
 		path.remove(s);
 		return true;
 	}
-	
-	/** 
-	 * Returns the strings that can be produced from s, returns false if more than 
-	 * <code>limit</code> strings are found. <code>limit</code>&lt;0 means "infinite". 
+
+	/**
+	 * Returns the strings that can be produced from s, returns false if more than
+	 * <code>limit</code> strings are found. <code>limit</code>&lt;0 means "infinite".
 	 * */
 	boolean getFiniteStrings(State s, HashSet<State> pathstates, HashSet<String> strings, StringBuilder path, int limit) {
 		pathstates.add(s);
@@ -716,9 +715,9 @@ implements Serializable, Cloneable {
 		pathstates.remove(s);
 		return true;
 	}
-	
-	/** 
-	 * Adds transitions to explicit crash state to ensure that transition function is total. 
+
+	/**
+	 * Adds transitions to explicit crash state to ensure that transition function is total.
 	 */
 	void totalize() {
 		State s = new State();
@@ -735,10 +734,10 @@ implements Serializable, Cloneable {
 				p.transitions.add(new Transition((char)maxi, Character.MAX_VALUE, s));
 		}
 	}
-	
+
 	/**
 	 * Restores representation invariant.
-	 * This method must be invoked before any built-in automata operation is performed 
+	 * This method must be invoked before any built-in automata operation is performed
 	 * if automaton states or transitions are manipulated manually.
 	 * @see #setDeterministic(boolean)
 	 */
@@ -746,10 +745,10 @@ implements Serializable, Cloneable {
 		removeDeadTransitions();
 		hash_code = 0;
 	}
-	
-	/** 
+
+	/**
 	 * Reduces this automaton.
-	 * An automaton is "reduced" by combining overlapping and adjacent edge intervals with same destination. 
+	 * An automaton is "reduced" by combining overlapping and adjacent edge intervals with same destination.
 	 */
 	public void reduce() {
 		if (isSingleton())
@@ -784,9 +783,9 @@ implements Serializable, Cloneable {
 				s.transitions.add(new Transition((char)min, (char)max, p));
 		}
 	}
-	
-	/** 
-	 * Gets sorted array of all interval start points. 
+
+	/**
+	 * Gets sorted array of all interval start points.
 	 */
 	char[] getStartPoints() {
 		Set<Character> pointset = new HashSet<Character>();
@@ -805,16 +804,16 @@ implements Serializable, Cloneable {
 		Arrays.sort(points);
 		return points;
 	}
-	
-	/** 
-	 * Returns set of live states. A state is "live" if an accept state is reachable from it. 
+
+	/**
+	 * Returns set of live states. A state is "live" if an accept state is reachable from it.
 	 * @return set of {@link State} objects
 	 */
 	public Set<State> getLiveStates() {
 		expandSingleton();
 		return getLiveStates(getStates());
 	}
-	
+
 	Set<State> getLiveStates(Set<State> states) {
 		HashMap<State, Set<State>> map = new HashMap<State, Set<State>>();
 		for (State s : states)
@@ -834,10 +833,10 @@ implements Serializable, Cloneable {
 		}
 		return live;
 	}
-	
-	/** 
+
+	/**
 	 * Removes transitions to dead states and calls {@link #reduce()}
-	 * (a state is "dead" if no accept state is reachable from it). 
+	 * (a state is "dead" if no accept state is reachable from it).
 	 */
 	public void removeDeadTransitions() {
 		if (isSingleton())
@@ -853,9 +852,9 @@ implements Serializable, Cloneable {
 		}
 		reduce();
 	}
-	
-	/** 
-	 * Returns sorted array of transitions for each state (and sets state numbers). 
+
+	/**
+	 * Returns sorted array of transitions for each state (and sets state numbers).
 	 */
 	static Transition[][] getSortedTransitions(Set<State> states) {
 		setStateNumbers(states);
@@ -864,9 +863,9 @@ implements Serializable, Cloneable {
 			transitions[s.number] = s.getSortedTransitionArray(false);
 		return transitions;
 	}
-	
-	/** 
-	 * Returns new (deterministic) automaton with the empty language. 
+
+	/**
+	 * Returns new (deterministic) automaton with the empty language.
 	 */
 	public static Automaton makeEmpty()	{
 		Automaton a = new Automaton();
@@ -875,9 +874,9 @@ implements Serializable, Cloneable {
 		a.deterministic = true;
 		return a;
 	}
-	
-	/** 
-	 * Returns new (deterministic) automaton that accepts only the empty string. 
+
+	/**
+	 * Returns new (deterministic) automaton that accepts only the empty string.
 	 */
 	public static Automaton makeEmptyString() {
 		Automaton a = new Automaton();
@@ -885,9 +884,9 @@ implements Serializable, Cloneable {
 		a.deterministic = true;
 		return a;
 	}
-	
-	/** 
-	 * Returns new (deterministic) automaton that accepts all strings. 
+
+	/**
+	 * Returns new (deterministic) automaton that accepts all strings.
 	 */
 	public static Automaton makeAnyString()	{
 		Automaton a = new Automaton();
@@ -909,15 +908,15 @@ implements Serializable, Cloneable {
         return a;
     }
 
-	/** 
-	 * Returns new (deterministic) automaton that accepts any single character. 
+	/**
+	 * Returns new (deterministic) automaton that accepts any single character.
 	 */
 	public static Automaton makeAnyChar() {
 		return makeCharRange(Character.MIN_VALUE, Character.MAX_VALUE);
 	}
-	
-	/** 
-	 * Returns new (deterministic) automaton that accepts a single character of the given value. 
+
+	/**
+	 * Returns new (deterministic) automaton that accepts a single character of the given value.
 	 */
 	public static Automaton makeChar(char c) {
 		Automaton a = new Automaton();
@@ -925,10 +924,10 @@ implements Serializable, Cloneable {
 		a.deterministic = true;
 		return a;
 	}
-	
-	/** 
-	 * Returns new (deterministic) automaton that accepts a single char 
-	 * whose value is in the given interval (including both end points). 
+
+	/**
+	 * Returns new (deterministic) automaton that accepts a single char
+	 * whose value is in the given interval (including both end points).
 	 */
 	public static Automaton makeCharRange(char min, char max) {
 		if (min == max)
@@ -943,9 +942,9 @@ implements Serializable, Cloneable {
 		a.deterministic = true;
 		return a;
 	}
-	
-	/** 
-	 * Returns new (deterministic) automaton that accepts a single character in the given set. 
+
+	/**
+	 * Returns new (deterministic) automaton that accepts a single character in the given set.
 	 */
 	public static Automaton makeCharSet(String set) {
 		if (set.length() == 1)
@@ -961,9 +960,9 @@ implements Serializable, Cloneable {
 		a.reduce();
 		return a;
 	}
-	
+
 	/**
-	 * Constructs sub-automaton corresponding to decimal numbers of 
+	 * Constructs sub-automaton corresponding to decimal numbers of
 	 * length x.substring(n).length().
 	 */
 	private static State anyOfRightLength(String x, int n) {
@@ -974,9 +973,9 @@ implements Serializable, Cloneable {
 			s.addTransition(new Transition('0', '9', anyOfRightLength(x, n + 1)));
 		return s;
 	}
-	
+
 	/**
-	 * Constructs sub-automaton corresponding to decimal numbers of value 
+	 * Constructs sub-automaton corresponding to decimal numbers of value
 	 * at least x.substring(n) and length x.substring(n).length().
 	 */
 	private static State atLeast(String x, int n, Collection<State> initials, boolean zeros) {
@@ -993,9 +992,9 @@ implements Serializable, Cloneable {
 		}
 		return s;
 	}
-	
+
 	/**
-	 * Constructs sub-automaton corresponding to decimal numbers of value 
+	 * Constructs sub-automaton corresponding to decimal numbers of value
 	 * at most x.substring(n) and length x.substring(n).length().
 	 */
 	private static State atMost(String x, int n) {
@@ -1010,9 +1009,9 @@ implements Serializable, Cloneable {
 		}
 		return s;
 	}
-	
+
 	/**
-	 * Constructs sub-automaton corresponding to decimal numbers of value 
+	 * Constructs sub-automaton corresponding to decimal numbers of value
 	 * between x.substring(n) and y.substring(n) and of
 	 * length x.substring(n).length() (which must be equal to y.substring(n).length()).
 	 */
@@ -1036,13 +1035,13 @@ implements Serializable, Cloneable {
 		}
 		return s;
 	}
-	
-	/** 
-	 * Returns new automaton that accepts strings representing 
+
+	/**
+	 * Returns new automaton that accepts strings representing
 	 * decimal non-negative integers in the given interval.
 	 * @param min minimal value of interval
 	 * @param max maximal value of inverval (both end points are included in the interval)
-	 * @param digits if >0, use fixed number of digits (strings must be prefixed 
+	 * @param digits if >0, use fixed number of digits (strings must be prefixed
 	 *               by 0's to obtain the right length) -
 	 *               otherwise, the number of digits is not fixed
 	 * @exception IllegalArgumentException if min>max or if numbers in the interval cannot be expressed
@@ -1084,9 +1083,9 @@ implements Serializable, Cloneable {
 		a.checkMinimizeAlways();
 		return a;
 	}
-	
-	/** 
-	 * Expands singleton representation to normal representation. 
+
+	/**
+	 * Expands singleton representation to normal representation.
 	 */
 	void expandSingleton() {
 		if (isSingleton()) {
@@ -1102,11 +1101,11 @@ implements Serializable, Cloneable {
 			singleton = null;
 		}
 	}
-	
-	/** 
+
+	/**
 	 * Returns new (deterministic) automaton that accepts the single given string.
 	 * <p>
-	 * Complexity: constant. 
+	 * Complexity: constant.
 	 */
 	public static Automaton makeString(String s) {
 		Automaton a = new Automaton();
@@ -1114,12 +1113,12 @@ implements Serializable, Cloneable {
 		a.deterministic = true;
 		return a;
 	}
-	
-	/** 
-	 * Returns new automaton that accepts the concatenation of the languages of 
-	 * this and the given automaton. 
+
+	/**
+	 * Returns new automaton that accepts the concatenation of the languages of
+	 * this and the given automaton.
 	 * <p>
-	 * Complexity: linear in number of states. 
+	 * Complexity: linear in number of states.
 	 */
 	public Automaton concatenate(Automaton a) {
 		if (isSingleton() && a.isSingleton())
@@ -1134,7 +1133,7 @@ implements Serializable, Cloneable {
 		b.checkMinimizeAlways();
 		return b;
 	}
-	
+
 	/**
 	 * Returns new automaton that accepts the concatenation of the languages of
 	 * the given automata.
@@ -1201,7 +1200,7 @@ implements Serializable, Cloneable {
 		a.checkMinimizeAlways();
 		return a;
 	}
-	
+
 	/**
 	 * Returns new automaton that accepts the Kleene star (zero or more
 	 * concatenated repetitions) of the language of this automaton.
@@ -1236,7 +1235,7 @@ implements Serializable, Cloneable {
 		as.add(repeat());
 		return concatenate(as);
 	}
-	
+
 	/**
 	 * Returns new automaton that accepts between <code>min</code> and
 	 * <code>max</code> (including both) concatenated repetitions of the
@@ -1386,18 +1385,18 @@ implements Serializable, Cloneable {
 		c.checkMinimizeAlways();
 		return c;
 	}
-	
+
 	/**
 	 * Returns a string that is an interleaving of strings that are accepted by
 	 * <code>ca</code> but not by <code>a</code>. If no such string
-	 * exists, null is returned. As a side-effect, <code>a</code> is determinized, 
+	 * exists, null is returned. As a side-effect, <code>a</code> is determinized,
 	 * if not already deterministic. Only interleavings that respect
-	 * the suspend/resume markers (two BMP private code points) are considered if the markers are non-null. 
+	 * the suspend/resume markers (two BMP private code points) are considered if the markers are non-null.
 	 * Also, interleavings never split surrogate pairs.
 	 * <p>
 	 * Complexity: proportional to the product of the numbers of states (if <code>a</code>
 	 * is already deterministic).
-	 */ 
+	 */
 	public static String shuffleSubsetOf(Collection<Automaton> ca, Automaton a, Character suspend_shuffle, Character resume_shuffle) {
 		if (ca.size() == 0)
 			return null;
@@ -1504,11 +1503,11 @@ implements Serializable, Cloneable {
 		return null;
 	}
 
-	private static void add(Character suspend_shuffle, Character resume_shuffle, 
-			                LinkedList<ShuffleConfiguration> pending, Set<ShuffleConfiguration> visited, 
+	private static void add(Character suspend_shuffle, Character resume_shuffle,
+			                LinkedList<ShuffleConfiguration> pending, Set<ShuffleConfiguration> visited,
 			                ShuffleConfiguration c, int i1, Transition t1, Transition t2, char min, char max) {
-		final char HIGH_SURROGATE_BEGIN = '\uD800'; 
-		final char HIGH_SURROGATE_END = '\uDBFF'; 
+		final char HIGH_SURROGATE_BEGIN = '\uD800';
+		final char HIGH_SURROGATE_END = '\uDBFF';
 		if (suspend_shuffle != null && min <= suspend_shuffle && suspend_shuffle <= max && min != max) {
 			if (min < suspend_shuffle)
 				add(suspend_shuffle, resume_shuffle, pending, visited, c, i1, t1, t2, min, (char)(suspend_shuffle - 1));
@@ -1565,7 +1564,7 @@ implements Serializable, Cloneable {
 		a.checkMinimizeAlways();
 		return a;
 	}
-	
+
 	/**
 	 * Returns new automaton that accepts the union of the languages of the
 	 * given automata.
@@ -1600,8 +1599,8 @@ implements Serializable, Cloneable {
 		determinize(initialset);
 	}
 
-	/** 
-	 * Determinizes this automaton using the given set of initial states. 
+	/**
+	 * Determinizes this automaton using the given set of initial states.
 	 */
 	private void determinize(Set<State> initialset) {
 		char[] points = getStartPoints();
@@ -1645,7 +1644,7 @@ implements Serializable, Cloneable {
 		deterministic = true;
 		removeDeadTransitions();
 	}
-	
+
 	/**
 	 * Minimizes (and determinizes if not already deterministic) this automaton.
 	 * @see #setMinimization(int)
@@ -1668,7 +1667,7 @@ implements Serializable, Cloneable {
 		if (hash_code == 0)
 			hash_code = 1;
 	}
-	
+
 	private boolean statesAgree(Transition[][] transitions, boolean[][] mark, int n1, int n2) {
 		Transition[] t1 = transitions[n1];
 		Transition[] t2 = transitions[n2];
@@ -1746,9 +1745,9 @@ implements Serializable, Cloneable {
 		for (int i = 0; i < size; i++)
 			list.add(null);
 	}
-	
-	/** 
-	 * Minimize using Huffman's algorithm. 
+
+	/**
+	 * Minimize using Huffman's algorithm.
 	 */
 	private void minimizeHuffman() {
 		determinize();
@@ -1812,9 +1811,9 @@ implements Serializable, Cloneable {
 		}
 		removeDeadTransitions();
 	}
-	
-	/** 
-	 * Minimize using Brzozowski's algorithm. 
+
+	/**
+	 * Minimize using Brzozowski's algorithm.
 	 */
 	private void minimizeBrzozowski() {
 		if (isSingleton())
@@ -1822,9 +1821,9 @@ implements Serializable, Cloneable {
 		determinize(reverse());
 		determinize(reverse());
 	}
-	
-	/** 
-	 * Minimize using Hopcroft's algorithm. 
+
+	/**
+	 * Minimize using Hopcroft's algorithm.
 	 */
 	private void minimizeHopcroft() {
 		determinize();
@@ -1989,7 +1988,7 @@ implements Serializable, Cloneable {
 		}
 		removeDeadTransitions();
 	}
-	
+
 	/**
 	 * Reverses the language of this (non-singleton) automaton while returning
 	 * the set of new initial states. (Used for
@@ -2017,7 +2016,7 @@ implements Serializable, Cloneable {
 		deterministic = false;
 		return accept;
 	}
-	
+
 	/**
 	 * Returns automaton that accepts the strings in more than one way can be split into
 	 * a left part being accepted by this automaton and a right part being accepted by
@@ -2038,7 +2037,7 @@ implements Serializable, Cloneable {
 		Automaton c = this.concatenate(y.concatenate(a));
 		return b1.intersection(b2).intersection(c);
 	}
-	
+
 	private void acceptToAccept() {
 		State s = new State();
 		for (State r : getAcceptStates())
@@ -2046,10 +2045,10 @@ implements Serializable, Cloneable {
 		initial = s;
 		deterministic = false;
 	}
-	
-	/** 
-	 * Returns new automaton that accepts the single chars that occur 
-	 * in strings that are accepted by this automaton. 
+
+	/**
+	 * Returns new automaton that accepts the single chars that occur
+	 * in strings that are accepted by this automaton.
 	 */
 	public Automaton singleChars() {
 		Automaton a = new Automaton();
@@ -2069,12 +2068,12 @@ implements Serializable, Cloneable {
 		a.removeDeadTransitions();
 		return a;
 	}
-	
+
 	private void addSetTransitions(State s, String set, State p) {
 		for (int n = 0; n < set.length(); n++)
 			s.transitions.add(new Transition(set.charAt(n), p));
 	}
-	
+
 	/**
 	 * Returns a new automaton that accepts the trimmed language of this
 	 * automaton. The resulting automaton is constructed as follows: 1) Whenever
@@ -2113,7 +2112,7 @@ implements Serializable, Cloneable {
 		a.checkMinimizeAlways();
 		return a;
 	}
-	
+
 	/**
 	 * Returns a new automaton that accepts the compressed language of this
 	 * automaton. Whenever a <code>c</code> character is allowed in the
@@ -2140,10 +2139,10 @@ implements Serializable, Cloneable {
 		a.checkMinimizeAlways();
 		return a;
 	}
-	
-	/** 
-	 * Finds the largest entry whose value is less than or equal to c, 
-	 * or 0 if there is no such entry. 
+
+	/**
+	 * Finds the largest entry whose value is less than or equal to c,
+	 * or 0 if there is no such entry.
 	 */
 	static int findIndex(char c, char[] points) {
 		int a = 0;
@@ -2159,14 +2158,14 @@ implements Serializable, Cloneable {
 		}
 		return a;
 	}
-	
+
 	/**
 	 * Returns new automaton where all transition labels have been substituted.
 	 * <p>
 	 * Each transition labeled <code>c</code> is changed to a set of
 	 * transitions, one for each character in <code>map(c)</code>. If
 	 * <code>map(c)</code> is null, then the transition is unchanged.
-	 * @param map map from characters to sets of characters (where characters 
+	 * @param map map from characters to sets of characters (where characters
 	 *            are <code>Character</code> objects)
 	 */
 	public Automaton subst(Map<Character, Set<Character>> map) {
@@ -2264,7 +2263,7 @@ implements Serializable, Cloneable {
 		a.checkMinimizeAlways();
 		return a;
 	}
-	
+
 	/**
 	 * Returns new automaton accepting the homomorphic image of this automaton
 	 * using the given function.
@@ -2303,7 +2302,7 @@ implements Serializable, Cloneable {
 		a.checkMinimizeAlways();
 		return a;
 	}
-	
+
 	/**
 	 * Returns new automaton with projected alphabet. The new automaton accepts
 	 * all strings that are projections of strings accepted by this automaton
@@ -2373,12 +2372,12 @@ implements Serializable, Cloneable {
 			return a;
 		}
 	}
-	
-	/** 
+
+	/**
 	 * Adds epsilon transitions to this automaton.
 	 * This method adds extra character interval transitions that are equivalent to the given
-	 * set of epsilon transitions. 
-	 * @param pairs collection of {@link StatePair} objects representing pairs of source/destination states 
+	 * set of epsilon transitions.
+	 * @param pairs collection of {@link StatePair} objects representing pairs of source/destination states
 	 *        where epsilon transitions should be added
 	 */
 	public void addEpsilons(Collection<StatePair> pairs) {
@@ -2435,7 +2434,7 @@ implements Serializable, Cloneable {
 		deterministic = false;
 		checkMinimizeAlways();
 	}
-	
+
 	/**
 	 * Returns true if the given string is accepted by this automaton. As a
 	 * side-effect, this automaton is determinized if not already deterministic.
@@ -2458,7 +2457,7 @@ implements Serializable, Cloneable {
 		}
 		return p.accept;
 	}
-	
+
 	/**
 	 * Returns number of states in this automaton.
 	 */
@@ -2467,7 +2466,7 @@ implements Serializable, Cloneable {
 			return singleton.length() + 1;
 		return getStates().size();
 	}
-	
+
 	/**
 	 * Returns number of transitions in this automaton. This number is counted
 	 * as the total number of edges, where one edge may be a character interval.
@@ -2480,7 +2479,7 @@ implements Serializable, Cloneable {
 			c += s.transitions.size();
 		return c;
 	}
-	
+
 	/**
 	 * Returns true if this automaton accepts the empty string and nothing else.
 	 */
@@ -2499,7 +2498,7 @@ implements Serializable, Cloneable {
 			return false;
 		return !initial.accept && initial.transitions.isEmpty();
 	}
-	
+
 	/**
 	 * Returns true if this automaton accepts all strings.
 	 */
@@ -2512,7 +2511,7 @@ implements Serializable, Cloneable {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Returns true if the language of this automaton is finite.
 	 */
@@ -2521,7 +2520,7 @@ implements Serializable, Cloneable {
 			return true;
 		return isFinite(initial, new HashSet<State>());
 	}
-	
+
 	/**
 	 * Returns set of accepted strings, assuming this automaton has a finite
 	 * language. If the language is not finite, null is returned.
@@ -2534,7 +2533,7 @@ implements Serializable, Cloneable {
 			return null;
 		return strings;
 	}
-	
+
 	/**
 	 * Returns set of accepted strings, assuming that at most <code>limit</code>
 	 * strings are accepted. If more than <code>limit</code> strings are
@@ -2571,7 +2570,7 @@ implements Serializable, Cloneable {
 		}
 		return getShortestExample(initial, accepted, new HashMap<State, String>());
 	}
-	
+
 	static String getShortestExample(State s, boolean accepted, Map<State, String> map) {
 		if (s.accept == accepted)
 			return "";
@@ -2617,28 +2616,28 @@ implements Serializable, Cloneable {
 		} while (!done);
 		return b.toString();
 	}
-    
+
     // analogous to getCommonPrefix, but with reverse and with bigger effort
     public String getCommonSuffix() {
         if (isSingleton())
             return singleton;
         StringBuilder b = new StringBuilder();
         HashSet<State> visited = new HashSet<State>();
-        
+
         Set<State> acceptStates = getAcceptStates();
         if (acceptStates.size() != 1) {
             return b.toString();
         }
-        
+
         Map<State, Set<State>> reverse = this.getReverseTransitions(this.getStates());
-        
+
         State s = acceptStates.iterator().next();
         boolean done;
         do {
             done = true;
             visited.add(s);
             Set<State> fromSet = reverse.get(s);
-            
+
             // if there is exactly one successor
             if (fromSet.size() == 1) {
                 State from = fromSet.iterator().next();
@@ -2669,7 +2668,7 @@ implements Serializable, Cloneable {
                 // try one last step
                 Character c = null;
                 for (State from : fromSet) {
-                    
+
                     for (Transition fromTrans : from.transitions) {
                         if (fromTrans.to.equals(s)) {
                             if (fromTrans.min == fromTrans.max && !visited.contains(from)) {
@@ -2694,10 +2693,10 @@ implements Serializable, Cloneable {
                 }
             }
         } while (!done);
-        
+
         return b.toString();
     }
-	
+
 	/**
 	 * Returns true if the language of this automaton is a subset of the
 	 * language of the given automaton. Implemented using
@@ -2713,7 +2712,7 @@ implements Serializable, Cloneable {
 		}
 		return intersection(a.complement()).isEmpty();
 	}
-	
+
 	/**
 	 * Returns true if the language of this automaton is equal to the language
 	 * of the given automaton. Implemented using <code>hashCode</code> and
@@ -2730,16 +2729,16 @@ implements Serializable, Cloneable {
 			return singleton.equals(a.singleton);
 		return hashCode() == a.hashCode() && subsetOf(a) && a.subsetOf(this);
 	}
-	
-	/** 
-	 * Returns new automaton that accepts the shuffle (interleaving) of 
+
+	/**
+	 * Returns new automaton that accepts the shuffle (interleaving) of
 	 * the languages of this and the given automaton.
 	 * As a side-effect, both this and the given automaton are determinized,
-	 * if not already deterministic.     
+	 * if not already deterministic.
 	 * <p>
-	 * Complexity: quadratic in number of states (if already deterministic). 
+	 * Complexity: quadratic in number of states (if already deterministic).
 	 * <p>
-	 * <dl><dt><b>Author:</b></dt><dd>Torben Ruby 
+	 * <dl><dt><b>Author:</b></dt><dd>Torben Ruby
 	 * &lt;<a href="mailto:ruby@daimi.au.dk">ruby@daimi.au.dk</a>&gt;</dd></dl>
 	 */
 	public Automaton shuffle(Automaton a) {
@@ -2788,7 +2787,7 @@ implements Serializable, Cloneable {
 		c.checkMinimizeAlways();
 		return c;
 	}
-	
+
 	/**
 	 * Returns hash code for this automaton. The hash code is based on the
 	 * number of states and transitions in the minimized automaton.
@@ -2799,7 +2798,7 @@ implements Serializable, Cloneable {
 			minimize();
 		return hash_code;
 	}
-	
+
 	/**
 	 * Returns a string representation of this automaton.
 	 */
@@ -2815,7 +2814,7 @@ implements Serializable, Cloneable {
 	}
 
 	/**
-	 * Returns <a href="http://www.research.att.com/sw/tools/graphviz/" target="_top">Graphviz Dot</a> 
+	 * Returns <a href="http://www.research.att.com/sw/tools/graphviz/" target="_top">Graphviz Dot</a>
 	 * representation of this automaton.
 	 */
 	public String toDot() {
@@ -2870,9 +2869,9 @@ implements Serializable, Cloneable {
         return b.append("}\n").toString();
     }
 
-    // returns the textual input representation used by fsmtools (AT&T) 
+    // returns the textual input representation used by fsmtools (AT&T)
     public String toFsmTools() {
-        
+
         StringBuilder b = new StringBuilder();
         Set<State> states = getStates();
         setStateNumbers(states);
@@ -2898,61 +2897,61 @@ implements Serializable, Cloneable {
         for (State s : acceptStates) {
             b.append(s.number).append("\n");
         }
-        
+
         return b.toString();
     }
-    
+
     // constructs an Automaton from the given fsmtools file (textual representation)
     public static Automaton fromFsmTools(String filename) {
-        
+
         Automaton retMe = new Automaton();
         try {
-            
+
             BufferedReader reader = new BufferedReader(new FileReader(filename));
             String line;
-            
+
             Map<String,State> string2State = new HashMap<String,State>();
             State initial = null;
-            
+
             Set<String> acceptStates = new HashSet<String>();
-            
+
             while ((line = reader.readLine()) != null) {
-                
+
                 StringTokenizer tokenizer = new StringTokenizer(line);
                 if (tokenizer.countTokens() == 3) {
                     String sourceString = tokenizer.nextToken();
                     String destString = tokenizer.nextToken();
                     String transString = tokenizer.nextToken();
-                    
+
                     State sourceState = string2State.get(sourceString);
                     if (sourceState == null) {
                         sourceState = new State();
                         string2State.put(sourceString, sourceState);
                     }
-                    
+
                     State destState = string2State.get(destString);
                     if (destState == null) {
                         destState = new State();
                         string2State.put(destString, destState);
                     }
-                    
+
                     char transChar = Transition.reverseCharString(transString);
-                    
+
                     sourceState.addTransition(new Transition(transChar, destState));
-                    
+
                     if (initial == null) {
                         initial = sourceState;
                         retMe.initial = initial;
                     }
-                   
+
                 } else if (tokenizer.countTokens() == 1) {
-                    
+
                     // collect accept states
                     String accept = tokenizer.nextToken();
                     acceptStates.add(accept);
                 }
             }
-            
+
             // set accept flag for accept states
             for (String acceptString : acceptStates) {
                 State acceptState = string2State.get(acceptString);
@@ -2961,13 +2960,13 @@ implements Serializable, Cloneable {
                 }
                 acceptState.accept = true;
             }
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException();
         }
-        
-        
+
+
         return retMe;
     }
 
@@ -3008,8 +3007,8 @@ implements Serializable, Cloneable {
 			throw new RuntimeException(e);
 		}
 	}
-	
-	/** 
+
+	/**
 	 * Retrieves a serialized <code>Automaton</code> located by a URL.
 	 * @param url URL of serialized automaton
 	 * @exception IOException if input/output related exception occurs
@@ -3018,11 +3017,11 @@ implements Serializable, Cloneable {
 	 * @exception ClassCastException if the data is not a serialized <code>Automaton</code>
 	 * @exception ClassNotFoundException if the class of the serialized object cannot be found
 	 */
-	public static Automaton load(URL url) throws IOException, OptionalDataException, ClassCastException, 
+	public static Automaton load(URL url) throws IOException, OptionalDataException, ClassCastException,
 	                                             ClassNotFoundException, InvalidClassException {
 		return load(url.openStream());
 	}
-	
+
 	/**
 	 * Retrieves a serialized <code>Automaton</code> from a stream.
 	 * @param stream input stream with serialized automaton
@@ -3032,12 +3031,12 @@ implements Serializable, Cloneable {
 	 * @exception ClassCastException if the data is not a serialized <code>Automaton</code>
 	 * @exception ClassNotFoundException if the class of the serialized object cannot be found
 	 */
-	public static Automaton load(InputStream stream) throws IOException, OptionalDataException, ClassCastException, 
+	public static Automaton load(InputStream stream) throws IOException, OptionalDataException, ClassCastException,
 	                                                        ClassNotFoundException, InvalidClassException {
 		ObjectInputStream s = new ObjectInputStream(stream);
 		return (Automaton)s.readObject();
 	}
-	
+
 	/**
 	 * Writes this <code>Automaton</code> to the given stream.
 	 * @param stream output stream for serialized automaton
@@ -3061,7 +3060,7 @@ class IntPair {
 }
 
 class StateList {
-	
+
 	int size;
 
 	StateListNode first, last;
@@ -3072,7 +3071,7 @@ class StateList {
 }
 
 class StateListNode {
-	
+
 	State q;
 
 	StateListNode next, prev;
@@ -3105,7 +3104,7 @@ class StateListNode {
 }
 
 class ShuffleConfiguration {
-	
+
 	ShuffleConfiguration prev;
 	State[] ca_states;
 	State a_state;
@@ -3114,9 +3113,9 @@ class ShuffleConfiguration {
 	boolean shuffle_suspended;
 	boolean surrogate;
 	int suspended1;
-	
+
 	private ShuffleConfiguration() {}
-	
+
 	ShuffleConfiguration(Collection<Automaton> ca, Automaton a) {
 		ca_states = new State[ca.size()];
 		int i = 0;
@@ -3125,7 +3124,7 @@ class ShuffleConfiguration {
 		a_state = a.getInitialState();
 		computeHash();
 	}
-	
+
 	ShuffleConfiguration(ShuffleConfiguration c, int i1, State s1, char min) {
 		prev = c;
 		ca_states = c.ca_states.clone();
@@ -3166,7 +3165,7 @@ class ShuffleConfiguration {
 	public int hashCode() {
 		return hash;
 	}
-	
+
 	private void computeHash() {
 		int hash = 0;
 		for (int i = 0; i < ca_states.length; i++)

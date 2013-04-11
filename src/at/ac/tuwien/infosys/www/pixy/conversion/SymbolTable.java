@@ -6,10 +6,10 @@ public class SymbolTable {
 
     // map variable object -> Variable object
     private Map<Variable,Variable> variables;
-    private String name;    // usually corresponds to a function name (lowercase) 
+    private String name;    // usually corresponds to a function name (lowercase)
     private boolean isSuperSymTab;
     private boolean isMain;
-    
+
     // auxiliary map for g-shadows: global -> g-shadow
     private Map<Variable,Variable> globals2GShadows;
 
@@ -17,7 +17,7 @@ public class SymbolTable {
     private Map<Variable,Variable> formals2FShadows;
 
 // *********************************************************************************
-// CONSTRUCTORS ********************************************************************    
+// CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
     public SymbolTable(String name, boolean isSuperSymTab) {
@@ -43,13 +43,13 @@ public class SymbolTable {
     }
 
 // *********************************************************************************
-// GET *****************************************************************************    
+// GET *****************************************************************************
 // *********************************************************************************
-    
+
     Variable getVariable(Variable variable) {
         return ((Variable) this.variables.get(variable));
     }
-    
+
     public Variable getVariable(String varName) {
         return ((Variable) this.variables.get(new Variable(varName, this)));
     }
@@ -57,7 +57,7 @@ public class SymbolTable {
     public Map<Variable,Variable> getVariables() {
         return this.variables;
     }
-    
+
     Collection<Variable> getVariablesColl() {
         return this.variables.values();
     }
@@ -65,7 +65,7 @@ public class SymbolTable {
     public String getName() {
         return this.name;
     }
-    
+
     boolean isSuperSymTab() {
         return this.isSuperSymTab;
     }
@@ -73,27 +73,27 @@ public class SymbolTable {
     int size() {
         return this.variables.size();
     }
-    
+
     public String toString() {
         return this.name;
     }
-    
+
     public boolean isMain() {
         return this.isMain;
     }
-    
+
     // returns the g-shadow of the given global variable (which must
     // be contained in this symbol table)
     public Variable getGShadow(Variable global) {
         return this.globals2GShadows.get(global);
     }
-    
+
     // returns the f-shadow of the given formal variable (which must
     // be contained in this symbol table)
     public Variable getFShadow(Variable formal) {
         return this.formals2FShadows.get(formal);
     }
-    
+
     public Map<Variable,Variable> getGlobals2GShadows() {
         return this.globals2GShadows;
     }
@@ -101,16 +101,16 @@ public class SymbolTable {
     public Map<Variable,Variable> getFormals2FShadows() {
         return this.formals2FShadows;
     }
-    
+
 // *********************************************************************************
 // OTHER ***************************************************************************
 // *********************************************************************************
-    
+
     // if there is already such a variable, the old one is replaced!
     void add(Variable newVar) {
         this.variables.put(newVar, newVar);
     }
-    
+
     // creates and adds a g-shadow for the given global variable
     void addGShadow(Variable global) {
         Variable gShadow = new Variable(
@@ -142,12 +142,12 @@ public class SymbolTable {
     // after this operation, you have to use a method that copies the original
     // variables and adds the modified clones to the current symbol table
     void addAll(SymbolTable table) {
-        
+
         // the Variable objects' member field pointing at the enclosing symbol
         // table has to be modified;
         // this means that the following tempting line is not enough:
         // this.variables.putAll(table.getVariables());
-        
+
         // we can iterate over the keys since they are identical to the values
         for (Iterator iter = table.getVariables().keySet().iterator(); iter.hasNext(); ) {
             Variable variable = (Variable) iter.next();
@@ -165,7 +165,7 @@ public class SymbolTable {
     public int hashCode() {
         return this.name.hashCode();
     }
-    
+
     public boolean equals(Object obj) {
         if (!(obj instanceof SymbolTable)) {
             return false;
@@ -173,5 +173,4 @@ public class SymbolTable {
         SymbolTable comp = (SymbolTable) obj;
         return this.name.equals(comp.name);
     }
-
 }

@@ -2,7 +2,6 @@ package at.ac.tuwien.infosys.www.pixy.analysis.inter;
 
 import java.util.*;
 
-
 // worklist for connector computation
 public final class ConnectorWorkList {
 
@@ -11,12 +10,11 @@ public final class ConnectorWorkList {
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
-    
+
     ConnectorWorkList() {
         this.workList = new LinkedList<ConnectorWorkListElement>();
     }
 
-   
 // *********************************************************************************
 // OTHER ***************************************************************************
 // *********************************************************************************

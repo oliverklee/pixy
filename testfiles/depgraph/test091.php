@@ -19,10 +19,10 @@ echo $x;
 $x = "   ";
 echo $x;
 
-$x = "    $var    ";  
+$x = "    $var    ";
 echo $x;
 
-$x = " A B $var";       
+$x = " A B $var";
 echo $x;
 
 $x = `A B $var C D`;

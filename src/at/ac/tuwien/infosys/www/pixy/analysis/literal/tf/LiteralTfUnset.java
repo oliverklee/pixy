@@ -16,10 +16,10 @@ extends TransferFunction {
 
     private Variable operand;
     private boolean supported;
-    
-// *********************************************************************************    
+
+// *********************************************************************************
 // CONSTRUCTORS ********************************************************************
-// *********************************************************************************     
+// *********************************************************************************
 
     public LiteralTfUnset(TacPlace operand) {
 
@@ -27,15 +27,15 @@ extends TransferFunction {
         if (!operand.isVariable()) {
             throw new RuntimeException("Trying to unset a non-variable.");
         }
-        
+
         this.operand = (Variable) operand;
         this.supported = AliasAnalysis.isSupported(this.operand);
-        
+
     }
 
-// *********************************************************************************    
+// *********************************************************************************
 // OTHER ***************************************************************************
-// *********************************************************************************  
+// *********************************************************************************
 
     public LatticeElement transfer(LatticeElement inX) {
 
@@ -44,7 +44,7 @@ extends TransferFunction {
         if (!supported) {
             return inX;
         }
-        
+
         LiteralLatticeElement in = (LiteralLatticeElement) inX;
         LiteralLatticeElement out = new LiteralLatticeElement(in);
 
@@ -53,7 +53,7 @@ extends TransferFunction {
         mustAliases.add(operand);
         Set mayAliases = Collections.EMPTY_SET;
         out.assignSimple(operand, Literal.NULL, mustAliases, mayAliases);
-        
+
         return out;
     }
 }

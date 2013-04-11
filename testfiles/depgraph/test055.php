@@ -27,9 +27,4 @@ function multi_tb($post_urls) {
         $tbreply .= $tb_url;
     }
 }
-
-
-
-
-
 ?>

@@ -10,17 +10,17 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
 
 // an AnalysisNode holds analysis-specific information for a certain CFGNode
-public class FunctionalAnalysisNode 
+public class FunctionalAnalysisNode
 extends InterAnalysisNode {
 
     // mapping input LatticeElement -> Set of context LatticeElements;
     // only needed for call nodes
     Map<LatticeElement,Set<FunctionalContext>> reversePhi;
 
-// *********************************************************************************    
+// *********************************************************************************
 // CONSTRUCTORS ********************************************************************
-// ********************************************************************************* 
-    
+// *********************************************************************************
+
     public FunctionalAnalysisNode(CfgNode node, TransferFunction tf) {
         super(tf);
         // maintain reverse mapping for call nodes
@@ -30,16 +30,16 @@ extends InterAnalysisNode {
             this.reversePhi = null;
         }
     }
-    
+
 // *********************************************************************************
-// GET *****************************************************************************    
+// GET *****************************************************************************
 // *********************************************************************************
-    
+
     // returns a set of contexts that are mapped to the given value
     Set<FunctionalContext> getReversePhiContexts(LatticeElement value) {
         return (this.reversePhi.get(value));
     }
-    
+
 // *********************************************************************************
 // SET *****************************************************************************
 // *********************************************************************************
@@ -48,9 +48,9 @@ extends InterAnalysisNode {
     protected void setPhiValue(Context contextX, LatticeElement value) {
 
         FunctionalContext context = (FunctionalContext) contextX;
-        
+
         super.setPhiValue(context, value);
-        
+
         // maintain reverse mapping, if needed
         if (this.reversePhi != null) {
             Set<FunctionalContext> contextSet = this.reversePhi.get(value);
@@ -60,7 +60,6 @@ extends InterAnalysisNode {
             }
             contextSet.add(context);
         }
-        
+
     }
 }
-

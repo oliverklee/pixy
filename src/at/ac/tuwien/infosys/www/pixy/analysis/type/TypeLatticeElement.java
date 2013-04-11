@@ -10,12 +10,12 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
 
 import java.util.*;
 
-public class TypeLatticeElement 
+public class TypeLatticeElement
 extends LatticeElement {
 
     private Map<Variable,Set<Type>> var2Type;
-    
-    // an empty lattice element (the analysis starts with this one) 
+
+    // an empty lattice element (the analysis starts with this one)
     public TypeLatticeElement() {
         this.var2Type = new HashMap<Variable,Set<Type>>();
     }
@@ -24,7 +24,7 @@ extends LatticeElement {
     public TypeLatticeElement(TypeLatticeElement element) {
         this.var2Type = new HashMap<Variable,Set<Type>>(element.var2Type);
     }
-    
+
     // lubs the given lattice element over <<this>> lattice element
     public void lub(LatticeElement foreignX) {
         TypeLatticeElement foreign = (TypeLatticeElement) foreignX;
@@ -44,16 +44,16 @@ extends LatticeElement {
             }
         }
     }
-    
+
     public void setTypeString(Variable var, String className) {
         Set<Type> types = new HashSet<Type>();
         types.add(Type.getTypeForClass(className));
         //System.out.println("doing settype: " + className + ", " + var + " = " + types);
         this.setType(var, types);
     }
-    
+
     private void setType(Variable var, Set<Type> types) {
-        
+
         if (var.isMember()) {
             // we don't want to modify the special member variable
             return;
@@ -66,7 +66,7 @@ extends LatticeElement {
             this.var2Type.put(var, types);
         }
     }
-    
+
     // can also return null
     public Set<Type> getType(Variable var) {
         return this.var2Type.get(var);
@@ -82,25 +82,25 @@ extends LatticeElement {
         Set<Type> rightTypes = this.var2Type.get(rightVar);
         this.setType(left, rightTypes);
     }
-    
+
     public void assignUnary(Variable left) {
         // simply delete all info about left
         this.setType(left, null);
     }
-    
+
     public void assignBinary(Variable left) {
         // simply delete all info about left
         this.setType(left, null);
     }
-    
+
     public void unset(Variable var) {
         this.setType(var, null);
     }
-    
+
     public void assignArray(Variable var) {
         this.setType(var, null);
     }
-    
+
     public void handleReturnValueBuiltin(Variable tempVar) {
         this.setType(tempVar, null);
     }
@@ -116,7 +116,7 @@ extends LatticeElement {
         for (Iterator iter = this.var2Type.entrySet().iterator(); iter.hasNext();) {
             Map.Entry entry = (Map.Entry) iter.next();
             Variable var = (Variable) entry.getKey();
-            
+
             if (var.belongsTo(symTab)) {
                 iter.remove();
             }
@@ -125,29 +125,29 @@ extends LatticeElement {
 
     // resets all temporaries that belong to the given symbol table
     public void resetTemporaries(SymbolTable symTab) {
-        
+
         for (Iterator iter = this.var2Type.entrySet().iterator(); iter.hasNext();) {
             Map.Entry entry = (Map.Entry) iter.next();
             Variable var = (Variable) entry.getKey();
-            
+
             if (!var.isTemp()) {
                 // nothing to do for non-temporaries
                 continue;
             }
-            
+
             if (var.belongsTo(symTab)) {
                 iter.remove();
             }
         }
     }
 
-    // copies the mappings for "global-like" places 
+    // copies the mappings for "global-like" places
     // from interIn (i.e., global variables, superglobal variables, and
     // constants)
     public void copyGlobalLike(TypeLatticeElement interIn) {
-        
+
         for (Map.Entry<Variable,Set<Type>> entry : interIn.var2Type.entrySet()) {
-            
+
             Variable origVar = entry.getKey();
             Set<Type> origTypes = entry.getValue();
 
@@ -156,15 +156,15 @@ extends LatticeElement {
             }
         }
     }
-    
+
     // copies the mappings for local temporaries of the main function
     public void copyMainTemporaries(TypeLatticeElement origElement) {
 
         for (Map.Entry<Variable,Set<Type>> entry : origElement.var2Type.entrySet()) {
-            
+
             Variable origVar = entry.getKey();
             Set<Type> origTypes = entry.getValue();
-            
+
             // nothing to do for non-main's and non-temporaries
             SymbolTable symTab = origVar.getSymbolTable();
             if (!symTab.isMain()) {
@@ -173,14 +173,14 @@ extends LatticeElement {
             if (!origVar.isTemp()) {
                 continue;
             }
-            
+
             this.setType(origVar, origTypes);
         }
     }
 
-    // sets the temporary responsible for catching the return value 
+    // sets the temporary responsible for catching the return value
     // and resets the return variable
-    public void handleReturnValue(CfgNodeCall callNode, 
+    public void handleReturnValue(CfgNodeCall callNode,
             TypeLatticeElement calleeIn, TacFunction callee) {
 
         Variable tempVar = callNode.getTempVar();
@@ -192,17 +192,17 @@ extends LatticeElement {
             types = new HashSet<Type>();
             types.add(Type.getTypeForClass(callee.getClassName()));
         }
-        
+
         this.setType(tempVar, types);
         this.var2Type.remove(retVar);
-        
+
     }
 
     // copies the mappings for local variables from origElement
     public void copyLocals(TypeLatticeElement origElement) {
 
         for (Map.Entry<Variable,Set<Type>> entry : origElement.var2Type.entrySet()) {
-            
+
             Variable origVar = entry.getKey();
             Set<Type> origTypes = entry.getValue();
 
@@ -210,19 +210,14 @@ extends LatticeElement {
             if (!origVar.isLocal()) {
                 continue;
             }
-            
+
             this.setType(origVar, origTypes);
         }
     }
-    
+
     public void handleReturnValueUnknown(Variable tempVar) {
         this.setType(tempVar, null);
     }
-
-
-    
-
-    
 
     public LatticeElement cloneMe() {
         // uses the cloning constructor
@@ -232,7 +227,7 @@ extends LatticeElement {
     public boolean equals(Object obj) {
         return this.structureEquals(obj);
     }
-    
+
     public int hashCode() {
         return this.structureHashCode();
     }
@@ -249,7 +244,7 @@ extends LatticeElement {
         if (!this.var2Type.equals(comp.var2Type)) {
             return false;
         }
-        
+
         return true;
     }
 
@@ -262,5 +257,4 @@ extends LatticeElement {
     public void dump() {
         System.out.println(this.var2Type);
     }
-
 }

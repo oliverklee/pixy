@@ -7,7 +7,4 @@ function foo() {
     global $a;
     echo $a;
 }
-
-
-
 ?>

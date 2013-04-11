@@ -11,7 +11,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
  * (queued, FIFO); if there are no nodes without order, the ordered
  * nodes are returned accordingly
  */
-public final class InterWorkListPoor 
+public final class InterWorkListPoor
 implements InterWorkList {
 
     private LinkedList<InterWorkListElement> unsortedWorkList;
@@ -20,7 +20,7 @@ implements InterWorkList {
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
-    
+
     public InterWorkListPoor() {
         this.unsortedWorkList = new LinkedList<InterWorkListElement>();
         this.sortedWorkList = new TreeMap<Integer, InterWorkListElement>();
@@ -36,7 +36,7 @@ implements InterWorkList {
             throw new RuntimeException("SNH");
         }
         InterWorkListElement element = new InterWorkListElement(cfgNode, context);
-        
+
         int rpo = cfgNode.getReversePostOrder();
         if (rpo == -1) {
             this.unsortedWorkList.add(element);

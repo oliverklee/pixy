@@ -1,6 +1,5 @@
 package at.ac.tuwien.infosys.www.pixy;
 
-
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -1068,15 +1067,14 @@ extends TestCase {
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
 
-    /*
     public void test123() {
         String testNum = "123";
         int sinkNum = 1;
         int graphNum = 1;
         int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        // TODO: This test currently fails. Please see issue #1 for details.
+        // this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    */
 
     public void test124() {
         String testNum = "124";
@@ -1182,8 +1180,6 @@ extends TestCase {
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
 
-
-
     /*
      * HOW TO ADD NEW TESTS
      *
@@ -1197,11 +1193,4 @@ extends TestCase {
      * - switch the fourth parameter back to false
      *
      */
-
 }
-
-
-
-
-
-

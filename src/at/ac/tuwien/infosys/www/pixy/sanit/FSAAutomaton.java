@@ -9,8 +9,8 @@ public class FSAAutomaton {
 
     // the internal FSA-Utils representation (type "normal")
     private String str;
-    
-    // a few meta-characters    
+
+    // a few meta-characters
     static String ccurly = encode('}');
     static String ocurly = encode('{');
     static String backslash = encode('\\');
@@ -26,20 +26,20 @@ public class FSAAutomaton {
     static String plus = encode('+');
     static String star = encode('*');
     static String slash = encode('/');
-    
+
     static String single_quote = encode('\'');
     static String opointy = encode('<');
-    
 
-    
+
+
     FSAAutomaton(String str) {
         this.str = str;
     }
-    
+
     public FSAAutomaton clone() {
         return new FSAAutomaton(this.str);
     }
-    
+
     public String getString() {
         return this.str;
     }
@@ -49,28 +49,28 @@ public class FSAAutomaton {
 
         // convert string to FSA regexp syntax
         s = makeRegexp(s);
-        
+
         // command
-        
+
         // this fails if string holds white space...
         String c = MyOptions.fsa_home + "/" + "fsa -r " + s;
-        
+
         // it is quite strange that this doesn't work...
         //String c = MyOptions.fsa_home + "/" + "fsa -r \"" + s + "\"";
         //String c = MyOptions.fsa_home + "/" + "fsa -r '" + s + "'";
-        
+
         String autoString = Utils.exec(c);
         FSAAutomaton retMe = new FSAAutomaton(autoString);
-        
+
         //System.out.println(c);
         //System.out.println(s);
         //System.out.println("autostring: " + autoString);
         //if (true) throw new RuntimeException("here");
-        
+
         return retMe;
- 
+
     }
-    
+
     // converts the given string into an appropriate regexp,
     // should also take care of escaping characters
     private static String makeRegexp(String s) {
@@ -103,51 +103,51 @@ public class FSAAutomaton {
     public FSAAutomaton concatenate(FSAAutomaton auto) {
         String arg1File = this.toFile("temp1.auto");
         String arg2File = auto.toFile("temp2.auto");
-        String c = MyOptions.fsa_home + "/" + 
+        String c = MyOptions.fsa_home + "/" +
             "fsa -r concat(file('"+arg1File+"'),file('"+arg2File+"'))";
         String autoString = Utils.exec(c);
         FSAAutomaton retMe = new FSAAutomaton(autoString);
-        
+
 //        System.out.println(c);
 //        System.out.println("autostring:\n" + autoString);
 //        System.out.println("as dot:\n");
 //        System.out.println(retMe.toDot());
 //        if (true) throw new RuntimeException("here");
-        
+
         return retMe;
     }
 
     public FSAAutomaton union(FSAAutomaton auto) {
         String arg1File = this.toFile("temp1.auto");
         String arg2File = auto.toFile("temp2.auto");
-        String c = MyOptions.fsa_home + "/" + 
+        String c = MyOptions.fsa_home + "/" +
             "fsa -r union(file('"+arg1File+"'),file('"+arg2File+"'))";
         String autoString = Utils.exec(c);
         FSAAutomaton retMe = new FSAAutomaton(autoString);
-        
+
 //        System.out.println(c);
 //        System.out.println("autostring:\n" + autoString);
 //        System.out.println("as dot:\n");
 //        System.out.println(retMe.toDot());
 //        if (true) throw new RuntimeException("here");
-        
+
         return retMe;
     }
 
     public FSAAutomaton intersect(FSAAutomaton auto) {
         String arg1File = this.toFile("temp1.auto");
         String arg2File = auto.toFile("temp2.auto");
-        String c = MyOptions.fsa_home + "/" + 
+        String c = MyOptions.fsa_home + "/" +
             "fsa -r intersect(file('"+arg1File+"'),file('"+arg2File+"'))";
         String autoString = Utils.exec(c);
         FSAAutomaton retMe = new FSAAutomaton(autoString);
-        
+
 //        System.out.println(c);
 //        System.out.println("autostring:\n" + autoString);
 //        System.out.println("as dot:\n");
 //        System.out.println(retMe.toDot());
 //        if (true) throw new RuntimeException("here");
-        
+
         return retMe;
     }
 
@@ -158,7 +158,7 @@ public class FSAAutomaton {
         Utils.writeToFile(this.str, fileName);
         return fileName;
     }
-    
+
     public String toDot() {
         String fileName = MyOptions.graphPath + "/temp.auto";
         Utils.writeToFile(this.str, fileName);
@@ -166,22 +166,22 @@ public class FSAAutomaton {
         String dot = Utils.exec(c);
         return dot;
     }
-    
+
     // returns a corresponding recognizer for this transducer
     // by projecting to the output side (i.e., the output labels of the
     // transitions are used as recognizer labels)
     public FSAAutomaton projectOut() {
-        
+
         String fileName = MyOptions.graphPath + "/temp.auto";
         Utils.writeToFile(this.str, fileName);
         String c = MyOptions.fsa_home + "/" + "fsa -r range(file('" + fileName + "'))";
         String projected = Utils.exec(c);
         return new FSAAutomaton(projected);
-        
+
         /*
         AutoInfo info = this.parseAutomaton();
         StringBuilder newStr = new StringBuilder();
-        
+
         newStr.append("fa(\n");
         newStr.append("%begin sigma and symbols\n");
         if (info.sigma.equals("t(fsa_preds,fsa_preds),")) {
@@ -195,7 +195,7 @@ public class FSAAutomaton {
         newStr.append("%end sigma and symbols\n");
         newStr.append(info.numStates);
         newStr.append(", % number of states\n");
-        
+
         newStr.append("[ % begin start states\n");
         for (Integer startState : info.startStates) {
             newStr.append(startState);
@@ -205,7 +205,7 @@ public class FSAAutomaton {
         newStr.deleteCharAt(newStr.length()-1);
         newStr.append("\n");
         newStr.append("], % end start states\n");
-        
+
         newStr.append("[ % begin final states\n");
         for (Integer finalState : info.finalStates) {
             newStr.append(finalState);
@@ -215,18 +215,18 @@ public class FSAAutomaton {
         newStr.deleteCharAt(newStr.length()-1);
         newStr.append("\n");
         newStr.append("], % end final states\n");
-        
+
         newStr.append("[ % begin transitions\n");
         for (String trans : info.transitions) {
-            
+
             // - remove the input side
             // - translate [] transitions into jumps
             // - make sure that the transitions are ordered (source state)
 
             StringBuffer newLine = new StringBuffer();
 
-            
-            // note: transitions can also contain predicates, e.g.: 
+
+            // note: transitions can also contain predicates, e.g.:
             // trans(5,[]/in([x,y]),4),
             // where "in([x,y])" denotes the predicate "contained in the set [x,y]";
             // but this has no influence on the following technique
@@ -236,7 +236,7 @@ public class FSAAutomaton {
 
             // index where the output label starts
             int outputStart = trans.indexOf('/') + 1;
-            
+
             // index after the end of output label
             int outputEnd;
             if (trans.endsWith(",")) {
@@ -245,8 +245,8 @@ public class FSAAutomaton {
                 outputEnd = trans.lastIndexOf(',');
             }
 
-            String outputLabel; 
-            
+            String outputLabel;
+
             // check if the output label looks like this: $@(...)
             // if so: peel it off!
             int dollarStart = trans.indexOf("$@(", outputStart);
@@ -256,33 +256,33 @@ public class FSAAutomaton {
             } else {
                 outputLabel = trans.substring(outputStart, outputEnd);
             }
-            
+
             newLine.append(trans.substring(0,inputStart));
             newLine.append(outputLabel);
             newLine.append(trans.substring(outputEnd));
             newLine.append("\n");
-            
+
 //            System.out.println("from:");
 //            System.out.println(line);
 //            System.out.println("to:");
 //            System.out.println(newLine);
 //            System.out.println("outlabel: "+ outputLabel);
-            
+
             newStr.append(newLine);
 
-            
+
         }
         newStr.append("[ % end transitions\n");
-        
+
         newStr.append("[]). % jumps\n");
-        
+
         System.out.println(newStr);
         Utils.e();
-        
+
         */
-        
-        
-        
+
+
+
         /*
         StringBuffer newStr = new StringBuffer();
         StringTokenizer tokenizer = new StringTokenizer(this.str, "\n");
@@ -297,8 +297,8 @@ public class FSAAutomaton {
 
                 StringBuffer newLine = new StringBuffer();
 
-                
-                // note: transitions can also contain predicates, e.g.: 
+
+                // note: transitions can also contain predicates, e.g.:
                 // trans(5,[]/in([x,y]),4),
                 // where "in([x,y])" denotes the predicate "contained in the set [x,y]";
                 // but this has no influence on the following technique
@@ -308,7 +308,7 @@ public class FSAAutomaton {
 
                 // index where the output label starts
                 int outputStart = line.indexOf('/') + 1;
-                
+
                 // index after the end of output label
                 int outputEnd;
                 if (line.endsWith(",")) {
@@ -317,8 +317,8 @@ public class FSAAutomaton {
                     outputEnd = line.lastIndexOf(',');
                 }
 
-                String outputLabel; 
-                
+                String outputLabel;
+
                 // check if the output label looks like this: $@(...)
                 // if so: peel it off!
                 int dollarStart = line.indexOf("$@(", outputStart);
@@ -328,45 +328,45 @@ public class FSAAutomaton {
                 } else {
                     outputLabel = line.substring(outputStart, outputEnd);
                 }
-                
+
                 newLine.append(line.substring(0,inputStart));
                 newLine.append(outputLabel);
                 newLine.append(line.substring(outputEnd));
-                
+
 //                System.out.println("from:");
 //                System.out.println(line);
 //                System.out.println("to:");
 //                System.out.println(newLine);
 //                System.out.println("outlabel: "+ outputLabel);
-                
+
                 newStr.append(newLine);
-                
+
             } else {
                 newStr.append(line);
             }
             newStr.append("\n");
         }
-        
+
 //        System.out.println("old string:");
 //        System.out.println(this.str);
 //        System.out.println("new string: ");
 //        System.out.println(newStr);
-//        if (true) throw new RuntimeException(); 
-        
+//        if (true) throw new RuntimeException();
+
         */
-        
+
         /*
         FSAAutomaton retMe = new FSAAutomaton(newStr.toString());
         return retMe;
         */
 
     }
-    
+
     // returns the character in unicode form, except if the character
     // is a lowercase character;
     // borrowed from the brics automata package
     static String encode(char c) {
-        
+
         StringBuilder b = new StringBuilder();
         if (Character.isLetter(c) && Character.isLowerCase(c)) {
             b.append(c);
@@ -384,7 +384,7 @@ public class FSAAutomaton {
         }
         return b.toString();
     }
-    
+
     // reverses the transformation that is performed in encode()
     static char decode(String s) {
         if (s.length() == 1) {
@@ -402,13 +402,13 @@ public class FSAAutomaton {
     }
 
 
-    
+
     // helper function that returns a string if this automaton represents
     // exactly this one string; null otherwise
     List<String> getFiniteString() {
 
         List<String> retMe = new LinkedList<String>();
-        
+
         AutoInfo info = this.parseAutomaton();
         if (info.startStates.size() != 1) {
             return null;
@@ -416,13 +416,13 @@ public class FSAAutomaton {
         if (info.finalStates.size() != 1) {
             return null;
         }
-        
+
         Integer currentState = info.startStates.iterator().next();
         while (currentState != null) {
             Set<TransitionInfo> tt = info.transitions.get(currentState);
             if (tt == null || tt.size() == 0) {
                 // no outgoing transitions
-                
+
                 if (info.finalStates.contains(currentState)) {
                     // done!
                     currentState = null;
@@ -439,15 +439,15 @@ public class FSAAutomaton {
                 // more than one outgoing transitions
                 return null;
             }
-            
+
         }
-        
+
 //        System.out.println("finite string: ");
 //        System.out.println(retMe);
 //        System.out.println(this.str);
 
         return retMe;
-        
+
         /*
         // "region codes" used during parsing
         final int outside = 0;
@@ -459,14 +459,14 @@ public class FSAAutomaton {
 
         Integer startState = null;
         Integer finalState = null;
-        
+
         // source state -> list(String label, Integer destState)
         Map<Integer,List<Object>> transitions = new HashMap<Integer,List<Object>>();
-        
+
         StringTokenizer tokenizer = new StringTokenizer(this.str, "\n");
         while (tokenizer.hasMoreTokens()) {
             String line = tokenizer.nextToken();
-            
+
             // region change
             if (line.contains("begin start states")) {
                 region = inStartStates;
@@ -477,13 +477,13 @@ public class FSAAutomaton {
             } else if (line.contains("end final states")) {
                 region = outside;
             } else if (line.contains("begin transitions")) {
-                region = inTransitions; 
+                region = inTransitions;
             } else if (line.contains("end transitions")) {
                 region = outside;
             } else {
-                
+
                 // no region change on this line
-            
+
                 switch (region) {
                 case outside:
                     // nothing to do
@@ -534,11 +534,11 @@ public class FSAAutomaton {
                 }
             }
         }
-        
+
         if (startState == null || finalState == null) {
             return null;
         }
-        
+
 //        System.out.println("in getfinitestrign");
 //        System.out.println(this.str);
 //        System.out.println("start state: " + startState);
@@ -567,57 +567,57 @@ public class FSAAutomaton {
                 current = dest;
             }
         }
-        
+
         return retMe;
         */
     }
 
     // returns an automaton for the language of undesired strings for sql analysis (test);
-    // MISSING HERE: double quotes and other evil stuff (see PHP's addslashes()) 
+    // MISSING HERE: double quotes and other evil stuff (see PHP's addslashes())
     public static FSAAutomaton getUndesiredSQLTest() {
-        
+
         // just for testing:
 //        String single_quote = "s";
 //        String backslash = "b";
-        
+
         // regexp that matches every string that contains an
         // unescaped single quote at the beginning
-        String regexpNoPrefix = "[" + 
-        
+        String regexpNoPrefix = "[" +
+
             // zero or even number of backslashes, followed by a quote
-            "kleene_star(concat("+backslash+","+backslash+"))" + "," + 
+            "kleene_star(concat("+backslash+","+backslash+"))" + "," +
             single_quote + "," +
-        
+
             // an arbitrary suffix
             "kleene_star(?)" +
-            
+
             "]";
 
         // the same as before, but with an arbitrary prefix
-        String regexpWithPrefix = "[" + 
-        
+        String regexpWithPrefix = "[" +
+
             // an arbitrary prefix
             "kleene_star(?)" + "," +
-    
+
             // something other than a backslash
             "term_complement("+backslash+")" + "," +
-            
+
             regexpNoPrefix +
-            
+
             "]";
-        
+
         // the complete regexp: union of the previous two
         String regexp = "[union("+regexpNoPrefix+","+regexpWithPrefix+")]";
-        
+
 //        System.out.println(regexp);
 //        if (true) throw new RuntimeException();
         String c = MyOptions.fsa_home + "/" + "fsa -r " + regexp;
-        
+
         String autoString = Utils.exec(c);
-        
+
 //        System.out.println(autoString);
 //        if (true) throw new RuntimeException();
-        
+
         FSAAutomaton retMe = new FSAAutomaton(autoString);
 
         // you can test the automaton by
@@ -632,41 +632,41 @@ public class FSAAutomaton {
 //        System.out.println(autoString);
 //        Utils.writeToFile(retMe.toDot(), "myauto.txt");
 //        if (true) throw new RuntimeException();
-        
+
         return retMe;
 
     }
 
     // returns an automaton for the language of undesired strings for xss analysis (test);
     public static FSAAutomaton getUndesiredXSSTest() {
-        
+
         if (MyOptions.fsa_home == null) {
             Utils.bail("Please set fsaHome in the main configuration file.");
         }
 
         // regexp that matches every string that contains a pointy bracket
-        String regexp = "[" + 
-        
+        String regexp = "[" +
+
         // an arbitrary prefix
         "kleene_star(?)" + "," +
 
         // the pointy
         opointy + "," +
-    
+
         // an arbitrary suffix
         "kleene_star(?)" +
-        
+
         "]";
-        
+
 //        System.out.println(regexp);
 //        if (true) throw new RuntimeException();
         String c = MyOptions.fsa_home + "/" + "fsa -r " + regexp;
-        
+
         String autoString = Utils.exec(c);
-        
+
 //        System.out.println(autoString);
 //        if (true) throw new RuntimeException();
-        
+
         FSAAutomaton retMe = new FSAAutomaton(autoString);
 
         // you can test the automaton by
@@ -681,13 +681,13 @@ public class FSAAutomaton {
 //        System.out.println(autoString);
 //        Utils.writeToFile(retMe.toDot(), "myauto.txt");
 //        if (true) throw new RuntimeException();
-        
+
         return retMe;
 
     }
 
     private AutoInfo parseAutomaton() {
-        
+
         // "region codes" used during parsing
         final int outside = 0;
         final int inStartStates = 1;
@@ -704,14 +704,14 @@ public class FSAAutomaton {
         List<Integer> startStates = new LinkedList<Integer>();
         List<Integer> finalStates = new LinkedList<Integer>();
         Map<Integer,Set<TransitionInfo>> transitions = new HashMap<Integer,Set<TransitionInfo>>();
-        
+
         StringTokenizer tokenizer = new StringTokenizer(this.str, "\n");
         while (tokenizer.hasMoreTokens()) {
             String line = tokenizer.nextToken();
-            
+
             if (line.contains("number of states")) {
                 numStates = Integer.parseInt(line.substring(0, line.indexOf(',')));
-                
+
             // relevant region change
             } else if (line.contains("begin sigma and symbols")) {
                 region = inSigma;
@@ -726,15 +726,15 @@ public class FSAAutomaton {
             } else if (line.contains("end final states")) {
                 region = outside;
             } else if (line.contains("begin transitions")) {
-                region = inTransitions; 
+                region = inTransitions;
             } else if (line.contains("end transitions")) {
                 region = outside;
             } else if (line.contains("end transitions")) {
                 region = outside;
             } else {
-                
+
                 // no region change on this line
-            
+
                 switch (region) {
                 case outside:
                     // nothing to do
@@ -756,13 +756,13 @@ public class FSAAutomaton {
                     finalStates.add(finalState);
                     break;
                 case inTransitions:
-                    
+
                     // trans(content);
                     // content: startState,LABEL,endState
                     String content = line.substring(6, line.lastIndexOf(')'));
                     Integer sourceState = Integer.parseInt(content.substring(0,content.indexOf(',')));
                     Integer destState = Integer.parseInt(content.substring(content.lastIndexOf(',')+1));
-                    
+
                     String label = content.substring(content.indexOf(',')+1, content.lastIndexOf(','));
 
                     Set<TransitionInfo> tt = transitions.get(sourceState);
@@ -772,7 +772,7 @@ public class FSAAutomaton {
                     }
                     tt.add(new TransitionInfo(label, destState));
                     break;
-                    
+
                 case inSigma:
                     if (sigma != null) {
                         System.out.println(this.str);
@@ -786,15 +786,15 @@ public class FSAAutomaton {
                 }
             }
         }
-        
+
         if (numStates == null) {
             throw new RuntimeException("SNH");
         }
-        
+
         return new AutoInfo(sigma, startStates, finalStates, transitions, numStates);
 
     }
-    
+
     // returns true if this automaton has only one state and
     // no transitions
     public boolean isEmpty() {
@@ -805,48 +805,48 @@ public class FSAAutomaton {
             return false;
         }
     }
-    
+
     /*
     // returns the transducer equivalent to PHP's addslashes()
     public static FSAAutomaton addslashes() {
-        
+
         String single_quote = encode('\'');
         String double_quote = encode('\'');
         String backslash = encode('\\');
- 
+
         return null;
     }
     */
-    
+
 
     // converts a PHP regex (perl-compatible or posix extended) into an FSAAutomaton;
     // returns .* for unsupported regexes
-    public static FSAAutomaton convertPhpRegex(List<String> phpRegexOrig, boolean preg) 
+    public static FSAAutomaton convertPhpRegex(List<String> phpRegexOrig, boolean preg)
     throws UnsupportedRegexException {
 
         FSAAutomaton retMe;
-        
+
         // may throw an exception
         String prologRegex = Regex2Prolog.convertPhpRegex(phpRegexOrig, preg);
-        
+
         String c = MyOptions.fsa_home + "/" + "fsa -r " + prologRegex;
         String autoString = Utils.exec(c);
         retMe = new FSAAutomaton(autoString);
 
         return retMe;
-        
+
     }
-    
+
     // helper class for exchanging automaton information;
     // note: doesn't consider jumps yet, so use with caution
     private class AutoInfo {
-        
+
         String sigma;
         List<Integer> startStates;
         List<Integer> finalStates;
         Map<Integer,Set<TransitionInfo>> transitions;
         int numStates;
-        
+
         AutoInfo(String sigma, List<Integer> ss, List<Integer> fs, Map<Integer,Set<TransitionInfo>> t, int n) {
             this.sigma = sigma;
             this.startStates = ss;
@@ -860,11 +860,10 @@ public class FSAAutomaton {
     private class TransitionInfo {
         String label;
         Integer dest;
-        
+
         TransitionInfo(String label, Integer dest) {
             this.label = label;
             this.dest = dest;
         }
     }
-    
 }

@@ -10,14 +10,13 @@ import java.util.*;
 // CfgNodeEval *********************************************************************
 // *********************************************************************************
 
-
 public class CfgNodeEval
 extends CfgNode {
 
     private TacPlace left;
     private TacPlace right;
-    
-// CONSTRUCTORS ********************************************************************    
+
+// CONSTRUCTORS ********************************************************************
 
     public CfgNodeEval(TacPlace left, TacPlace right, ParseNode node) {
         super(node);
@@ -26,7 +25,7 @@ extends CfgNode {
     }
 
 // GET *****************************************************************************
-    
+
     public TacPlace getLeft() {
         return this.left;
     }
@@ -34,7 +33,7 @@ extends CfgNode {
     public TacPlace getRight() {
         return this.right;
     }
-    
+
     public List<Variable> getVariables() {
         List<Variable> retMe = new LinkedList<Variable>();
         if (this.left instanceof Variable) {
@@ -49,7 +48,7 @@ extends CfgNode {
         }
         return retMe;
     }
-    
+
 //  SET ****************************************************************************
 
     public void replaceVariable(int index, Variable replacement) {
@@ -64,7 +63,4 @@ extends CfgNode {
             throw new RuntimeException("SNH");
         }
     }
-
 }
-
-

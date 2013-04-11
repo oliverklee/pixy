@@ -10,13 +10,10 @@ function foo() {
     if ($rand) {
         $g =& $f;
     }
-    bar(&$f); 
+    bar(&$f);
     echo $g;
 }
 function bar(&$bp) {
     $bp = 'three';
 }
-
-
-
 ?>

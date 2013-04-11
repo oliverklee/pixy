@@ -7,8 +7,4 @@ $a = $get1;
 $b = $get2;
 $c = 'const';
 printf($a, $b, $c);
-
-
-
-
 ?>

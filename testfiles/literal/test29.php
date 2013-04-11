@@ -3,7 +3,7 @@
 // CALL STRING ANALYSIS: MUST NOT USE FUNCTION SUMMARIES;
 // otherwise, there would already be a summary for function a
 // by the time the propagation through the long if-branch reaches
-// the function call, and would falsely re-use the already 
+// the function call, and would falsely re-use the already
 // computed values main.x1:1 and main.x2:1 that resulted from
 // the propagation outside the if-branch
 

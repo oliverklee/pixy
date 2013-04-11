@@ -1,7 +1,7 @@
 <?php
 
 // "global"
-    
+
 foo();
 $x->bar();
 

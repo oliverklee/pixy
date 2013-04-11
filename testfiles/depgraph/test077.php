@@ -9,7 +9,7 @@ echo $x;        // has become harmless
 
 function foo() {
    global $x;
-   $x = 1; 
+   $x = 1;
 }
 
 

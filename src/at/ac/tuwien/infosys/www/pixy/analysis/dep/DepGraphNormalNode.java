@@ -8,23 +8,23 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
-public class DepGraphNormalNode 
+public class DepGraphNormalNode
 extends DepGraphNode {
 
     private TacPlace place;
     private CfgNode cfgNode;
     private boolean isTainted;
-    
+
 //  ********************************************************************************
-    
+
     public DepGraphNormalNode(TacPlace place, CfgNode cfgNode) {
         this.place = place;
         this.cfgNode = cfgNode;
         this.isTainted = false;
     }
-    
+
 //  ********************************************************************************
-    
+
     // returns a name that can be used in dot file representation
     public String dotName() {
         return Dumper.escapeDot(this.place.toString(), 0) + " (" + this.cfgNode.getOrigLineno() + ")" +
@@ -35,7 +35,7 @@ extends DepGraphNode {
         return Dumper.escapeDot(this.place.toString(), 0) + " (" + this.cfgNode.getOrigLineno() + ")" +
         "\\n" + this.cfgNode.getFileName();
     }
-    
+
     // no path
     public String dotNameShort() {
         String fileName = this.cfgNode.getFileName();
@@ -44,16 +44,16 @@ extends DepGraphNode {
     }
 
     public String dotNameVerbose(boolean isModelled) {
-        
+
         String retme = "";
-        
+
         if (!MyOptions.optionW) {
             // don't print file name for web interface
             retme += this.cfgNode.getFileName() + " : " + this.cfgNode.getOrigLineno() + "\\n";
         } else {
             retme += "Line " + this.cfgNode.getOrigLineno() + "\\n";
         }
-        
+
         if (this.place instanceof Variable) {
             Variable var = (Variable) this.place;
             retme += "Var: " + Dumper.escapeDot(var.getName(), 0) + "\\n";
@@ -65,26 +65,26 @@ extends DepGraphNode {
         } else {
             throw new RuntimeException("SNH");
         }
-        
+
         return retme;
     }
-    
-    
+
+
 
 //  ********************************************************************************
-    
+
     public void setTainted(boolean isTainted) {
         this.isTainted = isTainted;
     }
 
 //  ********************************************************************************
-    
+
     public boolean isTainted() {
         return this.isTainted;
     }
 
 //  ********************************************************************************
-    
+
     public boolean isString() {
         if (this.place.isLiteral()) {
             return true;
@@ -92,29 +92,29 @@ extends DepGraphNode {
             return false;
         }
     }
-    
+
 //  ********************************************************************************
-    
+
     public TacPlace getPlace() {
         return this.place;
     }
 
 //  ********************************************************************************
-    
+
     public CfgNode getCfgNode() {
         return this.cfgNode;
     }
-    
+
 //  ********************************************************************************
-    
+
     public int getLine() {
         return this.cfgNode.getOrigLineno();
     }
-    
+
 //  ********************************************************************************
-    
+
     public boolean equals(Object compX) {
-        
+
         if (compX == this) {
             return true;
         }
@@ -134,19 +134,18 @@ extends DepGraphNode {
     }
 
 //  ********************************************************************************
-    
+
     public int hashCode() {
         int hashCode = 17;
         hashCode = 37*hashCode + this.place.hashCode();
         hashCode = 37*hashCode + this.cfgNode.hashCode();
         return hashCode;
     }
-    
+
 //  ********************************************************************************
-    
+
     public String toString() {
         return this.place.toString() + " (" + this.cfgNode.getOrigLineno() + ") " +
             this.cfgNode.getFileName();
     }
-
 }

@@ -1,6 +1,6 @@
 <? //
 
-// very simple function example 
+// very simple function example
 
 
 foo();

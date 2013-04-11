@@ -10,15 +10,14 @@ import java.util.*;
 // CfgNodeStatic *******************************************************************
 // *********************************************************************************
 
-
 public class CfgNodeStatic
 extends CfgNode {
 
     private TacPlace operand;
     private TacPlace initialPlace;
     private boolean hasInitialPlace;
-    
-// CONSTRUCTORS ********************************************************************    
+
+// CONSTRUCTORS ********************************************************************
 
     public CfgNodeStatic(TacPlace operand, ParseNode node) {
         super(node);
@@ -35,11 +34,11 @@ extends CfgNode {
     }
 
 // GET *****************************************************************************
-    
+
     public boolean hasInitialPlace() {
         return this.hasInitialPlace;
     }
-    
+
     public TacPlace getOperand() {
         return this.operand;
     }
@@ -47,7 +46,7 @@ extends CfgNode {
     public TacPlace getInitialPlace() {
         return this.initialPlace;
     }
-    
+
     public List<Variable> getVariables() {
         List<Variable> retMe = new LinkedList<Variable>();
         if (this.operand instanceof Variable) {
@@ -62,7 +61,7 @@ extends CfgNode {
         }
         return retMe;
     }
-    
+
 //  SET ****************************************************************************
 
     public void replaceVariable(int index, Variable replacement) {
@@ -78,5 +77,3 @@ extends CfgNode {
         }
     }
 }
-
-

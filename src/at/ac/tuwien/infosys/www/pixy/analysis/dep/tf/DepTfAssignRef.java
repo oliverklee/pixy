@@ -18,26 +18,26 @@ extends TransferFunction {
     private Variable right;
     private boolean supported;
     private CfgNode cfgNode;
-    
-// *********************************************************************************    
+
+// *********************************************************************************
 // CONSTRUCTORS ********************************************************************
-// *********************************************************************************     
+// *********************************************************************************
 
     // mustAliases, mayAliases: of setMe
     public DepTfAssignRef(TacPlace left, TacPlace right, CfgNode cfgNode) {
-        
+
         this.left = (Variable) left;    // must be a variable
         this.right = (Variable) right;  // must be a variable
         this.cfgNode = cfgNode;
-        
+
         // check for unsupported features
         this.supported = AliasAnalysis.isSupported(this.left, this.right, false, -1);
-        
+
     }
 
-// *********************************************************************************    
+// *********************************************************************************
 // OTHER ***************************************************************************
-// *********************************************************************************  
+// *********************************************************************************
 
     public LatticeElement transfer(LatticeElement inX) {
 
@@ -46,7 +46,7 @@ extends TransferFunction {
         if (!supported) {
             return inX;
         }
-        
+
         DepLatticeElement in = (DepLatticeElement) inX;
         DepLatticeElement out = new DepLatticeElement(in);
 
@@ -55,14 +55,14 @@ extends TransferFunction {
         // except that left receives the taint of right;
         // array label mapping: the same;
         // we achieve this through the following actions:
-        
+
         Set<Variable> mustAliases = new HashSet<Variable>();
         mustAliases.add(left);
         Set mayAliases = Collections.EMPTY_SET;
-        
+
         // let the lattice element handle the details
         out.assign(left, mustAliases, mayAliases, cfgNode);
-        
+
         return out;
     }
 }

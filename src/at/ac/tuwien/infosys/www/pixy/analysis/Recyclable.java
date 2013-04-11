@@ -8,5 +8,4 @@ public interface Recyclable {
     // only to be used by GenericRepos
     public abstract boolean structureEquals(Object compX);
     public abstract int structureHashCode();
-
 }

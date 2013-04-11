@@ -5,7 +5,6 @@ import java.util.*;
 import at.ac.tuwien.infosys.www.phpparser.ParseNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
 
-
 public class TacFunction {
 
     private String name;
@@ -18,30 +17,30 @@ public class TacFunction {
 
     // a list of CFG nodes calling this function (CfgNodeCall)
     private List<CfgNodeCall> calledFrom;
-    
+
     // a list of function calls contained in this function (CfgNodeCall);
     // does not cover calls to builtin or unknown functions
     //private List<CfgNodeCall> containedCalls;
 
     // is this the main function?
     private boolean isMain;
-    
+
     // name of the enclosing class, if this is a method;
     // the empty string otherwise
     private String className;
     // is this the constructor of the above class?
     private boolean isConstructor;
-    
+
     private ParseNode parseNode;
-    
-// ********************************************************************************* 
+
+// *********************************************************************************
 // CONSTRUCTORS ********************************************************************
-// ********************************************************************************* 
+// *********************************************************************************
 
     // DON'T FORGET TO SET THE PARAMETERS with setParams()!
-    TacFunction(String name, Cfg cfg, Variable retVar, boolean isReference, 
+    TacFunction(String name, Cfg cfg, Variable retVar, boolean isReference,
             ParseNode parseNode, String className) {
-        
+
         this.name = name;
         this.cfg = cfg;
         this.retVar = retVar;
@@ -55,7 +54,7 @@ public class TacFunction {
                 this.isConstructor = true;
             }
         }
-        
+
         this.params = Collections.emptyList();
         this.symbolTable = new SymbolTable(name);
         this.calledFrom = new LinkedList<CfgNodeCall>();
@@ -73,10 +72,10 @@ public class TacFunction {
         // cfgnodes by requiring this information in each cfgnode's constructor
         this.cfg.getTail().setEnclosingFunction(this);
     }
-   
-// ********************************************************************************* 
+
+// *********************************************************************************
 // GET *****************************************************************************
-// ********************************************************************************* 
+// *********************************************************************************
 
     public String getName() {
         return this.name;
@@ -93,7 +92,7 @@ public class TacFunction {
     public List<TacFormalParam> getParams() {
         return this.params;
     }
-    
+
     public TacFormalParam getParam(int index) {
         return this.params.get(index);
     }
@@ -105,7 +104,7 @@ public class TacFunction {
     public SymbolTable getSymbolTable() {
         return this.symbolTable;
     }
-    
+
     // returns the function's local variable with the given name
     Variable getVariable(String varName) {
         return this.symbolTable.getVariable(varName);
@@ -114,7 +113,7 @@ public class TacFunction {
     public List<CfgNodeCall> getCalledFrom() {
         return this.calledFrom;
     }
-    
+
     public List<CfgNodeCall> getContainedCalls() {
         return this.cfg.getContainedCalls();
         // return this.containedCalls;
@@ -123,11 +122,11 @@ public class TacFunction {
     public boolean isMain() {
         return this.isMain;
     }
-    
+
     public boolean isConstructor() {
         return this.isConstructor;
     }
-    
+
     // returns true if this function's CFG has only 2 nodes (entry and exit
     // node), and false otherwise
     boolean isEmpty() {
@@ -137,62 +136,62 @@ public class TacFunction {
             return false;
         }
     }
-    
+
     // returns a collection containing this function's locals
     public Collection getLocals() {
         return this.symbolTable.getVariablesColl();
     }
-    
+
     public int size() {
         return this.cfg.size();
     }
-    
+
     public String getFileName() {
         return this.parseNode.getFileName();
     }
-    
+
     public String getLoc() {
         return this.parseNode.getLoc();
     }
-    
+
     // returns the line number of the contained cfg's head
     public int getLine() {
         return this.cfg.getHead().getOrigLineno();
     }
-    
+
     public String getClassName() {
         return this.className;
     }
 
-// ********************************************************************************* 
+// *********************************************************************************
 // SET *****************************************************************************
-// ********************************************************************************* 
+// *********************************************************************************
 
     // expects a List containing TacFormalParam objects
     void setParams(List<TacFormalParam> params) {
         this.params = params;
     }
-    
+
     void setIsMain(boolean isMain) {
         this.isMain = isMain;
     }
-    
+
     public void addCalledFrom(CfgNodeCall callNode) {
         this.calledFrom.add(callNode);
     }
-    
-//  ********************************************************************************* 
+
+//  *********************************************************************************
 //  OTHER ***************************************************************************
 //  *********************************************************************************
-    
+
     public void assignReversePostOrder() {
         this.cfg.assignReversePostOrder();
     }
-    
+
     public int hashCode() {
         return this.name.hashCode();
     }
-    
+
     public boolean equals(Object obj) {
         if (!(obj instanceof TacFunction)) {
             return false;
@@ -206,6 +205,4 @@ public class TacFunction {
         }
         return true;
     }
-
-    
 }

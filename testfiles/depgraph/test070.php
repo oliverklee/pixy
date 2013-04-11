@@ -12,9 +12,4 @@ function foo($fp) {
     $f[3] = $fp;
     return $f;
 }
-
-
-
-
-
 ?>

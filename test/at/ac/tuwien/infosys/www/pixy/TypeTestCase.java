@@ -1,6 +1,5 @@
 package at.ac.tuwien.infosys.www.pixy;
 
-
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -17,36 +16,36 @@ import junit.framework.*;
 // all methods named "testXX" are executed automatically when choosing
 // "Run / Run as... / JUnit Test"
 
-// testcase for TypeAnalysis 
-public class TypeTestCase 
+// testcase for TypeAnalysis
+public class TypeTestCase
 extends TestCase {
 
     private String path;    // complete path to the testfile directory (with trailing slash)
-    
+
     // these are recomputed for every single test
     private DepAnalysis depAnalysis;
     private XSSAnalysis xssAnalysis;
     List<Sink> sinks;
-    
+
 //  ********************************************************************************
 //  SETUP **************************************************************************
 //  ********************************************************************************
-    
+
     // called automatically
     protected void setUp() {
         this.path = MyOptions.pixy_home + "/testfiles/type/";
     }
-    
-    
+
+
     // call this at the beginning of each test; optionally uses
     // a functional analysis instead of call-string ("functional" param),
     // and uses a dummy literal analysis
     private void mySetUp(String testFile, boolean functional) {
-        
+
         Checker checker = new Checker(this.path + testFile);
         MyOptions.option_A = false;   // don't perform alias analysis
         MyOptions.setAnalyses("xss");
-        
+
         // initialize & analyze
         TacConverter tac = checker.initialize().getTac();
         checker.analyzeTaint(tac, functional);
@@ -58,7 +57,7 @@ extends TestCase {
         Collections.sort(sinks);
 
     }
-    
+
     // returns the contents of the given file as string
     private String readFile(String fileName) {
         StringBuilder ret = new StringBuilder();
@@ -77,22 +76,22 @@ extends TestCase {
         return ret.toString();
     }
 
-    
+
     // set "generate" to false if you want to generate graphs
-    // (instead of checking against existing graphs) 
-    private void performTest(String testNum, int sinkNum, int graphNum, 
+    // (instead of checking against existing graphs)
+    private void performTest(String testNum, int sinkNum, int graphNum,
             boolean generate, int vulnNum) {
         performTest(testNum, sinkNum, graphNum, generate, false, vulnNum);
     }
 
-    private void performTest(String testNum, int sinkNum, int graphNum, 
+    private void performTest(String testNum, int sinkNum, int graphNum,
             boolean generate, boolean functional, int vulnNum) {
-        
+
         //generate = true;
-        
+
         mySetUp("test" + testNum + ".php", functional);
-        
-        Assert.assertTrue("Sinks real: " + sinks.size() + ", expected: " 
+
+        Assert.assertTrue("Sinks real: " + sinks.size() + ", expected: "
                 + sinkNum, sinks.size() == sinkNum);
 
         // collect depGraphs
@@ -100,16 +99,16 @@ extends TestCase {
         for (Sink sink : sinks) {
             depGraphs.addAll(depAnalysis.getDepGraph(sink));
         }
-        
-        Assert.assertTrue("Graphs real: " + depGraphs.size() + ", expected: " 
+
+        Assert.assertTrue("Graphs real: " + depGraphs.size() + ", expected: "
                 + graphNum, depGraphs.size() == graphNum);
-        
+
         int graphCount = 0;
         int vulnCount = 0;
         for (DepGraph depGraph : depGraphs) {
-            
+
             // check depgraph
-            
+
             graphCount++;
             String fileName = "test" + testNum + "_" + graphCount;
             if (generate) {
@@ -119,16 +118,16 @@ extends TestCase {
                 String expected = this.readFile(this.path + fileName + ".dot");
                 Assert.assertEquals(expected, encountered);
             }
-            
+
             // check xssgraph
-            
+
             String xssFileName = "test" + testNum + "_" + graphCount + "_xss";
             DepGraph relevant = this.xssAnalysis.getRelevant(depGraph);
             Map<DepGraphUninitNode, DepClient.InitialTaint> dangerousUninit = this.xssAnalysis.findDangerousUninit(relevant);
             if (!dangerousUninit.isEmpty()) {
                 vulnCount++;
                 relevant.reduceWithLeaves(dangerousUninit.keySet());
-                
+
                 if (generate) {
                     relevant.dumpDotUnique(xssFileName, this.path);
                 } else {
@@ -153,10 +152,10 @@ extends TestCase {
 //  ********************************************************************************
 //  TESTS **************************************************************************
 //  ********************************************************************************
-    
+
     public void test001() {
         String testNum = "001";
-        int sinkNum = 2;        // expected number of sinks 
+        int sinkNum = 2;        // expected number of sinks
         int graphNum = 1;       // expected number of graphs
         int vulnNum = 1;        // expected number of vulnerabilities
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
@@ -164,81 +163,71 @@ extends TestCase {
 
     public void test002() {
         String testNum = "002";
-        int sinkNum = 2; 
+        int sinkNum = 2;
         int graphNum = 1;
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test003() {
         String testNum = "003";
-        int sinkNum = 2; 
+        int sinkNum = 2;
         int graphNum = 1;
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test004() {
         String testNum = "004";
-        int sinkNum = 2; 
+        int sinkNum = 2;
         int graphNum = 1;
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test005() {
         String testNum = "005";
-        int sinkNum = 2; 
+        int sinkNum = 2;
         int graphNum = 1;
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test006() {
         String testNum = "006";
-        int sinkNum = 2; 
+        int sinkNum = 2;
         int graphNum = 1;
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test007() {
         String testNum = "007";
-        int sinkNum = 2; 
+        int sinkNum = 2;
         int graphNum = 1;
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
+
     public void test008() {
         String testNum = "008";
-        int sinkNum = 2; 
+        int sinkNum = 2;
         int graphNum = 1;
         int vulnNum = 1;
         this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
     }
-    
-    
-    
-    
+
     /*
      * HOW TO ADD NEW TESTS
-     * 
+     *
      * - write a php testfile and move it to the right directory (see above)
      * - copy one of the existing test methods and adjust the numbers
      *   (for an explanation, see the first test method)
      * - set the fourth parameter of "performTest" to true, and run
-     *   the test; this has the effect that dot files for the generated 
+     *   the test; this has the effect that dot files for the generated
      *   graphs are dumped to the filesystem
      * - check if the dot files look as you expected
-     * - switch the fourth parameter back to false 
-     * 
+     * - switch the fourth parameter back to false
+     *
      */
-    
 }
-
-
-
-
-
-

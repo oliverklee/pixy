@@ -12,5 +12,3 @@ $x6 = _junit_test_03($_UNTAINTED, $_TAINTED);
 ~_hotspot0;         // x1 through x6: all T
 
 ?>
-
-

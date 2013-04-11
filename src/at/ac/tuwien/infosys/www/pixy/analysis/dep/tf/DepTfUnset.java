@@ -17,10 +17,10 @@ extends TransferFunction {
     private Variable operand;
     private CfgNode cfgNode;
     private boolean supported;
-    
-// *********************************************************************************    
+
+// *********************************************************************************
 // CONSTRUCTORS ********************************************************************
-// *********************************************************************************     
+// *********************************************************************************
 
     public DepTfUnset(TacPlace operand, CfgNode cfgNode) {
 
@@ -28,17 +28,17 @@ extends TransferFunction {
         if (!operand.isVariable()) {
             throw new RuntimeException("Trying to unset a non-variable.");
         }
-        
+
         this.operand = (Variable) operand;
         this.cfgNode = cfgNode;
         //this.supported = AliasAnalysis.isSupported(this.operand);
         this.supported = true;
-        
+
     }
 
-// *********************************************************************************    
+// *********************************************************************************
 // OTHER ***************************************************************************
-// *********************************************************************************  
+// *********************************************************************************
 
     public LatticeElement transfer(LatticeElement inX) {
 
@@ -47,7 +47,7 @@ extends TransferFunction {
         if (!supported) {
             return inX;
         }
-        
+
         DepLatticeElement in = (DepLatticeElement) inX;
         DepLatticeElement out = new DepLatticeElement(in);
 

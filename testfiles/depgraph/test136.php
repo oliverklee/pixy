@@ -12,7 +12,7 @@ echo $x[$y];  // ok!
 
 foreach($x as $val){
   echo $val;    // ok!
-}	
+}
 
 
 

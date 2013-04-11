@@ -9,10 +9,4 @@ $c[1] = $get;
 $b = $c;    // $b has no explicit index 1
 $a = $b;
 echo $a[1];   // tainted, from $get
-
-
-
-
-
-
 ?>

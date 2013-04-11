@@ -9,7 +9,7 @@ class MyClass {
         echo $p1;
         echo $p2;
     }
-    
+
 }
 
 ?>

@@ -11,5 +11,4 @@ if ($u) {
     $d =& $e;   // u{(b,c,d,e)} a{}
 }
 ~_hotspot0;     // u{(b,c) (d,e)} a{(a,b) (a,c) (d,f) (e,f) (b,d) (b,e) (c,d) (c,e)}
-
 ?>

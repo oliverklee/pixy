@@ -1,9 +1,9 @@
 /*
  * dk.brics.automaton
- * 
+ *
  * Copyright (c) 2001-2006 Anders Moeller
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -14,7 +14,7 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. The name of the author may not be used to endorse or promote products
  *    derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
  * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -32,47 +32,47 @@ package at.ac.tuwien.infosys.www.pixy.automaton;
 import java.util.*;
 import java.io.*;
 
-/** 
- * <tt>Automaton</tt> state. 
+/**
+ * <tt>Automaton</tt> state.
  * @author Anders M&oslash;ller &lt;<a href="mailto:amoeller@brics.dk">amoeller@brics.dk</a>&gt;
  */
-public class State 
+public class State
 implements Serializable, Comparable {
-	
+
     static final long serialVersionUID = 30001;
-	
+
 	boolean accept;
 	HashSet<Transition> transitions;
-    
+
 	int number;
-	
+
 	int id;
 	static int next_id;
-	
-	/** 
-	 * Constructs new state. Initially, the new state is a reject state. 
+
+	/**
+	 * Constructs new state. Initially, the new state is a reject state.
 	 */
 	public State() {
 		resetTransitions();
 		id = next_id++;
 	}
 
-	/** 
-	 * Resets transition set. 
+	/**
+	 * Resets transition set.
 	 */
 	void resetTransitions() {
 		transitions = new HashSet<Transition>();
 	}
-	
-	/** 
-	 * Returns set of outgoing transitions. 
+
+	/**
+	 * Returns set of outgoing transitions.
 	 * Subsequent changes are reflected in the automaton.
 	 * @return transition set
 	 */
 	public Set<Transition> getTransitions()	{
 		return transitions;
 	}
-	
+
 	/**
 	 * Adds outgoing transition.
 	 * @param t transition
@@ -80,15 +80,15 @@ implements Serializable, Comparable {
 	public void addTransition(Transition t)	{
 		transitions.add(t);
 	}
-	
-	/** 
+
+	/**
 	 * Sets acceptance for this state.
 	 * @param accept if true, this state is an accept state
 	 */
 	public void setAccept(boolean accept) {
 		this.accept = accept;
 	}
-	
+
 	/**
 	 * Returns acceptance status.
 	 * @return true is this is an accept state
@@ -96,8 +96,8 @@ implements Serializable, Comparable {
 	public boolean isAccept() {
 		return accept;
 	}
-	
-	/** 
+
+	/**
 	 * Performs lookup in transitions.
 	 * @param c character to look up
 	 * @return destination state, null if no matching outgoing transition
@@ -115,21 +115,21 @@ implements Serializable, Comparable {
 		for (Transition t : to.transitions)
 			transitions.add(t);
 	}
-	
+
 	/** Returns transitions sorted by (min, reverse max, to) or (to, min, reverse max) */
 	Transition[] getSortedTransitionArray(boolean to_first) {
 		Transition[] e = transitions.toArray(new Transition[0]);
 		Arrays.sort(e, new TransitionComparator(to_first));
 		return e;
 	}
-	
+
 	List<Transition> getSortedTransitions(boolean to_first)	{
 		return Arrays.asList(getSortedTransitionArray(to_first));
 	}
-	
-	/** 
-	 * Returns string describing this state. Normally invoked via 
-	 * {@link Automaton#toString()}. 
+
+	/**
+	 * Returns string describing this state. Normally invoked via
+	 * {@link Automaton#toString()}.
 	 */
 	@Override
 	public String toString() {
@@ -144,7 +144,7 @@ implements Serializable, Comparable {
 			b.append("  ").append(t.toString()).append("\n");
 		return b.toString();
 	}
-	
+
 	/**
 	 * Compares this object with the specified object for order.
 	 * States are ordered by the time of construction.

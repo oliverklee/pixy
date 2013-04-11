@@ -9,29 +9,29 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.*;
 // computes a reverse postorder for the whole, interprocedural cfg;
 // currently only works for call-string analysis
 public class InterWorkListOrder {
-    
+
     // this is what we want to compute: a mapping of interprocedural
     // worklist elements to some number (order)
     private Map<InterWorkListElement,Integer> order;
-    
+
 //  ********************************************************************************
-    
+
     public InterWorkListOrder(TacConverter tac, ConnectorComputation cc) {
-        
+
         this.order = new HashMap<InterWorkListElement,Integer>();
-        
+
         TacFunction mainFunction = tac.getMainFunction();
         CfgNode startNode = mainFunction.getCfg().getHead();
-        
+
         Map<TacFunction,ECS> function2ECS = cc.getFunction2ECS();
         ECS mainECS = function2ECS.get(mainFunction);
         if (mainECS.size() != 1) {
             throw new RuntimeException("SNH");
         }
 
-        InterWorkListElement start = new InterWorkListElement(startNode, new CSContext(0)); 
+        InterWorkListElement start = new InterWorkListElement(startNode, new CSContext(0));
         LinkedList<InterWorkListElement> postorder = this.getPostorder(start, cc);
-        
+
         // get *reverse* postorder
         ListIterator iter = postorder.listIterator(postorder.size());
         int i = 0;
@@ -45,14 +45,14 @@ public class InterWorkListOrder {
     }
 
 //  ********************************************************************************
-    
+
     // non-recursive postorder
     private LinkedList<InterWorkListElement> getPostorder(
             InterWorkListElement start, ConnectorComputation cc) {
 
         // this is what we want to compute
         LinkedList<InterWorkListElement> postorder = new LinkedList<InterWorkListElement>();
-        
+
         // auxiliary stack and visited set
         LinkedList<InterWorkListElement> stack = new LinkedList<InterWorkListElement>();
         Set<InterWorkListElement> visited = new HashSet<InterWorkListElement>();
@@ -67,66 +67,66 @@ public class InterWorkListOrder {
         // - if there is such a successor: push it on the stack and continue
         // - else: pop the stack and add the popped element to the postorder list
         while (!stack.isEmpty()) {
-            
+
             // mark the top stack element as visited
             InterWorkListElement element = stack.getLast();
             visited.add(element);
-            
+
             // interior of this element
             CfgNode cfgNode = element.getCfgNode();
             CSContext context = (CSContext) element.getContext();
-            
+
             // we will try to get an unvisited successor element
             InterWorkListElement nextElement = null;
-            
+
             if (cfgNode instanceof CfgNodeCall) {
-                
+
                 // in case of a call node, we have to distinguish between
                 // unknown calls (no callee available) and known calls
-                
+
                 CfgNodeCall callNode = (CfgNodeCall) cfgNode;
                 TacFunction callee = callNode.getCallee();
                 if (callee == null) {
-                    
-                    // for unknown calls:                    
+
+                    // for unknown calls:
                     // simply move on to the callret node; context stays the same
-                    
+
                     CfgNode retNode = callNode.getSuccessor(0);
                     nextElement = new InterWorkListElement(retNode, context);
-                    
+
                     if (visited.contains(nextElement)) {
                         nextElement = null;
                     }
-                    
+
                 } else {
-                    
+
                     // for normal calls:
                     // enter function under corresponding context
-                    
+
                     CfgNodeEntry entryNode = (CfgNodeEntry) callee.getCfg().getHead();
                     Context propagationContext = cc.getTargetContext(callNode, context.getPosition());
                     if (propagationContext == null) {
                         throw new RuntimeException("SNH: " + callNode.getLoc());
                     }
                     nextElement = new InterWorkListElement(entryNode, propagationContext);
-                    
+
                     if (visited.contains(nextElement)) {
                         nextElement = null;
                     }
 
                 }
-                
+
             } else if (cfgNode instanceof CfgNodeExit) {
-                
+
                 CfgNodeExit exitNode = (CfgNodeExit) cfgNode;
                 TacFunction exitedFunction = exitNode.getEnclosingFunction();
 
                 // only proceed if this is not the exit node of the main function
                 if (!exitedFunction.isMain()) {
-                    
+
                     // an exit node can have several "reverse targets";
                     // a reverse target consists of one call node and one or more contexts
-                    
+
                     Iterator<ReverseTarget> revTargetsIter = cc.getReverseTargets(exitedFunction, context.getPosition()).iterator();
                     while ((nextElement == null) && revTargetsIter.hasNext()) {
 
@@ -134,12 +134,12 @@ public class InterWorkListOrder {
                         CfgNodeCall revCall = revTarget.getCallNode();
                         CfgNode revRet = revCall.getSuccessor(0);
                         Iterator<? extends Context> reverseContextsIter = revTarget.getContexts().iterator();
-                        
+
                         while ((nextElement == null) && reverseContextsIter.hasNext()) {
-                            
+
                             Context reverseContext = reverseContextsIter.next();
                             nextElement = new InterWorkListElement(revRet, reverseContext);
-                            
+
                             if (visited.contains(nextElement)) {
                                 // try the next one
                                 nextElement = null;
@@ -149,9 +149,9 @@ public class InterWorkListOrder {
                         }
                     }
                 }
-                
+
             } else {
-                
+
                 // handle successors
                 for (int i = 0; (i < 2) && (nextElement == null); i++) {
                     CfgEdge outEdge = cfgNode.getOutEdge(i);
@@ -167,7 +167,7 @@ public class InterWorkListOrder {
                     }
                 }
             }
-            
+
             if (nextElement == null) {
                 // pop from stack and add it to the postorder list
                 postorder.add(stack.removeLast());
@@ -176,16 +176,16 @@ public class InterWorkListOrder {
                 stack.add(nextElement);
             }
         }
-        
+
         return postorder;
-        
-        
-        
+
+
+
     }
 //  ********************************************************************************
-    
+
     // this was the old, recursive implementation: could make the stack too deep
-    
+
     /*
     private LinkedList<InterWorkListElement> getPostorder(
             InterWorkListElement start, ConnectorComputation cc) {
@@ -196,19 +196,19 @@ public class InterWorkListOrder {
     }
 
 //  ********************************************************************************
-    
-    private void dfIteratorHelper(List<InterWorkListElement> postorder, 
+
+    private void dfIteratorHelper(List<InterWorkListElement> postorder,
             InterWorkListElement element, Set<InterWorkListElement> visited,
             ConnectorComputation cc) {
 
         // mark this node as visited
         visited.add(element);
-        
+
         CfgNode cfgNode = element.getCfgNode();
         CSContext context = (CSContext) element.getContext();
-        
+
         if (cfgNode instanceof CfgNodeCall) {
-            
+
             CfgNodeCall callNode = (CfgNodeCall) cfgNode;
             TacFunction callee = callNode.getCallee();
             if (callee == null) {
@@ -226,11 +226,11 @@ public class InterWorkListOrder {
                     dfIteratorHelper(postorder, nextElement, visited, cc);
                 }
             }
-            
+
         } else if (cfgNode instanceof CfgNodeExit) {
-            
+
             CfgNodeExit exitNode = (CfgNodeExit) cfgNode;
-            
+
             TacFunction exitedFunction = exitNode.getEnclosingFunction();
 
             // no need to proceed if this is the exit node of the
@@ -248,7 +248,7 @@ public class InterWorkListOrder {
                     }
                 }
             }
-            
+
         } else {
             // handle successors
             for (int i = 0; i < 2; i++) {
@@ -262,17 +262,15 @@ public class InterWorkListOrder {
                 }
             }
         }
-        
+
         // add it to the postorder list
         postorder.add(element);
     }
     */
-    
+
 //  ********************************************************************************
 
     public Integer getReversePostOrder(InterWorkListElement element) {
         return this.order.get(element);
     }
-    
-
 }

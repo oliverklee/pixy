@@ -5,17 +5,14 @@ import java.util.*;
 import at.ac.tuwien.infosys.www.phpparser.ParseNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
-
-
 // *********************************************************************************
 // CfgNodeEmpty ********************************************************************
 // *********************************************************************************
 
-
 public class CfgNodeEmpty
 extends CfgNode {
-    
-// CONSTRUCTORS ********************************************************************    
+
+// CONSTRUCTORS ********************************************************************
 
     public CfgNodeEmpty() {
         super();
@@ -24,21 +21,19 @@ extends CfgNode {
         // all CFGs
         // maxId--;
     }
-    
+
     public CfgNodeEmpty(ParseNode parseNode) {
         super(parseNode);
     }
-    
+
 //  GET ****************************************************************************
-    
+
     public List<Variable> getVariables() {
         return Collections.emptyList();
     }
-    
+
 //  SET ****************************************************************************
 
     public void replaceVariable(int index, Variable replacement) {
     }
-
 }
-

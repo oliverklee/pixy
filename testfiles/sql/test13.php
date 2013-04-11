@@ -4,7 +4,7 @@
 
 $sql = 'startx';
 
-do 
+do
 {
     $sql .= 'xyz';
 } while ($get);

@@ -1,6 +1,6 @@
 <?php
 
-// interprocedural propagation of constants 
+// interprocedural propagation of constants
 
 C1; C2;
 define('C1', '1');
@@ -17,5 +17,3 @@ function a() {
 }
 
 ?>
-
-

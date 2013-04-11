@@ -7,14 +7,11 @@ foo();
 function foo() {
     global $a;
     $f =& $a;
-    bar(); 
+    bar();
     echo $f;
 }
 function bar() {
     global $a;
     $a = 'you';
 }
-
-
-
 ?>

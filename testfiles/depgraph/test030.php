@@ -5,13 +5,10 @@
 foo();
 function foo() {
     $f = 'hi';
-    bar(&$f); 
+    bar(&$f);
     echo $f;
 }
 function bar(&$bp) {
     $bp = 'you';
 }
-
-
-
 ?>

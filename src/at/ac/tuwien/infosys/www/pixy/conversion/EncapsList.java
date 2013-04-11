@@ -10,44 +10,44 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.*;
 public class EncapsList {
 
     private List<Object> encapsList;
-    
+
     EncapsList() {
         this.encapsList = new LinkedList<Object>();
     }
-    
+
     void dump() {
         System.out.println("here comes an encaps list:");
         for (Object o : this.encapsList) {
             System.out.println(o);
         }
     }
- 
+
     void add(TacPlace place, Cfg cfg) {
         this.encapsList.add(place);
         this.encapsList.add(cfg);
     }
-    
+
     void add(Literal string) {
         this.encapsList.add(string);
     }
-    
+
     // converts this encapslist into a place and cfg
     // - place
     // - cfg
     TacAttributes makeAtts(Variable temp, ParseNode node) {
         TacAttributes myAtts = new TacAttributes();
-        
+
         CfgNode head = new CfgNodeEmpty();
         CfgNode contd = head;
 
         // is the temporary variable still empty?
         boolean tempEmpty = true;
-        
+
         Iterator iter = this.encapsList.iterator();
         Literal lastLiteral = null;
         while (iter.hasNext()) {
             Object obj = iter.next();
-            
+
             if (obj instanceof Literal) {
                 Literal lit = (Literal) obj;
 
@@ -60,7 +60,7 @@ public class EncapsList {
                 }
 
             } else if (obj instanceof TacPlace) {
-                
+
                 if (lastLiteral != null) {
                     // catch the last literal in a temporary
 
@@ -83,7 +83,7 @@ public class EncapsList {
 
                 // fetch the cfg of this non-literal
                 Cfg nextCfg = (Cfg) iter.next();
-                
+
                 CfgNode cfgNode;
                 if (tempEmpty) {
                     cfgNode = new CfgNodeAssignSimple(
@@ -101,7 +101,7 @@ public class EncapsList {
                 throw new RuntimeException("SNH");
             }
         }
-        
+
         if (lastLiteral != null) {
             // some literal is hanging around at the end...
             CfgNode cfgNode;
@@ -117,7 +117,7 @@ public class EncapsList {
             contd = cfgNode;
             lastLiteral = null;
         }
-        
+
         myAtts.setCfg(new Cfg(head, contd));
         myAtts.setPlace(temp);
         return myAtts;

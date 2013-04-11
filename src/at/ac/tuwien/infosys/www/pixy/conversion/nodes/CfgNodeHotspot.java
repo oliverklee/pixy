@@ -5,7 +5,6 @@ import java.util.List;
 
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
-
 // *********************************************************************************
 // CfgNodeHotspot ******************************************************************
 // *********************************************************************************
@@ -13,18 +12,18 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 // hotspots are only used for JUnit tests
 public class CfgNodeHotspot
 extends CfgNode {
-    
+
     private Integer hotspotId;
-    
-//  CONSTRUCTORS *******************************************************************    
+
+//  CONSTRUCTORS *******************************************************************
 
     public CfgNodeHotspot(Integer hotspotId) {
         super();
         this.hotspotId = hotspotId;
     }
-    
+
 //  GET ****************************************************************************
-    
+
     public Integer getHotspotId() {
         return this.hotspotId;
     }
@@ -32,12 +31,10 @@ extends CfgNode {
     public List<Variable> getVariables() {
         return Collections.emptyList();
     }
-    
+
 //  SET ****************************************************************************
 
     public void replaceVariable(int index, Variable replacement) {
         // do nothing
     }
-
 }
-

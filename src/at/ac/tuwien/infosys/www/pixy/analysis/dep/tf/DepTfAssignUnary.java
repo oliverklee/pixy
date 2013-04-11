@@ -19,15 +19,15 @@ extends TransferFunction {
     private Set mustAliases;
     private Set mayAliases;
     private CfgNode cfgNode;
-    
-// *********************************************************************************    
+
+// *********************************************************************************
 // CONSTRUCTORS ********************************************************************
-// *********************************************************************************     
+// *********************************************************************************
 
     // mustAliases, mayAliases: of setMe
-    public DepTfAssignUnary(TacPlace left, TacPlace right, int op, 
+    public DepTfAssignUnary(TacPlace left, TacPlace right, int op,
             Set mustAliases, Set mayAliases, CfgNode cfgNode) {
-        
+
         this.left = (Variable) left;  // must be a variable
         this.right = right;
         this.op = op;
@@ -36,9 +36,9 @@ extends TransferFunction {
         this.cfgNode = cfgNode;
     }
 
-// *********************************************************************************    
+// *********************************************************************************
 // OTHER ***************************************************************************
-// *********************************************************************************  
+// *********************************************************************************
 
     public LatticeElement transfer(LatticeElement inX) {
 
@@ -47,7 +47,7 @@ extends TransferFunction {
 
         // let the lattice element handle the details
         out.assign(left, mustAliases, mayAliases, cfgNode);
-        
+
         return out;
     }
 }

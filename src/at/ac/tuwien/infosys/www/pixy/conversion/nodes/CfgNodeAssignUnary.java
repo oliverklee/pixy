@@ -6,11 +6,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 import java.util.*;
 
-
 // *********************************************************************************
 // CfgNodeAssignUnary *************************************************************
 // *********************************************************************************
-
 
 // "left = op right"
 // "op" can be:
@@ -21,8 +19,8 @@ extends CfgNode {
     private Variable left;
     private TacPlace right;
     private int op;
-    
-// CONSTRUCTORS ********************************************************************    
+
+// CONSTRUCTORS ********************************************************************
 
     public CfgNodeAssignUnary(Variable left, TacPlace right, int op, ParseNode node) {
         super(node);
@@ -30,13 +28,13 @@ extends CfgNode {
         this.right = right;
         this.op = op;
     }
-    
+
 //  GET ****************************************************************************
-    
+
     public Variable getLeft() {
         return this.left;
     }
-    
+
     public TacPlace getRight() {
         return this.right;
     }
@@ -44,7 +42,7 @@ extends CfgNode {
     public int getOperator() {
         return this.op;
     }
-    
+
     public List<Variable> getVariables() {
         List<Variable> retMe = new LinkedList<Variable>();
         retMe.add(this.left);
@@ -55,9 +53,9 @@ extends CfgNode {
         }
         return retMe;
     }
-    
+
 //  SET ****************************************************************************
-    
+
     public void replaceVariable(int index, Variable replacement) {
         switch (index) {
         case 0:
@@ -70,6 +68,4 @@ extends CfgNode {
             throw new RuntimeException("SNH");
         }
     }
-
 }
-

@@ -7,9 +7,5 @@
 $a = $get1;
 $b = $get2;
 $c = 'const';
-echo($a . $b . $c); 
-
-
-
-
+echo($a . $b . $c);
 ?>

@@ -9,5 +9,4 @@ a();
 function a() {
     $GLOBALS['x'] =& $GLOBALS['y'];
 }
-
 ?>

@@ -1,9 +1,9 @@
 /*
  * dk.brics.automaton
- * 
+ *
  * Copyright (c) 2001-2006 Anders Moeller
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -14,7 +14,7 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. The name of the author may not be used to endorse or promote products
  *    derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
  * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -48,8 +48,8 @@ public class RunAutomaton implements Serializable {
 	char[] points; // char interval start points
 	int[] classmap; // map from char number to class class
 
-	/** 
-	 * Sets alphabet table for optimal run performance. 
+	/**
+	 * Sets alphabet table for optimal run performance.
 	 */
 	void setAlphabet() {
 		classmap = new int[Character.MAX_VALUE - Character.MIN_VALUE + 1];
@@ -61,8 +61,8 @@ public class RunAutomaton implements Serializable {
 		}
 	}
 
-	/** 
-	 * Returns a string representation of this automaton. 
+	/**
+	 * Returns a string representation of this automaton.
 	 */
 	@Override
 	public String toString() {
@@ -96,22 +96,22 @@ public class RunAutomaton implements Serializable {
 		return b.toString();
 	}
 
-	/** 
-	 * Returns number of states in automaton. 
+	/**
+	 * Returns number of states in automaton.
 	 */
 	public int getSize() {
 		return size;
 	}
 
-	/** 
-	 * Returns acceptance status for given state. 
+	/**
+	 * Returns acceptance status for given state.
 	 */
 	public boolean isAccept(int state) {
 		return accept[state];
 	}
 
-	/** 
-	 * Returns initial state. 
+	/**
+	 * Returns initial state.
 	 */
 	public int getInitialState() {
 		return initial;
@@ -125,8 +125,8 @@ public class RunAutomaton implements Serializable {
 		return points.clone();
 	}
 
-	/** 
-	 * Gets character class of given char. 
+	/**
+	 * Gets character class of given char.
 	 */
 	int getCharClass(char c) {
 		return Automaton.findIndex(c, points);
@@ -152,7 +152,7 @@ public class RunAutomaton implements Serializable {
 	 * @exception ClassCastException if the data is not a serialized <code>RunAutomaton</code>
 	 * @exception ClassNotFoundException if the class of the serialized object cannot be found
 	 */
-	public static RunAutomaton load(URL url) throws IOException, OptionalDataException, ClassCastException, 
+	public static RunAutomaton load(URL url) throws IOException, OptionalDataException, ClassCastException,
 													ClassNotFoundException, InvalidClassException {
 		return load(url.openStream());
 	}
@@ -166,7 +166,7 @@ public class RunAutomaton implements Serializable {
 	 * @exception ClassCastException if the data is not a serialized <code>RunAutomaton</code>
 	 * @exception ClassNotFoundException if the class of the serialized object cannot be found
 	 */
-	public static RunAutomaton load(InputStream stream) throws IOException, OptionalDataException, ClassCastException, 
+	public static RunAutomaton load(InputStream stream) throws IOException, OptionalDataException, ClassCastException,
 															   ClassNotFoundException, InvalidClassException {
 		ObjectInputStream s = new ObjectInputStream(stream);
 		return (RunAutomaton) s.readObject();
@@ -188,7 +188,7 @@ public class RunAutomaton implements Serializable {
 	 * <code>Automaton</code>. If the given automaton is not deterministic,
 	 * it is determinized first.
 	 * @param a an automaton
-	 * @param tableize if true, a transition table is created which makes the <code>run</code> 
+	 * @param tableize if true, a transition table is created which makes the <code>run</code>
 	 *                 method faster in return of a higher memory usage
 	 */
 	public RunAutomaton(Automaton a, boolean tableize) {
@@ -229,8 +229,8 @@ public class RunAutomaton implements Serializable {
 			return transitions[state * points.length + classmap[c - Character.MIN_VALUE]];
 	}
 
-	/** 
-	 * Returns true if the given string is accepted by this automaton. 
+	/**
+	 * Returns true if the given string is accepted by this automaton.
 	 */
 	public boolean run(String s) {
 		int p = initial;

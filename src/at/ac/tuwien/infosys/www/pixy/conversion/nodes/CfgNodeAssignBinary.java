@@ -6,11 +6,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 import java.util.*;
 
-
 // *********************************************************************************
 // CfgNodeAssignBinary *************************************************************
 // *********************************************************************************
-
 
 // "left = leftOperand op rightOperand"
 // "op" can be: TacOperators.<...>
@@ -25,30 +23,30 @@ extends CfgNode {
     private TacPlace leftOperand;
     private TacPlace rightOperand;
     private int op;
-    
-//  CONSTRUCTORS *******************************************************************    
+
+//  CONSTRUCTORS *******************************************************************
 
     public CfgNodeAssignBinary(
-        Variable left, TacPlace leftOperand, TacPlace rightOperand, 
+        Variable left, TacPlace leftOperand, TacPlace rightOperand,
         int op, ParseNode node) {
-        
+
         super(node);
         this.left = left;
         this.leftOperand = leftOperand;
         this.rightOperand = rightOperand;
         this.op = op;
     }
-    
+
 //  GET ****************************************************************************
-    
+
     public Variable getLeft() {
         return this.left;
     }
-    
+
     public TacPlace getLeftOperand() {
         return this.leftOperand;
     }
-    
+
     public TacPlace getRightOperand() {
         return this.rightOperand;
     }
@@ -56,7 +54,7 @@ extends CfgNode {
     public int getOperator() {
         return this.op;
     }
-    
+
     public List<Variable> getVariables() {
         List<Variable> retMe = new LinkedList<Variable>();
         retMe.add(this.left);
@@ -72,9 +70,9 @@ extends CfgNode {
         }
         return retMe;
     }
-    
+
 //  SET ****************************************************************************
-    
+
     public void replaceVariable(int index, Variable replacement) {
         switch (index) {
         case 0:
@@ -91,5 +89,3 @@ extends CfgNode {
         }
     }
 }
-
-

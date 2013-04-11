@@ -8,7 +8,7 @@ import java.util.ListIterator;
 public class Regex2Prolog {
 
 //  ********************************************************************************
-    
+
     // converts a PHP regex into a Prolog (FSA-Utils) regexp;
     // throws UnsupportedRegexException for unsupported regexes;
     // preg: true if this regex is perl-compatible, false if it is posix (ereg)
@@ -18,10 +18,10 @@ public class Regex2Prolog {
         if (phpRegexOrig.isEmpty()) {
             throw new RuntimeException("Empty regex");
         }
-        
+
         // make a copy for the following work
         List<String> phpRegex = new LinkedList<String>(phpRegexOrig);
-        
+
         if (preg) {
             // if the preg regex is not delimited...
             if (!phpRegex.get(0).equals(FSAAutomaton.slash) || !phpRegex.get(phpRegex.size()-1).equals(FSAAutomaton.slash)) {
@@ -36,45 +36,45 @@ public class Regex2Prolog {
 //        System.out.println(phpRegex);
 
         StringBuilder prologRegex = new StringBuilder();
-        
+
         // parse subsequence
         prologRegex.append(parseSub(phpRegex.listIterator()));
-        
+
 //        System.out.println("resulting regex:");
 //        System.out.println(prologRegex);
-        
+
         return prologRegex.toString();
     }
 
 //  ********************************************************************************
-    
+
     // parses a subsequence: ... -> [...,...,...]
     private static StringBuilder parseSub(ListIterator<String> iter) {
-        
+
         StringBuilder prologRegex = new StringBuilder();
-        
+
         String seq = "";
         while (iter.hasNext()) {
-            
+
             // the current symbol
             String sym = iter.next();
-            
+
             // lookahead
-            String look = null; 
+            String look = null;
             if (iter.hasNext()) {
                 look = iter.next();
                 iter.previous();
             }
-            
+
             // this will be set to true if lookahead detects
             // a meta-character and handles it; in this case,
-            // the current symbol must not be treated again below 
+            // the current symbol must not be treated again below
             boolean done = false;
-            
+
             if (look != null) {
-                
+
                 // if we are not at the end
-                
+
                 // making a look ahead to see if we have
                 // to do something unusual for the current symbol
 
@@ -116,13 +116,13 @@ public class Regex2Prolog {
                     seq = ",";
                 } else if (sym.equals(FSAAutomaton.backslash)) {
                     // an escape
-                    String escaped = escape(iter); 
+                    String escaped = escape(iter);
                     prologRegex.append(seq);
                     prologRegex.append(escaped);
                     seq = ",";
                 } else if (sym.equals(FSAAutomaton.ocurly)) {
                     // repetition;
-                    // automaton could become quite large; 
+                    // automaton could become quite large;
                     // here is how it would work:
                     // - determine the number of repetitions
                     // - determine the regex that is to be repeated
@@ -148,23 +148,23 @@ public class Regex2Prolog {
                 }
             }
         }
-        
+
         // enclose in sequence and return
         prologRegex.insert(0, '[');
         prologRegex.append(']');
         return prologRegex;
 
     }
-    
+
 //  ********************************************************************************
-    
+
     // parses a character class: [...]
     private static StringBuilder parseCharClass(ListIterator<String> iter) {
 
         StringBuilder prologRegex = new StringBuilder();
 
         String first = iter.next();
-        
+
         // check whether the first symbol in the character class is a ^;
         // in this case, we have a negated character class
         if (!first.equals(FSAAutomaton.circum)) {
@@ -174,32 +174,32 @@ public class Regex2Prolog {
 
         String seq = "";
         while (iter.hasNext()) {
-            
+
             // the current symbol
             String sym = iter.next();
-            
+
             // lookahaed
-            String look = null; 
+            String look = null;
             if (iter.hasNext()) {
                 look = iter.next();
                 iter.previous();
             }
-            
+
             // this will be set to true if lookahead detects
             // a meta-character and handles it; in this case,
-            // the current symbol must not be treated again below 
+            // the current symbol must not be treated again below
             boolean done = false;
-            
+
             if (look != null) {
-                
+
                 // if we are not at the end
-                
+
                 // making a look ahead to see if we have
                 // to do something unusual for the current symbol
 
                 if (look.equals(FSAAutomaton.minus) && !sym.equals(FSAAutomaton.backslash)) {
                     // character range lying ahead (but only if the minus was not escaped)
-                    
+
                     // also check if the minus is the last character in this
                     // character class; if so, it does not denote a character range
                     boolean charRange = true;
@@ -216,20 +216,20 @@ public class Regex2Prolog {
                         charRange = false;
                         iter.previous();
                     }
-                        
+
                     if (charRange) {
                         String rangeStart = sym;
                         iter.next();
                         String rangeEnd = iter.next();
                         StringBuilder range = makeRange(rangeStart, rangeEnd);
-                        
+
                         prologRegex.append(seq);
                         prologRegex.append(range);
                         seq = ",";
-                        
+
                         done = true;
                     }
-                    
+
                 }
             }
 
@@ -241,11 +241,11 @@ public class Regex2Prolog {
 //                } else if (sym.equals(minus)) {
 //                    // character range
 //                    // already handled by lookahead
-                    
+
                 } else if (sym.equals(FSAAutomaton.backslash)) {
                     // an escape
-                    
-                    String escaped = escape(iter); 
+
+                    String escaped = escape(iter);
                     prologRegex.append(seq);
                     prologRegex.append(escaped);
                     seq = ",";
@@ -258,34 +258,34 @@ public class Regex2Prolog {
                 }
             }
         }
-        
+
         // enclose in union
         prologRegex.insert(0, '{');
         prologRegex.append('}');
-        
+
         // check whether the first symbol in the character class is a ^;
         // in this case, we have a negated character class
         if (first.equals(FSAAutomaton.circum)) {
             prologRegex.insert(0, "term_complement(");
             prologRegex.append(')');
         }
-        
+
         return prologRegex;
 
     }
-    
+
 //  ********************************************************************************
-    
+
     // converts a character range: a-z => {a,b,c,...,z}
     private static StringBuilder makeRange(String startX, String endX) {
-        
+
         char start = FSAAutomaton.decode(startX);
         char end = FSAAutomaton.decode(endX);
-        
+
         if (start >= end) {
             throw new RuntimeException("faulty regex: " + start + "-" + end);
         }
-        
+
         StringBuilder b = new StringBuilder();
         b.append('{');
         while (start <= end) {
@@ -299,23 +299,23 @@ public class Regex2Prolog {
         b.append('}');
         return b;
     }
-    
+
 //  ********************************************************************************
-    
+
     // handles backslash escaping;
     // expects the iterator to be right after the backslash
     private static String escape(ListIterator<String> iter) {
-        
+
         // safety check
         if (!iter.previous().equals(FSAAutomaton.backslash)) {
             throw new RuntimeException("SNH");
         }
         iter.next();
-        
+
         String escaped = iter.next();
         String retMe;
         char escapedOrig = FSAAutomaton.decode(escaped);
-        
+
         if (Character.isLetterOrDigit(escapedOrig)) {
             // has a special meaning, not supported yet
             throw new UnsupportedRegexException();
@@ -323,8 +323,7 @@ public class Regex2Prolog {
             // a simple escape of a metacharacter
             retMe = escaped;
         }
-        
+
         return retMe;
     }
-    
 }

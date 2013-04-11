@@ -9,27 +9,27 @@ public class ConnectorFunction {
 
     // CSContext -> CSContext
     private Map<CSContext,CSContext> pos2pos;
-    
+
     // reverse mapping of pos2pos:
     // CSContext -> Set of CSContexts
     private Map<CSContext,Set<CSContext>> reverse;
-    
+
     // creates an empty connector function
     public ConnectorFunction() {
         this.pos2pos = new HashMap<CSContext,CSContext>();
         this.reverse = new HashMap<CSContext,Set<CSContext>>();
     }
-    
+
     // adds the given mapping
     public void add(int from, int to) {
-        
+
         CSContext fromInt = new CSContext(from);
         CSContext toInt = new CSContext(to);
-        
+
         this.pos2pos.put(fromInt, toInt);
-        
+
         // maintain reverse mapping
-        
+
         Set<CSContext> reverseSet = this.reverse.get(toInt);
         if (reverseSet == null) {
             // there was no such reverse mapping:
@@ -42,19 +42,19 @@ public class ConnectorFunction {
             reverseSet.add(fromInt);
         }
     }
-    
+
     // applies this connector function to the given input value
     public CSContext apply(int input) {
         CSContext output = (CSContext) this.pos2pos.get(new CSContext(input));
         return output;
     }
-    
+
     // reverse application: returns a set of inputs (CSContext's) for the given output
     // (might be null if there is no such output)
     public Set<CSContext> reverseApply(int output) {
         return this.reverse.get(new CSContext(output));
     }
-    
+
     public String toString() {
         if (this.pos2pos.isEmpty()) {
             return "<empty>";

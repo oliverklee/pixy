@@ -9,33 +9,32 @@ import java.util.*;
 // CfgNodeAssignArray **************************************************************
 // *********************************************************************************
 
-
 public class CfgNodeAssignArray
 extends CfgNode {
 
     private Variable left;
-    
-// CONSTRUCTORS ********************************************************************    
+
+// CONSTRUCTORS ********************************************************************
 
     public CfgNodeAssignArray(Variable left, ParseNode node) {
         super(node);
         this.left = left;
     }
-    
+
 // GET *****************************************************************************
-    
+
     public Variable getLeft() {
         return this.left;
     }
-    
+
     public List<Variable> getVariables() {
         List<Variable> retMe = new LinkedList<Variable>();
         retMe.add(this.left);
         return retMe;
     }
-    
+
 //  SET ****************************************************************************
-    
+
     public void replaceVariable(int index, Variable replacement) {
         switch (index) {
         case 0:
@@ -45,6 +44,4 @@ extends CfgNode {
             throw new RuntimeException("SNH");
         }
     }
-
 }
-

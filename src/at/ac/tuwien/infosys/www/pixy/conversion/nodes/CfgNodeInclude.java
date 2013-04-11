@@ -8,15 +8,13 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import java.io.File;
 import java.util.*;
 
-
 // *********************************************************************************
 // CfgNodeInclude *************************************************************
 // *********************************************************************************
 
-
 // "temp = include <place>" (can also be require or *_once)
 public class CfgNodeInclude
-extends CfgNode 
+extends CfgNode
 implements Comparable<CfgNodeInclude> {
 
     private Variable temp;
@@ -24,10 +22,10 @@ implements Comparable<CfgNodeInclude> {
     private File file;  // file in which this node occurs
     private TacFunction includeFunction; // function in which this node occurs
 
-    
-//  CONSTRUCTORS *******************************************************************    
 
-    public CfgNodeInclude(TacPlace temp, TacPlace includeMe, 
+//  CONSTRUCTORS *******************************************************************
+
+    public CfgNodeInclude(TacPlace temp, TacPlace includeMe,
             File file, TacFunction includeFunction, ParseNode parseNode) {
         super(parseNode);
         this.temp = (Variable) temp;
@@ -35,30 +33,30 @@ implements Comparable<CfgNodeInclude> {
         this.file = file;
         this.includeFunction = includeFunction;
     }
-    
+
 //  GET ****************************************************************************
-    
+
     public TacPlace getTemp() {
         return this.temp;
     }
-    
+
     public TacPlace getIncludeMe() {
         return this.includeMe;
     }
-    
+
     public File getFile() {
         return this.file;
     }
-    
+
     public TacFunction getIncludeFunction() {
         return this.includeFunction;
     }
-    
+
     // is the file to be included given by a simple literal?
     public boolean isLiteral() {
         return this.includeMe.isLiteral();
     }
-    
+
     public List<Variable> getVariables() {
         List<Variable> retMe = new LinkedList<Variable>();
         retMe.add(this.temp);
@@ -69,15 +67,15 @@ implements Comparable<CfgNodeInclude> {
         }
         return retMe;
     }
-    
+
 //  SET ****************************************************************************
-    
+
     // use this function if this include node is inside the main function and
     // is inlined into some other file and function
     public void setIncludeFunction(TacFunction function) {
         this.includeFunction = function;
     }
-    
+
     public void replaceVariable(int index, Variable replacement) {
         switch (index) {
         case 0:
@@ -103,6 +101,4 @@ implements Comparable<CfgNodeInclude> {
             return new Integer(this.getOrigLineno()).compareTo(comp.getOrigLineno());
         }
     }
-
 }
-

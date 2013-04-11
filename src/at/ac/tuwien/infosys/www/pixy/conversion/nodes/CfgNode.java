@@ -20,7 +20,7 @@ public abstract class CfgNode {
     // number of this cfg node in reverse postorder (speeds up the analysis
     // if used by the worklist); -1 if uninitialized
     private int reversePostOrder;
-    
+
     // this can be one of the following:
     // - the enclosing basic block, if there is one (CfgNodeBasicBlock)
     // - a function's CfgNodeEntry, if this cfg node is member of one of this
@@ -33,7 +33,7 @@ public abstract class CfgNode {
     // might change during include file resolution
     private TacFunction enclosingFunction = null;
 
-// CONSTRUCTORS ********************************************************************    
+// CONSTRUCTORS ********************************************************************
 
     CfgNode() {
         this(null);
@@ -47,9 +47,9 @@ public abstract class CfgNode {
         this.reversePostOrder = -1;
         this.enclosingNode = null;
     }
-     
-        
-// GET *****************************************************************************    
+
+
+// GET *****************************************************************************
 
     // returns
     // - the enclosing basic block, if it is enclosed in one
@@ -57,20 +57,20 @@ public abstract class CfgNode {
     // - itself otherwise
     public CfgNode getSpecial() {
         CfgNode retMe;
-        
+
         retMe = this.getEnclosingBasicBlock();
         if (retMe != null) {
             return retMe;
         }
-        
+
         retMe = this.getDefaultParamEntry();
         if (retMe != null) {
             return retMe;
         }
-        
+
         return this;
     }
-    
+
     // can return null!
     public ParseNode getParseNode() {
         return this.parseNode;
@@ -95,7 +95,7 @@ public abstract class CfgNode {
             return null;
         }
     }
-    
+
     public List<CfgNode> getSuccessors() {
         List<CfgNode> successors = new LinkedList<CfgNode>();
         if (this.outEdges[0] != null) {
@@ -116,7 +116,7 @@ public abstract class CfgNode {
         }
         return predecessors.get(0);
     }
-    
+
     public List<CfgNode> getPredecessors() {
         List<CfgNode> predecessors = new LinkedList<CfgNode>();
         for (Iterator iter = this.inEdges.iterator(); iter.hasNext();) {
@@ -137,7 +137,7 @@ public abstract class CfgNode {
             return -1;
         }
     }
-    
+
     public String getFileName() {
         if (this.parseNode != null) {
             return this.parseNode.getFileName();
@@ -145,7 +145,7 @@ public abstract class CfgNode {
             return "<file name unknown>";
         }
     }
-    
+
     public String getLoc() {
         if (!MyOptions.optionB && !MyOptions.optionW) {
             return this.getFileName() + ":" + this.getOrigLineno();
@@ -153,7 +153,7 @@ public abstract class CfgNode {
             return Utils.basename(this.getFileName()) + ":" + this.getOrigLineno();
         }
     }
-    
+
     public TacFunction getEnclosingFunction() {
         if (this.enclosingFunction == null) {
             System.out.println(this.getFileName());
@@ -162,18 +162,18 @@ public abstract class CfgNode {
         }
         return this.enclosingFunction;
     }
-    
+
     // returns a list of Variables referenced by this node; an empty list
     // if there are none; can also contain null values (placeholders);
     // targeted at the replacement of $GLOBALS, so you
     // should take a look at the actual implementations before using it
     // for something else
     public abstract List<Variable> getVariables();
-    
+
     // returns a list of all USED (read) variables in this node;
     // required by taint graph generation
     //public abstract Set<TacPlace> getUsedPlaces(CfgNode cfgNodeX);
-    
+
     public int getReversePostOrder() {
         return this.reversePostOrder;
     }
@@ -189,7 +189,7 @@ public abstract class CfgNode {
             return null;
         }
     }
-    
+
     // returns either null or the entry node of the corresponding function
     // (if this node belongs to the default cfg of a function's formal parameter)
     public CfgNodeEntry getDefaultParamEntry() {
@@ -202,24 +202,24 @@ public abstract class CfgNode {
             return null;
         }
     }
-    
-// SET *****************************************************************************    
-    
+
+// SET *****************************************************************************
+
     // replaces the variable with the given index in the list returned by getVariables
     // by the given replacement variable
     public abstract void replaceVariable(int index, Variable replacement);
-    
+
     public void setOutEdge(int index, CfgEdge edge) {
         this.outEdges[index] = edge;
     }
-    
+
     public void setReversePostOrder(int i) {
         if (i == Integer.MAX_VALUE) {
             throw new RuntimeException("Integer Overflow");
         }
         this.reversePostOrder = i;
     }
-    
+
     public void setEnclosingBasicBlock(CfgNodeBasicBlock basicBlock) {
         this.enclosingNode = basicBlock;
     }
@@ -227,18 +227,18 @@ public abstract class CfgNode {
     public void setDefaultParamPrep(CfgNodeEntry callPrep) {
         this.enclosingNode = callPrep;
     }
-    
+
     public void setEnclosingFunction(TacFunction function) {
         this.enclosingFunction = function;
     }
-    
+
 // OTHER ***************************************************************************
 
     public void addInEdge(CfgEdge edge) {
         this.inEdges.add(edge);
     }
 
-    // removes the edge coming in from the given predecessor 
+    // removes the edge coming in from the given predecessor
     public void removeInEdge(CfgNode predecessor) {
         for (Iterator iter = this.inEdges.iterator(); iter.hasNext();) {
             CfgEdge inEdge = (CfgEdge) iter.next();
@@ -251,14 +251,12 @@ public abstract class CfgNode {
     public void clearInEdges() {
         this.inEdges = new LinkedList<CfgEdge>();
     }
-    
+
     public void clearOutEdges() {
         this.outEdges[0] = this.outEdges[1] = null;
     }
-    
+
     public String toString() {
         return Dumper.makeCfgNodeName(this);
     }
-    
 }
-

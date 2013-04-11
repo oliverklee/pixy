@@ -9,36 +9,36 @@ import at.ac.tuwien.infosys.www.pixy.conversion.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.*;
 
 // inclusion dominator analysis
-public class IncDomAnalysis 
+public class IncDomAnalysis
 extends IntraAnalysis {
 
     private GenericRepos<LatticeElement> repos;
-    
+
 //  ********************************************************************************
 //  CONSTRUCTORS *******************************************************************
 //  ********************************************************************************
-    
+
 //  IncDomAnalysis *****************************************************************
-    
+
     public IncDomAnalysis (TacFunction function) {
         this.repos = new GenericRepos<LatticeElement>();
         this.initGeneral(function);
     }
-    
+
 //  initLattice ********************************************************************
-    
+
     protected void initLattice() {
         this.lattice = new IncDomLattice(this);
         this.startValue = this.recycle(new IncDomLatticeElement());
         this.initialValue = this.lattice.getBottom();
     }
-    
+
 //  ********************************************************************************
 //  TRANSFER FUNCTION GENERATORS ***************************************************
 //  ********************************************************************************
 
 //  makeBasicBlockTf ***************************************************************
-    
+
     protected TransferFunction makeBasicBlockTf(CfgNodeBasicBlock basicBlock, TacFunction traversedFunction) {
         // we can override the general method from Analysis with this, because
         // analysis information must not change inside basic blocks
@@ -62,12 +62,12 @@ extends IntraAnalysis {
     // computes and returns the include chain list (consisting of cfg nodes)
     // for the given cfg node
     public List getIncludeChain(CfgNode cfgNode) {
-        
-        IncDomLatticeElement latElem = 
+
+        IncDomLatticeElement latElem =
             (IncDomLatticeElement) this.getAnalysisNode(cfgNode).getInValue();
         List dominators = latElem.getDominators();
-        
-        // * input: a list of (dominating) cfg nodes, both includeEnd and 
+
+        // * input: a list of (dominating) cfg nodes, both includeEnd and
         //   includeStart
         // * output: a chain of unclosed includeStart nodes
         LinkedList<CfgNode> chain = new LinkedList<CfgNode>();
@@ -95,19 +95,18 @@ extends IntraAnalysis {
 //  ********************************************************************************
 
 //  computeChain *******************************************************************
-    
+
     // shortcut function
     public static List computeChain(TacFunction function, CfgNode cfgNode) {
         IncDomAnalysis incDomAnalysis = new IncDomAnalysis(function);
         incDomAnalysis.analyze();
         return incDomAnalysis.getIncludeChain(cfgNode);
     }
-    
+
 
 //  recycle ************************************************************************
-    
+
     public LatticeElement recycle(LatticeElement recycleMe) {
         return this.repos.recycle(recycleMe);
     }
-
 }

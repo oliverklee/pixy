@@ -33,69 +33,69 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallUnknown;
 import at.ac.tuwien.infosys.www.pixy.sanit.SanitAnalysis;
 import at.ac.tuwien.infosys.www.pixy.transduction.MyTransductions;
 
-// SQL Injection detection 
-public class SQLAnalysis 
+// SQL Injection detection
+public class SQLAnalysis
 extends DepClient {
 
     // flag indicating whether to use transducers or not (are still unstable)
     private boolean useTransducers = false;
-    
+
 //  ********************************************************************************
-    
+
     public SQLAnalysis(DepAnalysis depAnalysis) {
         super(depAnalysis);
         this.getIsTainted = !MyOptions.optionI;
     }
-    
+
 //  ********************************************************************************
-    
+
     public List<Integer> detectVulns() {
-        
+
         System.out.println();
         System.out.println("*****************");
         System.out.println("SQL Analysis BEGIN");
         System.out.println("*****************");
         System.out.println();
-        
+
         List<Integer> retMe = new LinkedList<Integer>();
-        
+
         // collect sinks
         List<Sink> sinks = this.collectSinks();
         Collections.sort(sinks);
-        
+
         System.out.println("Number of sinks: " + sinks.size());
         System.out.println();
-        
+
         System.out.println("SQL Analysis Output");
         System.out.println("--------------------");
         System.out.println();
-        
+
         String fileName = MyOptions.entryFile.getName();
-        
+
         int graphcount = 0;
         int vulncount = 0;
         for (Sink sink : sinks) {
-            
+
             Collection<DepGraph> depGraphs = depAnalysis.getDepGraph(sink);
-            
+
             for (DepGraph depGraph : depGraphs) {
-                
+
                 graphcount++;
-                
+
                 String graphNameBase = "sql_" + fileName + "_" + graphcount;
-                
+
                 DepGraph sqlGraph = new DepGraph(depGraph);
                 CfgNode cfgNode = depGraph.getRoot().getCfgNode();
-                
+
                 depGraph.dumpDot(graphNameBase + "_dep", MyOptions.graphPath, depGraph.getUninitNodes(), this.dci);
-                
-                Automaton auto = this.toAutomaton(sqlGraph, depGraph);    
-                
+
+                Automaton auto = this.toAutomaton(sqlGraph, depGraph);
+
                 boolean tainted = false;
                 if (auto.hasDirectlyTaintedTransitions()) {
                     System.out.println("directly tainted!");
                     tainted = true;
-                } 
+                }
                 if (auto.hasIndirectlyTaintedTransitions()) {
                     if (auto.hasDangerousIndirectTaint()) {
                         System.out.println("indirectly tainted and dangerous!");
@@ -109,13 +109,13 @@ extends DepClient {
                 } else {
                     vulncount++;
                     retMe.add(cfgNode.getOrigLineno());
-                    
+
                     System.out.println("- " + cfgNode.getLoc());
                     System.out.println("- Graphs: sql" + graphcount);
                 }
-                
-                
-                // if we have detected a vulnerability, also dump a reduced 
+
+
+                // if we have detected a vulnerability, also dump a reduced
                 // SQL dependency graph
                 if (tainted) {
                     DepGraph relevant = this.getRelevant(depGraph);
@@ -136,65 +136,65 @@ extends DepClient {
                         }
                         relevant.dumpDot(graphNameBase + "_min", MyOptions.graphPath, fillUs, this.dci);
                     }
-                    
+
                     System.out.println();
                 }
-                
+
                 this.dumpDotAuto(auto, graphNameBase + "_auto", MyOptions.graphPath);
-                
+
             }
         }
-        
+
         // initial sink count and final graph count may differ (e.g., if some sinks
         // are not reachable)
         if (MyOptions.optionV) {
             System.out.println("Total Graph Count: " + graphcount);
         }
         System.out.println("Total Vuln Count: " + vulncount);
-        
+
         System.out.println();
         System.out.println("*****************");
         System.out.println("SQL Analysis END");
         System.out.println("*****************");
         System.out.println();
-        
+
         return retMe;
 
     }
 
 //  ********************************************************************************
-    
+
     // alternative to detectVulns;
     // returns those depgraphs for which a vulnerability was detected
     public VulnInfo detectAlternative() {
-        
+
         // will contain depgraphs for which a vulnerability was detected
         VulnInfo retMe = new VulnInfo();
-        
+
         // collect sinks
         List<Sink> sinks = this.collectSinks();
         Collections.sort(sinks);
-        
+
         int graphcount = 0;
         int totalPathCount = 0;
         int basicPathCount = 0;
         int hasCustomSanitCount = 0;
         int customSanitThrownAwayCount = 0;
         for (Sink sink : sinks) {
-            
+
             Collection<DepGraph> depGraphs = depAnalysis.getDepGraph(sink);
-            
+
             for (DepGraph depGraph : depGraphs) {
-                
+
                 graphcount++;
-                
+
                 DepGraph workGraph = new DepGraph(depGraph);
-                Automaton auto = this.toAutomaton(workGraph, depGraph);    
-                
+                Automaton auto = this.toAutomaton(workGraph, depGraph);
+
                 boolean tainted = false;
                 if (auto.hasDirectlyTaintedTransitions()) {
                     tainted = true;
-                } 
+                }
                 if (auto.hasIndirectlyTaintedTransitions()) {
                     if (auto.hasDangerousIndirectTaint()) {
                         tainted = true;
@@ -209,7 +209,7 @@ extends DepClient {
 
                     retMe.addDepGraph(depGraph, relevant);
                 }
-                
+
                 if (MyOptions.countPaths) {
                     int pathNum = depGraph.countPaths();
                     totalPathCount += pathNum;
@@ -217,7 +217,7 @@ extends DepClient {
                         basicPathCount += pathNum;
                     }
                 }
-                
+
                 if (!SanitAnalysis.findCustomSanit(depGraph).isEmpty()) {
                     hasCustomSanitCount++;
                     if (!tainted) {
@@ -226,7 +226,7 @@ extends DepClient {
                 }
             }
         }
-        
+
         retMe.setInitialGraphCount(graphcount);
         retMe.setTotalPathCount(totalPathCount);
         retMe.setBasicPathCount(basicPathCount);
@@ -237,7 +237,7 @@ extends DepClient {
     }
 
 //  ********************************************************************************
-    
+
     // returns the automaton representation of the given dependency graph;
     // is done by decorating the nodes of the graph with automata bottom-up,
     // and returning the automaton that eventually decorates the root;
@@ -251,18 +251,18 @@ extends DepClient {
         this.decorate(root, deco, visited, depGraph, origDepGraph);
         Automaton rootDeco = deco.get(root).clone();
         // BEWARE: minimization can lead to an automaton that is *less* human-readable
-        //rootDeco.minimize(); 
+        //rootDeco.minimize();
         return rootDeco;
     }
 
 //  ********************************************************************************
-    
+
     // decorates the given node (and all its successors) with an automaton
     private void decorate(DepGraphNode node, Map<DepGraphNode,Automaton> deco,
             Set<DepGraphNode> visited, DepGraph depGraph, DepGraph origDepGraph) {
-        
+
         visited.add(node);
-        
+
         // if this node has successors, decorate them first (if not done yet)
         List<DepGraphNode> successors = depGraph.getSuccessors(node);
         if (successors != null && !successors.isEmpty()) {
@@ -272,9 +272,9 @@ extends DepClient {
                 }
             }
         }
-        
+
         // now that all successors are decorated, we can decorate this node
-        
+
         Automaton auto = null;
         if (node instanceof DepGraphNormalNode) {
             DepGraphNormalNode normalNode = (DepGraphNormalNode) node;
@@ -286,7 +286,7 @@ extends DepClient {
                 } else {
                     // this case should not happen any longer (now that
                     // we have "uninit" nodes, see below)
-                    throw new RuntimeException("SNH: " + place + ", " + normalNode.getCfgNode().getFileName() + "," + 
+                    throw new RuntimeException("SNH: " + place + ", " + normalNode.getCfgNode().getFileName() + "," +
                             normalNode.getCfgNode().getOrigLineno());
                 }
             } else {
@@ -309,17 +309,17 @@ extends DepClient {
                     }
                 }
             }
-            
+
         } else if (node instanceof DepGraphOpNode) {
             auto = this.makeAutoForOp((DepGraphOpNode) node, deco, depGraph);
-            
+
         } else if (node instanceof DepGraphSccNode) {
-            
+
             // for SCC nodes, we generate a coarse string approximation (.* automaton);
             // the taint value depends on the taint value of the successors:
             // if any of the successors is tainted in any way, we make the resulting
             // automaton tainted as well
-            
+
             /*
              * this approach works under the assumption that the SCC contains
              * no "evil" functions (functions that always return a tainted value),
@@ -331,10 +331,10 @@ extends DepClient {
              * under the above assumptions and observations, it is valid to
              * say that the taint value of an SCC node solely depends on
              * the taint values of its successors, and that is exactly what we
-             * do here  
-             * 
+             * do here
+             *
              */
-            
+
             Transition.Taint taint = Transition.Taint.Untainted;
             for (DepGraphNode succ : successors) {
                 if (succ == node) {
@@ -350,18 +350,18 @@ extends DepClient {
                     break;
                 }
             }
-            
+
             auto = Automaton.makeAnyString(taint);
-            
+
         } else if (node instanceof DepGraphUninitNode) {
-            
+
             // retrieve predecessor
             Set<DepGraphNode> preds = depGraph.getPredecessors(node);
             if (preds.size() != 1) {
                 throw new RuntimeException("SNH");
             }
             DepGraphNode pre = preds.iterator().next();
-            
+
             if (pre instanceof DepGraphNormalNode) {
                 DepGraphNormalNode preNormal = (DepGraphNormalNode) pre;
                 switch (this.initiallyTainted(preNormal.getPlace())) {
@@ -375,20 +375,20 @@ extends DepClient {
                 default:
                     throw new RuntimeException("SNH");
                 }
-                
+
             } else if (pre instanceof DepGraphSccNode) {
                 // this case can really happen (e.g.: dcpportal: advertiser.php, forums.php);
-                
+
                 // take a look at the "real" predecessors (i.e., take a look "into"
                 // the SCC node): if there is exactly one predecessor, namely a
                 // DepGraphNormalNode, and if the contained place is initially untainted,
-                // there is no danger from here; else: we will have to set it to tainted 
+                // there is no danger from here; else: we will have to set it to tainted
                 Set<DepGraphNode> origPreds = origDepGraph.getPredecessors(node);
                 if (origPreds.size() == 1) {
                     DepGraphNode origPre = origPreds.iterator().next();
                     if (origPre instanceof DepGraphNormalNode) {
                         DepGraphNormalNode origPreNormal = (DepGraphNormalNode) origPre;
-                        
+
                         switch (this.initiallyTainted(origPreNormal.getPlace())) {
                         case ALWAYS:
                         case IFRG:
@@ -408,42 +408,42 @@ extends DepClient {
                     // conservative decision for this SCC
                     auto = Automaton.makeAnyString(Transition.Taint.Directly);
                 }
-                
+
             } else {
                 throw new RuntimeException("SNH: " + pre.getClass());
             }
-            
+
         } else {
             throw new RuntimeException("SNH");
         }
-        
+
         if (auto == null) {
             throw new RuntimeException("SNH");
         }
-        
+
         deco.put(node, auto);
-        
+
     }
 
 //  ********************************************************************************
-    
+
     // returns an automaton for the given operation node
     private Automaton makeAutoForOp(DepGraphOpNode node, Map<DepGraphNode,Automaton> deco,
             DepGraph depGraph) {
-        
+
         List<DepGraphNode> successors = depGraph.getSuccessors(node);
         if (successors == null) {
             successors = new LinkedList<DepGraphNode>();
         }
-        
+
         Automaton retMe = null;
-        
+
         String opName = node.getName();
-        
+
         List<Integer> multiList = new LinkedList<Integer>();
-        
+
         if (!node.isBuiltin()) {
-            
+
             // call to function or method for which no definition
             // could be found
 
@@ -458,26 +458,26 @@ extends DepClient {
             } else {
                 throw new RuntimeException("SNH");
             }
-            
+
             /*
             CfgNodeCallRet callRet = (CfgNodeCallRet) node.getCfgNode();
             String functionName = callRet.getCallPrepNode().getCallee().getName();
-            
+
             if (functionName.equals(InternalStrings.unknownFunctionName)) {
-                
+
                 retMe = Automaton.makeAnyString(Transition.Taint.Directly);
 
             } else if (functionName.equals(InternalStrings.unknownMethodName)) {
-                
+
                 retMe = Automaton.makeAnyString(Transition.Taint.Untainted);
-                
+
             } else {
                 throw new RuntimeException("SNH");
             }
             */
-            
+
         } else if (opName.equals(".")) {
-            
+
             // CONCAT
             for (DepGraphNode succ : successors) {
                 Automaton succAuto = deco.get(succ);
@@ -487,37 +487,37 @@ extends DepClient {
                     retMe = retMe.concatenate(succAuto);
                 }
             }
-            
+
         // WEAK SANITIZATION FUNCTIONS *******************************
         // ops that perform sanitization, but which are insufficient
         // in cases where the output is not enclosed by quotes in an SQL query
-            
+
         } else if (isWeakSanit(opName, multiList)) {
-            
+
             retMe = Automaton.makeAnyString(Transition.Taint.Indirectly);
-            
+
         // STRONG SANITIZATION FUNCTIONS *******************************
         // e.g., ops that return numeric values
-            
+
         } else if (isStrongSanit(opName)) {
-            
+
             retMe = Automaton.makeAnyString(Transition.Taint.Untainted);
-        
+
         // EVIL FUNCTIONS ***************************************
         // take care: if you define evil functions, you must adjust
         // the treatment of SCC nodes in decorate()
-            
+
         // MULTI-OR-DEPENDENCY **********************************
 
         } else if (useTransducers && opName.equals("str_replace")) {
-            
+
             if (successors.size() < 3) {
                 throw new RuntimeException("SNH");
             }
             Automaton searchAuto = deco.get(successors.get(0));
             Automaton replaceAuto = deco.get(successors.get(1));
             Automaton subjectAuto = deco.get(successors.get(2));
-            
+
             // search and replace have to be finite strings;
             // extract them
             boolean supported = true;
@@ -538,49 +538,49 @@ extends DepClient {
             if (supported == false) {
                 throw new RuntimeException("not supported yet");
             }
-            
+
             Automaton transduced = new MyTransductions().str_replace(searchString, replaceString, subjectAuto);
             return transduced;
 
         } else if (isMulti(opName, multiList)) {
-            
+
             Transition.Taint taint = this.multiDependencyAuto(successors, deco, multiList, false);
             retMe = Automaton.makeAnyString(taint);
-            
+
         } else if (isInverseMulti(opName, multiList)) {
 
             Transition.Taint taint = this.multiDependencyAuto(successors, deco, multiList, true);
             retMe = Automaton.makeAnyString(taint);
 
         // CATCH-ALL ********************************************
-            
+
         } else {
             System.out.println("Unmodeled builtin function (SQL): " + opName);
-            
+
             // conservative decision for operations that have not been
             // modeled yet: .*
             retMe = Automaton.makeAnyString(Transition.Taint.Directly);
         }
-        
+
         return retMe;
     }
 
 //  ********************************************************************************
-    
+
     // checks if the given node (inside the given function) is a sensitive sink;
     // adds an appropriate sink object to the given list if it is a sink
     protected void checkForSink(CfgNode cfgNodeX, TacFunction traversedFunction,
             List<Sink> sinks) {
-        
+
         if (cfgNodeX instanceof CfgNodeCallBuiltin) {
-            
+
             // builtin function sinks
 
             CfgNodeCallBuiltin cfgNode = (CfgNodeCallBuiltin) cfgNodeX;
             String functionName = cfgNode.getFunctionName();
 
             checkForSinkHelper(functionName, cfgNode, cfgNode.getParamList(), traversedFunction, sinks);
-            
+
             /*
             if (functionName.equals("mysql_query")) {
                 Sink sink = new Sink(cfgNode, traversedFunction);
@@ -591,21 +591,21 @@ extends DepClient {
                 sinks.add(sink);
             }
             */
-            
+
         } else if (cfgNodeX instanceof CfgNodeCallPrep) {
-            
+
             CfgNodeCallPrep cfgNode = (CfgNodeCallPrep) cfgNodeX;
             String functionName = cfgNode.getFunctionNamePlace().toString();
-            
-                
+
+
             // user-defined custom sinks
 
             checkForSinkHelper(functionName, cfgNode, cfgNode.getParamList(), traversedFunction, sinks);
-                
+
                 /*
             } else if (functionName.equals(InternalStrings.unknownMethodName)) {
                 // OLD STUFF
-                
+
                 // this is a method call, manually add sinks here
                 String methodName = cfgNode.getMethodName();
                 if (methodName == null) {
@@ -614,7 +614,7 @@ extends DepClient {
                     System.out.println(cfgNode.getOrigLineno());
                     return;
                 }
-                
+
                 if (methodName.equals("sql_query")) {
                     Sink sink = new Sink(cfgNode, traversedFunction);
                     // the first argument is of interest
@@ -623,7 +623,7 @@ extends DepClient {
                     // add this sink to the list of sensitive sinks
                     sinks.add(sink);
                 }
-                
+
                 if (methodName.equals("query")) {
                     Sink sink = new Sink(cfgNode, traversedFunction);
                     // the first argument is of interest
@@ -633,7 +633,7 @@ extends DepClient {
                     sinks.add(sink);
                 }
                 */
-                
+
 
                 /*
             } else if (functionName.equals("enter-name-here")) {
@@ -645,17 +645,17 @@ extends DepClient {
                 sinks.add(sink);
             }
             */
-            
+
         } else {
             // not a sink
         }
     }
-    
+
 //  ********************************************************************************
-    
-    private void checkForSinkHelper(String functionName, CfgNode cfgNode, 
+
+    private void checkForSinkHelper(String functionName, CfgNode cfgNode,
             List<TacActualParam> paramList, TacFunction traversedFunction, List<Sink> sinks) {
-        
+
         if (this.dci.getSinks().containsKey(functionName)) {
             Sink sink = new Sink(cfgNode, traversedFunction);
             for (Integer param : this.dci.getSinks().get(functionName)) {
@@ -670,15 +670,15 @@ extends DepClient {
         }
 
     }
-    
+
 //  ********************************************************************************
-    
-    private Transition.Taint multiDependencyAuto(List<DepGraphNode> succs, 
+
+    private Transition.Taint multiDependencyAuto(List<DepGraphNode> succs,
             Map<DepGraphNode,Automaton> deco, List<Integer> indices, boolean inverse) {
-        
+
         boolean indirectly = false;
         Set<Integer> indexSet = new HashSet<Integer>(indices);
-        
+
         int count = -1;
         for (DepGraphNode succ : succs) {
             count++;
@@ -693,7 +693,7 @@ extends DepClient {
                     continue;
                 }
             }
-            
+
             Automaton succAuto = deco.get(succ);
             if (succAuto == null) {
                 throw new RuntimeException("SNH");
@@ -705,7 +705,7 @@ extends DepClient {
                 indirectly = true;
             }
         }
-        
+
         if (indirectly) {
             return Transition.Taint.Indirectly;
         } else {
@@ -717,7 +717,7 @@ extends DepClient {
 //  ********************************************************************************
 
     void dumpDotAuto(Automaton auto, String graphName, String path) {
-        
+
         String filename = graphName + ".dot";
         (new File(path)).mkdir();
 
@@ -745,14 +745,14 @@ extends DepClient {
                     System.out.println("Finite END");
                 }
             }
-            
+
             System.out.println();
             System.out.println("Prefix BEGIN");
             System.out.println(auto.getCommonPrefix());
             System.out.println("Prefix END");
             System.out.println();
             //System.out.println("as regex: " + auto.toRegExp().toString());
-            
+
             System.out.println("Suffix BEGIN");
             System.out.println(auto.getCommonSuffix());
             System.out.println("Suffix END");
@@ -762,9 +762,9 @@ extends DepClient {
     }
 
 //  ********************************************************************************
-    
+
     void dumpDotAutoUnique(Automaton auto, String graphName, String path) {
-        
+
         String filename = graphName + ".dot";
         (new File(path)).mkdir();
 
@@ -781,10 +781,10 @@ extends DepClient {
 
 
 //  ********************************************************************************
-    
+
     /*
     protected boolean isStrongSanit(String opName) {
-        
+
         if (opName.equals("imagesx") ||
                 opName.equals("imagesy") ||
                 opName.equals("imagecreatefromjpeg") ||
@@ -812,7 +812,7 @@ extends DepClient {
                 // LATER: depends on the params of the enclosing function
                 opName.equals("debug_backtrace") ||
                 // "clean database" policy
-                opName.equals("mysql_fetch_array") || 
+                opName.equals("mysql_fetch_array") ||
                 opName.equals("mysql_fetch_row") ||
                 opName.equals("mysql_fetch_assoc") ||
                 opName.equals("mysql_query") ||
@@ -858,9 +858,9 @@ extends DepClient {
         }
     }
     */
-    
+
 //  ********************************************************************************
-    
+
     /*
     protected boolean isEvil(String opName) {
         return false;
@@ -868,10 +868,10 @@ extends DepClient {
     */
 
 //  ********************************************************************************
-    
+
     /*
     protected boolean isMulti(String opName, List<Integer> indices) {
-        
+
         if (
                 opName.equals("explode") ||
                 opName.equals("split")
@@ -916,9 +916,9 @@ extends DepClient {
         }
     }
     */
-    
+
 //  ********************************************************************************
-    
+
     /*
     // analogous to isMulti, but inverse: e.g., if some function is an inverse
     // multi-dependency with a returned index "2", then all its parameters are
@@ -934,9 +934,9 @@ extends DepClient {
         }
     }
     */
-    
+
 //  ********************************************************************************
-    
+
     /*
     protected boolean isWeakSanit(String opName, List<Integer> indices) {
         if (opName.equals("mysql_real_escape_string") ||
@@ -950,7 +950,4 @@ extends DepClient {
         }
     }
     */
-
-
-
 }

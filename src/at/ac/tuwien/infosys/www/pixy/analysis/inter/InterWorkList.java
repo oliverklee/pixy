@@ -7,5 +7,5 @@ public interface InterWorkList {
     void add(CfgNode cfgNode, Context context);
     InterWorkListElement removeNext();
     boolean hasNext();
-    
+
 }

@@ -6,24 +6,24 @@ import at.ac.tuwien.infosys.www.pixy.analysis.GenericRepos;
 import at.ac.tuwien.infosys.www.pixy.analysis.Recyclable;
 
 // just a set of Dep's
-public class DepSet 
+public class DepSet
 implements Recyclable {
 
     public static GenericRepos<DepSet> repos = new GenericRepos<DepSet>();
-    
+
     // no special treatment necessary for the following:
     static public final DepSet UNINIT = new DepSet(Dep.UNINIT);
     static {
         repos.recycle(UNINIT);
     }
-    
+
     // the contained dep labels
     private Set<Dep> depSet;
-    
+
 //  ********************************************************************************
 //  CONSTRUCTORS *******************************************************************
 //  ********************************************************************************
-    
+
 //  ********************************************************************************
 
     private DepSet() {
@@ -31,27 +31,27 @@ implements Recyclable {
     }
 
 //  ********************************************************************************
-    
+
     private DepSet(Dep dep) {
         this.depSet = new HashSet<Dep>();
         this.depSet.add(dep);
     }
 
 //  ********************************************************************************
-    
+
     private DepSet(Set<Dep> depSet) {
         this.depSet = depSet;
     }
 
 //  ********************************************************************************
-    
+
     public static DepSet create(Set<Dep> depSet) {
         DepSet x = new DepSet(depSet);
         return repos.recycle(x);
     }
-    
+
 //  ********************************************************************************
-    
+
     public static DepSet create(Dep dep) {
         Set<Dep> taintSet = new HashSet<Dep>();
         taintSet.add(dep);
@@ -63,7 +63,7 @@ implements Recyclable {
 //  ********************************************************************************
 
 //  ********************************************************************************
-    
+
     // compute the least upper bound (here: union) of the two taint sets
     public static DepSet lub(DepSet a, DepSet b) {
         // union!
@@ -72,9 +72,9 @@ implements Recyclable {
         resultSet.addAll(b.depSet);
         return DepSet.create(resultSet);
     }
-    
+
 //  ********************************************************************************
-    
+
     public String toString() {
         StringBuilder buf = new StringBuilder();
         for (Dep element : this.depSet) {
@@ -91,9 +91,9 @@ implements Recyclable {
     public Set<Dep> getDepSet() {
         return new HashSet<Dep>(this.depSet);
     }
-    
+
 //  ********************************************************************************
-    
+
     /*
     // returns true if this DepSet contains Dep.UNINIT
     public boolean containsUninit() {
@@ -105,11 +105,11 @@ implements Recyclable {
         return false;
     }
     */
-    
+
 //  ********************************************************************************
-    
+
     public boolean structureEquals(Object compX) {
-        
+
         if (compX == this) {
             return true;
         }
@@ -117,22 +117,20 @@ implements Recyclable {
             return false;
         }
         DepSet comp = (DepSet) compX;
-        
+
         // the enclosed sets have to be equal
         if (!this.depSet.equals(comp.depSet)) {
             return false;
         }
-        
+
         return true;
     }
-    
+
 //  ********************************************************************************
-    
+
     public int structureHashCode() {
         int hashCode = 17;
         hashCode = 37*hashCode + this.depSet.hashCode();
         return hashCode;
     }
-
 }
-

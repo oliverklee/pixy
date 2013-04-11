@@ -9,6 +9,4 @@ if ($u) {
 }
 ~_hotspot0;     // u{(a,b)} a{(a,c) (b,c) (a,d) (b,d)}
 
-
-
 ?>

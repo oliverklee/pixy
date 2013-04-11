@@ -13,4 +13,4 @@ function foo() {
     }
     return false;
 }
-
+?>

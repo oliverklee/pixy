@@ -1,10 +1,9 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.dep;
 
-
 // special node for approximating SCCs in the string graph
-public class DepGraphSccNode 
+public class DepGraphSccNode
 extends DepGraphNode {
-    
+
     DepGraphSccNode() {
     }
 
@@ -16,11 +15,11 @@ extends DepGraphNode {
     public String comparableName() {
         return dotName();
     }
-    
+
     public String dotNameShort() {
         return dotName();
     }
-    
+
     public String dotNameVerbose(boolean isModelled) {
         return dotName();
     }
@@ -28,6 +27,4 @@ extends DepGraphNode {
     public int getLine() {
         return -1;
     }
-    
-
 }

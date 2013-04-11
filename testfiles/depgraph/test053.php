@@ -5,9 +5,4 @@
 foreach ($get_main as $a) {
     echo $a;
 }
-
-
-
-
-
 ?>

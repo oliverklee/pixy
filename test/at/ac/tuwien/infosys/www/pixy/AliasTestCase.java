@@ -23,32 +23,32 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeHotspot;
 // "Run / Run as... / JUnit Test"
 
 // doesn't use builtin functions file
-public class AliasTestCase 
+public class AliasTestCase
 extends TestCase {
 
     private String path;
     private TacConverter tac;
     private AliasAnalysis aliasAnalysis;
     private AliasLatticeElement[] elements;
-    
+
 //  ********************************************************************************
 //  SETUP **************************************************************************
 //  ********************************************************************************
-    
+
     protected void setUp() {
         this.path = MyOptions.pixy_home + "/testfiles/alias/";
     }
-    
+
     // call this at the beginning of each test
     private void mySetUp(String testFile, int numHotspots) {
-        
+
         Checker checker = new Checker(this.path + testFile);
         MyOptions.option_A = true;
-        
+
         // initialize & analyze
         this.tac = checker.initialize().getTac();
         this.aliasAnalysis = checker.analyzeAliases(tac, false);
-        
+
         // extract (folded) lattice elements from hotspots
         this.elements = new AliasLatticeElement[numHotspots];
         for (int i = 0; i < numHotspots; i++) {
@@ -68,18 +68,18 @@ extends TestCase {
 
     // returns the analysis node associated with the hotspot given by its ID
     private FunctionalAnalysisNode getHotspotInfo(int hotspotId) {
-        
+
         CfgNodeHotspot hot = this.tac.getHotspot(hotspotId);
         if (hot == null) {
             Assert.fail("Tried to retrieve non-existent hotspot with ID " + hotspotId);
         }
         return (FunctionalAnalysisNode) this.aliasAnalysis.getAnalysisNode(hot);
     }
-    
+
     // use this method for structureEquals assertions (prints debug info if
     // the assertion fails)
     private void myAssertTrue(AliasLatticeElement found, AliasLatticeElement expected) {
-        
+
         if (!found.structureEquals(expected)) {
             System.out.println("found: ");
             Dumper.dump(found);
@@ -91,12 +91,12 @@ extends TestCase {
             Assert.fail();
         }
     }
-    
+
     // checks if the context table at the given hotspot ID contains exactly the
     // lattice elements contained in expectedElements
     private void checkContext(List expectedElements, int hotspotId) {
-        
-        Map<Context,LatticeElement> hotspotPhi = 
+
+        Map<Context,LatticeElement> hotspotPhi =
             new HashMap<Context,LatticeElement>(this.getHotspotInfo(hotspotId).getPhi());
 
         // for each expected element...
@@ -116,12 +116,12 @@ extends TestCase {
             }
             Assert.assertTrue(foundIt);
         }
-        
+
         // the phi map should be empty now
         Assert.assertTrue(hotspotPhi.isEmpty());
 
     }
-    
+
 //  ********************************************************************************
 //  TESTS **************************************************************************
 //  ********************************************************************************
@@ -145,7 +145,7 @@ extends TestCase {
         Variable varAU_gs = this.tac.getFuncVariable("a", "$u_gs");
         Variable varAV_gs = this.tac.getFuncVariable("a", "$v_gs");
         Variable varA1 = this.tac.getFuncVariable("a", "$a1");
-        
+
         // construct expected lattice elements and check
 
         // init
@@ -153,7 +153,7 @@ extends TestCase {
         MustAliases must;
         MayAliases may;
         AliasLatticeElement expected;
-        
+
         // 0
         must = new MustAliases();
         tempGroup = new MustAliasGroup(varX1, varAX1_gs);
@@ -172,7 +172,7 @@ extends TestCase {
         expected = new AliasLatticeElement(must, may);
         myAssertTrue(elements[0], expected);
         // Assert.assertTrue(elements[0].structureEquals(expected));
-        
+
         // 1
         must = new MustAliases();
         tempGroup = new MustAliasGroup(varX1, varAX1_gs);
@@ -190,10 +190,10 @@ extends TestCase {
         may.add(new MayAliasPair(varAX2_gs, varA1));
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[1].structureEquals(expected));
-        
+
     }
 
-    
+
     public void testDev01() {
 
         int numHotspots = 6;
@@ -201,7 +201,7 @@ extends TestCase {
 
         // all Phi maps must have exactly one context
         // no need to check this here
-        
+
         // variables to be tested
         Variable varA = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$a");
         Variable varB = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$b");
@@ -209,7 +209,7 @@ extends TestCase {
         Variable varD = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$d");
         Variable varE = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$e");
         Variable varF = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$f");
-        
+
         // construct expected lattice elements and check
 
         // init
@@ -217,19 +217,19 @@ extends TestCase {
         MustAliases must;
         MayAliases may = new MayAliases();  // doesn't change here
         AliasLatticeElement expected;
-        
+
         // 0
         must = new MustAliases();
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[0].structureEquals(expected));
-        
+
         // 1
         must = new MustAliases();
         tempGroup = new MustAliasGroup(varA, varB);
         must.add(tempGroup);
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[1].structureEquals(expected));
-        
+
         // 2
         must = new MustAliases();
         tempGroup = new MustAliasGroup(varA, varB);
@@ -237,12 +237,12 @@ extends TestCase {
         must.add(tempGroup);
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[2].structureEquals(expected));
-        
+
         // this check makes sure that structureEquals doesn't always
         // return true
         tempGroup.add(varD);
         Assert.assertFalse(elements[2].structureEquals(expected));
-        
+
         // 3
         must = new MustAliases();
         tempGroup = new MustAliasGroup(varA, varB);
@@ -251,7 +251,7 @@ extends TestCase {
         must.add(tempGroup);
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[3].structureEquals(expected));
-        
+
         // 4
         must = new MustAliases();
         tempGroup = new MustAliasGroup(varA, varB);
@@ -262,7 +262,7 @@ extends TestCase {
         must.add(tempGroup);
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[4].structureEquals(expected));
-        
+
         // 5
         must = new MustAliases();
         tempGroup = new MustAliasGroup(varA, varB);
@@ -274,9 +274,9 @@ extends TestCase {
         expected = new AliasLatticeElement(must, may);
         // Assert.assertTrue(elements[5].structureEquals(expected));
         this.myAssertTrue(elements[5], expected);
-        
+
     }
-    
+
     public void testDev02() {
 
         int numHotspots = 3;
@@ -285,7 +285,7 @@ extends TestCase {
         // variables to be tested
         Variable varA = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$a");
         Variable varB = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$b");
-        
+
         // construct expected lattice elements and check
 
         // init
@@ -293,13 +293,13 @@ extends TestCase {
         MustAliases must;
         MayAliases may;
         AliasLatticeElement expected;
-        
+
         // 0
         must = new MustAliases();
         may = new MayAliases();
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[0].structureEquals(expected));
-        
+
         // 1
         must = new MustAliases();
         tempGroup = new MustAliasGroup(varA, varB);
@@ -337,7 +337,7 @@ extends TestCase {
         MustAliases must;
         MayAliases may;
         AliasLatticeElement expected;
-        
+
         // 0
         must = new MustAliases();
         tempGroup = new MustAliasGroup(varA, varB);
@@ -475,7 +475,7 @@ extends TestCase {
         may.add(new MayAliasPair(varX, varY));
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[0].structureEquals(expected));
-        
+
         // 1
         must = new MustAliases();
         tempGroup = new MustAliasGroup(varU, varAU_gs);
@@ -555,7 +555,7 @@ extends TestCase {
         may.add(new MayAliasPair(varZ, varY));
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[0].structureEquals(expected));
-        
+
     }
 
     public void testDev07() {
@@ -582,7 +582,7 @@ extends TestCase {
         may = new MayAliases();
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[0].structureEquals(expected));
-        
+
     }
 
     public void testDev08() {
@@ -635,7 +635,7 @@ extends TestCase {
         Variable varBP1_fs = this.tac.getFuncVariable("b", "$bp1_fs");
         Variable varBP2 = this.tac.getFuncVariable("b", "$bp2");
         Variable varBP2_fs = this.tac.getFuncVariable("b", "$bp2_fs");
-        
+
         // construct expected lattice elements and check
 
         // init
@@ -666,7 +666,7 @@ extends TestCase {
         Variable varBP1_fs = this.tac.getFuncVariable("b", "$bp1_fs");
         Variable varBP2 = this.tac.getFuncVariable("b", "$bp2");
         Variable varBP2_fs = this.tac.getFuncVariable("b", "$bp2_fs");
-        
+
         // construct expected lattice elements and check
 
         // init
@@ -697,7 +697,7 @@ extends TestCase {
         Variable varBP1_fs = this.tac.getFuncVariable("b", "$bp1_fs");
         Variable varBP2 = this.tac.getFuncVariable("b", "$bp2");
         Variable varBP2_fs = this.tac.getFuncVariable("b", "$bp2_fs");
-        
+
         // construct expected lattice elements and check
 
         // init
@@ -735,7 +735,7 @@ extends TestCase {
         Variable varAX = this.tac.getFuncVariable("a", "$x");
         Variable varBP1 = this.tac.getFuncVariable("b", "$bp1");
         Variable varBP1_fs = this.tac.getFuncVariable("b", "$bp1_fs");
-        
+
         // construct expected lattice elements and check
 
         // init
@@ -779,7 +779,7 @@ extends TestCase {
         Variable varAX = this.tac.getFuncVariable("a", "$x");
         Variable varBP1 = this.tac.getFuncVariable("b", "$bp1");
         Variable varBP1_fs = this.tac.getFuncVariable("b", "$bp1_fs");
-        
+
         // construct expected lattice elements and check
 
         // init
@@ -787,7 +787,7 @@ extends TestCase {
         MustAliases must;
         MayAliases may;
         AliasLatticeElement expected;
-        
+
         // 0
         must = new MustAliases();
         tempGroup = new MustAliasGroup(varX, varAX_gs);
@@ -850,7 +850,7 @@ extends TestCase {
         // variables to be tested
         Variable varX = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$x");
         Variable varY = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$y");
-        
+
         // construct expected lattice elements and check
 
         // init
@@ -858,7 +858,7 @@ extends TestCase {
         MustAliases must;
         MayAliases may;
         AliasLatticeElement expected;
-        
+
         // 0
         must = new MustAliases();
         tempGroup = new MustAliasGroup(varX, varY);
@@ -866,11 +866,11 @@ extends TestCase {
         may = new MayAliases();
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[0].structureEquals(expected));
-        
+
     }
 
     public void testDev15() {
-        
+
         int numHotspots = 1;
         mySetUp("dev/test15.php", numHotspots);
 
@@ -879,7 +879,7 @@ extends TestCase {
         Variable varAP1_fs = this.tac.getFuncVariable("a", "$ap1_fs");
         Variable varAP2 = this.tac.getFuncVariable("a", "$ap2");
         Variable varAP2_fs = this.tac.getFuncVariable("a", "$ap2_fs");
-        
+
         // construct expected context lattice elements and check
 
         // init
@@ -888,7 +888,7 @@ extends TestCase {
         MayAliases may;
         AliasLatticeElement expected;
         List<AliasLatticeElement> expectedList = new LinkedList<AliasLatticeElement>();
-        
+
         // first context
         must = new MustAliases();
         tempGroup = new MustAliasGroup(varAP1, varAP1_fs);
@@ -910,11 +910,11 @@ extends TestCase {
         expectedList.add(expected);
 
         this.checkContext(expectedList, 0);
-        
+
     }
 
     public void testDev16() {
-        
+
         int numHotspots = 1;
         mySetUp("dev/test16.php", numHotspots);
 
@@ -923,7 +923,7 @@ extends TestCase {
         Variable varAP1_fs = this.tac.getFuncVariable("a", "$ap1_fs");
         Variable varAP2 = this.tac.getFuncVariable("a", "$ap2");
         Variable varAP2_fs = this.tac.getFuncVariable("a", "$ap2_fs");
-        
+
         // construct expected context lattice elements and check
 
         // init
@@ -932,7 +932,7 @@ extends TestCase {
         MayAliases may;
         AliasLatticeElement expected;
         List<AliasLatticeElement> expectedList = new LinkedList<AliasLatticeElement>();
-        
+
         // first context
         must = new MustAliases();
         tempGroup = new MustAliasGroup(varAP1, varAP1_fs);
@@ -944,7 +944,7 @@ extends TestCase {
         expectedList.add(expected);
 
         this.checkContext(expectedList, 0);
-        
+
     }
 
     public void testDev17() {
@@ -961,7 +961,7 @@ extends TestCase {
         Variable varAP1_fs = this.tac.getFuncVariable("a", "$ap1_fs");
         Variable varAP2 = this.tac.getFuncVariable("a", "$ap2");
         Variable varAP2_fs = this.tac.getFuncVariable("a", "$ap2_fs");
-        
+
         // construct expected lattice elements and check
 
         // init
@@ -969,7 +969,7 @@ extends TestCase {
         MustAliases must;
         MayAliases may;
         AliasLatticeElement expected;
-        
+
         // 0
         must = new MustAliases();
         tempGroup = new MustAliasGroup(varY, varAY_gs);
@@ -983,7 +983,7 @@ extends TestCase {
         may = new MayAliases();
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[0].structureEquals(expected));
-        
+
     }
 
     public void testDev18() {
@@ -998,7 +998,7 @@ extends TestCase {
         Variable varAP1_fs = this.tac.getFuncVariable("a", "$ap1_fs");
         Variable varAP2 = this.tac.getFuncVariable("a", "$ap2");
         Variable varAP2_fs = this.tac.getFuncVariable("a", "$ap2_fs");
-        
+
         // construct expected lattice elements and check
 
         // init
@@ -1006,7 +1006,7 @@ extends TestCase {
         MustAliases must;
         MayAliases may;
         AliasLatticeElement expected;
-        
+
         // 0
         must = new MustAliases();
         tempGroup = new MustAliasGroup(varX, varAP1);
@@ -1018,7 +1018,7 @@ extends TestCase {
         may = new MayAliases();
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[0].structureEquals(expected));
-        
+
     }
 
     public void testDev19() {
@@ -1030,7 +1030,7 @@ extends TestCase {
         Variable varX = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$x");
         Variable varY = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$y");
         Variable varZ = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$z");
-        
+
         // construct expected lattice elements and check
 
         // init
@@ -1038,7 +1038,7 @@ extends TestCase {
         MustAliases must;
         MayAliases may;
         AliasLatticeElement expected;
-        
+
         // 0
         must = new MustAliases();
         tempGroup = new MustAliasGroup(varX, varZ);
@@ -1066,7 +1066,7 @@ extends TestCase {
         // variables to be tested
         Variable varX = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$x");
         Variable varY = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$y");
-        
+
         // construct expected lattice elements and check
 
         // init
@@ -1074,7 +1074,7 @@ extends TestCase {
         MustAliases must;
         MayAliases may;
         AliasLatticeElement expected;
-        
+
         // 0
         must = new MustAliases();
         tempGroup = new MustAliasGroup(varX, varY);
@@ -1092,7 +1092,7 @@ extends TestCase {
 
         // variables to be tested
         // <none>
-        
+
         // construct expected lattice elements and check
 
         // init
@@ -1100,7 +1100,7 @@ extends TestCase {
         MustAliases must;
         MayAliases may;
         AliasLatticeElement expected;
-        
+
         // 0
         must = new MustAliases();
         may = new MayAliases();
@@ -1128,7 +1128,7 @@ extends TestCase {
 
         // variables to be tested
         // <none>
-        
+
         // construct expected lattice elements and check
 
         // init
@@ -1136,7 +1136,7 @@ extends TestCase {
         MustAliases must;
         MayAliases may;
         AliasLatticeElement expected;
-        
+
         // 0
         must = new MustAliases();
         may = new MayAliases();
@@ -1165,7 +1165,7 @@ extends TestCase {
         // variables to be tested
         Variable varX = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$x");
         Variable varY = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$y");
-        
+
         // construct expected lattice elements and check
 
         // init
@@ -1173,7 +1173,7 @@ extends TestCase {
         MustAliases must;
         MayAliases may;
         AliasLatticeElement expected;
-        
+
         // 0
         must = new MustAliases();
         tempGroup = new MustAliasGroup(varX, varY);
@@ -1192,7 +1192,7 @@ extends TestCase {
         // variables to be tested
         Variable varX1 = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$x1");
         Variable varX2 = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$x2");
-        
+
         // construct expected lattice elements and check
 
         // init
@@ -1200,7 +1200,7 @@ extends TestCase {
         MustAliases must;
         MayAliases may;
         AliasLatticeElement expected;
-        
+
         // 0
         must = new MustAliases();
         tempGroup = new MustAliasGroup(varX1, varX2);
@@ -1213,7 +1213,7 @@ extends TestCase {
 
 
 //  test files from the tutorial ***************************************************
-    
+
     public void testTut01() {
 
         int numHotspots = 1;
@@ -1223,7 +1223,7 @@ extends TestCase {
         Variable varA = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$a");
         Variable varB = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$b");
         Variable varC = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$c");
-        
+
         // construct expected lattice elements and check
 
         // init
@@ -1231,7 +1231,7 @@ extends TestCase {
         MustAliases must;
         MayAliases may;
         AliasLatticeElement expected;
-        
+
         // 0
         must = new MustAliases();
         may = new MayAliases();
@@ -1239,7 +1239,7 @@ extends TestCase {
         may.add(new MayAliasPair(varA, varC));
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[0].structureEquals(expected));
-        
+
     }
 
     public void testTut02() {
@@ -1251,7 +1251,7 @@ extends TestCase {
         Variable varA = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$a");
         Variable varB = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$b");
         Variable varC = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$c");
-        
+
         // construct expected lattice elements and check
 
         // init
@@ -1259,7 +1259,7 @@ extends TestCase {
         MustAliases must;
         MayAliases may;
         AliasLatticeElement expected;
-        
+
         // 0
         must = new MustAliases();
         tempGroup = new MustAliasGroup(varA, varB);
@@ -1269,7 +1269,7 @@ extends TestCase {
         may.add(new MayAliasPair(varA, varC));
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[0].structureEquals(expected));
-        
+
     }
 
     public void testTut03() {
@@ -1284,7 +1284,7 @@ extends TestCase {
         Variable varD = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$d");
         Variable varE = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$e");
         Variable varF = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$f");
-        
+
         // construct expected lattice elements and check
 
         // init
@@ -1292,7 +1292,7 @@ extends TestCase {
         MustAliases must;
         MayAliases may;
         AliasLatticeElement expected;
-        
+
         // 0
         must = new MustAliases();
         tempGroup = new MustAliasGroup(varB, varC);
@@ -1310,9 +1310,9 @@ extends TestCase {
         may.add(new MayAliasPair(varC, varE));
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[0].structureEquals(expected));
-        
+
     }
-    
+
     public void testTut04() {
 
         int numHotspots = 4;
@@ -1328,7 +1328,7 @@ extends TestCase {
         Variable varBX2_gs = this.tac.getFuncVariable("b", "$x2_gs");
         Variable varA1 = this.tac.getFuncVariable("a", "$a1");
         Variable varA2 = this.tac.getFuncVariable("a", "$a2");
-        
+
         // construct expected lattice elements and check
 
         // init
@@ -1336,7 +1336,7 @@ extends TestCase {
         MustAliases must;
         MayAliases may;
         AliasLatticeElement expected;
-        
+
         // 0
         must = new MustAliases();
         tempGroup = new MustAliasGroup(varX1, varX2);
@@ -1345,7 +1345,7 @@ extends TestCase {
         may = new MayAliases();
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[0].structureEquals(expected));
- 
+
         // 1
         must = new MustAliases();
         tempGroup = new MustAliasGroup(varA1, varA2);
@@ -1383,7 +1383,7 @@ extends TestCase {
         Assert.assertTrue(elements[3].structureEquals(expected));
 
     }
-    
+
     public void testTut05() {
 
         int numHotspots = 1;
@@ -1404,7 +1404,7 @@ extends TestCase {
         MustAliases must;
         MayAliases may;
         AliasLatticeElement expected;
-        
+
         // 0
         must = new MustAliases();
         tempGroup = new MustAliasGroup(varBP1, varBP2);
@@ -1416,7 +1416,7 @@ extends TestCase {
         may = new MayAliases();
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[0].structureEquals(expected));
-        
+
     }
 
     public void testTut06() {
@@ -1439,7 +1439,7 @@ extends TestCase {
         MustAliases must;
         MayAliases may;
         AliasLatticeElement expected;
-        
+
         // 0
         must = new MustAliases();
         tempGroup = new MustAliasGroup(varBP1, varBP2);
@@ -1451,7 +1451,7 @@ extends TestCase {
         may = new MayAliases();
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[0].structureEquals(expected));
-        
+
     }
 
     public void testTut07() {
@@ -1472,7 +1472,7 @@ extends TestCase {
         MustAliases must;
         MayAliases may;
         AliasLatticeElement expected;
-        
+
         // 0
         must = new MustAliases();
         tempGroup = new MustAliasGroup(varBP1, varBP1_fs);
@@ -1486,7 +1486,7 @@ extends TestCase {
         may.add(new MayAliasPair(varBP1_fs, varBP2_fs));
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[0].structureEquals(expected));
-        
+
     }
 
     public void testTut08() {
@@ -1509,7 +1509,7 @@ extends TestCase {
         MustAliases must;
         MayAliases may;
         AliasLatticeElement expected;
-        
+
         // 0
         must = new MustAliases();
         tempGroup = new MustAliasGroup(varA1, varX1);
@@ -1549,7 +1549,7 @@ extends TestCase {
         MustAliases must;
         MayAliases may;
         AliasLatticeElement expected;
-        
+
         // 0
         must = new MustAliases();
         tempGroup = new MustAliasGroup(varX1, varBX1_gs);
@@ -1582,7 +1582,7 @@ extends TestCase {
         MustAliases must;
         MayAliases may;
         AliasLatticeElement expected;
-        
+
         // 0
         must = new MustAliases();
         tempGroup = new MustAliasGroup(varX1, varAX1_gs);
@@ -1633,7 +1633,7 @@ extends TestCase {
         MustAliases must;
         MayAliases may;
         AliasLatticeElement expected;
-        
+
         // 0
         must = new MustAliases();
         tempGroup = new MustAliasGroup(varX1, varAX1_gs);
@@ -1688,7 +1688,7 @@ extends TestCase {
         MustAliases must;
         MayAliases may;
         AliasLatticeElement expected;
-        
+
         // 0
         must = new MustAliases();
         tempGroup = new MustAliasGroup(varX1, varX2);
@@ -1730,7 +1730,7 @@ extends TestCase {
         MustAliases must;
         MayAliases may;
         AliasLatticeElement expected;
-        
+
         // 0
         must = new MustAliases();
         may = new MayAliases();
@@ -1763,7 +1763,7 @@ extends TestCase {
         Assert.assertTrue(elements[2].structureEquals(expected));
 
     }
-    
+
     public void testTut14() {
 
         int numHotspots = 2;
@@ -1782,7 +1782,7 @@ extends TestCase {
         MustAliases must;
         MayAliases may;
         AliasLatticeElement expected;
-        
+
         // 0
         must = new MustAliases();
         tempGroup = new MustAliasGroup(varX1, varX2);
@@ -1824,7 +1824,7 @@ extends TestCase {
         MustAliases must;
         MayAliases may;
         AliasLatticeElement expected;
-        
+
         // 0
         must = new MustAliases();
         may = new MayAliases();
@@ -1865,7 +1865,7 @@ extends TestCase {
         MustAliases must;
         MayAliases may;
         AliasLatticeElement expected;
-        
+
         // 0
         must = new MustAliases();
         may = new MayAliases();
@@ -1875,7 +1875,7 @@ extends TestCase {
         Assert.assertTrue(elements[0].structureEquals(expected));
 
     }
-    
+
     public void testTut17() {
 
         int numHotspots = 1;
@@ -1894,7 +1894,7 @@ extends TestCase {
         MustAliases must;
         MayAliases may;
         AliasLatticeElement expected;
-        
+
         // 0
         must = new MustAliases();
         tempGroup = new MustAliasGroup(varA, varB);
@@ -1929,7 +1929,7 @@ extends TestCase {
         MustAliases must;
         MayAliases may;
         AliasLatticeElement expected;
-        
+
         // 0
         must = new MustAliases();
         tempGroup = new MustAliasGroup(varX1, varX2);
@@ -1989,7 +1989,7 @@ extends TestCase {
         MustAliases must;
         MayAliases may;
         AliasLatticeElement expected;
-        
+
         // 0
         must = new MustAliases();
         may = new MayAliases();
@@ -2027,7 +2027,7 @@ extends TestCase {
         Assert.assertTrue(elements[2].structureEquals(expected));
 
     }
-    
+
     public void testTut20() {
 
         int numHotspots = 2;
@@ -2048,7 +2048,7 @@ extends TestCase {
         MustAliases must;
         MayAliases may;
         AliasLatticeElement expected;
-        
+
         // 0
         must = new MustAliases();
         may = new MayAliases();
@@ -2072,14 +2072,5 @@ extends TestCase {
         may.add(new MayAliasPair(varX2, varA3));
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[1].structureEquals(expected));
-
     }
-    
-
 }
-
-
-
-
-
-

@@ -1,8 +1,8 @@
 <? //
 
 // evil example:
-// with call-string-analysis (k=1), the dataflow fact 
-// "$x depends on mysql_query" 
+// with call-string-analysis (k=1), the dataflow fact
+// "$x depends on mysql_query"
 // flows back to the FIRST call of foo(),
 // resulting in a CYCLE in the StringGraph;
 // the effect is that not even an obvious prefix such as the "SELECT"

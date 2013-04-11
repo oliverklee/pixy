@@ -38,38 +38,38 @@ public class MyOptions {
 
     // count paths in depgraphs?
     public static boolean countPaths = false;
-    
+
     // the scanned entry file (canonical)
     public static File entryFile;
-    
+
     // pixy's home directory (from environment)
     public static File pixy_home;
-    
+
     // home directory of FSA Utils; can be null
     public static String fsa_home;
 
     // name of the config directory
-    public static String configDir = "config"; 
-    
+    public static String configDir = "config";
+
     // List of Files specifying the include_path (given in php.ini, can be
     // checked with the PHP function "get_include_path()")
     public static List<File> includePaths;
-    
+
     // path of the php binary (for simulating builtin functions);
     // can be null
     public static String phpBin;
-    
+
     // directory where to dump graphs
     public static String graphPath;
-    
+
     // indices of the $_SERVER ($HTTP_SERVER_VARS) array that cannot
     // be controlled by an attacker (and hence, are harmless)
     public static Set<String> harmlessServerIndices;
-    
-    // returns true if the given varname is $_SERVER[...] 
+
+    // returns true if the given varname is $_SERVER[...]
     // or $HTTP_SERVER_VARS[...], with ... == one of the above indices
     public static boolean isHarmlessServerVar(String varName) {
-        
+
         // extract index name
         String index;
         if (varName.startsWith("$_SERVER[") && varName.endsWith("]")) {
@@ -79,7 +79,7 @@ public class MyOptions {
         } else {
             return false;
         }
-        
+
         // compare index name
         if (harmlessServerIndices.contains(index)) {
             return true;
@@ -87,35 +87,35 @@ public class MyOptions {
             return false;
         }
     }
-    
+
     public static void addHarmlessServerIndex(String indexName) {
         harmlessServerIndices.add(indexName);
     }
-    
+
     // builtin function models ****************************************
-    
+
     public static void readModelFiles() {
         for (DepClientInfo dci : analyses) {
             FunctionModels fm = readModelFile(dci);
             dci.setFunctionModels(fm);
         }
     }
-    
+
     // read models for builtin php functions
     private static FunctionModels readModelFile(DepClientInfo dci) {
-        
+
         Set<String> f_evil = new HashSet<String>();
         Map<String,Set<Integer>> f_multi = new HashMap<String,Set<Integer>>();
         Map<String,Set<Integer>> f_invMulti = new HashMap<String,Set<Integer>>();
         Set<String> f_strongSanit = new HashSet<String>();
         Map<String,Set<Integer>> f_weakSanit = new HashMap<String,Set<Integer>>();
-        
+
         String strongSanitMarker = "0";
         String weakSanitMarker = "1";
         String multiMarker = "2";
         String invMultiMarker = "3";
         String evilMarker = "4";
-        
+
         // read file into properties object
         String modelFileName = MyOptions.pixy_home + "/" + MyOptions.configDir + "/model_" + dci.getName() + ".txt";
         File modelFile = new File(modelFileName);
@@ -130,20 +130,20 @@ public class MyOptions {
             Utils.bail("Error: I/O exception while reading configuration file:" + modelFileName,
                     e.getMessage());
         }
-        
+
         Class tacOps;
         try {
             tacOps = Class.forName("at.ac.tuwien.infosys.www.pixy.conversion.TacOperators");
         } catch (ClassNotFoundException e1) {
             throw new RuntimeException("SNH");
         }
-        
+
         // convert properties...
         for (Map.Entry<Object, Object> propsEntry : sinkProps.entrySet()) {
-            
+
             String funcName = ((String) propsEntry.getKey()).trim();
             String funcList = (String) propsEntry.getValue();
-            
+
             if (!BuiltinFunctions.isBuiltinFunction(funcName)) {
                 if (funcName.startsWith("op(") && funcName.endsWith(")")) {
                     funcName = funcName.substring(3, funcName.length() - 1);
@@ -166,15 +166,15 @@ public class MyOptions {
             if (!funcTokenizer.hasMoreTokens()) {
                 Utils.bail("Error: Missing type for builtin function model: " + funcName);
             }
-            
+
             String type = funcTokenizer.nextToken().trim();
             if (type.equals(strongSanitMarker)) {
-                
+
                 // strong sanitization
                 f_strongSanit.add(funcName);
-                
+
             } else if (type.equals(weakSanitMarker)) {
-                
+
                 // weak sanitization
                 Set<Integer> params = new HashSet<Integer>();
                 while (funcTokenizer.hasMoreTokens()) {
@@ -186,9 +186,9 @@ public class MyOptions {
                     }
                 }
                 f_weakSanit.put(funcName, params);
-                
+
             } else if (type.equals(multiMarker)) {
-                
+
                 // multi-dependency
                 Set<Integer> params = new HashSet<Integer>();
                 while (funcTokenizer.hasMoreTokens()) {
@@ -200,9 +200,9 @@ public class MyOptions {
                     }
                 }
                 f_multi.put(funcName, params);
-                
+
             } else if (type.equals(invMultiMarker)) {
-                
+
                 // inverse multi-dependency
                 Set<Integer> params = new HashSet<Integer>();
                 while (funcTokenizer.hasMoreTokens()) {
@@ -214,25 +214,25 @@ public class MyOptions {
                     }
                 }
                 f_invMulti.put(funcName, params);
-                
+
             } else if (type.equals(evilMarker)) {
                 // evil functions
                 f_evil.add(funcName);
             } else {
                 Utils.bail("Error: Unknown type for builtin function model: " + funcName);
             }
-            
+
         }
-        
+
         // add Pixy's suppression function
         f_strongSanit.add(InternalStrings.suppression);
-       
+
         return new FunctionModels(f_evil, f_multi, f_invMulti, f_strongSanit, f_weakSanit);
     }
 
-    
+
     // custom, user-defined sinks *************************************
-    
+
     public static boolean isSink(String functionName) {
         for (DepClientInfo dci : analyses) {
             if (dci.getSinks().containsKey(functionName)) {
@@ -241,7 +241,7 @@ public class MyOptions {
         }
         return false;
     }
-    
+
     // adds a sink (given by function name and sensitive indices) to the given sink map;
     // if indices == null, it means that ALL indices are sensitive (necessary for functions
     // with an arbitrary number of sensitive indices, e.g.: printf)
@@ -257,12 +257,12 @@ public class MyOptions {
         }
         sinkMap.put(name, indexSet);
     }
-    
+
     // reads the given sink file, fills the given map with the contained info,
     // and returns the contained "sinkType" property (can also be null)
     private static String readSinkFile(String sinkFileName,
             Map<String,Set<Integer>> sinks) {
-        
+
         // read file into properties object
         File sinkFile = new File(sinkFileName);
         Properties sinkProps = new Properties();
@@ -277,13 +277,13 @@ public class MyOptions {
             System.out.println("Warning: I/O exception while reading configuration file:" + sinkFileName);
             System.out.println(e.getMessage());
         }
-        
+
         // convert properties into the above map
         String sinkType = null;
         for (Map.Entry<Object, Object> propsEntry : sinkProps.entrySet()) {
             String functionName = (String) propsEntry.getKey();
             String params = (String) propsEntry.getValue();
-            
+
             // the entry with this name is special: it denotes the analysis type
             // for which the sinks shall be adjusted
             if (functionName.equals("sinkType")) {
@@ -308,7 +308,7 @@ public class MyOptions {
                 // e.g., for printf (XSS): all params are sensitive
                 paramSet = null;
             }
-            
+
             sinks.put(functionName, paramSet);
         }
 
@@ -325,16 +325,16 @@ public class MyOptions {
         }
     }
 
-    
-    
+
+
     // read user-defined custom sink files
     public static void readCustomSinkFiles() {
-        
+
         if (MyOptions.optionS != null) {
-            
+
             // "sink file name" tokenizer
             StringTokenizer sfnTokenizer = new StringTokenizer(MyOptions.optionS, ":");
-            
+
             // for each given sink file...
             while (sfnTokenizer.hasMoreTokens()) {
                 String sinkFileName = sfnTokenizer.nextToken();
@@ -352,7 +352,7 @@ public class MyOptions {
                         System.out.println("Invalid sinkType in file " + sinkFileName);
                         System.out.println("- " + sinkType);
                     } else {
-                        dci.addSinks(sinks); 
+                        dci.addSinks(sinks);
                     }
                 }
             }
@@ -367,24 +367,24 @@ public class MyOptions {
         new DepClientInfo("xsssanit", "at.ac.tuwien.infosys.www.pixy.sanit.XSSSanitAnalysis"),
         new DepClientInfo("file", "at.ac.tuwien.infosys.www.pixy.FileAnalysis")
     };
-    
+
     // "name to depclientinfo" mapping
     private static Map<String,DepClientInfo> name2Analysis;
-    
+
     // "class name to analysis name" mapping
     private static Map<String,String> className2Name;
-    
+
     // flags requested analysis
     public static boolean setAnalyses(String taintStrings) {
-        
+
         if (taintStrings == null) {
             // no analyses are requested, which is also OK
             return true;
         }
-        
+
         StringTokenizer st = new StringTokenizer(taintStrings, ":");
         while (st.hasMoreTokens()) {
-            
+
             String taintString = st.nextToken();
 
             DepClientInfo dci = name2Analysis.get(taintString);
@@ -408,14 +408,14 @@ public class MyOptions {
         return true;
     }
 
-    
+
 //  ********************************************************************************
-    
+
     // STATIC INITIALIZATIONS
     static {
-        
+
         // pixy's home directory
-        
+
         String home = System.getProperty("pixy.home");
         if (home == null) {
             Utils.bail("System property 'pixy.home' not set");
@@ -425,10 +425,10 @@ public class MyOptions {
         } catch (IOException e) {
             Utils.bail("can't set pixy_home");
         }
-        
+
         // harmless server indices
         harmlessServerIndices = new HashSet<String>();
-        
+
         // this is now done in Checker.readConfig()
         /*
         harmlessServerIndices.add("HTTP_ACCEPT_LANGUAGE");
@@ -449,14 +449,14 @@ public class MyOptions {
         */
 
         // name2depclient mapping
-        
+
         name2Analysis = new HashMap<String,DepClientInfo>();
         className2Name = new HashMap<String,String>();
         for (DepClientInfo dci : analyses) {
             name2Analysis.put(dci.getName(), dci);
             className2Name.put(dci.getClassName(), dci.getName());
         }
-        
+
     }
 
     public static DepClientInfo getDepClientInfo(String analysisClassName) {
@@ -469,9 +469,9 @@ public class MyOptions {
             throw new RuntimeException("Illegal analysis name: " + analysisName);
         }
         return dci;
-        
+
     }
-    
+
     public static DepClientInfo[] getDepClients() {
         return analyses;
     }
@@ -488,7 +488,4 @@ public class MyOptions {
         }
         return b.toString();
     }
-
-
-
 }

@@ -30,7 +30,7 @@ $z1[$j][1] = 'c';
                 // z1[2][2]:d
                 // z1[1][$i]:T  (non-literal array elements are always T)
 
-// right: normal variable 
+// right: normal variable
 // (no need to test this again: too simple)
 
 // right: foreign array element (and not an array)
@@ -39,7 +39,7 @@ $z1[$j][1] = 'c';
 // right: myself
 // this one's more interesting:
 $z1[3][1] = 'd';
-$x1 = $z1[3][$i]; 
+$x1 = $z1[3][$i];
 
 ~_hotspot1;             // x1:T
 
@@ -47,12 +47,7 @@ $x1 = $z1[3][$i];
 // 2) left is an array ----------------------------------------------
 
 // and so on (hard to make anything wrong here: just replace
-// strongOverlap by weakOverlap and use MI variables; 
+// strongOverlap by weakOverlap and use MI variables;
 // test05.php checks the MI algorithm)
 
 ?>
-
-
-
-
-

@@ -30,39 +30,39 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallBuiltin;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallPrep;
 
-// extracts strings used in file access functions 
-public class FileAnalysis 
+// extracts strings used in file access functions
+public class FileAnalysis
 extends DepClient {
 
 //  ********************************************************************************
-    
+
     public FileAnalysis(DepAnalysis depAnalysis) {
         super(depAnalysis);
     }
-    
+
 //  ********************************************************************************
-    
+
     public List<Integer> detectVulns() {
-        
+
         System.out.println();
         System.out.println("*****************");
         System.out.println("File Analysis BEGIN");
         System.out.println("*****************");
         System.out.println();
-        
+
         List<Integer> retMe = new LinkedList<Integer>();
-        
+
         // collect sinks
         List<Sink> sinks = this.collectSinks();
 
         System.out.println("Creating DepGraphs for " + sinks.size() + " sinks...");
         System.out.println();
         Collection<DepGraph> depGraphs = depAnalysis.getDepGraphs(sinks);
-        
+
         System.out.println("File Capab Analysis Output");
         System.out.println("----------------------------");
         System.out.println();
-        
+
         int graphcount = 0;
         for (DepGraph depGraph : depGraphs) {
             graphcount++;
@@ -72,19 +72,19 @@ extends DepClient {
             CfgNode cfgNode = root.getCfgNode();
 
             depGraph = null;    // don't touch this one
-            
+
             Automaton auto = this.toAutomaton(stringGraph);
-            
+
             // if we wanted to, we could also report taint values here
             /*
             if (auto.hasDirectlyTaintedTransitions()) {
                 System.out.println("directly tainted!");
                 tainted = true;
-            } else { 
+            } else {
                 System.out.println("not tainted");
-            } 
+            }
             */
-            
+
             String fileName = cfgNode.getFileName();
             if (MyOptions.optionB) {
                 fileName = Utils.basename(fileName);
@@ -95,7 +95,7 @@ extends DepClient {
 
             this.dumpDotAuto(auto, "file" + graphcount, MyOptions.graphPath);
         }
-        
+
         // initial sink count and final graph count may differ (e.g., if some sinks
         // are not reachable)
         if (MyOptions.optionV)
@@ -106,7 +106,7 @@ extends DepClient {
         System.out.println("File Analysis END");
         System.out.println("*****************");
         System.out.println();
-        
+
         return retMe;
 
     }
@@ -115,11 +115,11 @@ extends DepClient {
         throw new RuntimeException("not yet");
     }
 
-    
+
 //  ********************************************************************************
-    
+
     private void dumpDotAuto(Automaton auto, String graphName, String path) {
-        
+
         String filename = graphName + ".dot";
         (new File(path)).mkdir();
 
@@ -147,13 +147,13 @@ extends DepClient {
                     System.out.println();
                 }
             }
-            
+
             System.out.println("Prefix BEGIN");
             System.out.println(auto.getCommonPrefix());
             System.out.println("Prefix END");
             System.out.println();
             //System.out.println("as regex: " + auto.toRegExp().toString());
-            
+
             System.out.println("Suffix BEGIN");
             System.out.println(auto.getCommonSuffix());
             System.out.println("Suffix END");
@@ -161,9 +161,9 @@ extends DepClient {
         }
 
     }
-    
+
 //  ********************************************************************************
-    
+
     // returns the automaton representation of the given dependency graph;
     // is done by decorating the nodes of the graph with automata bottom-up,
     // and returning the automaton that eventually decorates the root;
@@ -176,18 +176,18 @@ extends DepClient {
         this.decorate(root, deco, visited, depGraph);
         Automaton rootDeco = deco.get(root).clone();
         // BEWARE: minimization can lead to an automaton that is less human-readable
-        //rootDeco.minimize(); 
+        //rootDeco.minimize();
         return rootDeco;
     }
 
 //  ********************************************************************************
-    
+
     // decorates the given node (and all its successors) with an automaton
     private void decorate(DepGraphNode node, Map<DepGraphNode,Automaton> deco,
             Set<DepGraphNode> visited, DepGraph depGraph) {
-        
+
         visited.add(node);
-        
+
         // if this node has successors, decorate them first (if not done yet)
         List<DepGraphNode> successors = depGraph.getSuccessors(node);
         if (successors != null && !successors.isEmpty()) {
@@ -197,9 +197,9 @@ extends DepClient {
                 }
             }
         }
-        
+
         // now that all successors are decorated, we can decorate this node
-        
+
         Automaton auto = null;
         if (node instanceof DepGraphNormalNode) {
             DepGraphNormalNode normalNode = (DepGraphNormalNode) node;
@@ -227,27 +227,27 @@ extends DepClient {
                     }
                 }
             }
-            
+
         } else if (node instanceof DepGraphOpNode) {
             auto = this.makeAutoForOp((DepGraphOpNode) node, deco, depGraph);
-            
+
         } else if (node instanceof DepGraphSccNode) {
             // conservative decision for SCCs
             auto = Automaton.makeAnyString(Transition.Taint.Directly);
-            
+
         } else if (node instanceof DepGraphUninitNode) {
-            
+
             // retrieve predecessor
             Set<DepGraphNode> preds = depGraph.getPredecessors(node);
             if (preds.size() != 1) {
                 throw new RuntimeException("SNH");
             }
             DepGraphNode pre = preds.iterator().next();
-            
-            
+
+
             if (pre instanceof DepGraphNormalNode) {
                 DepGraphNormalNode preNormal = (DepGraphNormalNode) pre;
-                
+
                 switch (this.initiallyTainted(preNormal.getPlace())) {
                 case ALWAYS:
                 case IFRG:
@@ -268,35 +268,35 @@ extends DepClient {
             } else {
                 throw new RuntimeException("SNH");
             }
-            
+
         } else {
             throw new RuntimeException("SNH");
         }
-        
+
         if (auto == null) {
             throw new RuntimeException("SNH");
         }
-        
+
         deco.put(node, auto);
-        
+
     }
 
 //  ********************************************************************************
-    
+
     // returns an automaton for the given operation node
     private Automaton makeAutoForOp(DepGraphOpNode node, Map<DepGraphNode,Automaton> deco,
             DepGraph depGraph) {
-        
+
         List<DepGraphNode> successors = depGraph.getSuccessors(node);
         if (successors == null) {
             successors = new LinkedList<DepGraphNode>();
         }
-        
+
         Automaton retMe = null;
-        
+
         String opName = node.getName();
         if (opName.equals(".")) {
-            
+
             // CONCAT
             for (DepGraphNode succ : successors) {
                 Automaton succAuto = deco.get(succ);
@@ -306,40 +306,40 @@ extends DepClient {
                     retMe = retMe.concatenate(succAuto);
                 }
             }
-            
+
         } else {
             // conservative decision for operations that have not been
             // modeled yet: .*
             retMe = Automaton.makeAnyString(Transition.Taint.Directly);
         }
-        
+
         return retMe;
     }
 
 //  ********************************************************************************
-    
+
     // checks if the given node (inside the given function) is a sensitive sink;
     // adds an appropriate sink object to the given list if it is a sink
     protected void checkForSink(CfgNode cfgNodeX, TacFunction traversedFunction,
             List<Sink> sinks) {
-        
+
         if (cfgNodeX instanceof CfgNodeCallBuiltin) {
-        
+
             // builtin function sinks
-            
+
             CfgNodeCallBuiltin cfgNode = (CfgNodeCallBuiltin) cfgNodeX;
             String functionName = cfgNode.getFunctionName();
 
             checkForSinkHelper(functionName, cfgNode, cfgNode.getParamList(), traversedFunction, sinks);
-            
+
             /* these functions were retrieved from the PHP Manual;
              * note: those file functions that work with an existing file
              * handle are not of interest here; we are only interested in
              * those that take a filename string
              */
-            
+
             /*
-             
+
             if (functionName.equals("fopen")) {
                 Sink sink = new Sink(cfgNode, traversedFunction);
                 // the first argument is of interest
@@ -399,7 +399,7 @@ extends DepClient {
                 // add this sink to the list of sensitive sinks
                 sinks.add(sink);
                 */
-            
+
                 /* what about this one?
             } else if (functionName.equals("move_uploaded_file")) {
                 Sink sink = new Sink(cfgNode, traversedFunction);
@@ -413,24 +413,24 @@ extends DepClient {
             */
 
         } else if (cfgNodeX instanceof CfgNodeCallPrep) {
-            
+
             // user-defined custom sinks
-            
+
             CfgNodeCallPrep cfgNode = (CfgNodeCallPrep) cfgNodeX;
             String functionName = cfgNode.getFunctionNamePlace().toString();
-            
+
             checkForSinkHelper(functionName, cfgNode, cfgNode.getParamList(), traversedFunction, sinks);
 
         } else {
             // not a sink
         }
     }
-    
+
 //  ********************************************************************************
-    
-    private void checkForSinkHelper(String functionName, CfgNode cfgNode, 
+
+    private void checkForSinkHelper(String functionName, CfgNode cfgNode,
             List<TacActualParam> paramList, TacFunction traversedFunction, List<Sink> sinks) {
-        
+
         if (this.dci.getSinks().containsKey(functionName)) {
             Sink sink = new Sink(cfgNode, traversedFunction);
             for (Integer param : this.dci.getSinks().get(functionName)) {
@@ -467,6 +467,4 @@ extends DepClient {
         return false;
     }
     */
-
-    
 }

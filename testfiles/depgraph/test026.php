@@ -11,7 +11,4 @@ function foo($x) {
     $x = $x . 'hi';
     return $x;
 }
-
-
-
 ?>

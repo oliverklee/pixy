@@ -36,16 +36,16 @@ public class TacOperators {
 
     private static String[] opToName; /*= {
         "+", "<", "==", "!=", "-", "*", "/", "%", "<<", ">>", "===",    // [0-10]
-        "!==", "<=", ">", ">=", "!", "~", ".", "|", "&", "^",           // [11-20] 
+        "!==", "<=", ">", ">=", "!", "~", ".", "|", "&", "^",           // [11-20]
         "(int)", "(double)", "(string)", "(array)", "(object)", "(bool)", "(unset)", "&&"   //[21-]
     };*/
-    
+
     private static Map<String,Integer> nameToOp;
-    
+
     static {
         nameToOp = new HashMap<String,Integer>();
         opToName = new String[29];
-        
+
         add("+", PLUS);
         add("<", IS_SMALLER);
         add("==", IS_EQUAL);
@@ -57,7 +57,7 @@ public class TacOperators {
         add("<<", SL);
         add(">>", SR);
         add("===", IS_IDENTICAL);
-        
+
         add("!==", IS_NOT_IDENTICAL);
         add("<=", IS_SMALLER_OR_EQUAL);
         add(">", IS_GREATER);
@@ -68,7 +68,7 @@ public class TacOperators {
         add("|", BITWISE_OR);
         add("&", BITWISE_AND);
         add("^", BITWISE_XOR);
-        
+
         add("(int)", INT_CAST);
         add("(double)", DOUBLE_CAST);
         add("(string)", STRING_CAST);
@@ -78,21 +78,20 @@ public class TacOperators {
         add("(unset)", UNSET_CAST);
         add("&&", BOOLEAN_AND);
     }
-    
+
     private static void add(String name, int num) {
         opToName[num] = name;
         nameToOp.put(name, num);
     }
-    
+
     private TacOperators() {
     }
 
     public static String opToName(int op) {
         return opToName[op];
     }
-    
+
     public static boolean isOp(String s) {
         return nameToOp.containsKey(s);
     }
-
 }

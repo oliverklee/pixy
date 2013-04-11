@@ -7,31 +7,31 @@ import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 
 // an AnalysisNode holds analysis-specific information for a certain CFGNode
-public abstract class InterAnalysisNode 
+public abstract class InterAnalysisNode
 extends AnalysisNode {
 
-    // context map for interprocedural analysis 
+    // context map for interprocedural analysis
     // (Context -> input LatticeElement at current CFG node)
     Map<Context,LatticeElement> phi;
 
     // value resulting from lazy table folding; must only be modified
     // via setFoldedValue, since we want it to be recycled for some analyses!
     LatticeElement foldedValue;
-    
-// *********************************************************************************    
+
+// *********************************************************************************
 // CONSTRUCTORS ********************************************************************
-// ********************************************************************************* 
-    
+// *********************************************************************************
+
     protected InterAnalysisNode(TransferFunction tf) {
         super(tf);
         this.phi = new HashMap<Context,LatticeElement>();
         this.foldedValue = null;
     }
-    
+
 // *********************************************************************************
-// GET *****************************************************************************    
+// GET *****************************************************************************
 // *********************************************************************************
-    
+
     public Map<Context,LatticeElement> getPhi() {
         return this.phi;
     }
@@ -39,26 +39,26 @@ extends AnalysisNode {
     public Set<Context> getContexts() {
         return this.phi.keySet();
     }
-    
-    // returns the lattice element currently stored in the PHI map under the 
+
+    // returns the lattice element currently stored in the PHI map under the
     // given context; can be null
     public LatticeElement getPhiValue(Context context) {
         return ((LatticeElement) this.phi.get(context));
     }
-    
+
     // like getUnrecycledFoldedValue, but does not perform caching
     public LatticeElement computeFoldedValue() {
-        
+
         if (this.hasFoldedValue()) {
             return this.foldedValue;
         }
-        
+
         Iterator iter = this.phi.values().iterator();
         if (!iter.hasNext()) {
             return null;
         }
-        
-        // initialize the folded value as a clone of the first value 
+
+        // initialize the folded value as a clone of the first value
         // in the phi map
         LatticeElement foldedValue = ((LatticeElement) iter.next()).cloneMe();
 
@@ -66,10 +66,10 @@ extends AnalysisNode {
         while (iter.hasNext()) {
             foldedValue.lub((LatticeElement) iter.next());
         }
-        
+
         return foldedValue;
     }
-    
+
     public boolean hasFoldedValue() {
         return (this.foldedValue != null || this.phi == null);
     }
@@ -92,7 +92,7 @@ extends AnalysisNode {
             throw new RuntimeException("SNH");
         }
     }
-    
+
     // returns the least upper bound of all values in the phi map;
     // returns NULL if there is not a single value in the phi map
     // DOESN'T PERFORM RECYCLING OF THE FOLDED ELEMENT,
@@ -103,13 +103,13 @@ extends AnalysisNode {
         if (this.hasFoldedValue()) {
             return this.foldedValue;
         }
-        
+
         Iterator iter = this.phi.values().iterator();
         if (!iter.hasNext()) {
             return null;
         }
-        
-        // initialize the folded value as a clone of the first value 
+
+        // initialize the folded value as a clone of the first value
         // in the phi map
         this.foldedValue = ((LatticeElement) iter.next()).cloneMe();
 
@@ -117,12 +117,12 @@ extends AnalysisNode {
         while (iter.hasNext()) {
             this.foldedValue.lub((LatticeElement) iter.next());
         }
-        
+
         return this.foldedValue;
     }
 
-    
-    
+
+
 // *********************************************************************************
 // SET *****************************************************************************
 // *********************************************************************************
@@ -131,7 +131,7 @@ extends AnalysisNode {
     protected void setPhiValue(Context context, LatticeElement value) {
         this.phi.put(context, value);
     }
-    
+
 // *********************************************************************************
 // OTHER ***************************************************************************
 // *********************************************************************************
@@ -139,12 +139,4 @@ extends AnalysisNode {
     LatticeElement transfer(LatticeElement value, Context context) {
         return ((LatticeElement) tf.transfer(value, context));
     }
-
 }
-
-
-
-
-
-
-

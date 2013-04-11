@@ -3,15 +3,15 @@ package at.ac.tuwien.infosys.www.pixy.conversion;
 import java.util.*;
 
 public class BuiltinFunctions {
-    
+
     // set containing the lower-case names of ALL builtin PHP functions,
     // i.e. including those that are not modeled in the builtin functions
     // input file
     private static Set allBuiltinFunctions = BuiltinFunctions.initBuiltinFunctions();
-    
+
     // we don't want instances of this helper class
     private BuiltinFunctions() { }
-    
+
     // initializes the builtin functions set
     private static Set initBuiltinFunctions() {
 
@@ -20,7 +20,7 @@ public class BuiltinFunctions {
         // this additional sanitization function can be used
         // to suppress false warnings
         allBuiltinFunctions.add(InternalStrings.suppression);
-        
+
         allBuiltinFunctions.add("abs");
         allBuiltinFunctions.add("acos");
         allBuiltinFunctions.add("acosh");
@@ -3864,10 +3864,10 @@ public class BuiltinFunctions {
         allBuiltinFunctions.add("zip_open");
         allBuiltinFunctions.add("zip_read");
         allBuiltinFunctions.add("zlib_get_coding_type");
-        
+
         return allBuiltinFunctions;
     }
-    
+
     public static boolean isBuiltinFunction(String functionName) {
         functionName = functionName.toLowerCase();
         if (functionName.startsWith("_junit_test")) {
@@ -3875,5 +3875,4 @@ public class BuiltinFunctions {
         }
         return BuiltinFunctions.allBuiltinFunctions.contains(functionName);
     }
-
 }

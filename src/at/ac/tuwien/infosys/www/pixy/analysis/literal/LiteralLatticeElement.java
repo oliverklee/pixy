@@ -16,22 +16,22 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
-public class LiteralLatticeElement 
+public class LiteralLatticeElement
 extends LatticeElement {
-    
+
     // TacPlace -> Literal
     // contains only non-default mappings;
     private Map<TacPlace,Literal> placeToLit;
-    
+
     // a copy of placeToLit, must be initialized by methods that need it;
     // they must not forget to null it as soon as they've finished their
     // work (saves memory)
     private Map<TacPlace,Literal> origPlaceToLit;
-    
+
     // the default lattice element; IT MUST NOT BE USED DIRECTLY BY THE ANALYSIS!
     // can be seen as "grounding", "fall-back" for normal lattice elements
     public static LiteralLatticeElement DEFAULT;
-    
+
 //  ********************************************************************************
 //  CONSTRUCTORS *******************************************************************
 //  ********************************************************************************
@@ -41,7 +41,7 @@ extends LatticeElement {
     public LiteralLatticeElement() {
         this.placeToLit = new HashMap<TacPlace,Literal>();
     }
-    
+
     // clones the given element
     public LiteralLatticeElement(LiteralLatticeElement cloneMe) {
         this.placeToLit = new HashMap<TacPlace,Literal>(cloneMe.getPlaceToLit());
@@ -51,7 +51,7 @@ extends LatticeElement {
         // uses the cloning constructor
         return new LiteralLatticeElement(this);
     }
-    
+
     // constructor for default element (to be called by "initDefault"):
     // literal mappings:
     // - main function variables and superglobals (not including function return
@@ -68,14 +68,14 @@ extends LatticeElement {
             ConstantsTable constantsTable,
             List functions,
             SymbolTable superSymbolTable) {
-        
+
         // initialize conservative base mapping for variables & constants: TOP
         this.placeToLit = new HashMap<TacPlace,Literal>();
         for (Iterator iter = places.iterator(); iter.hasNext(); ) {
             TacPlace place = (TacPlace) iter.next();
             this.placeToLit.put(place, Literal.TOP);
         }
-        
+
         // initialize function return values to NULL, because:
         // if a function has no return statement, the return variable is not touched;
         // since the real-world return value is then "NULL", the default mapping
@@ -88,7 +88,7 @@ extends LatticeElement {
                 this.placeToLit.put(place, Literal.NULL);
             }
         }
-        
+
         // here you can determine the literal for the return variable
         // of the unknown function
         /*
@@ -96,7 +96,7 @@ extends LatticeElement {
                 InternalStrings.returnPrefix + InternalStrings.unknownFunctionName);
         this.placeToLit.put(unknownFunctionRetVar, Literal.TOP);
         */
-        
+
         // here you can determine the literal for the return variable
         // of method calls
         /*
@@ -104,7 +104,7 @@ extends LatticeElement {
                 InternalStrings.returnPrefix + InternalStrings.unknownMethodName);
         this.placeToLit.put(methodRetVar, Literal.TOP);
         */
-        
+
         // initialize constants
         Map constants = constantsTable.getConstants();
         for (Iterator iter = constants.values().iterator(); iter.hasNext(); ) {
@@ -113,11 +113,11 @@ extends LatticeElement {
                 // retrieve stored values for special constants
                 this.placeToLit.put(constant, constant.getSpecialLiteral());
             } else {
-                // initialize non-special constants to their 'natural' string 
+                // initialize non-special constants to their 'natural' string
                 this.placeToLit.put(constant, new Literal(constant.toString()));
             }
         }
-        
+
         // initialize local function variables & parameters to NULL;
         // locals of main function == globals of the program:
         // their initialization depends on the register_globals setting:
@@ -132,7 +132,7 @@ extends LatticeElement {
             Map variables = symtab.getVariables();
             for (Iterator varIter = variables.values().iterator(); varIter.hasNext(); ) {
                 Variable variable = (Variable) varIter.next();
-                // array elements are handled along with their root 
+                // array elements are handled along with their root
                 if (variable.isArrayElement()) {
                     continue;
                 }
@@ -152,8 +152,8 @@ extends LatticeElement {
             List functions,
             SymbolTable superSymbolTable) {
 
-        LiteralLatticeElement.DEFAULT = 
-            new LiteralLatticeElement(places, constantsTable, functions, 
+        LiteralLatticeElement.DEFAULT =
+            new LiteralLatticeElement(places, constantsTable, functions,
                     superSymbolTable);
 
     }
@@ -163,13 +163,13 @@ extends LatticeElement {
 //  ********************************************************************************
 
 //  getPlaceToLit ******************************************************************
-    
+
     public Map<TacPlace,Literal> getPlaceToLit() {
         return this.placeToLit;
     }
-    
+
 // getLiteral **********************************************************************
-    
+
     public Literal getLiteral(TacPlace place) {
         return this.getLiteralFrom(place, this.placeToLit);
     }
@@ -185,17 +185,17 @@ extends LatticeElement {
     // returns the non-default literal for this place if that mapping exists,
     // or the default literal otherwise
     private Literal getLiteralFrom(TacPlace place, Map readFrom) {
-        
+
         if (place instanceof Literal) {
             return (Literal) place;
         }
-        
+
         // return the non-default mapping (if there is one)
         Literal nonDefaultLit = (Literal) readFrom.get(place);
         if (nonDefaultLit != null) {
             return nonDefaultLit;
         }
-        
+
         // return the default mapping if there is no non-default one
         Literal defaultLit = LiteralLatticeElement.getDefaultLiteral(place);
         if (defaultLit == null) {
@@ -203,20 +203,20 @@ extends LatticeElement {
         } else {
             return defaultLit;
         }
-        
+
     }
 
 // getDefaultLiteral ***************************************************************
-    
+
     private static Literal getDefaultLiteral(TacPlace place) {
         if (place instanceof Literal) {
             throw new RuntimeException("SNH");
         }
         return (Literal) LiteralLatticeElement.DEFAULT.getPlaceToLit().get(place);
     }
-    
+
 // getNonDefaultLiteral ************************************************************
-    
+
     // returns the non-default literal for the given place;
     // null if there is no non-default literal for it
     private Literal getNonDefaultLiteral(TacPlace place) {
@@ -232,9 +232,9 @@ extends LatticeElement {
 //  ********************************************************************************
 
 // setLiteral **********************************************************************
-    
+
     private void setLiteral(TacPlace place, Literal literal) {
-        
+
         if (place instanceof Literal) {
             throw new RuntimeException("SNH");
         }
@@ -242,7 +242,7 @@ extends LatticeElement {
             // we don't want to modify the special member variable
             return;
         }
-        
+
         if (getDefaultLiteral(place).equals(literal)) {
             // if the target literal is the default, we simply remove the mapping
             this.placeToLit.remove(place);
@@ -250,11 +250,11 @@ extends LatticeElement {
             this.placeToLit.put(place, literal);
         }
     }
-    
+
 // lubLiteral **********************************************************************
-    
+
     private void lubLiteral(TacPlace place, Literal literal) {
-        
+
         if (place instanceof Literal) {
             throw new RuntimeException("SNH");
         }
@@ -276,9 +276,9 @@ extends LatticeElement {
             }
         }
     }
-    
+
 //  setSubTree ************************************************************************
-    
+
     // sets the literal for all literal array elements in the
     // tree specified by the given root, EXCEPT THE ROOT (which is left
     // untouched)
@@ -291,13 +291,13 @@ extends LatticeElement {
             this.setWholeTree(element, lit);
         }
     }
-    
+
 // setWholeTree ********************************************************************
-    
+
     // sets the literal for all literal array elements in the
     // tree sepcified by the given root, INCLUDING THE ROOT
     private void setWholeTree(Variable root, Literal lit) {
-        
+
         this.setLiteral(root, lit);
         if (!root.isArray()) {
             return;
@@ -320,12 +320,12 @@ extends LatticeElement {
             this.lubWholeTree(element, lit);
         }
     }
-    
+
 //  lubWholeTree ************************************************************************
-    
+
     // analogous to setWholeTree
     private void lubWholeTree(Variable root, Literal lit) {
-        
+
         this.lubLiteral(root, lit);
         if (!root.isArray()) {
             return;
@@ -336,28 +336,28 @@ extends LatticeElement {
         }
     }
 
-    
+
 //  ********************************************************************************
 //  OTHER **************************************************************************
 //  ********************************************************************************
 
     // lubs the given lattice element over <<this>> lattice element
     public void lub(LatticeElement foreignX) {
-        
+
         LiteralLatticeElement foreign = (LiteralLatticeElement) foreignX;
-        
+
         // lub over my non-default mappings
         for (Iterator iter = this.placeToLit.entrySet().iterator(); iter.hasNext(); ) {
             Map.Entry myEntry = (Map.Entry) iter.next();
             TacPlace myPlace = (TacPlace) myEntry.getKey();
             Literal myLiteral = (Literal) myEntry.getValue();
-            
+
             Literal foreignLiteral = foreign.getLiteral(myPlace);
             if (!foreignLiteral.equals(myLiteral)) {
                 this.placeToLit.put(myPlace, Literal.TOP);
             }
         }
-        
+
         // lub the remaining non-default mappings of "foreign" over my
         // default mappings
         Map foreignPlaceToLit = foreign.getPlaceToLit();
@@ -365,7 +365,7 @@ extends LatticeElement {
             Map.Entry foreignEntry = (Map.Entry) iter.next();
             TacPlace foreignPlace = (TacPlace) foreignEntry.getKey();
             Literal foreignLiteral = (Literal) foreignEntry.getValue();
-            
+
             Literal myLiteral = this.getNonDefaultLiteral(foreignPlace);
             if (myLiteral == null) {
                 myLiteral = getDefaultLiteral(foreignPlace);
@@ -388,9 +388,9 @@ extends LatticeElement {
             }
         }
     }
-    
+
 //  lub (static) *******************************************************************
-    
+
     // returns the lub of the given literals (the first literal might be reused)
     public static Literal lub(Literal lit1, Literal lit2) {
         if (lit1.equals(lit2)) {
@@ -399,9 +399,9 @@ extends LatticeElement {
             return Literal.TOP;
         }
     }
-    
+
 // initTree *************************************************************************
-    
+
     // inits the literal for all literal array elements in the
     // tree specified by the given root;
     // difference to setTree: doesn't call setLiteral (which tries
@@ -419,17 +419,17 @@ extends LatticeElement {
     }
 
 //  assignSimple *******************************************************************
-    
-    // mustAliases and mayAliases: of left; mustAliases always have to 
+
+    // mustAliases and mayAliases: of left; mustAliases always have to
     // include left itself
     public void assignSimple(Variable left, TacPlace right, Set mustAliases, Set mayAliases) {
-        
+
         // initialize state copy (required by strongOverlap)
         this.origPlaceToLit = new HashMap<TacPlace,Literal>(this.placeToLit);
-        
+
         // case distinguisher for the left variable
         int leftCase;
-        
+
         // find out more about the left variable
         if (!left.isArrayElement()) {
             // left: not an array element
@@ -453,43 +453,43 @@ extends LatticeElement {
 
         // take appropariate actions
         switch (leftCase) {
-        
+
         // not an array element and not known as array ("normal variable")
         case 1:
 
             Literal rightLit = this.getLiteral(right);
-            
+
             // strong update for must-aliases (including left itself)
             for (Iterator iter = mustAliases.iterator(); iter.hasNext();) {
                 Variable mustAlias = (Variable) iter.next();
                 this.setLiteral(mustAlias, rightLit);
             }
-            
+
             // weak update for may-aliases
             for (Iterator iter = mayAliases.iterator(); iter.hasNext();) {
                 Variable mayAlias = (Variable) iter.next();
                 this.lubLiteral(mayAlias, rightLit);
             }
-            
+
             break;
-            
-        // array, but not an array element 
+
+        // array, but not an array element
         case 2:
-            
+
             // strong overlap
             this.strongOverlap(left, right);
             break;
-            
+
         // array element (and maybe an array) without non-literal indices
         case 3:
-            
+
             // strong overlap
             this.strongOverlap(left, right);
             break;
-            
+
         // array element (and maybe an array) with non-literal indices
         case 4:
-            
+
             // weak overlap for all MI variables of left
             for (Iterator iter = this.getMiList(left).iterator(); iter.hasNext();) {
                 Variable miVar = (Variable) iter.next();
@@ -500,18 +500,18 @@ extends LatticeElement {
         default:
             throw new RuntimeException("SNH");
         }
-        
+
         this.origPlaceToLit = null;
     }
-    
+
 //  assignUnary ********************************************************************
-    
+
     public void assignUnary(Variable left, TacPlace right, int op,
             Set mustAliases, Set mayAliases) {
-        
+
         // base literal; must undergo conversion depending on operator
         Literal baseLit = this.getLiteral(right);
-        
+
         // effective literal: to be computed
         Literal effectiveRightLit;
 
@@ -520,7 +520,7 @@ extends LatticeElement {
             // shortcut: no need to look at the operator if we are dealing with TOP
             effectiveRightLit = Literal.TOP;
         } else {
-        
+
             switch (op) {
                 case TacOperators.PLUS:
                 {
@@ -536,7 +536,7 @@ extends LatticeElement {
                 case TacOperators.NOT:
                 {
                     Literal baseBool = baseLit.getBoolValueLiteral();
-                    
+
                     // invert the boolean value
                     if (baseBool == Literal.TOP) {
                         effectiveRightLit = Literal.TOP;
@@ -551,7 +551,7 @@ extends LatticeElement {
                 }
                 case TacOperators.BITWISE_NOT:
                 {
-                    // note: used for special nodes (such as ~_hotspot0) 
+                    // note: used for special nodes (such as ~_hotspot0)
                     // see: builtin functions file)
                     effectiveRightLit = Literal.TOP;
                     break;
@@ -605,15 +605,15 @@ extends LatticeElement {
     }
 
 //  assignBinary********************************************************************
-    
-    public void assignBinary(Variable left, TacPlace leftOperand, 
+
+    public void assignBinary(Variable left, TacPlace leftOperand,
             TacPlace rightOperand, int op, Set mustAliases, Set mayAliases,
             CfgNode cfgNode) {
-        
+
         // base literals; must undergo conversion depending on operator
         Literal baseLeftLit = this.getLiteral(leftOperand);
         Literal baseRightLit = this.getLiteral(rightOperand);
-        
+
         // effective literal: to be computed
         Literal effectiveLit;
 
@@ -625,9 +625,9 @@ extends LatticeElement {
         } else {
 
             switch (op) {
-            
+
                 // ARITHMETIC OPERATORS
-            
+
                 case TacOperators.PLUS:
                 {
                     effectiveLit = new Literal(Literal.numberToString(
@@ -674,18 +674,18 @@ extends LatticeElement {
                         baseLeftLit.getFloatValue() % baseRightLit.getFloatValue()));
                     break;
                 }
-                
+
                 // STRING OPERATORS
-                
+
                 case TacOperators.CONCAT:
                 {
                     effectiveLit = new Literal(
-                        baseLeftLit.getStringValue() + baseRightLit.getStringValue());  
+                        baseLeftLit.getStringValue() + baseRightLit.getStringValue());
                     break;
                 }
-                
+
                 // LOGICAL OPERATORS
-                
+
                 case TacOperators.BOOLEAN_AND:
                 {
                     // BOOLEAN_AND is used only for the special "isset" case
@@ -703,9 +703,9 @@ extends LatticeElement {
                     }
                     break;
                 }
-                
+
                 // COMPARISON OPERATORS
-                
+
                 case TacOperators.IS_EQUAL:
                 {
                     effectiveLit = Literal.isEqualLiteral(baseLeftLit, baseRightLit);
@@ -752,10 +752,10 @@ extends LatticeElement {
                         Literal.isIdenticalLiteral(baseLeftLit, baseRightLit));
                     break;
                 }
-                
+
                 // BITWISE OPERATORS
                 // LATER: implement on demand
-                
+
                 case TacOperators.SL:
                 {
                     effectiveLit = Literal.TOP;
@@ -782,47 +782,47 @@ extends LatticeElement {
                     effectiveLit = Literal.TOP;
                     break;
                 }
-    
+
                 default:
                 {
                     throw new RuntimeException("Unsupported operator");
                 }
             }
         }
-        
-        // assign 
+
+        // assign
         this.assignSimple(left, effectiveLit, mustAliases, mayAliases);
-        
+
     }
-    
+
 //  assignArray ********************************************************************
-    
+
     public void assignArray(Variable left) {
         // set the whole tree of left to null
         this.setWholeTree(left, Literal.NULL);
     }
-    
+
 //  defineConstant *****************************************************************
-    
+
     // sets the literal of the given constant
     public void defineConstant(Constant c, Literal lit) {
         this.setLiteral(c, lit);
     }
 
 //  defineConstantWeak *************************************************************
-    
+
     // lubs over the literal of the given constant
     public void defineConstantWeak(Constant c, Literal lit) {
         this.lubLiteral(c, lit);
     }
 
 // getMiList ***********************************************************************
-    
+
     // returns a list of array elements that are maybe identical
     // to the given array element; only array elements without
     // non-literal indices are returned
     public List<Variable> getMiList(Variable var) {
-        
+
         if (!var.isArrayElement()) {
             throw new RuntimeException("SNH");
         }
@@ -832,17 +832,17 @@ extends LatticeElement {
 
         // the list to be returned (contains Variables)
         List<Variable> miList = new LinkedList<Variable>();
-        
+
         // root of the array tree, indices of the array element
         Variable root = var.getTopEnclosingArray();
         List<TacPlace> indices = var.getIndices();
-        
+
         this.miRecurse(miList, root, new LinkedList<TacPlace>(indices));
         return miList;
     }
-    
+
 // miRecurse ***********************************************************************
-    
+
     // CAUTION: the indices list is modified inside this method, so you might
     // want to pass a shallow copy instead of a reference to the list
     private void miRecurse(List<Variable> miList, Variable root, List<TacPlace> indices) {
@@ -859,8 +859,8 @@ extends LatticeElement {
          *   - else: recurse for all literal array elements and
          *     <<a copy>> of the remaining indices list: otherwise,
          *     the different branches would operate on the same
-         *     indices list  
-         * 
+         *     indices list
+         *
          */
 
         // proceeding only makes sense if the considered root has known
@@ -868,10 +868,10 @@ extends LatticeElement {
         if (!root.isArray()) {
             return;
         }
-        
+
         TacPlace index = (TacPlace) indices.remove(0);
         if (index instanceof Literal) {
-            
+
             Variable target = root.getElement(index);
             // it is possible that the considered array doesn't have this index
             if (target != null) {
@@ -896,24 +896,24 @@ extends LatticeElement {
 
 //  strongOverlap ******************************************************************
 
-    // before calling this function, don't forget to 
+    // before calling this function, don't forget to
     // initialize origPlaceToLit: new HashMap(this.placeToLit)
     private void strongOverlap(Variable target, TacPlace source) {
-        
+
         Literal sourceLit = this.getOrigLiteral(source);
-        
+
         if (source.isVariable() && ((Variable) source).isArray()) {
             // a known array on the right side
-            
+
             Variable sourceArray = (Variable) source;
             if (target.isArray()) {
                 // target known as array
-                
+
                 // for all literal direct elements of target...
                 List targetElements = target.getLiteralElements();
                 for (Iterator iter = targetElements.iterator(); iter.hasNext(); ) {
                     Variable targetElem = (Variable) iter.next();
-                    
+
                     // if there is a direct element of source with the same
                     // direct index...
                     Variable sourceElem = sourceArray.getElement(targetElem.getIndex());
@@ -930,30 +930,30 @@ extends LatticeElement {
         } else {
             this.setSubTree(target, Literal.TOP);
         }
-        
+
         this.setLiteral(target, sourceLit);
     }
-    
+
 //  weakOverlap ********************************************************************
-    
-    // before calling this function, don't forget to 
+
+    // before calling this function, don't forget to
     // initialize origPlaceToLit: new HashMap(this.placeToLit)
     private void weakOverlap(Variable target, TacPlace source) {
-        
+
         Literal sourceLit = this.getOrigLiteral(source);
-        
+
         if (source.isVariable() && ((Variable) source).isArray()) {
             // a known array on the right side
-            
+
             Variable sourceArray = (Variable) source;
             if (target.isArray()) {
                 // target known as array
-                
+
                 // for all literal direct elements of target...
                 List targetElements = target.getLiteralElements();
                 for (Iterator iter = targetElements.iterator(); iter.hasNext(); ) {
                     Variable targetElem = (Variable) iter.next();
-                    
+
                     // if there is a direct element of source with the same
                     // direct index...
                     Variable sourceElem = sourceArray.getElement(targetElem.getIndex());
@@ -970,68 +970,68 @@ extends LatticeElement {
         } else {
             this.lubSubTree(target, Literal.TOP);
         }
-        
+
         this.lubLiteral(target, sourceLit);
     }
-    
+
 //  resetVariables *****************************************************************
-    
+
     // resets all variables that belong to the given symbol table
     // (by removing their non-default mapping)
     public void resetVariables(SymbolTable symTab) {
-        
+
         for (Iterator iter = this.placeToLit.entrySet().iterator(); iter.hasNext();) {
             Map.Entry entry = (Map.Entry) iter.next();
             TacPlace place = (TacPlace) entry.getKey();
-            
+
             if (!(place instanceof Variable)) {
                 // nothing to do for non-variables (i.e., constants)
                 continue;
             }
-            
+
             Variable var = (Variable) place;
             if (var.belongsTo(symTab)) {
                 iter.remove();
             }
         }
     }
-    
+
 //  setFormal **********************************************************************
-    
+
     // overlaps the given formal with the given place
     // (no need to consider aliases here)
     public void setFormal(TacFormalParam formalParam, TacPlace place) {
-        
+
         // initialize state copy (required by strongOverlap)
         this.origPlaceToLit = new HashMap<TacPlace,Literal>(this.placeToLit);
-        
+
         Variable formalVar = formalParam.getVariable();
         this.strongOverlap(formalVar, place);
-        
+
         this.origPlaceToLit = null;
     }
-    
+
 //  setShadow **********************************************************************
-    
+
     // sets a shadow's literal to the literal of its original
     public void setShadow(Variable shadow, Variable original) {
         this.setLiteral(shadow, this.getLiteral(original));
     }
-    
+
 //  copyGlobalLike *****************************************************************
-    
-    // copies the non-default literal mappings for "global-like" places 
+
+    // copies the non-default literal mappings for "global-like" places
     // from origElement (i.e., global variables, superglobal variables, and
     // constants)
     public void copyGlobalLike(LiteralLatticeElement origElement) {
-        
+
         Map origMap = origElement.getPlaceToLit();
         for (Iterator iter = origMap.entrySet().iterator(); iter.hasNext();) {
-            
+
             Map.Entry entry = (Map.Entry) iter.next();
             TacPlace origPlace = (TacPlace) entry.getKey();
             Literal origLit = (Literal) entry.getValue();
-            
+
             // decide whether to copy this place
             boolean copyMe = false;
             if (origPlace instanceof Constant) {
@@ -1044,7 +1044,7 @@ extends LatticeElement {
             } else {
                 throw new RuntimeException("SNH: " + origPlace);
             }
-            
+
             if (copyMe) {
                 this.setLiteral(origPlace, origLit);
             }
@@ -1052,13 +1052,13 @@ extends LatticeElement {
     }
 
 //  copyLocals *********************************************************************
-    
+
     // copies the non-default literal mappings for global variables from origElement
     public void copyLocals(LiteralLatticeElement origElement) {
-        
+
         Map origMap = origElement.getPlaceToLit();
         for (Iterator iter = origMap.entrySet().iterator(); iter.hasNext();) {
-            
+
             Map.Entry entry = (Map.Entry) iter.next();
             TacPlace origPlace = (TacPlace) entry.getKey();
             Literal origLit = (Literal) entry.getValue();
@@ -1071,54 +1071,54 @@ extends LatticeElement {
             if (!origVar.isLocal()) {
                 continue;
             }
-            
+
             this.setLiteral(origVar, origLit);
         }
     }
 
 //  setLocal ***********************************************************************
-    
+
     // sets the literal of the given local variable to the given literal
     public void setLocal(Variable local, Literal lit) {
         this.setLiteral(local, lit);
     }
-    
+
 //  handleReturnValue **************************************************************
-    
+
     // sets the temporary to the given literal and resets retVar
     public void handleReturnValue(Variable tempVar, Literal lit, Variable retVar) {
         this.setLiteral(tempVar, lit);
         this.placeToLit.remove(retVar);
     }
-    
+
     // sets the temporary to the given literal and DOES NOT reset retVar
     public void handleReturnValue(Variable tempVar, Literal lit/*, Variable retVar*/) {
         this.setLiteral(tempVar, lit);
     }
-    
+
 //  setRetVar **********************************************************************
-    
+
     // sets the literal of the given return variable to the given literal
     public void setRetVar(Variable retVar, Literal lit) {
         this.setLiteral(retVar, lit);
     }
-    
+
 //  ********************************************************************************
-    
+
     public void handleReturnValueBuiltin(Variable tempVar) {
         this.setWholeTree(tempVar, Literal.TOP);
     }
-    
+
 //  ********************************************************************************
-    
+
     public void handleReturnValueUnknown(Variable tempVar) {
         this.setWholeTree(tempVar, Literal.TOP);
     }
-    
+
 //  equals *************************************************************************
-    
+
     public boolean structureEquals(Object obj) {
-        
+
         if (obj == this) {
             return true;
         }
@@ -1131,14 +1131,14 @@ extends LatticeElement {
         if (!this.placeToLit.equals(comp.getPlaceToLit())) {
             return false;
         }
-        
+
         return true;
     }
-    
+
 //  equals *************************************************************************
-    
+
     public boolean equals(Object obj) {
-        
+
         if (obj == this) {
             return true;
         }
@@ -1151,12 +1151,12 @@ extends LatticeElement {
         if (!this.placeToLit.equals(comp.getPlaceToLit())) {
             return false;
         }
-        
+
         return true;
     }
-    
+
 //  hashCode ***********************************************************************
-    
+
     public int hashCode() {
         // EFF: perform hashCode caching
         return this.placeToLit.hashCode();
@@ -1174,7 +1174,4 @@ extends LatticeElement {
     public void dump() {
         System.out.println("LiteralLatticeElement.dump(): not yet");
     }
-
 }
-
-

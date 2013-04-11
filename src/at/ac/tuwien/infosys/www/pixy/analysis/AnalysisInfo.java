@@ -9,18 +9,18 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 //contains analysis information objects for different types of
 //analyses)
 public abstract class AnalysisInfo {
-    
+
     // CfgNode -> AnalysisNode
     protected HashMap<CfgNode,AnalysisNode> map;
 
     protected AnalysisInfo() {
         this.map = new HashMap<CfgNode,AnalysisNode>();
     }
-    
+
     public void add(CfgNode cfgNode, AnalysisNode analysisNode) {
         this.map.put(cfgNode, analysisNode);
     }
-    
+
 
 
     public int size() {
@@ -30,5 +30,4 @@ public abstract class AnalysisInfo {
     public HashMap getMap() {
         return this.map;
     }
-
 }

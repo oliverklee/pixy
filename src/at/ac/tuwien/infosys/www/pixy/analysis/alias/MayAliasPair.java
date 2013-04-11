@@ -20,7 +20,7 @@ public class MayAliasPair {
         this.pair.add(a);
         this.pair.add(b);
     }
-    
+
     // clones the given pair
     public MayAliasPair(MayAliasPair orig) {
         this.pair = new HashSet<Variable>();
@@ -42,7 +42,7 @@ public class MayAliasPair {
     public int size() {
         return this.pair.size();
     }
-    
+
     // if the given variable is contained in this group and the other member
     // of the group is a global variable, this global variable is returned;
     // null otherwise
@@ -50,7 +50,7 @@ public class MayAliasPair {
         Iterator iter = this.pair.iterator();
         Variable firstElement = (Variable) iter.next();
         Variable secondElement = (Variable) iter.next();
-        
+
         if (firstElement == var) {
             if (secondElement.isGlobal()) {
                 return secondElement;
@@ -75,7 +75,7 @@ public class MayAliasPair {
         Iterator iter = this.pair.iterator();
         Variable firstElement = (Variable) iter.next();
         Variable secondElement = (Variable) iter.next();
-        
+
         if (firstElement == var) {
             if (secondElement.isLocal()) {
                 return secondElement;
@@ -92,15 +92,15 @@ public class MayAliasPair {
             return null;
         }
     }
-    
+
     // if the given variable is contained in this pair, the other variable
     // from the pair is returned; null otherwise
     public Variable getMayAlias(Variable var) {
-        
+
         Iterator iter = this.pair.iterator();
         Variable firstElement = (Variable) iter.next();
         Variable secondElement = (Variable) iter.next();
-        
+
         if (firstElement == var) {
             return secondElement;
         } else if (secondElement == var) {
@@ -108,7 +108,7 @@ public class MayAliasPair {
         } else {
             return null;
         }
-        
+
     }
 
     // if this pair contains one local and one global variable, an array containing
@@ -118,7 +118,7 @@ public class MayAliasPair {
         Iterator iter = this.pair.iterator();
         Variable firstElement = (Variable) iter.next();
         Variable secondElement = (Variable) iter.next();
-        
+
         if (firstElement.isLocal()) {
             if (secondElement.isGlobal()) {
                 Variable[] retMe = {firstElement, secondElement};
@@ -138,7 +138,7 @@ public class MayAliasPair {
         }
 
     }
-    
+
 //  ********************************************************************************
 //  OTHER **************************************************************************
 //  ********************************************************************************
@@ -165,7 +165,7 @@ public class MayAliasPair {
             throw new RuntimeException("SNH");
         }
     }
-    
+
     // returns true if at least one of the contained variables is a local
     // variable, and false otherwise
     public boolean containsLocals() {
@@ -189,7 +189,7 @@ public class MayAliasPair {
         }
         return false;
     }
-    
+
     // returns true if at least one of the contained variables belongs to
     // the given symbol table, and false otherwise
     public boolean containsVariables(SymbolTable symTab) {
@@ -234,7 +234,7 @@ public class MayAliasPair {
     }
 
     public boolean equals(Object obj) {
-        
+
         if (obj == this) {
             return true;
         }
@@ -244,9 +244,8 @@ public class MayAliasPair {
         MayAliasPair comp = (MayAliasPair) obj;
         return this.pair.equals(comp.getPair());
     }
-    
+
     public int hashCode() {
         return this.pair.hashCode();
     }
-    
 }

@@ -6,7 +6,7 @@
 
 $a = 'z';
 $sql = 'x' . $a . 'y' . $a;
-mysql_query($sql); 
+mysql_query($sql);
 
 
 

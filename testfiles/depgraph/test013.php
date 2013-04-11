@@ -1,6 +1,6 @@
 <? //
 
-// array-aware dep graph construction 
+// array-aware dep graph construction
 
 
 $a[1] = 7;

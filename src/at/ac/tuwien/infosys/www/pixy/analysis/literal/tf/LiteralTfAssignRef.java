@@ -16,25 +16,25 @@ extends TransferFunction {
     private Variable left;
     private Variable right;
     private boolean supported;
-    
-// *********************************************************************************    
+
+// *********************************************************************************
 // CONSTRUCTORS ********************************************************************
-// *********************************************************************************     
+// *********************************************************************************
 
     // mustAliases, mayAliases: of setMe
     public LiteralTfAssignRef(TacPlace left, TacPlace right) {
-        
+
         this.left = (Variable) left;    // must be a variable
         this.right = (Variable) right;  // must be a variable
-        
+
         // check for unsupported features
         this.supported = AliasAnalysis.isSupported(this.left, this.right, false, -1);
-        
+
     }
 
-// *********************************************************************************    
+// *********************************************************************************
 // OTHER ***************************************************************************
-// *********************************************************************************  
+// *********************************************************************************
 
     public LatticeElement transfer(LatticeElement inX) {
 
@@ -43,7 +43,7 @@ extends TransferFunction {
         if (!supported) {
             return inX;
         }
-        
+
         LiteralLatticeElement in = (LiteralLatticeElement) inX;
         LiteralLatticeElement out = new LiteralLatticeElement(in);
 
@@ -51,14 +51,14 @@ extends TransferFunction {
         // for the literal mapping, this means that nothing changes
         // except that left receives the literal of right;
         // we achieve this through the following actions:
-        
+
         Set<Variable> mustAliases = new HashSet<Variable>();
         mustAliases.add(left);
         Set mayAliases = Collections.EMPTY_SET;
-        
+
         // let the lattice element handle the details
         out.assignSimple(left, right, mustAliases, mayAliases);
-        
+
         return out;
     }
 }

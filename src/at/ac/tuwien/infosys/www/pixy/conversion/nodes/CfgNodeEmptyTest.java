@@ -6,19 +6,17 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 import java.util.*;
 
-
 // *********************************************************************************
 // CfgNodeEmptyTest ****************************************************************
 // *********************************************************************************
-
 
 public class CfgNodeEmptyTest
 extends CfgNode {
 
     private TacPlace left;
     private TacPlace right;
-    
-// CONSTRUCTORS ********************************************************************    
+
+// CONSTRUCTORS ********************************************************************
 
     public CfgNodeEmptyTest(TacPlace left, TacPlace right, ParseNode node) {
         super(node);
@@ -27,7 +25,7 @@ extends CfgNode {
     }
 
 // GET *****************************************************************************
-    
+
     public TacPlace getLeft() {
         return this.left;
     }
@@ -35,7 +33,7 @@ extends CfgNode {
     public TacPlace getRight() {
         return this.right;
     }
-    
+
     public List<Variable> getVariables() {
         List<Variable> retMe = new LinkedList<Variable>();
         if (this.left instanceof Variable) {
@@ -50,7 +48,7 @@ extends CfgNode {
         }
         return retMe;
     }
-    
+
 //  SET ****************************************************************************
 
     public void replaceVariable(int index, Variable replacement) {
@@ -65,7 +63,4 @@ extends CfgNode {
             throw new RuntimeException("SNH");
         }
     }
-
 }
-
-

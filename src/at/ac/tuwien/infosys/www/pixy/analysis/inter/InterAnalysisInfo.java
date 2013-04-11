@@ -8,13 +8,13 @@ import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
-public class InterAnalysisInfo 
+public class InterAnalysisInfo
 extends AnalysisInfo {
 
     public InterAnalysisInfo() {
         super();
     }
-    
+
     // folds all analysis nodes (using recycling) and clears the phi maps
     // (=> saves memory)
     public void foldRecycledAndClean(InterAnalysis analysis) {
@@ -26,7 +26,7 @@ extends AnalysisInfo {
             analysisNode.clearPhiMap();
         }
     }
-    
+
     // note that not all cfg nodes have an associated analysis node:
     // - nodes inside basic blocks
     // - nodes inside function default cfgs
@@ -41,6 +41,4 @@ extends AnalysisInfo {
         AnalysisNode analysisNode = this.getAnalysisNode(cfgNode);
         return analysisNode.getTransferFunction();
     }
-    
-    
 }

@@ -10,28 +10,28 @@ import java.util.*;
 public class IncludeGraph {
 
     private IncludeNode root;
-    
+
     private Set<IncludeNode> nodes;
-    
+
     // IncludeNode -> Set of IncludeNodes (successors)
     private HashMap<IncludeNode,Set<IncludeNode>> adjSets;
-    
+
     // IncludeNode -> Integer
     private HashMap<IncludeNode,Integer> inDegrees;
 
 //  ********************************************************************************
 //  CONSTRUCTORS *******************************************************************
 //  ********************************************************************************
-    
+
     public IncludeGraph(File rootFile) {
         this.root = new IncludeNode(rootFile);
-        
+
         this.nodes = new HashSet<IncludeNode>();
         this.nodes.add(root);
-        
+
         this.adjSets = new HashMap<IncludeNode,Set<IncludeNode>>();
         this.adjSets.put(root, new HashSet<IncludeNode>());
-        
+
         this.inDegrees = new HashMap<IncludeNode,Integer>();
         this.inDegrees.put(root, new Integer(0));
     }
@@ -42,7 +42,7 @@ public class IncludeGraph {
         this.adjSets = new HashMap<IncludeNode,Set<IncludeNode>>(cloneMe.adjSets);
         this.inDegrees = new HashMap<IncludeNode,Integer>(cloneMe.inDegrees);
     }
-    
+
 //  ********************************************************************************
 //  OTHER **************************************************************************
 //  ********************************************************************************
@@ -60,20 +60,20 @@ public class IncludeGraph {
                 b.append("\n");
             }
         }
-        
+
         return b.toString();
     }
-    
+
 //  addAcyclicEdge *****************************************************************
-    
+
     // if adding the indicated edge leaves the graph acyclic,
     // it is added and "true" is returned; otherwise, "false"
     // is returned
     public boolean addAcyclicEdge(File fromFile, File toFile) {
-        
+
         IncludeNode from = new IncludeNode(fromFile);
         IncludeNode to = new IncludeNode(toFile);
-        
+
         // System.out.println("addAcyclicEdge: " + from + " -> " + to);
 
         if (!this.nodes.contains(from)) {
@@ -85,7 +85,7 @@ public class IncludeGraph {
         if (this.edgeExists(from, to)) {
             return true;
         }
-        
+
         // speed-up: if the "to" node doesn't exist yet,
         // there can't appear a cycle through this addition
         if (!this.nodes.contains(to)) {
@@ -96,7 +96,7 @@ public class IncludeGraph {
 
         this.addNode(to);
         this.addEdge(from, to);
-        
+
         if (isCyclic()) {
             // if this made the graph cyclic: undo
             this.removeEdge(from, to);
@@ -109,7 +109,7 @@ public class IncludeGraph {
     }
 
 //  edgeExists *********************************************************************
-    
+
     // tests whether the indicated edge already exists in this graph
     private boolean edgeExists(IncludeNode from, IncludeNode to) {
         Set adjSet = (Set) this.adjSets.get(from);
@@ -120,7 +120,7 @@ public class IncludeGraph {
     }
 
 //  addEdge ************************************************************************
-    
+
     // simply adds the indicated edge without asking questions
     private void addEdge(IncludeNode from, IncludeNode to) {
         Set<IncludeNode> adjSet = this.adjSets.get(from);
@@ -129,7 +129,7 @@ public class IncludeGraph {
     }
 
 //  removeEdge *********************************************************************
-    
+
     private void removeEdge(IncludeNode from, IncludeNode to) {
         this.decreaseInDegree(to);
         Set adjSet = (Set) this.adjSets.get(from);
@@ -137,21 +137,21 @@ public class IncludeGraph {
     }
 
 //  increaseInDegree ***************************************************************
-    
+
     private void increaseInDegree(IncludeNode node) {
         Integer inDegree = (Integer) this.inDegrees.get(node);
         this.inDegrees.put(node, new Integer(inDegree.intValue() + 1));
     }
 
 //  decreaseInDegree ***************************************************************
-    
+
     private void decreaseInDegree(IncludeNode node) {
         Integer inDegree = (Integer) this.inDegrees.get(node);
         this.inDegrees.put(node, new Integer(inDegree.intValue() - 1));
     }
 
 //  addNode ************************************************************************
-    
+
     private void addNode(IncludeNode node) {
         this.nodes.add(node);
 
@@ -159,7 +159,7 @@ public class IncludeGraph {
         if (adjSet == null) {
             this.adjSets.put(node, new HashSet<IncludeNode>());
         }
-        
+
         Integer inDegree = (Integer) this.inDegrees.get(node);
         if (inDegree == null) {
             this.inDegrees.put(node, new Integer(0));
@@ -167,7 +167,7 @@ public class IncludeGraph {
     }
 
 //  isCyclic ***********************************************************************
-    
+
     // tests whether this graph is actually cyclic
     private boolean isCyclic() {
         // - clone this graph
@@ -179,14 +179,14 @@ public class IncludeGraph {
         //   - else: continue = false
         // - if the cloned graph is empty: return false
         // - else: return true
-        
+
         IncludeGraph clone = new IncludeGraph(this);
         boolean goOn = true;
         while (goOn) {
-            
+
             // nodes with in-degree == 0
             Set inDegreeZeros = clone.getInDegreeZeros();
-            
+
             if (inDegreeZeros.isEmpty())  {
                 goOn = false;
             } else {
@@ -205,24 +205,24 @@ public class IncludeGraph {
     }
 
 //  getInDegreeZeros **************************************************************
-    
+
     // returns a set of IncludeNode's with in-degree zero
     private Set<IncludeNode> getInDegreeZeros() {
         Set<IncludeNode> retMe = new HashSet<IncludeNode>();
-        
+
         // EFF: this is a linear search
         for (Map.Entry<IncludeNode, Integer> entry : this.inDegrees.entrySet()) {
             int inDegree = entry.getValue().intValue();
             if (inDegree == 0) {
                 retMe.add(entry.getKey());
-            } 
+            }
         }
 
         return retMe;
     }
 
 //  removeZero *********************************************************************
-    
+
     // removes the given node from the graph (and hence, decreases the in-degree
     // for all its successors); assumes that the given node has no incoming edges
     private void removeZero(IncludeNode node) {
@@ -237,17 +237,17 @@ public class IncludeGraph {
     }
 
 //  isEmpty ************************************************************************
-    
+
     private boolean isEmpty() {
         return this.nodes.isEmpty();
     }
 
 //  clean **************************************************************************
-    
+
     // removes the given node if it has neither in- nor outgoing edges and
     // if it is not the root node
     private void clean(IncludeNode node) {
-        
+
         boolean hasNoSucc = ((Set) this.adjSets.get(node)).isEmpty();
         boolean hasNoPred = ((Integer) this.inDegrees.get(node)).intValue() == 0;
         if (hasNoSucc && hasNoPred && !node.equals(this.root)) {

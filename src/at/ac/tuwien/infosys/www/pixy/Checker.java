@@ -21,28 +21,27 @@ import at.ac.tuwien.infosys.www.pixy.conversion.*;
 import java.io.*;
 import java.util.*;
 
-
 public final class Checker {
 
     // enable this switch to make the TacConverter recognize hotspots
     // and other special nodes
     private boolean specialNodes = true;
-    
+
     // required by call-string analyses
     private ConnectorComputation connectorComp = null;
     //private InterWorkListOrder order;
     private InterWorkList workList;
-    
+
     // k-size for call-string analyses
     private int kSize = 1;
-    
+
     // Analyses
     AliasAnalysis aliasAnalysis;
     LiteralAnalysis literalAnalysis;
     public GenericTaintAnalysis gta;
-    
+
     IncDomAnalysis incDomAnalysis;
-    
+
 //  ********************************************************************************
 //  MAIN ***************************************************************************
 //  ********************************************************************************
@@ -51,13 +50,13 @@ public final class Checker {
         HelpFormatter helpFormatter = new HelpFormatter();
         helpFormatter.printHelp( "check [options] file", cliOptions);
     }
-    
+
     public static void main(String[] args) {
 
         // **********************
         // COMMAND LINE PARSING
         // **********************
-        
+
         Options cliOptions = new Options();
         cliOptions.addOption("a", "call-string", false, "call-string analysis (else: functional)");
         cliOptions.addOption("A", "alias", false, "use alias analysis");
@@ -81,15 +80,15 @@ public final class Checker {
         cliOptions.addOption("w", "web", false, "web interface mode");
         cliOptions.addOption("v", "verbose", false, "enable verbose output");
         cliOptions.addOption("V", "verbosegraphs", false, "disable verbose depgraphs");
-        cliOptions.addOption("y", "analysistype", true, 
+        cliOptions.addOption("y", "analysistype", true,
                 "type of taint analysis (" + MyOptions.getAnalysisNames() + ")");
         /*
-        Option o = new Option("y", "analysistype", true, 
-                "type of taint analysis (" + InternalStrings.getAnalyses() + ")"); 
+        Option o = new Option("y", "analysistype", true,
+                "type of taint analysis (" + InternalStrings.getAnalyses() + ")");
         o.setRequired(true);
         cliOptions.addOption(o);
         */
-        
+
         CommandLineParser cliParser = new PosixParser();
         CommandLine cmd = null;
         try {
@@ -101,7 +100,7 @@ public final class Checker {
             help(cliOptions);
             Utils.bail(e.getMessage());
         }
-        
+
         if (cmd.hasOption("h")) {
             help(cliOptions);
             System.exit(0);
@@ -146,7 +145,7 @@ public final class Checker {
         if (MyOptions.setAnalyses(cmd.getOptionValue("y")) == false) {
             Utils.bail("Invalid 'y' argument");
         }
-        
+
         // set output directory
         if (cmd.hasOption("o")) {
             MyOptions.graphPath = cmd.getOptionValue("o");
@@ -156,9 +155,9 @@ public final class Checker {
             }
         } else {
             // no output directory given: use default
-            
+
             MyOptions.graphPath = MyOptions.pixy_home + "/graphs";
-            
+
             // create / empty the graphs directory
             File graphPathFile = new File(MyOptions.graphPath);
             graphPathFile.mkdir();
@@ -167,7 +166,7 @@ public final class Checker {
             }
 
         }
-        
+
         if (!MyOptions.optionW) {
             if (MyOptions.optionB) {
                 System.out.println("File: " + Utils.basename(fileName));
@@ -181,13 +180,13 @@ public final class Checker {
         // convert the whole program (with file inclusions)
         ProgramConverter pcv = checker.initialize();
         TacConverter tac = pcv.getTac();
-        
-        
+
+
         //tac.stats();
-        
+
         // System.out.println("Cfg nodes: " + tac.getSize());
         //Checker.report();
-        
+
         // params: tac, functional?, desired analyses
         checker.analyzeTaint(tac, !MyOptions.optionA);
 
@@ -197,7 +196,7 @@ public final class Checker {
             System.out.println();
             System.out.println("Time: " + analysisDiffTime + " seconds");
         }
-        
+
         //checker.taintAnalysis.stats();
         // System.out.println("Taint Analysis Size: " + checker.taintAnalysis.size());
 
@@ -212,14 +211,14 @@ public final class Checker {
         ExTaintSet.repos = null;
         ExTaint.repos = null;
         */
-        
+
         //checker.xssTaintAnalysis.info();
         //provokeOutOfMemory();
-        
+
         // detect vulnerabilities
         System.out.println("\n*** detecting vulnerabilities ***\n");
         checker.gta.detectVulns();
-        
+
         //System.out.println("done!");
         if (!MyOptions.optionB) {
             long endTime = System.currentTimeMillis();
@@ -228,7 +227,7 @@ public final class Checker {
             System.out.println();
             System.out.println();
         }
-        
+
         // QUERY
         /*
         if (checker.optionQ) {
@@ -242,7 +241,7 @@ public final class Checker {
 //  ********************************************************************************
 //  CONSTRUCTOR ********************************************************************
 //  ********************************************************************************
-    
+
     // after calling this constructor and before initializing / analyzing,
     // you can set options by modifying the appropriate member variables
     public Checker(String fileName) {
@@ -253,13 +252,13 @@ public final class Checker {
         } catch (IOException e) {
             Utils.bail("File not found: " + fileName);
         }
-        
+
     }
 
 //  ********************************************************************************
 //  SET ****************************************************************************
 //  ********************************************************************************
-    
+
     // adjust the kSize for call-string analyses
     public void setKSize(int kSize) {
         this.kSize = kSize;
@@ -270,7 +269,7 @@ public final class Checker {
 //  ********************************************************************************
 
     private void readConfig() {
-        
+
         // read config file into props
         String configPath = MyOptions.pixy_home + "/" + MyOptions.configDir + "/config.txt";
         File configFile = new File(configPath);
@@ -286,7 +285,7 @@ public final class Checker {
             Utils.bail("I/O exception while reading configuration file:" + configPath,
                     e.getMessage());
         }
-        
+
         // read PHP include path from the config file
         MyOptions.includePaths = new LinkedList<File>();
         MyOptions.includePaths.add(new File("."));
@@ -303,7 +302,7 @@ public final class Checker {
                 }
             }
         }
-        
+
         // location of php binary
         String phpBin = props.getProperty(InternalStrings.phpBin);
         if (phpBin == null) {
@@ -348,21 +347,21 @@ public final class Checker {
             hsvElement = hsvElement.trim();
             MyOptions.addHarmlessServerIndex(hsvElement);
         }
-        
+
     }
-    
+
 //  initialize *********************************************************************
-    
+
     // taintString: "-y" option, type of taint analysis
     ProgramConverter initialize() {
-        
+
         // *****************
         // PREPARATIONS
         // *****************
-        
+
         /*
         MyOptions.graphPath = MyOptions.pixy_home + "/graphs";
-        
+
         // create / empty the graphs directory
         System.out.println("Cleaning up graph directory...");
         File graphPathFile = new File(MyOptions.graphPath);
@@ -371,23 +370,23 @@ public final class Checker {
             file.delete();
         }
         */
-        
+
         // read config file
         readConfig();
-        
+
         // *****************
         // PARSE & CONVERT
         // *****************
 
         // initialize builtin sinks
         MyOptions.initSinks();
-        
+
         // read user-defined custom sinks
         MyOptions.readCustomSinkFiles();
-        
+
         // read builtin function models
         MyOptions.readModelFiles();
-        
+
         // convert the program
         ProgramConverter pcv = new ProgramConverter(
                 this.specialNodes, MyOptions.option_A/*, props*/);
@@ -401,7 +400,7 @@ public final class Checker {
 
         pcv.convert();
         TacConverter tac = pcv.getTac();
-        
+
         if (MyOptions.optionL) {
             if (tac.hasEmptyMain()) {
                 System.out.println(MyOptions.entryFile.getPath() + ": library!");
@@ -410,7 +409,7 @@ public final class Checker {
             }
             System.exit(0);
         }
-        
+
         // print maximum number of temporaries
         if (MyOptions.optionM) {
             System.out.println("Maximum number of temporaries: " + tac.getMaxTempId());
@@ -443,19 +442,19 @@ public final class Checker {
             System.exit(0);
         }
 
-        
+
         return pcv;
     }
-    
+
 //  analyzeAliases *****************************************************************
-    
-    // "cleanup" should only be disabled for JUnit tests 
+
+    // "cleanup" should only be disabled for JUnit tests
     AliasAnalysis analyzeAliases(TacConverter tac, boolean cleanup) {
 
         // ***********************
         // PERFORM ALIAS ANALYSIS
         // ***********************
-        
+
         if (!MyOptions.option_A) {
             this.aliasAnalysis = new DummyAliasAnalysis();
             return this.aliasAnalysis;
@@ -474,26 +473,26 @@ public final class Checker {
         }
         //Checker.report();
         System.out.println("\nFinished.");
-        
+
         return this.aliasAnalysis;
 
     }
 
 //  analyzeLiterals ****************************************************************
-    
+
     LiteralAnalysis analyzeLiterals(TacConverter tac) {
-        
+
         // *************************
         // PERFORM LITERAL ANALYSIS
         // *************************
-        
+
         this.analyzeAliases(tac, true);
-        
+
         if (!MyOptions.option_L) {
             this.literalAnalysis = new DummyLiteralAnalysis();
             return this.literalAnalysis;
         }
-        
+
         // this is a call-string analysis and therefore requires previously
         // computed connectors; if this computation hasn't been done yet,
         // do it now
@@ -508,8 +507,8 @@ public final class Checker {
 
         //Checker.report();
         System.out.println("\n*** initializing literal analysis ***\n");
-        this.literalAnalysis = 
-            new LiteralAnalysis(tac, this.aliasAnalysis, 
+        this.literalAnalysis =
+            new LiteralAnalysis(tac, this.aliasAnalysis,
                     new CSAnalysis(this.connectorComp), this.workList);
         //Checker.report();
         System.out.println("\n*** performing literal analysis ***\n");
@@ -519,23 +518,23 @@ public final class Checker {
         this.literalAnalysis.clean();
         //Checker.report();
         System.out.println("\nFinished.");
-        
+
         return this.literalAnalysis;
-        
+
     }
 
 //  ********************************************************************************
-    
+
     // - "functional": functional or CS analysis?
     // - "useLiteralAnalysis": use real literal analysis? or rather a dummy?
     //  a dummy literal analysis is MUCH faster (in fact, it doesn't analyze anything),
     //  but can lead to less precise results in if-evaluation and the resolution of
     //  defined constants; can solve easy cases, however (see DummyLiteralAnalysis.java)
     public void analyzeTaint(TacConverter tac, boolean functional) {
-        
+
         // perform literal analysis if necessary; also takes care of alias analysis
         this.analyzeLiterals(tac);
-        
+
         // ***********************
         // PERFORM TAINT ANALYSIS
         // ***********************
@@ -561,21 +560,21 @@ public final class Checker {
             //System.out.println("STATS:");
             //this.connectorComp.stats();
             enclosingAnalysis = new CSAnalysis(this.connectorComp);
-            
+
             // write called-by relations to file; can be quite useful
-            Utils.writeToFile(this.connectorComp.dump(), 
+            Utils.writeToFile(this.connectorComp.dump(),
                     MyOptions.graphPath + "/" + "/calledby_"  + MyOptions.entryFile.getName() + ".txt");
-            
+
             callGraph = this.connectorComp.getCallGraph();
             if (this.aliasAnalysis instanceof DummyAliasAnalysis) {
                 modAnalysis = new ModAnalysis(tac.getAllFunctions(), callGraph);
             }
-            
+
         }
-        
-        
+
+
         //Checker.report();
-        this.gta = GenericTaintAnalysis.createAnalysis(tac, enclosingAnalysis, 
+        this.gta = GenericTaintAnalysis.createAnalysis(tac, enclosingAnalysis,
                 this, this.workList, modAnalysis);
         if (this.gta == null) {
             Utils.bail("Please specify a valid type of taint analysis.");
@@ -583,7 +582,7 @@ public final class Checker {
         //Checker.report();
         System.out.println("\n*** performing taint analysis ***\n");
         gta.analyze();
-        
+
         /*
         Checker.report();
         Checker.report();
@@ -606,20 +605,20 @@ public final class Checker {
         */
 
     }
-   
+
 //  analyzeIncDom ******************************************************************
 
     IncDomAnalysis analyzeIncDom(TacFunction function) {
-        
+
         // ***********************************
         // PERFORM INCLUDE DOMINATOR ANALYSIS
         // ***********************************
-        
+
         System.out.println("\n*** initializing incdom analysis ***\n");
         this.incDomAnalysis = new IncDomAnalysis(function);
         System.out.println("\n*** performing incdom analysis ***\n");
         this.incDomAnalysis.analyze();
-        
+
         return this.incDomAnalysis;
     }
 
@@ -638,18 +637,12 @@ public final class Checker {
 
         System.out.println("Memory used: " + usedMem);
     }
-    
+
 //  provokeOutOfMemory *************************************************************
-    
+
     /*
     private static void provokeOutOfMemory() {
         int[] big = new int[1000000000];
     }
     */
-
 }
-
-
-
-
-

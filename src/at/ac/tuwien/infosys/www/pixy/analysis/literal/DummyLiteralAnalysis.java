@@ -3,13 +3,13 @@ package at.ac.tuwien.infosys.www.pixy.analysis.literal;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.*;
 
-public class DummyLiteralAnalysis 
+public class DummyLiteralAnalysis
 extends LiteralAnalysis {
-    
+
     public DummyLiteralAnalysis() {
         super();
     }
-    
+
     // best-effort resolution
     public Literal getLiteral(TacPlace place, CfgNode cfgNode) {
         if (place instanceof Literal) {
@@ -24,11 +24,11 @@ extends LiteralAnalysis {
 
         // be careful...
         return null;
-        
+
         /*
         TacPlace left = ifNode.getLeftOperand();
         TacPlace right = ifNode.getRightOperand();
-        
+
         // "if node" tests always have the form "place == <true or false>"
         if (ifNode.getOperator() != TacOperators.IS_EQUAL) {
             throw new RuntimeException("SNH");
@@ -50,7 +50,7 @@ extends LiteralAnalysis {
             // no chance
             return null;
         }
-        
+
         // right operand's literal:
         // can only by true or false (that's what the TacConverter promised)
         Literal rightLit = null;
@@ -73,5 +73,4 @@ extends LiteralAnalysis {
         }
         */
     }
-
 }

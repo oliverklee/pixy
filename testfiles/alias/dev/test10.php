@@ -14,16 +14,9 @@ function b(&$bp1, &$bp2) {
                     // a{}
 }
 
-
-
 /*
 
 // aliases between formals and globals
 
 */
-
-
-
-
-
 ?>

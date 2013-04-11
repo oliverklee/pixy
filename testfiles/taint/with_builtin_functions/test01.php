@@ -9,5 +9,3 @@ $x1 = htmlspecialchars($evil);
 
 
 ?>
-
-

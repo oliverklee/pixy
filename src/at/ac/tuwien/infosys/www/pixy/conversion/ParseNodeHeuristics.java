@@ -14,7 +14,7 @@ public class ParseNodeHeuristics {
 
     private static LiteralAnalysis literalAnalysis;
     private static CfgNodeInclude includeNode;
-    
+
     // tries to find the name of an included file even if literal analysis
     // computed "top" by matching the known parts of the file name against
     // the files in the subdirectories; returns:
@@ -25,10 +25,10 @@ public class ParseNodeHeuristics {
             CfgNodeInclude includeNode, LiteralAnalysis literalAnalysis,
             Map<CfgNodeInclude,String> include2String,
             String workingDirectory) {
-        
+
         ParseNodeHeuristics.literalAnalysis = literalAnalysis;
         ParseNodeHeuristics.includeNode = includeNode;
-        
+
         ParseNode parseNode = includeNode.getParseNode();
 
         // just a few checks to make sure we are dealing with
@@ -55,12 +55,12 @@ public class ParseNodeHeuristics {
         // results in a list of strings and null references;
         // null references represent ".*"
         LinkedList<String> stringList = expr(secondChild);
-        
+
         // transform the list into a pattern...
-        
+
         // flag indicating whether there is something literal
         boolean somethingLiteral = false;
-        
+
         // flag indicating whether we have put a ".*" in front of the
         // current step; important for perfomance: if you have several
         // dot-stars in a row, matching is VERY slow
@@ -68,7 +68,7 @@ public class ParseNodeHeuristics {
 
         StringBuilder pattern = new StringBuilder();
         for (String s : stringList) {
-            
+
             if (s == null) {
                 if (precedingDotStar) {
                     // do nothing
@@ -84,14 +84,14 @@ public class ParseNodeHeuristics {
             }
         }
         pattern.append("$");
-        
+
         // DELME
         /*
         // get a sequence of leaf parse nodes below this second child;
         // this is too simple; e.g., if you have a function invocation
         // in the concatenation, the name of the invoked function will also appear
         LinkedList<ParseNode> leafList = ParseTree.getLeafList(secondChild);
-        
+
         // peel off T_OPEN/CLOSE_BRACES
         if (leafList.get(0).getSymbol() == PhpSymbols.T_OPEN_BRACES &&
                 leafList.getLast().getSymbol() == PhpSymbols.T_CLOSE_BRACES) {
@@ -101,17 +101,17 @@ public class ParseNodeHeuristics {
 
         // flag indicating whether there is something literal
         boolean somethingLiteral = false;
-        
+
         // flag indicating whether we have put a ".*" in front of the
         // current step; important for perfomance: if you have several
         // dot-stars in a row, matching is VERY slow
         boolean precedingDotStar = false;
-        
+
         StringBuilder pattern = new StringBuilder();
         //pattern.append("^");
         for (ParseNode leaf : leafList) {
             // System.out.println(leaf.getName());
-            
+
             if (leaf.getSymbol() == PhpSymbols.T_CONSTANT_ENCAPSED_STRING) {
                 // use Literal() to peel off quotes,
                 // and quote special characters (most notably: the dot .)
@@ -146,20 +146,20 @@ public class ParseNodeHeuristics {
                     precedingDotStar = true;
                 }
             }
-            
+
         }
         pattern.append("$");
         */
-        
+
         normalizePath(pattern);
-        
+
         //System.out.println("Pattern: " + pattern);
-        
+
         // if there is nothing literal in there, we don't even have to try
         if (!somethingLiteral) {
             return null;
         }
-        
+
         Pattern patternObj = Pattern.compile(pattern.toString());
         //System.out.println("Pattern: " + patternObj.pattern());
 
@@ -173,7 +173,7 @@ public class ParseNodeHeuristics {
         //   current script
         //   (but don't retry those files that you have tried before,
         //   since this would be a waste of time)
-        
+
         List<File> candidates1 = Utils.fileListFromDir(workingDirectory);
         System.out.println("inclusion matching against " + candidates1.size() + " candidates");
         List<String> winners = matchCandidates(patternObj, candidates1);
@@ -185,7 +185,7 @@ public class ParseNodeHeuristics {
             // exact match
             return winners;
         }
-        
+
         // no match, so try relative to script directory
         // (but don't retry previous candidates)
         List<File> candidates2 = Utils.fileListFromFile(parseNode.getFileName());
@@ -199,10 +199,10 @@ public class ParseNodeHeuristics {
         if (winners.isEmpty()) {
             include2String.put(includeNode, patternObj.pattern());
         }
-        
+
         return winners;
     }
-    
+
     // matches the pattern against the candidate files; returns
     // - null if more than one candidate matches the pattern
     // - an empty list of no candidates match
@@ -210,17 +210,17 @@ public class ParseNodeHeuristics {
     private static List<String> matchCandidates(Pattern patternObj, Collection<File> candidates) {
         List<String> winners = new LinkedList<String>();
         for (File candidate : candidates) {
-            
+
             //System.out.println(candidate);
-            
+
             // no need to go on if we already have ambiguity
             if (winners.size() > 1) {
                 return null;
             }
-            
+
             String candidatePath = candidate.getPath();
-            
-            // EFF: the matching step is rather slow  
+
+            // EFF: the matching step is rather slow
             //matcher.reset(candidate);
             Matcher matcher = patternObj.matcher(candidatePath);
             if (matcher.find()) {
@@ -230,23 +230,23 @@ public class ParseNodeHeuristics {
         }
         return winners;
     }
-    
+
     private static void normalizePath(StringBuilder pattern) {
         // here, you can do various things to increase the pattern match rate
         // (e.g., remove unnecessary "./")
     }
-    
+
 //  ********************************************************************************
 //  MINI-PARSER ********************************************************************
 //  ********************************************************************************
-    
+
     private static LinkedList<String> expr(ParseNode node) {
-        
+
         LinkedList<String> myList = null;
-        
+
         ParseNode firstChild = node.getChild(0);
         switch(firstChild.getSymbol()) {
-            
+
             // -> r_cvar
             case PhpSymbols.r_cvar:
             {
@@ -261,23 +261,23 @@ public class ParseNodeHeuristics {
                 break;
             }
         }
-        
+
         return myList;
     }
-    
+
     private static LinkedList<String> expr_without_variable(ParseNode node) {
-        
+
         LinkedList<String> myList = null;
-        
+
         ParseNode firstChild = node.getChild(0);
         switch(firstChild.getSymbol()) {
-        
+
             // -> expr ...
             case PhpSymbols.expr:
             {
                 switch(node.getChild(1).getSymbol()) {
-                
-                    // -> expr . expr   
+
+                    // -> expr . expr
                     case PhpSymbols.T_POINT:
                     {
                         LinkedList<String> list0 = expr(node.getChild(0));
@@ -286,56 +286,56 @@ public class ParseNodeHeuristics {
                         myList.addAll(list2);
                         break;
                     }
-                    
-                    default: 
+
+                    default:
                     {
                         myList = new LinkedList<String>();
                         myList.add(null);
                     }
-    
+
                 }
                 break;
-    
+
             }
-    
-            // -> ( expr )  
+
+            // -> ( expr )
             case PhpSymbols.T_OPEN_BRACES:
             {
                 myList = expr(node.getChild(1));
                 break;
             }
-            
-            // -> scalar                
+
+            // -> scalar
             case PhpSymbols.scalar:
             {
                 myList = scalar(firstChild);
                 break;
             }
-            
+
             default:
             {
                 myList = new LinkedList<String>();
                 myList.add(null);
             }
-        
+
         }
-        
+
         return myList;
     }
-    
+
     private static LinkedList<String> scalar(ParseNode node) {
         LinkedList<String> myList = null;
-        
+
         ParseNode firstChild = node.getChild(0);
         switch(firstChild.getSymbol()) {
-        
+
             // -> common_scalar
             case PhpSymbols.common_scalar:
             {
                 myList = common_scalar(firstChild);
                 break;
             }
-    
+
             // -> " encaps_list "
             case PhpSymbols.T_DOUBLE_QUOTE:
             {
@@ -343,7 +343,7 @@ public class ParseNodeHeuristics {
                 break;
             }
 
-            
+
             default:
             {
                 myList = new LinkedList<String>();
@@ -351,26 +351,26 @@ public class ParseNodeHeuristics {
             }
 
         }
-        
+
         return myList;
 
     }
-    
+
     private static LinkedList<String> common_scalar(ParseNode node) {
         LinkedList<String> myList = null;
-     
+
         ParseNode firstChild = node.getChild(0);
         switch(firstChild.getSymbol()) {
-        
-            case PhpSymbols.T_CONSTANT_ENCAPSED_STRING: 
+
+            case PhpSymbols.T_CONSTANT_ENCAPSED_STRING:
             {
                 myList = new LinkedList<String>();
-                
+
                 // use Literal() to peel off quotes,
                 myList.add(new Literal(firstChild.getLexeme()).toString());
                 break;
             }
-    
+
             default:
             {
                 myList = new LinkedList<String>();
@@ -378,17 +378,17 @@ public class ParseNodeHeuristics {
             }
 
         }
-        
+
         return myList;
     }
-    
+
     private static LinkedList<String> r_cvar(ParseNode node) {
         return cvar(node.getChild(0));
     }
-    
+
     private static LinkedList<String> cvar(ParseNode node) {
         LinkedList<String> myList = null;
-        
+
         if (node.getNumChildren() == 1) {
             // -> cvar_without_objects
             myList = cvar_without_objects(node.getChild(0));
@@ -400,20 +400,20 @@ public class ParseNodeHeuristics {
 
         return myList;
     }
-    
+
     private static LinkedList<String> cvar_without_objects(ParseNode node) {
         LinkedList<String> myList = null;
-        
+
         ParseNode firstChild = node.getChild(0);
         switch(firstChild.getSymbol()) {
-            
+
             // -> reference_variable
             case PhpSymbols.reference_variable:
             {
                 myList = reference_variable(firstChild);
                 break;
             }
-            
+
             // -> simple_indirect_reference reference_variable
             case PhpSymbols.simple_indirect_reference:
             {
@@ -421,8 +421,8 @@ public class ParseNodeHeuristics {
                 myList.add(null);
                 break;
             }
-            
-            default: 
+
+            default:
             {
                 throw new RuntimeException("SNH");
             }
@@ -433,10 +433,10 @@ public class ParseNodeHeuristics {
 
     private static LinkedList<String> reference_variable(ParseNode node) {
         LinkedList<String> myList = null;
-        
+
         ParseNode firstChild = node.getChild(0);
         switch(firstChild.getSymbol()) {
-        
+
             // -> reference_variable ...
             case PhpSymbols.reference_variable:
             {
@@ -444,35 +444,35 @@ public class ParseNodeHeuristics {
                 myList.add(null);
                 break;
             }
-            
-            // -> compound_variable         
+
+            // -> compound_variable
             case PhpSymbols.compound_variable:
             {
                 myList = compound_variable(firstChild);
                 break;
             }
-            
-            default: 
+
+            default:
             {
                 throw new RuntimeException("SNH");
             }
-        
+
         }
-        
+
         return myList;
     }
-    
+
     private static LinkedList<String> compound_variable(ParseNode node) {
         LinkedList<String> myList = null;
-     
+
         ParseNode firstChild = node.getChild(0);
         switch(firstChild.getSymbol()) {
-            
+
             // -> T_VARIABLE
             case PhpSymbols.T_VARIABLE:
             {
                 myList = new LinkedList<String>();
-                
+
                 // try to resolve with literal analysis!
                 Literal lit = literalAnalysis.getLiteral(firstChild.getLexeme(), includeNode);
                 if (lit == Literal.TOP) {
@@ -480,10 +480,10 @@ public class ParseNodeHeuristics {
                 } else {
                     myList.add(lit.toString());
                 }
-               
+
                 break;
             }
-            
+
             // -> $ { expr }
             case PhpSymbols.T_DOLLAR:
             {
@@ -491,8 +491,8 @@ public class ParseNodeHeuristics {
                 myList.add(null);
                 break;
             }
-            
-            default: 
+
+            default:
             {
                 throw new RuntimeException("SNH");
             }
@@ -504,7 +504,7 @@ public class ParseNodeHeuristics {
 
     private static LinkedList<String> encaps_list(ParseNode node) {
         LinkedList<String> myList = null;
-        
+
         ParseNode firstChild = node.getChild(0);
         if (firstChild.getSymbol() == PhpSymbols.T_EPSILON) {
             // -> empty
@@ -590,32 +590,32 @@ public class ParseNodeHeuristics {
                 myList.add(null);
                 break;
             }
-            
-            default: 
-            { 
+
+            default:
+            {
                 throw new RuntimeException("SNH");
             }
         }
-        
+
         return myList;
-        
+
     }
-    
+
     // encaps_list -> encaps_list, <some token>
     private static LinkedList<String> encapsListHelper(ParseNode node) {
         LinkedList<String> myList = encaps_list(node.getChild(0));
         myList.add(node.getChild(1).getLexeme());
         return myList;
     }
-    
+
     private static LinkedList<String> encaps_var(ParseNode node) {
         LinkedList<String> myList = null;
-        
+
         if (node.getNumChildren() == 1) {
-            // -> T_VARIABLE 
-            
+            // -> T_VARIABLE
+
             myList = new LinkedList<String>();
-            
+
             // try to resolve with literal analysis!
             Literal lit = literalAnalysis.getLiteral(node.getChild(0).getLexeme(), includeNode);
             if (lit == Literal.TOP) {
@@ -631,6 +631,4 @@ public class ParseNodeHeuristics {
 
         return myList;
     }
-
-
 }

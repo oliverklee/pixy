@@ -8,21 +8,21 @@ public class VulnInfo {
 
     // number of graphs that were initially considered
     private int initialGraphCount;
-    
+
     // vulnerable depgraphs
     private List<DepGraph> depGraphs;
-    
+
     // minimized depgraphs corresponding to depGraphs
     private List<DepGraph> depGraphsMin;
-    
+
     private int totalPathCount;
     private int basicPathCount;
     private int customSanitCount;
     private int customSanitThrownAwayCount;
-    
+
     // dangerous uninit nodes
     //private List<Map<DepGraphUninitNode, InitialTaint>> dangerousUninit;
-    
+
     VulnInfo() {
         this.depGraphs = new LinkedList<DepGraph>();
         this.depGraphsMin = new LinkedList<DepGraph>();
@@ -30,16 +30,16 @@ public class VulnInfo {
         this.basicPathCount = 0;
         //this.dangerousUninit = new LinkedList<Map<DepGraphUninitNode, InitialTaint>>();
     }
-    
+
     public List<DepGraph> getDepGraphs() {
         return this.depGraphs;
     }
-    
+
     public List<DepGraph> getDepGraphsMin() {
         return this.depGraphsMin;
     }
-    
-    public void addDepGraph(DepGraph depGraph, DepGraph min 
+
+    public void addDepGraph(DepGraph depGraph, DepGraph min
             /*, Map<DepGraphUninitNode, InitialTaint> dangerousUninit*/) {
         this.depGraphs.add(depGraph);
         this.depGraphsMin.add(min);
@@ -48,7 +48,7 @@ public class VulnInfo {
 
 //  **********************************************************
 // various counters
-    
+
     public int getInitialGraphCount() {
         return initialGraphCount;
     }
@@ -60,15 +60,15 @@ public class VulnInfo {
     public int getTotalPathCount() {
         return this.totalPathCount;
     }
-    
+
     public int getBasicPathCount() {
         return this.basicPathCount;
     }
-    
+
     public void setTotalPathCount(int count) {
         this.totalPathCount = count;
     }
-    
+
     public void setBasicPathCount(int count) {
         this.basicPathCount = count;
     }
@@ -82,7 +82,7 @@ public class VulnInfo {
     }
 
 
-    
+
     public int getCustomSanitThrownAwayCount() {
         return customSanitThrownAwayCount;
     }
@@ -90,5 +90,4 @@ public class VulnInfo {
     public void setCustomSanitThrownAwayCount(int customSanitThrownAwayCount) {
         this.customSanitThrownAwayCount = customSanitThrownAwayCount;
     }
-
 }
