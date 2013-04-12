@@ -1,10 +1,27 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.mod;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.*;
-import at.ac.tuwien.infosys.www.pixy.conversion.*;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.*;
+import at.ac.tuwien.infosys.www.pixy.analysis.inter.CallGraph;
+import at.ac.tuwien.infosys.www.pixy.analysis.inter.CallGraphNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
+import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignArray;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignBinary;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignRef;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignSimple;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignUnary;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeBasicBlock;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeUnset;
 
 // computes, for every function, the set of global variables that
 // this function (and its callees) may modify;

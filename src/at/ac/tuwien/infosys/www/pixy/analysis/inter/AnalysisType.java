@@ -1,10 +1,11 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.inter;
 
-import java.util.*;
+import java.util.List;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.*;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.*;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
 
 // functional or call-string analysis
 public abstract class AnalysisType {

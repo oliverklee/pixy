@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring;
 
-import java.util.*;
+import java.util.LinkedList;
 
 public final class CSWorkList {
 

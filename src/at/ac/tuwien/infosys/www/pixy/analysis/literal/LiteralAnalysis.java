@@ -1,16 +1,56 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.literal;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.*;
+import at.ac.tuwien.infosys.www.pixy.analysis.GenericRepos;
+import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
+import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunctionId;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.AnalysisType;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterWorkList;
-import at.ac.tuwien.infosys.www.pixy.analysis.literal.tf.*;
-import at.ac.tuwien.infosys.www.pixy.conversion.*;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.*;
+import at.ac.tuwien.infosys.www.pixy.analysis.literal.tf.LiteralTfAssignArray;
+import at.ac.tuwien.infosys.www.pixy.analysis.literal.tf.LiteralTfAssignBinary;
+import at.ac.tuwien.infosys.www.pixy.analysis.literal.tf.LiteralTfAssignRef;
+import at.ac.tuwien.infosys.www.pixy.analysis.literal.tf.LiteralTfAssignSimple;
+import at.ac.tuwien.infosys.www.pixy.analysis.literal.tf.LiteralTfAssignUnary;
+import at.ac.tuwien.infosys.www.pixy.analysis.literal.tf.LiteralTfCallBuiltin;
+import at.ac.tuwien.infosys.www.pixy.analysis.literal.tf.LiteralTfCallPrep;
+import at.ac.tuwien.infosys.www.pixy.analysis.literal.tf.LiteralTfCallRet;
+import at.ac.tuwien.infosys.www.pixy.analysis.literal.tf.LiteralTfCallRetUnknown;
+import at.ac.tuwien.infosys.www.pixy.analysis.literal.tf.LiteralTfCallUnknown;
+import at.ac.tuwien.infosys.www.pixy.analysis.literal.tf.LiteralTfDefine;
+import at.ac.tuwien.infosys.www.pixy.analysis.literal.tf.LiteralTfEntry;
+import at.ac.tuwien.infosys.www.pixy.analysis.literal.tf.LiteralTfIsset;
+import at.ac.tuwien.infosys.www.pixy.analysis.literal.tf.LiteralTfTester;
+import at.ac.tuwien.infosys.www.pixy.analysis.literal.tf.LiteralTfUnset;
+import at.ac.tuwien.infosys.www.pixy.conversion.Literal;
+import at.ac.tuwien.infosys.www.pixy.conversion.SymbolTable;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
+import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignArray;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignBinary;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignRef;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignSimple;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignUnary;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallBuiltin;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallPrep;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallRet;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallUnknown;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeDefine;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeGlobal;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeIf;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeInclude;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeIsset;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeTester;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeUnset;
 
 public class LiteralAnalysis
 extends InterAnalysis {

@@ -7,11 +7,12 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import junit.framework.Assert;
+import junit.framework.TestCase;
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepGraph;
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.Sink;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
-import junit.framework.*;
 
 // Eclipse hint:
 // all methods named "testXX" are executed automatically when choosing

@@ -1,6 +1,8 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.type;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.GenericRepos;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
@@ -10,11 +12,33 @@ import at.ac.tuwien.infosys.www.pixy.analysis.inter.AnalysisType;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterWorkList;
-import at.ac.tuwien.infosys.www.pixy.analysis.type.tf.*;
+import at.ac.tuwien.infosys.www.pixy.analysis.type.tf.TypeTfAssignArray;
+import at.ac.tuwien.infosys.www.pixy.analysis.type.tf.TypeTfAssignBinary;
+import at.ac.tuwien.infosys.www.pixy.analysis.type.tf.TypeTfAssignRef;
+import at.ac.tuwien.infosys.www.pixy.analysis.type.tf.TypeTfAssignSimple;
+import at.ac.tuwien.infosys.www.pixy.analysis.type.tf.TypeTfAssignUnary;
+import at.ac.tuwien.infosys.www.pixy.analysis.type.tf.TypeTfCallBuiltin;
+import at.ac.tuwien.infosys.www.pixy.analysis.type.tf.TypeTfCallPrep;
+import at.ac.tuwien.infosys.www.pixy.analysis.type.tf.TypeTfCallRet;
+import at.ac.tuwien.infosys.www.pixy.analysis.type.tf.TypeTfCallRetUnknown;
+import at.ac.tuwien.infosys.www.pixy.analysis.type.tf.TypeTfIsset;
+import at.ac.tuwien.infosys.www.pixy.analysis.type.tf.TypeTfUnset;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.*;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignArray;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignBinary;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignRef;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignSimple;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignUnary;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallBuiltin;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallPrep;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallRet;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeIf;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeIsset;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeUnset;
 
 // quite rough analysis that tries to determine the type (class) of objects;
 // can be used for resolving ambiguous method calls (i.e., calls to methods

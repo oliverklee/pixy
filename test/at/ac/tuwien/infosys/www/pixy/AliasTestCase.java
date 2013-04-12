@@ -1,9 +1,13 @@
 package at.ac.tuwien.infosys.www.pixy;
 
-import junit.framework.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
-import java.util.*;
-
+import junit.framework.Assert;
+import junit.framework.TestCase;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasLatticeElement;

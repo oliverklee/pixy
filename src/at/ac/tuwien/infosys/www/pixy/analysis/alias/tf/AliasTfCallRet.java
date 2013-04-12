@@ -1,12 +1,20 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.alias.tf;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.*;
-import at.ac.tuwien.infosys.www.pixy.analysis.alias.*;
+import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
+import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.alias.MayAliasPair;
+import at.ac.tuwien.infosys.www.pixy.analysis.alias.MustAliasGroup;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.Context;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysisNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.*;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
+import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallPrep;
 
 public class AliasTfCallRet

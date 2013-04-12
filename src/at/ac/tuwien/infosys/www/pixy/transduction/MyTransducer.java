@@ -2,7 +2,10 @@ package at.ac.tuwien.infosys.www.pixy.transduction;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import at.ac.tuwien.infosys.www.pixy.automaton.Transition;
 

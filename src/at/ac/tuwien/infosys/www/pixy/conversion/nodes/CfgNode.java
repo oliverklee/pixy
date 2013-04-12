@@ -1,12 +1,17 @@
 package at.ac.tuwien.infosys.www.pixy.conversion.nodes;
 
-import at.ac.tuwien.infosys.www.phpparser.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
+import at.ac.tuwien.infosys.www.phpparser.ParseNode;
 import at.ac.tuwien.infosys.www.pixy.Dumper;
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.Utils;
-import at.ac.tuwien.infosys.www.pixy.conversion.*;
-
-import java.util.*;
+import at.ac.tuwien.infosys.www.pixy.conversion.CfgEdge;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
+import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 public abstract class CfgNode {
 

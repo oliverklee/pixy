@@ -1,6 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.conversion.includes;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 
 class IncludeNode {
 

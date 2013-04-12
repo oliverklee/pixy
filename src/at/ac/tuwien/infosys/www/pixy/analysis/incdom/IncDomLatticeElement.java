@@ -1,10 +1,11 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.incdom;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.Recyclable;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
-import java.util.*;
+import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 public class IncDomLatticeElement
 extends LatticeElement {

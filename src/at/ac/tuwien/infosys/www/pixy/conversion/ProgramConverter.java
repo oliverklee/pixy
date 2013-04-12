@@ -1,9 +1,24 @@
 package at.ac.tuwien.infosys.www.pixy.conversion;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
-import at.ac.tuwien.infosys.www.phpparser.*;
+import at.ac.tuwien.infosys.www.phpparser.ParseNode;
+import at.ac.tuwien.infosys.www.phpparser.ParseTree;
+import at.ac.tuwien.infosys.www.phpparser.PhpLexer;
+import at.ac.tuwien.infosys.www.phpparser.PhpParser;
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.Utils;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;

@@ -1,6 +1,10 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.inter;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring.CSContext;
 

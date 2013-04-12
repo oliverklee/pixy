@@ -1,14 +1,53 @@
 package at.ac.tuwien.infosys.www.pixy.conversion;
 
-import java.util.*;
-import java.io.*;
-import at.ac.tuwien.infosys.www.phpparser.*;
+import java.io.File;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
+
+import at.ac.tuwien.infosys.www.phpparser.ParseNode;
+import at.ac.tuwien.infosys.www.phpparser.ParseTree;
+import at.ac.tuwien.infosys.www.phpparser.PhpSymbols;
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.Utils;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.CallGraph;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.Type;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.TypeAnalysis;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.*;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignArray;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignBinary;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignRef;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignSimple;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignUnary;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeBasicBlock;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallBuiltin;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallPrep;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallRet;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallUnknown;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeDefine;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeEcho;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeEmpty;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeEmptyTest;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeEntry;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeEval;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeExit;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeGlobal;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeHotspot;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeIf;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeInclude;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeIncludeEnd;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeIncludeStart;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeIsset;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeStatic;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeUnset;
 
 // IMPORTANT NOTE:
 // always compare places with "equals", never use the == operator!

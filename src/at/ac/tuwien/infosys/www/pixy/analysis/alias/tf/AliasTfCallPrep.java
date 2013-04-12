@@ -1,11 +1,19 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.alias.tf;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.*;
-import at.ac.tuwien.infosys.www.pixy.analysis.alias.*;
-import at.ac.tuwien.infosys.www.pixy.conversion.*;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.*;
+import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
+import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.conversion.SymbolTable;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
+import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallPrep;
 
 public class AliasTfCallPrep
 extends TransferFunction {

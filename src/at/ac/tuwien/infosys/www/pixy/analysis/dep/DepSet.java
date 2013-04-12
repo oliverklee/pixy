@@ -1,6 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.dep;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.GenericRepos;
 import at.ac.tuwien.infosys.www.pixy.analysis.Recyclable;

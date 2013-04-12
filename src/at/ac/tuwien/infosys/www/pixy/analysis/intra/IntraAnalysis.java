@@ -1,14 +1,15 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.intra;
 
-import java.util.*;
+import java.util.LinkedList;
 
-import at.ac.tuwien.infosys.www.pixy.*;
+import at.ac.tuwien.infosys.www.pixy.Dumper;
 import at.ac.tuwien.infosys.www.pixy.analysis.Analysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.AnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.*;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.*;
+import at.ac.tuwien.infosys.www.pixy.conversion.CfgEdge;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 // base class for intraprocedural analyses
 public abstract class IntraAnalysis

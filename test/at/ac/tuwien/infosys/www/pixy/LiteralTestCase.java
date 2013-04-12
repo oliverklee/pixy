@@ -1,9 +1,10 @@
 package at.ac.tuwien.infosys.www.pixy;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
-import java.util.*;
-
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralLatticeElement;

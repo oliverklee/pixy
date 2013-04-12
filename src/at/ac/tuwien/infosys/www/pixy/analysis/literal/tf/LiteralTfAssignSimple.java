@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.literal.tf;
 
-import java.util.*;
+import java.util.Set;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;

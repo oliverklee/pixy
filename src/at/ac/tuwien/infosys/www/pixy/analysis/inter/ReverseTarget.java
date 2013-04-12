@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.inter;
 
-import java.util.*;
+import java.util.Set;
 
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
 

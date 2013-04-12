@@ -1,6 +1,8 @@
 package at.ac.tuwien.infosys.www.pixy.analysis;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 // EFF: special treatment for ID transfer function:
 // don't add it to the list, handle case where the list is

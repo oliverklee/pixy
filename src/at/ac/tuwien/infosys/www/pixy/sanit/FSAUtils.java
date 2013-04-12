@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.sanit;
 
-import java.util.*;
+import java.util.List;
 
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.Utils;

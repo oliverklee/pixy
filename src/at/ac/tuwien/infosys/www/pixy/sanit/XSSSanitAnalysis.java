@@ -1,6 +1,8 @@
 package at.ac.tuwien.infosys.www.pixy.sanit;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import at.ac.tuwien.infosys.www.pixy.VulnInfo;
 import at.ac.tuwien.infosys.www.pixy.XSSAnalysis;

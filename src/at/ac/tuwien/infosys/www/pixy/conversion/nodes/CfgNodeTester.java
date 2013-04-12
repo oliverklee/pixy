@@ -1,8 +1,9 @@
 package at.ac.tuwien.infosys.www.pixy.conversion.nodes;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
-import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 // *********************************************************************************

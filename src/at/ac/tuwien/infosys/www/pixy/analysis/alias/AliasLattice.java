@@ -1,6 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.alias;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.*;
+import at.ac.tuwien.infosys.www.pixy.analysis.Lattice;
+import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 
 public class AliasLattice
 extends Lattice {

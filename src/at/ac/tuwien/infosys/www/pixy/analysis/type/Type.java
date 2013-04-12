@@ -1,6 +1,8 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.type;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Type {
 

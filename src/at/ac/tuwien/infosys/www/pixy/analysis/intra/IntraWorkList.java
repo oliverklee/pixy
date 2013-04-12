@@ -1,6 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.intra;
 
-import java.util.*;
+import java.util.LinkedList;
+
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 public final class IntraWorkList {

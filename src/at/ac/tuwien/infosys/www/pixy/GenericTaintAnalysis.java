@@ -1,7 +1,9 @@
 package at.ac.tuwien.infosys.www.pixy;
 
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.reflect.Constructor;
+import java.util.LinkedList;
+import java.util.List;
+
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.AnalysisType;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterWorkList;

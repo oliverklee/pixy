@@ -1,6 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
 

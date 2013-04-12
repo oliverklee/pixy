@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.dep;
 
-import java.util.List;
 import java.util.LinkedList;
+import java.util.List;
 
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 

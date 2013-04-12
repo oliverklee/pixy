@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.inter.functional;
 
-import java.util.*;
+import java.util.LinkedList;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;

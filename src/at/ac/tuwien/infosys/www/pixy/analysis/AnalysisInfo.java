@@ -1,6 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.analysis;
 
 import java.util.HashMap;
+
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 //at the moment, this is just a wrapper class around a hashtable;

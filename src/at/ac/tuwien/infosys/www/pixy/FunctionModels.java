@@ -1,6 +1,8 @@
 package at.ac.tuwien.infosys.www.pixy;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 // container class for builtin function models
 public class FunctionModels {

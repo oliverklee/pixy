@@ -1,7 +1,9 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.literal;
 
-import at.ac.tuwien.infosys.www.pixy.conversion.*;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.*;
+import at.ac.tuwien.infosys.www.pixy.conversion.Literal;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeIf;
 
 public class DummyLiteralAnalysis
 extends LiteralAnalysis {

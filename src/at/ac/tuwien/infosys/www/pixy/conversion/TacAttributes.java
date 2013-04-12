@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.conversion;
 
-import java.util.*;
+import java.util.List;
 
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 

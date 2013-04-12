@@ -29,8 +29,11 @@
 
 package at.ac.tuwien.infosys.www.pixy.automaton;
 
-import java.util.*;
-import java.io.*;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * <tt>Automaton</tt> state.

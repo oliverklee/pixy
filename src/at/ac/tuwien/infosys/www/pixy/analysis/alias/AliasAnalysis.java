@@ -1,16 +1,36 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.alias;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.*;
-import at.ac.tuwien.infosys.www.pixy.analysis.alias.tf.*;
+import at.ac.tuwien.infosys.www.pixy.analysis.GenericRepos;
+import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
+import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunctionId;
+import at.ac.tuwien.infosys.www.pixy.analysis.alias.tf.AliasTfAssignRef;
+import at.ac.tuwien.infosys.www.pixy.analysis.alias.tf.AliasTfCallPrep;
+import at.ac.tuwien.infosys.www.pixy.analysis.alias.tf.AliasTfCallRet;
+import at.ac.tuwien.infosys.www.pixy.analysis.alias.tf.AliasTfEntry;
+import at.ac.tuwien.infosys.www.pixy.analysis.alias.tf.AliasTfUnset;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.AnalysisType;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysisInfo;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterWorkListPoor;
-import at.ac.tuwien.infosys.www.pixy.conversion.*;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.*;
+import at.ac.tuwien.infosys.www.pixy.conversion.SymbolTable;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
+import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignRef;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeBasicBlock;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallPrep;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallRet;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeGlobal;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeIf;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeUnset;
 
 public class AliasAnalysis
 extends InterAnalysis {

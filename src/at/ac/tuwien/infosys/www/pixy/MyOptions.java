@@ -5,7 +5,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.StringTokenizer;
 
 import at.ac.tuwien.infosys.www.pixy.conversion.BuiltinFunctions;
 import at.ac.tuwien.infosys.www.pixy.conversion.InternalStrings;

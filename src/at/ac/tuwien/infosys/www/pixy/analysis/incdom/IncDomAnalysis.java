@@ -1,12 +1,20 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.incdom;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.*;
+import at.ac.tuwien.infosys.www.pixy.analysis.GenericRepos;
+import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
+import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunctionId;
 import at.ac.tuwien.infosys.www.pixy.analysis.incdom.tf.IncDomTfAdd;
 import at.ac.tuwien.infosys.www.pixy.analysis.intra.IntraAnalysis;
-import at.ac.tuwien.infosys.www.pixy.conversion.*;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.*;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeBasicBlock;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeIncludeEnd;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeIncludeStart;
 
 // inclusion dominator analysis
 public class IncDomAnalysis

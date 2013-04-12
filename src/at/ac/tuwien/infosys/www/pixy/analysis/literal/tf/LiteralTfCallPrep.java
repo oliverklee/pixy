@@ -1,6 +1,8 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.literal.tf;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;

@@ -29,8 +29,8 @@
 
 package at.ac.tuwien.infosys.www.pixy.automaton;
 
-import java.util.*;
-import java.io.*;
+import java.io.Serializable;
+import java.util.Comparator;
 
 /**
  * <tt>Automaton</tt> transition.

@@ -1,7 +1,11 @@
 package at.ac.tuwien.infosys.www.pixy.transduction;
 
-import java.io.*;
-import java.util.*;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 public class MyAcceptor
 extends MyAutomaton {

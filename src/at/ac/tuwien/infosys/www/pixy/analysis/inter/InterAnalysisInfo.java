@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.inter;
 
-import java.util.*;
+import java.util.Iterator;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.AnalysisInfo;
 import at.ac.tuwien.infosys.www.pixy.analysis.AnalysisNode;

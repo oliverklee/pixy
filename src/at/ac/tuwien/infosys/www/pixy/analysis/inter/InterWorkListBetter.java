@@ -1,6 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.inter;
 
-import java.util.*;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 

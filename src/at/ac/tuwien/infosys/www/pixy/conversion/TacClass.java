@@ -1,6 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.conversion;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import at.ac.tuwien.infosys.www.phpparser.ParseNode;
 import at.ac.tuwien.infosys.www.pixy.MyOptions;

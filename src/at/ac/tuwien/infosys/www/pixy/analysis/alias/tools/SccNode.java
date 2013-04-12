@@ -1,8 +1,11 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.alias.tools;
 
-import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
-import java.util.*;
+import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 // node in the SccGraph
 public class SccNode {

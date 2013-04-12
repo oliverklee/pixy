@@ -1,10 +1,13 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.dep.tf;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.*;
+import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepSet;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFormalParam;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;

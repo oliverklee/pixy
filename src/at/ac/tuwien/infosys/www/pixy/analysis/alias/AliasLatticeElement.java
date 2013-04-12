@@ -1,11 +1,16 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.alias;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.Recyclable;
-import at.ac.tuwien.infosys.www.pixy.analysis.alias.tools.*;
-import at.ac.tuwien.infosys.www.pixy.conversion.*;
-
-import java.util.*;
+import at.ac.tuwien.infosys.www.pixy.analysis.alias.tools.SccEdge;
+import at.ac.tuwien.infosys.www.pixy.analysis.alias.tools.SccGraph;
+import at.ac.tuwien.infosys.www.pixy.conversion.SymbolTable;
+import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 public class AliasLatticeElement
 extends LatticeElement

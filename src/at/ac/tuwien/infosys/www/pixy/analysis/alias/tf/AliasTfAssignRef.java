@@ -1,8 +1,11 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.alias.tf;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.*;
-import at.ac.tuwien.infosys.www.pixy.analysis.alias.*;
-import at.ac.tuwien.infosys.www.pixy.conversion.*;
+import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
+import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
+import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 // transfer function for simple assignment nodes

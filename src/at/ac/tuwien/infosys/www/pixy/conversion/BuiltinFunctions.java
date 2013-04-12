@@ -1,6 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.conversion;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 public class BuiltinFunctions {
 

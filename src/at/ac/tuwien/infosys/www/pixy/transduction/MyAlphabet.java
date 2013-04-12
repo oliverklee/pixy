@@ -1,6 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.transduction;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 import at.ac.tuwien.infosys.www.pixy.automaton.Transition;
 

@@ -1,6 +1,9 @@
 package at.ac.tuwien.infosys.www.pixy.analysis;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 // a generic repository of recyclable objects;
 // EFF: it might be useful to work with weak references here

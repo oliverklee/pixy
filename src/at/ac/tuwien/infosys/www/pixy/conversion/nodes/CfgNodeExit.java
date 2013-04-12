@@ -3,7 +3,7 @@ package at.ac.tuwien.infosys.www.pixy.conversion.nodes;
 import java.util.Collections;
 import java.util.List;
 
-import at.ac.tuwien.infosys.www.phpparser.*;
+import at.ac.tuwien.infosys.www.phpparser.ParseNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 // *********************************************************************************

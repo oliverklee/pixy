@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.dep;
 
-import java.util.*;
+import java.util.List;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.Lattice;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;

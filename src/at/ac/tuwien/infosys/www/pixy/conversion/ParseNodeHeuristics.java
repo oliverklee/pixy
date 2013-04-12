@@ -1,11 +1,15 @@
 package at.ac.tuwien.infosys.www.pixy.conversion;
 
 import java.io.File;
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import at.ac.tuwien.infosys.www.phpparser.*;
+import at.ac.tuwien.infosys.www.phpparser.ParseNode;
+import at.ac.tuwien.infosys.www.phpparser.PhpSymbols;
 import at.ac.tuwien.infosys.www.pixy.Utils;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralAnalysis;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeInclude;

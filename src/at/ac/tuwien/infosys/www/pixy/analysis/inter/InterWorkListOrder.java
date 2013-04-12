@@ -1,10 +1,22 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.inter;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring.*;
-import at.ac.tuwien.infosys.www.pixy.conversion.*;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.*;
+import at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring.CSContext;
+import at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring.ECS;
+import at.ac.tuwien.infosys.www.pixy.conversion.CfgEdge;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeEntry;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeExit;
 
 // computes a reverse postorder for the whole, interprocedural cfg;
 // currently only works for call-string analysis
