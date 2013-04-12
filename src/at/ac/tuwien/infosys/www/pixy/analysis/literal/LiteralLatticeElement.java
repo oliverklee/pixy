@@ -22,16 +22,16 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 public class LiteralLatticeElement
-extends LatticeElement {
+    extends LatticeElement {
 
     // TacPlace -> Literal
     // contains only non-default mappings;
-    private Map<TacPlace,Literal> placeToLit;
+    private Map<TacPlace, Literal> placeToLit;
 
     // a copy of placeToLit, must be initialized by methods that need it;
     // they must not forget to null it as soon as they've finished their
     // work (saves memory)
-    private Map<TacPlace,Literal> origPlaceToLit;
+    private Map<TacPlace, Literal> origPlaceToLit;
 
     // the default lattice element; IT MUST NOT BE USED DIRECTLY BY THE ANALYSIS!
     // can be seen as "grounding", "fall-back" for normal lattice elements
@@ -44,12 +44,12 @@ extends LatticeElement {
     // creates a lattice element that adds no information to the
     // default lattice element
     public LiteralLatticeElement() {
-        this.placeToLit = new HashMap<TacPlace,Literal>();
+        this.placeToLit = new HashMap<TacPlace, Literal>();
     }
 
     // clones the given element
     public LiteralLatticeElement(LiteralLatticeElement cloneMe) {
-        this.placeToLit = new HashMap<TacPlace,Literal>(cloneMe.getPlaceToLit());
+        this.placeToLit = new HashMap<TacPlace, Literal>(cloneMe.getPlaceToLit());
     }
 
     public LatticeElement cloneMe() {
@@ -69,13 +69,13 @@ extends LatticeElement {
     // - special constant _UNTAINTED: top
     // - and a few other special constants (see below)
     private LiteralLatticeElement(
-            List places,
-            ConstantsTable constantsTable,
-            List functions,
-            SymbolTable superSymbolTable) {
+        List places,
+        ConstantsTable constantsTable,
+        List functions,
+        SymbolTable superSymbolTable) {
 
         // initialize conservative base mapping for variables & constants: TOP
-        this.placeToLit = new HashMap<TacPlace,Literal>();
+        this.placeToLit = new HashMap<TacPlace, Literal>();
         for (Iterator iter = places.iterator(); iter.hasNext(); ) {
             TacPlace place = (TacPlace) iter.next();
             this.placeToLit.put(place, Literal.TOP);
@@ -136,14 +136,14 @@ extends LatticeElement {
 
     // initializes the default lattice element
     static void initDefault(
-            List places,
-            ConstantsTable constantsTable,
-            List functions,
-            SymbolTable superSymbolTable) {
+        List places,
+        ConstantsTable constantsTable,
+        List functions,
+        SymbolTable superSymbolTable) {
 
         LiteralLatticeElement.DEFAULT =
             new LiteralLatticeElement(places, constantsTable, functions,
-                    superSymbolTable);
+                superSymbolTable);
 
     }
 
@@ -153,7 +153,7 @@ extends LatticeElement {
 
 //  getPlaceToLit ******************************************************************
 
-    public Map<TacPlace,Literal> getPlaceToLit() {
+    public Map<TacPlace, Literal> getPlaceToLit() {
         return this.placeToLit;
     }
 
@@ -214,7 +214,6 @@ extends LatticeElement {
         }
         return this.placeToLit.get(place);
     }
-
 
 //  ********************************************************************************
 //  SET ****************************************************************************
@@ -325,7 +324,6 @@ extends LatticeElement {
         }
     }
 
-
 //  ********************************************************************************
 //  OTHER **************************************************************************
 //  ********************************************************************************
@@ -413,7 +411,7 @@ extends LatticeElement {
     public void assignSimple(Variable left, TacPlace right, Set mustAliases, Set mayAliases) {
 
         // initialize state copy (required by strongOverlap)
-        this.origPlaceToLit = new HashMap<TacPlace,Literal>(this.placeToLit);
+        this.origPlaceToLit = new HashMap<TacPlace, Literal>(this.placeToLit);
 
         // case distinguisher for the left variable
         int leftCase;
@@ -442,51 +440,51 @@ extends LatticeElement {
         // take appropariate actions
         switch (leftCase) {
 
-        // not an array element and not known as array ("normal variable")
-        case 1:
+            // not an array element and not known as array ("normal variable")
+            case 1:
 
-            Literal rightLit = this.getLiteral(right);
+                Literal rightLit = this.getLiteral(right);
 
-            // strong update for must-aliases (including left itself)
-            for (Iterator iter = mustAliases.iterator(); iter.hasNext();) {
-                Variable mustAlias = (Variable) iter.next();
-                this.setLiteral(mustAlias, rightLit);
-            }
+                // strong update for must-aliases (including left itself)
+                for (Iterator iter = mustAliases.iterator(); iter.hasNext(); ) {
+                    Variable mustAlias = (Variable) iter.next();
+                    this.setLiteral(mustAlias, rightLit);
+                }
 
-            // weak update for may-aliases
-            for (Iterator iter = mayAliases.iterator(); iter.hasNext();) {
-                Variable mayAlias = (Variable) iter.next();
-                this.lubLiteral(mayAlias, rightLit);
-            }
+                // weak update for may-aliases
+                for (Iterator iter = mayAliases.iterator(); iter.hasNext(); ) {
+                    Variable mayAlias = (Variable) iter.next();
+                    this.lubLiteral(mayAlias, rightLit);
+                }
 
-            break;
+                break;
 
-        // array, but not an array element
-        case 2:
+            // array, but not an array element
+            case 2:
 
-            // strong overlap
-            this.strongOverlap(left, right);
-            break;
+                // strong overlap
+                this.strongOverlap(left, right);
+                break;
 
-        // array element (and maybe an array) without non-literal indices
-        case 3:
+            // array element (and maybe an array) without non-literal indices
+            case 3:
 
-            // strong overlap
-            this.strongOverlap(left, right);
-            break;
+                // strong overlap
+                this.strongOverlap(left, right);
+                break;
 
-        // array element (and maybe an array) with non-literal indices
-        case 4:
+            // array element (and maybe an array) with non-literal indices
+            case 4:
 
-            // weak overlap for all MI variables of left
-            for (Iterator iter = this.getMiList(left).iterator(); iter.hasNext();) {
-                Variable miVar = (Variable) iter.next();
-                this.weakOverlap(miVar, right);
-            }
-            break;
+                // weak overlap for all MI variables of left
+                for (Iterator iter = this.getMiList(left).iterator(); iter.hasNext(); ) {
+                    Variable miVar = (Variable) iter.next();
+                    this.weakOverlap(miVar, right);
+                }
+                break;
 
-        default:
-            throw new RuntimeException("SNH");
+            default:
+                throw new RuntimeException("SNH");
         }
 
         this.origPlaceToLit = null;
@@ -495,7 +493,7 @@ extends LatticeElement {
 //  assignUnary ********************************************************************
 
     public void assignUnary(Variable left, TacPlace right, int op,
-            Set mustAliases, Set mayAliases) {
+                            Set mustAliases, Set mayAliases) {
 
         // base literal; must undergo conversion depending on operator
         Literal baseLit = this.getLiteral(right);
@@ -510,19 +508,16 @@ extends LatticeElement {
         } else {
 
             switch (op) {
-                case TacOperators.PLUS:
-                {
+                case TacOperators.PLUS: {
                     effectiveRightLit = baseLit.getFloatValueLiteral();
                     break;
                 }
-                case TacOperators.MINUS:
-                {
+                case TacOperators.MINUS: {
                     float setToFloat = -1 * baseLit.getFloatValue();
                     effectiveRightLit = new Literal(Literal.numberToString(setToFloat));
                     break;
                 }
-                case TacOperators.NOT:
-                {
+                case TacOperators.NOT: {
                     Literal baseBool = baseLit.getBoolValueLiteral();
 
                     // invert the boolean value
@@ -530,58 +525,49 @@ extends LatticeElement {
                         effectiveRightLit = Literal.TOP;
                     } else if (baseBool == Literal.TRUE) {
                         effectiveRightLit = Literal.FALSE;
-                    } else if (baseBool == Literal.FALSE){
+                    } else if (baseBool == Literal.FALSE) {
                         effectiveRightLit = Literal.TRUE;
                     } else {
                         throw new RuntimeException("SNH");
                     }
                     break;
                 }
-                case TacOperators.BITWISE_NOT:
-                {
+                case TacOperators.BITWISE_NOT: {
                     // note: used for special nodes (such as ~_hotspot0)
                     // see: builtin functions file)
                     effectiveRightLit = Literal.TOP;
                     break;
                 }
-                case TacOperators.INT_CAST:
-                {
+                case TacOperators.INT_CAST: {
                     effectiveRightLit = baseLit.getIntValueLiteral();
                     break;
                 }
-                case TacOperators.DOUBLE_CAST:
-                {
+                case TacOperators.DOUBLE_CAST: {
                     effectiveRightLit = baseLit.getFloatValueLiteral();
                     break;
                 }
-                case TacOperators.STRING_CAST:
-                {
+                case TacOperators.STRING_CAST: {
                     effectiveRightLit = baseLit.getStringValueLiteral();
                     break;
                 }
-                case TacOperators.ARRAY_CAST:
-                {
+                case TacOperators.ARRAY_CAST: {
                     effectiveRightLit = Literal.TOP;
                     break;
                 }
-                case TacOperators.OBJECT_CAST:
-                {
+                case TacOperators.OBJECT_CAST: {
                     effectiveRightLit = Literal.TOP;
                     break;
                 }
-                case TacOperators.BOOL_CAST:
-                {
+                case TacOperators.BOOL_CAST: {
                     effectiveRightLit = baseLit.getBoolValueLiteral();
                     break;
                 }
-                case TacOperators.UNSET_CAST:
-                {
+                case TacOperators.UNSET_CAST: {
                     // not documented in the PHP manual: casts to NULL
                     effectiveRightLit = Literal.NULL;
                     break;
                 }
-                default:
-                {
+                default: {
                     throw new RuntimeException("Unsupported operator");
                 }
             }
@@ -595,8 +581,8 @@ extends LatticeElement {
 //  assignBinary********************************************************************
 
     public void assignBinary(Variable left, TacPlace leftOperand,
-            TacPlace rightOperand, int op, Set mustAliases, Set mayAliases,
-            CfgNode cfgNode) {
+                             TacPlace rightOperand, int op, Set mustAliases, Set mayAliases,
+                             CfgNode cfgNode) {
 
         // base literals; must undergo conversion depending on operator
         Literal baseLeftLit = this.getLiteral(leftOperand);
@@ -616,26 +602,22 @@ extends LatticeElement {
 
                 // ARITHMETIC OPERATORS
 
-                case TacOperators.PLUS:
-                {
+                case TacOperators.PLUS: {
                     effectiveLit = new Literal(Literal.numberToString(
                         baseLeftLit.getFloatValue() + baseRightLit.getFloatValue()));
                     break;
                 }
-                case TacOperators.MINUS:
-                {
+                case TacOperators.MINUS: {
                     effectiveLit = new Literal(Literal.numberToString(
                         baseLeftLit.getFloatValue() - baseRightLit.getFloatValue()));
                     break;
                 }
-                case TacOperators.MULT:
-                {
+                case TacOperators.MULT: {
                     effectiveLit = new Literal(Literal.numberToString(
                         baseLeftLit.getFloatValue() * baseRightLit.getFloatValue()));
                     break;
                 }
-                case TacOperators.DIV:
-                {
+                case TacOperators.DIV: {
                     float rightFloat = baseRightLit.getFloatValue();
                     if (rightFloat == 0) {
                         // handle division by zero;
@@ -656,8 +638,7 @@ extends LatticeElement {
                     }
                     break;
                 }
-                case TacOperators.MODULO:
-                {
+                case TacOperators.MODULO: {
                     effectiveLit = new Literal(Literal.numberToString(
                         baseLeftLit.getFloatValue() % baseRightLit.getFloatValue()));
                     break;
@@ -665,8 +646,7 @@ extends LatticeElement {
 
                 // STRING OPERATORS
 
-                case TacOperators.CONCAT:
-                {
+                case TacOperators.CONCAT: {
                     effectiveLit = new Literal(
                         baseLeftLit.getStringValue() + baseRightLit.getStringValue());
                     break;
@@ -674,8 +654,7 @@ extends LatticeElement {
 
                 // LOGICAL OPERATORS
 
-                case TacOperators.BOOLEAN_AND:
-                {
+                case TacOperators.BOOLEAN_AND: {
                     // BOOLEAN_AND is used only for the special "isset" case
                     // (see TacConverter), no need for short-circuit code here
                     Literal boolLeft = baseLeftLit.getBoolValueLiteral();
@@ -694,48 +673,40 @@ extends LatticeElement {
 
                 // COMPARISON OPERATORS
 
-                case TacOperators.IS_EQUAL:
-                {
+                case TacOperators.IS_EQUAL: {
                     effectiveLit = Literal.isEqualLiteral(baseLeftLit, baseRightLit);
                     break;
                 }
-                case TacOperators.IS_NOT_EQUAL:
-                {
+                case TacOperators.IS_NOT_EQUAL: {
                     effectiveLit = Literal.invert(
                         Literal.isEqualLiteral(baseLeftLit, baseRightLit));
                     break;
                 }
-                case TacOperators.IS_SMALLER:
-                {
+                case TacOperators.IS_SMALLER: {
                     effectiveLit = Literal.isSmallerLiteral(baseLeftLit, baseRightLit, cfgNode);
                     break;
                 }
-                case TacOperators.IS_GREATER:
-                {
+                case TacOperators.IS_GREATER: {
                     effectiveLit = Literal.isGreaterLiteral(baseLeftLit, baseRightLit, cfgNode);
                     break;
                 }
-                case TacOperators.IS_SMALLER_OR_EQUAL:
-                {
+                case TacOperators.IS_SMALLER_OR_EQUAL: {
                     // "<=" is the same as "not >"
                     effectiveLit = Literal.invert(
                         Literal.isGreaterLiteral(baseLeftLit, baseRightLit, cfgNode));
                     break;
                 }
-                case TacOperators.IS_GREATER_OR_EQUAL:
-                {
+                case TacOperators.IS_GREATER_OR_EQUAL: {
                     // ">=" is the same as "not <"
                     effectiveLit = Literal.invert(
                         Literal.isSmallerLiteral(baseLeftLit, baseRightLit, cfgNode));
                     break;
                 }
-                case TacOperators.IS_IDENTICAL:
-                {
+                case TacOperators.IS_IDENTICAL: {
                     effectiveLit = Literal.isIdenticalLiteral(baseLeftLit, baseRightLit);
                     break;
                 }
-                case TacOperators.IS_NOT_IDENTICAL:
-                {
+                case TacOperators.IS_NOT_IDENTICAL: {
                     effectiveLit = Literal.invert(
                         Literal.isIdenticalLiteral(baseLeftLit, baseRightLit));
                     break;
@@ -744,35 +715,29 @@ extends LatticeElement {
                 // BITWISE OPERATORS
                 // LATER: implement on demand
 
-                case TacOperators.SL:
-                {
+                case TacOperators.SL: {
                     effectiveLit = Literal.TOP;
                     break;
                 }
-                case TacOperators.SR:
-                {
+                case TacOperators.SR: {
                     // LATER: implement on demand
                     effectiveLit = Literal.TOP;
                     break;
                 }
-                case TacOperators.BITWISE_OR:
-                {
+                case TacOperators.BITWISE_OR: {
                     effectiveLit = Literal.TOP;
                     break;
                 }
-                case TacOperators.BITWISE_AND:
-                {
+                case TacOperators.BITWISE_AND: {
                     effectiveLit = Literal.TOP;
                     break;
                 }
-                case TacOperators.BITWISE_XOR:
-                {
+                case TacOperators.BITWISE_XOR: {
                     effectiveLit = Literal.TOP;
                     break;
                 }
 
-                default:
-                {
+                default: {
                     throw new RuntimeException("Unsupported operator");
                 }
             }
@@ -968,7 +933,7 @@ extends LatticeElement {
     // (by removing their non-default mapping)
     public void resetVariables(SymbolTable symTab) {
 
-        for (Iterator iter = this.placeToLit.entrySet().iterator(); iter.hasNext();) {
+        for (Iterator iter = this.placeToLit.entrySet().iterator(); iter.hasNext(); ) {
             Map.Entry entry = (Map.Entry) iter.next();
             TacPlace place = (TacPlace) entry.getKey();
 
@@ -991,7 +956,7 @@ extends LatticeElement {
     public void setFormal(TacFormalParam formalParam, TacPlace place) {
 
         // initialize state copy (required by strongOverlap)
-        this.origPlaceToLit = new HashMap<TacPlace,Literal>(this.placeToLit);
+        this.origPlaceToLit = new HashMap<TacPlace, Literal>(this.placeToLit);
 
         Variable formalVar = formalParam.getVariable();
         this.strongOverlap(formalVar, place);
@@ -1014,7 +979,7 @@ extends LatticeElement {
     public void copyGlobalLike(LiteralLatticeElement origElement) {
 
         Map origMap = origElement.getPlaceToLit();
-        for (Iterator iter = origMap.entrySet().iterator(); iter.hasNext();) {
+        for (Iterator iter = origMap.entrySet().iterator(); iter.hasNext(); ) {
 
             Map.Entry entry = (Map.Entry) iter.next();
             TacPlace origPlace = (TacPlace) entry.getKey();
@@ -1045,7 +1010,7 @@ extends LatticeElement {
     public void copyLocals(LiteralLatticeElement origElement) {
 
         Map origMap = origElement.getPlaceToLit();
-        for (Iterator iter = origMap.entrySet().iterator(); iter.hasNext();) {
+        for (Iterator iter = origMap.entrySet().iterator(); iter.hasNext(); ) {
 
             Map.Entry entry = (Map.Entry) iter.next();
             TacPlace origPlace = (TacPlace) entry.getKey();

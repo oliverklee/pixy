@@ -10,17 +10,17 @@ public class CallGraphNode {
     private TacFunction function;
 
     // contained call nodes -> target call graph node
-    private Map<CfgNodeCall,CallGraphNode> outEdges;
+    private Map<CfgNodeCall, CallGraphNode> outEdges;
 
     // call nodes from callers -> caller's call graph node
-    private Map<CfgNodeCall,CallGraphNode> inEdges;
+    private Map<CfgNodeCall, CallGraphNode> inEdges;
 
 //  ********************************************************************************
 
     CallGraphNode(TacFunction function) {
         this.function = function;
-        this.outEdges = new HashMap<CfgNodeCall,CallGraphNode>();
-        this.inEdges = new HashMap<CfgNodeCall,CallGraphNode>();
+        this.outEdges = new HashMap<CfgNodeCall, CallGraphNode>();
+        this.inEdges = new HashMap<CfgNodeCall, CallGraphNode>();
     }
 
 //  ********************************************************************************
@@ -62,12 +62,10 @@ public class CallGraphNode {
         return this.function.hashCode();
     }
 
-
     public void addCallee(CfgNodeCall callNode, CallGraphNode calleeNode) {
         //this.successors.add(calleeNode);
         this.outEdges.put(callNode, calleeNode);
     }
-
 
     public void addCaller(CfgNodeCall callNode, CallGraphNode callerNode) {
         //this.predecessors.add(callerNode);

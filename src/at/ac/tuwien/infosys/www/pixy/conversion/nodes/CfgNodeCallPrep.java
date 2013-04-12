@@ -17,7 +17,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 // doesn't do 'function.addCall(this)' in the constructor and in
 // setFunction; and has cbrPairs
 public class CfgNodeCallPrep
-extends CfgNode {
+    extends CfgNode {
 
 // CONSTRUCTORS ********************************************************************
 

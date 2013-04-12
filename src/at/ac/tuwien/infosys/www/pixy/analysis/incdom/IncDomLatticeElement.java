@@ -8,7 +8,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 public class IncDomLatticeElement
-extends LatticeElement {
+    extends LatticeElement {
 
     // an ordered list of CfgNodes (more specifically: of CfgNodeIncludeStart and
     // CfgNodeIncludeEnd) that dominate the current node
@@ -45,16 +45,15 @@ extends LatticeElement {
 //  OTHER **************************************************************************
 //  ********************************************************************************
 
-
     // lubs the given element over *this* element
-    public void lub (LatticeElement element) {
+    public void lub(LatticeElement element) {
         if (!(element instanceof IncDomLatticeElement)) {
             throw new RuntimeException("SNH");
         }
         this.lub((IncDomLatticeElement) element);
     }
 
-    public void lub (IncDomLatticeElement element) {
+    public void lub(IncDomLatticeElement element) {
         // longest matching prefix
         Iterator foreignIter = element.getDominators().iterator();
         Iterator myIter = this.dominators.iterator();

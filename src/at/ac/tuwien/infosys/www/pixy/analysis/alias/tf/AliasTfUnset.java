@@ -9,7 +9,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 // transfer function for simple assignment nodes
 public class AliasTfUnset
-extends TransferFunction {
+    extends TransferFunction {
 
     private Variable operand;
     private AliasAnalysis aliasAnalysis;

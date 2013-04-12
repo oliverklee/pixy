@@ -8,7 +8,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 // for builtin functions
 public class DepGraphOpNode
-extends DepGraphNode {
+    extends DepGraphNode {
 
     private CfgNode cfgNode;
     private String name;
@@ -36,7 +36,7 @@ extends DepGraphNode {
     // returns a name that can be used in dot file representation
     public String comparableName() {
         return "OP: " + Dumper.escapeDot(this.name, 0) + " (" + this.cfgNode.getOrigLineno() + ")" +
-        "\\n" + this.cfgNode.getFileName();
+            "\\n" + this.cfgNode.getFileName();
     }
 
 //  ********************************************************************************
@@ -44,7 +44,7 @@ extends DepGraphNode {
     public String dotNameShort() {
         String fileName = this.cfgNode.getFileName();
         return "OP: " + Dumper.escapeDot(this.name, 0) + " (" + this.cfgNode.getOrigLineno() + ")" +
-        "\\n" + fileName.substring(fileName.lastIndexOf('/')+1);
+            "\\n" + fileName.substring(fileName.lastIndexOf('/') + 1);
     }
 
 //  ********************************************************************************
@@ -65,14 +65,14 @@ extends DepGraphNode {
         }
 
         if (BuiltinFunctions.isBuiltinFunction(this.name) ||
-                TacOperators.isOp(this.name)) {
+            TacOperators.isOp(this.name)) {
             retme +=
                 "builtin function:\\n" +
-                Dumper.escapeDot(this.name, 0) + "\\n";
+                    Dumper.escapeDot(this.name, 0) + "\\n";
         } else {
             retme +=
                 "unresolved function:\\n" +
-                Dumper.escapeDot(this.name, 0) + "\\n";
+                    Dumper.escapeDot(this.name, 0) + "\\n";
         }
 
         if (!isModelled) {
@@ -110,7 +110,7 @@ extends DepGraphNode {
 
     public int hashCode() {
         int hashCode = 17;
-        hashCode = 37*hashCode + this.cfgNode.hashCode();
+        hashCode = 37 * hashCode + this.cfgNode.hashCode();
         return hashCode;
     }
 

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Variable
-extends TacPlace {
+    extends TacPlace {
 
     // EFF: check for unnecessary fields / methods
 
@@ -17,8 +17,8 @@ extends TacPlace {
     private boolean isSuperGlobal;   // member of the superglobals symboltable?
     private boolean isLocal;
     private boolean isGlobal;   // local variable of the main function?
-                                // (temporaries excluded);
-                                // hence, globals and superglobals are different
+    // (temporaries excluded);
+    // hence, globals and superglobals are different
 
     // a variable is either local or global or superglobal
 
@@ -27,7 +27,7 @@ extends TacPlace {
     private boolean isArray;
     // TacPlace (=index) -> Variable
     // (only direct elements, i.e., who are one dimension deeper)
-    private Map<TacPlace,Variable> elements;
+    private Map<TacPlace, Variable> elements;
     // "shortcut": contains all elements with a literal last index;
     // (only direct elements)
     private List<Variable> literalElements;
@@ -97,7 +97,6 @@ extends TacPlace {
         }
     }
 
-
 // *********************************************************************************
 // GET *****************************************************************************
 // *********************************************************************************
@@ -113,8 +112,6 @@ extends TacPlace {
     public boolean isSuperGlobal() {
         return this.isSuperGlobal;
     }
-
-
 
     public boolean isArray() {
         return this.isArray;
@@ -154,7 +151,6 @@ extends TacPlace {
         return this.literalElements;
     }
 
-
     public boolean isArrayElement() {
         return this.isArrayElement;
     }
@@ -184,8 +180,6 @@ extends TacPlace {
         return this.hasNonLiteralIndices;
     }
 
-
-
     public TacPlace getDependsOn() {
         return this.dependsOn;
     }
@@ -193,7 +187,6 @@ extends TacPlace {
     public List<Variable> getIndexFor() {
         return this.indexFor;
     }
-
 
     public String toString() {
         return this.symbolTable.getName() + "." + this.name;
@@ -260,13 +253,12 @@ extends TacPlace {
     void setIsArray(boolean isArray) {
         if (isArray == true && this.isArray == false) {
             this.isArray = isArray;
-            this.elements = new LinkedHashMap<TacPlace,Variable>();
+            this.elements = new LinkedHashMap<TacPlace, Variable>();
             this.literalElements = new LinkedList<Variable>();
         } else {
             System.out.println("Warning: unchecked call to Variable.setIsArray()");
         }
     }
-
 
     void addElement(Variable variable) {
         if (!variable.isArrayElement()) {
@@ -277,7 +269,6 @@ extends TacPlace {
             this.literalElements.add(variable);
         }
     }
-
 
     void setArrayElementAttributes(Variable enclosingArray, TacPlace index) {
 
@@ -367,8 +358,8 @@ extends TacPlace {
     public int hashCode() {
 
         int hashCode = 17;
-        hashCode = 37*hashCode + this.name.hashCode();
-        hashCode = 37*hashCode + this.symbolTable.hashCode();
+        hashCode = 37 * hashCode + this.name.hashCode();
+        hashCode = 37 * hashCode + this.symbolTable.hashCode();
         return hashCode;
     }
 }

@@ -61,8 +61,8 @@ public final class InterWorkListElement {
 
     public int hashCode() {
         int hashCode = 17;
-        hashCode = 37*hashCode + this.cfgNode.hashCode();
-        hashCode = 37*hashCode + this.context.hashCode();
+        hashCode = 37 * hashCode + this.cfgNode.hashCode();
+        hashCode = 37 * hashCode + this.context.hashCode();
         return hashCode;
     }
 }

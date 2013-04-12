@@ -44,7 +44,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeUnset;
 // can be used for resolving ambiguous method calls (i.e., calls to methods
 // that are defined in more than one class)
 public class TypeAnalysis
-extends InterAnalysis {
+    extends InterAnalysis {
 
     private GenericRepos<LatticeElement> repos;
     private Collection<String> classNames;
@@ -52,13 +52,13 @@ extends InterAnalysis {
 //  ********************************************************************************
 
     public TypeAnalysis(TacConverter tac,
-            AnalysisType analysisType,
-            InterWorkList workList) {
+                        AnalysisType analysisType,
+                        InterWorkList workList) {
 
         this.repos = new GenericRepos<LatticeElement>();
         this.classNames = tac.getUserClasses().keySet();
         this.initGeneral(tac.getAllFunctions(), tac.getMainFunction(),
-                analysisType, workList);
+            analysisType, workList);
 
     }
 
@@ -193,11 +193,11 @@ extends InterAnalysis {
             // the unknown function
             throw new RuntimeException(
                 "More actual than formal params for function " +
-                cfgNode.getFunctionNamePlace().toString() + " on line " + cfgNode.getOrigLineno());
+                    cfgNode.getFunctionNamePlace().toString() + " on line " + cfgNode.getOrigLineno());
 
         } else {
             tf = new TypeTfCallPrep(actualParams, formalParams,
-                    callingFunction, calledFunction, this);
+                callingFunction, calledFunction, this);
         }
 
         return tf;
@@ -223,10 +223,10 @@ extends InterAnalysis {
         } else {
 
             tf = new TypeTfCallRet(
-                    this.interAnalysisInfo.getAnalysisNode(cfgNodePrep),
-                    callingFunction,
-                    calledFunction,
-                    cfgNodeCall);
+                this.interAnalysisInfo.getAnalysisNode(cfgNodePrep),
+                callingFunction,
+                calledFunction,
+                cfgNodeCall);
 
         }
 

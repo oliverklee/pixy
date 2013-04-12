@@ -8,10 +8,10 @@ public class Type {
 
 //  static stuff *******************************************************************
 
-    private static Map<String,Type> classTypes;
+    private static Map<String, Type> classTypes;
 
     public static void initTypes(Collection<String> classNames) {
-        classTypes = new HashMap<String,Type>();
+        classTypes = new HashMap<String, Type>();
         for (String className : classNames) {
             classTypes.put(className, new Type(className));
         }

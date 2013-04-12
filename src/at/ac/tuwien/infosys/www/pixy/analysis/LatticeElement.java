@@ -5,7 +5,7 @@ package at.ac.tuwien.infosys.www.pixy.analysis;
 // bad: if you do this, you can't access the natural (native) implementations
 // any longer
 public abstract class LatticeElement
-implements Recyclable {
+    implements Recyclable {
 
     // lubs the given element over *this* element;
     // can be called on every lattice element except Bottom and Top
@@ -16,6 +16,7 @@ implements Recyclable {
     public abstract LatticeElement cloneMe();
 
     public abstract boolean structureEquals(Object compX);
+
     public abstract int structureHashCode();
 
     public abstract void dump();

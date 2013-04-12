@@ -8,7 +8,7 @@ import java.util.List;
 // don't add it to the list, handle case where the list is
 // empty (because it consists only of implicit ID transfer functions)
 public class CompositeTransferFunction
-extends TransferFunction {
+    extends TransferFunction {
 
     // a list of TransferFunctions to be applied in sequence
     private List<TransferFunction> tfs;
@@ -27,7 +27,7 @@ extends TransferFunction {
     }
 
     public LatticeElement transfer(LatticeElement in) {
-        for (Iterator iter = this.tfs.iterator(); iter.hasNext();) {
+        for (Iterator iter = this.tfs.iterator(); iter.hasNext(); ) {
             TransferFunction tf = (TransferFunction) iter.next();
             in = tf.transfer(in);
         }

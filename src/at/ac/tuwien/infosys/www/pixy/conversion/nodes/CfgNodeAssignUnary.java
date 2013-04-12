@@ -15,7 +15,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 // "op" can be:
 // + - ! ~ (int) (double) (string) (array) (object) (bool) (unset)
 public class CfgNodeAssignUnary
-extends CfgNode {
+    extends CfgNode {
 
     private Variable left;
     private TacPlace right;
@@ -59,14 +59,14 @@ extends CfgNode {
 
     public void replaceVariable(int index, Variable replacement) {
         switch (index) {
-        case 0:
-            this.left = replacement;
-            break;
-        case 1:
-            this.right = replacement;
-            break;
-        default:
-            throw new RuntimeException("SNH");
+            case 0:
+                this.left = replacement;
+                break;
+            case 1:
+                this.right = replacement;
+                break;
+            default:
+                throw new RuntimeException("SNH");
         }
     }
 }

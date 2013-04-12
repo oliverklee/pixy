@@ -8,7 +8,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 // transfer function for adding include dominators
 public class IncDomTfAdd
-extends TransferFunction {
+    extends TransferFunction {
 
     private CfgNode cfgNode;
     private IncDomAnalysis incDomAnalysis;

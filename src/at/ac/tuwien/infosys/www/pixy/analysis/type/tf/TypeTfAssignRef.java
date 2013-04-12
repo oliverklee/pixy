@@ -8,7 +8,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 // transfer function for reference assignment nodes
 public class TypeTfAssignRef
-extends TransferFunction {
+    extends TransferFunction {
 
     private Variable left;
     private TacPlace right;

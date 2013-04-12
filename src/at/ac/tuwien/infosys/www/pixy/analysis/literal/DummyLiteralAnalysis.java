@@ -6,7 +6,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeIf;
 
 public class DummyLiteralAnalysis
-extends LiteralAnalysis {
+    extends LiteralAnalysis {
 
     public DummyLiteralAnalysis() {
         super();

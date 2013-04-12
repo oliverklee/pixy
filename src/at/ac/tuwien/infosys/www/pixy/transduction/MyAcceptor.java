@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class MyAcceptor
-extends MyAutomaton {
+    extends MyAutomaton {
 
     public MyAcceptor() {
         super();
@@ -36,7 +36,7 @@ extends MyAutomaton {
         my.toDot("aut1.dot");
 
         // for all states except the initial/terminal state...
-        for (Iterator iter = my.getStates().iterator(); iter.hasNext();) {
+        for (Iterator iter = my.getStates().iterator(); iter.hasNext(); ) {
             MyState state = (MyState) iter.next();
             if (state.isTerminal() || state.isInitial()) {
                 continue;
@@ -104,8 +104,8 @@ extends MyAutomaton {
     }
 
     // label2Int: input/output label -> Integer
-    public void toFsmFile(String filename, Map<Object,Integer> label2Int)
-    throws IOException {
+    public void toFsmFile(String filename, Map<Object, Integer> label2Int)
+        throws IOException {
 
         Writer writer = new FileWriter(filename + ".txt");
 
@@ -121,14 +121,14 @@ extends MyAutomaton {
         // print symbols file
         Writer symWriter = new FileWriter(filename + ".sym");
         symWriter.write("EPS 0\n");
-        for (Map.Entry<Object,Integer> entry : label2Int.entrySet()) {
+        for (Map.Entry<Object, Integer> entry : label2Int.entrySet()) {
             symWriter.write(entry.getKey() + " " + entry.getValue() + "\n");
         }
         symWriter.close();
 
         // print transitions starting from the initial state
         for (MyTransition t : this.getOutgoingTransitions(this.getInitial())) {
-            writer.write(t.getStart() + " " + t.getEnd() + " " + t.getLabel()  + "\n");
+            writer.write(t.getStart() + " " + t.getEnd() + " " + t.getLabel() + "\n");
         }
 
         // print remaining transitions

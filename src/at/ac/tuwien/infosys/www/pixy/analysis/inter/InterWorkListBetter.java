@@ -7,7 +7,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 // this interprocedural worklist uses a better order (interprocedural reverse postorder)
 public final class InterWorkListBetter
-implements InterWorkList {
+    implements InterWorkList {
 
     private InterWorkListOrder order;
     private SortedMap<Integer, InterWorkListElement> sortedWorkList;

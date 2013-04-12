@@ -36,8 +36,6 @@ public class FSAAutomaton {
     static String single_quote = encode('\'');
     static String opointy = encode('<');
 
-
-
     FSAAutomaton(String str) {
         this.str = str;
     }
@@ -98,7 +96,7 @@ public class FSAAutomaton {
         String arg1File = this.toFile("temp1.auto");
         String arg2File = auto.toFile("temp2.auto");
         String c = MyOptions.fsa_home + "/" +
-            "fsa -r concat(file('"+arg1File+"'),file('"+arg2File+"'))";
+            "fsa -r concat(file('" + arg1File + "'),file('" + arg2File + "'))";
         String autoString = Utils.exec(c);
         FSAAutomaton retMe = new FSAAutomaton(autoString);
 
@@ -109,7 +107,7 @@ public class FSAAutomaton {
         String arg1File = this.toFile("temp1.auto");
         String arg2File = auto.toFile("temp2.auto");
         String c = MyOptions.fsa_home + "/" +
-            "fsa -r union(file('"+arg1File+"'),file('"+arg2File+"'))";
+            "fsa -r union(file('" + arg1File + "'),file('" + arg2File + "'))";
         String autoString = Utils.exec(c);
         FSAAutomaton retMe = new FSAAutomaton(autoString);
 
@@ -120,7 +118,7 @@ public class FSAAutomaton {
         String arg1File = this.toFile("temp1.auto");
         String arg2File = auto.toFile("temp2.auto");
         String c = MyOptions.fsa_home + "/" +
-            "fsa -r intersect(file('"+arg1File+"'),file('"+arg2File+"'))";
+            "fsa -r intersect(file('" + arg1File + "'),file('" + arg2File + "'))";
         String autoString = Utils.exec(c);
         FSAAutomaton retMe = new FSAAutomaton(autoString);
 
@@ -190,7 +188,7 @@ public class FSAAutomaton {
         if (!(s.length() == 5)) {
             throw new RuntimeException("SNH");
         }
-        String hexString = s.substring(1,5);
+        String hexString = s.substring(1, 5);
         String dec = new java.math.BigInteger(hexString, 16).toString();
         return (char) Integer.valueOf(dec).intValue();
     }
@@ -245,7 +243,7 @@ public class FSAAutomaton {
         String regexpNoPrefix = "[" +
 
             // zero or even number of backslashes, followed by a quote
-            "kleene_star(concat("+backslash+","+backslash+"))" + "," +
+            "kleene_star(concat(" + backslash + "," + backslash + "))" + "," +
             single_quote + "," +
 
             // an arbitrary suffix
@@ -260,14 +258,14 @@ public class FSAAutomaton {
             "kleene_star(?)" + "," +
 
             // something other than a backslash
-            "term_complement("+backslash+")" + "," +
+            "term_complement(" + backslash + ")" + "," +
 
             regexpNoPrefix +
 
             "]";
 
         // the complete regexp: union of the previous two
-        String regexp = "[union("+regexpNoPrefix+","+regexpWithPrefix+")]";
+        String regexp = "[union(" + regexpNoPrefix + "," + regexpWithPrefix + ")]";
 
         String c = MyOptions.fsa_home + "/" + "fsa -r " + regexp;
 
@@ -289,16 +287,16 @@ public class FSAAutomaton {
         // regexp that matches every string that contains a pointy bracket
         String regexp = "[" +
 
-        // an arbitrary prefix
-        "kleene_star(?)" + "," +
+            // an arbitrary prefix
+            "kleene_star(?)" + "," +
 
-        // the pointy
-        opointy + "," +
+            // the pointy
+            opointy + "," +
 
-        // an arbitrary suffix
-        "kleene_star(?)" +
+            // an arbitrary suffix
+            "kleene_star(?)" +
 
-        "]";
+            "]";
 
         String c = MyOptions.fsa_home + "/" + "fsa -r " + regexp;
 
@@ -318,7 +316,7 @@ public class FSAAutomaton {
         final int inFinalStates = 2;
         final int inTransitions = 3;
         final int inJumps = 4;
-        final int inSigma= 5;
+        final int inSigma = 5;
         // starting outside
         int region = outside;
 
@@ -327,7 +325,7 @@ public class FSAAutomaton {
         String sigma = null;
         List<Integer> startStates = new LinkedList<Integer>();
         List<Integer> finalStates = new LinkedList<Integer>();
-        Map<Integer,Set<TransitionInfo>> transitions = new HashMap<Integer,Set<TransitionInfo>>();
+        Map<Integer, Set<TransitionInfo>> transitions = new HashMap<Integer, Set<TransitionInfo>>();
 
         StringTokenizer tokenizer = new StringTokenizer(this.str, "\n");
         while (tokenizer.hasMoreTokens()) {
@@ -336,7 +334,7 @@ public class FSAAutomaton {
             if (line.contains("number of states")) {
                 numStates = Integer.parseInt(line.substring(0, line.indexOf(',')));
 
-            // relevant region change
+                // relevant region change
             } else if (line.contains("begin sigma and symbols")) {
                 region = inSigma;
             } else if (line.contains("end sigma and symbols")) {
@@ -360,51 +358,51 @@ public class FSAAutomaton {
                 // no region change on this line
 
                 switch (region) {
-                case outside:
-                    // nothing to do
-                    break;
-                case inStartStates:
-                    line = line.trim();
-                    if (line.endsWith(",")) {
-                        line = line.substring(0, line.length()-1);
-                    }
-                    Integer startState = Integer.parseInt(line);
-                    startStates.add(startState);
-                    break;
-                case inFinalStates:
-                    line = line.trim();
-                    if (line.endsWith(",")) {
-                        line = line.substring(0, line.length()-1);
-                    }
-                    Integer finalState = Integer.parseInt(line);
-                    finalStates.add(finalState);
-                    break;
-                case inTransitions:
-                    // content: startState,LABEL,endState
-                    String content = line.substring(6, line.lastIndexOf(')'));
-                    Integer sourceState = Integer.parseInt(content.substring(0,content.indexOf(',')));
-                    Integer destState = Integer.parseInt(content.substring(content.lastIndexOf(',')+1));
+                    case outside:
+                        // nothing to do
+                        break;
+                    case inStartStates:
+                        line = line.trim();
+                        if (line.endsWith(",")) {
+                            line = line.substring(0, line.length() - 1);
+                        }
+                        Integer startState = Integer.parseInt(line);
+                        startStates.add(startState);
+                        break;
+                    case inFinalStates:
+                        line = line.trim();
+                        if (line.endsWith(",")) {
+                            line = line.substring(0, line.length() - 1);
+                        }
+                        Integer finalState = Integer.parseInt(line);
+                        finalStates.add(finalState);
+                        break;
+                    case inTransitions:
+                        // content: startState,LABEL,endState
+                        String content = line.substring(6, line.lastIndexOf(')'));
+                        Integer sourceState = Integer.parseInt(content.substring(0, content.indexOf(',')));
+                        Integer destState = Integer.parseInt(content.substring(content.lastIndexOf(',') + 1));
 
-                    String label = content.substring(content.indexOf(',')+1, content.lastIndexOf(','));
+                        String label = content.substring(content.indexOf(',') + 1, content.lastIndexOf(','));
 
-                    Set<TransitionInfo> tt = transitions.get(sourceState);
-                    if (tt == null) {
-                        tt = new HashSet<TransitionInfo>();
-                        transitions.put(sourceState, tt);
-                    }
-                    tt.add(new TransitionInfo(label, destState));
-                    break;
+                        Set<TransitionInfo> tt = transitions.get(sourceState);
+                        if (tt == null) {
+                            tt = new HashSet<TransitionInfo>();
+                            transitions.put(sourceState, tt);
+                        }
+                        tt.add(new TransitionInfo(label, destState));
+                        break;
 
-                case inSigma:
-                    if (sigma != null) {
-                        System.out.println(this.str);
-                        throw new RuntimeException("SNH");
-                    }
-                    sigma = line.trim();
-                    break;
-                case inJumps:
-                    if (true) throw new RuntimeException("not yet");
-                    break;
+                    case inSigma:
+                        if (sigma != null) {
+                            System.out.println(this.str);
+                            throw new RuntimeException("SNH");
+                        }
+                        sigma = line.trim();
+                        break;
+                    case inJumps:
+                        if (true) throw new RuntimeException("not yet");
+                        break;
                 }
             }
         }
@@ -431,7 +429,7 @@ public class FSAAutomaton {
     // converts a PHP regex (perl-compatible or posix extended) into an FSAAutomaton;
     // returns .* for unsupported regexes
     public static FSAAutomaton convertPhpRegex(List<String> phpRegexOrig, boolean preg)
-    throws UnsupportedRegexException {
+        throws UnsupportedRegexException {
 
         FSAAutomaton retMe;
 
@@ -453,10 +451,10 @@ public class FSAAutomaton {
         String sigma;
         List<Integer> startStates;
         List<Integer> finalStates;
-        Map<Integer,Set<TransitionInfo>> transitions;
+        Map<Integer, Set<TransitionInfo>> transitions;
         int numStates;
 
-        AutoInfo(String sigma, List<Integer> ss, List<Integer> fs, Map<Integer,Set<TransitionInfo>> t, int n) {
+        AutoInfo(String sigma, List<Integer> ss, List<Integer> fs, Map<Integer, Set<TransitionInfo>> t, int n) {
             this.sigma = sigma;
             this.startStates = ss;
             this.finalStates = fs;

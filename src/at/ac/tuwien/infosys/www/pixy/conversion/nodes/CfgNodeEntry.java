@@ -11,7 +11,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 // *********************************************************************************
 
 public class CfgNodeEntry
-extends CfgNode {
+    extends CfgNode {
 
 // CONSTRUCTORS ********************************************************************
 

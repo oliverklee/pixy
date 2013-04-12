@@ -10,17 +10,17 @@ public class DepClientInfo {
     private String name;
     private String className;
     private boolean performMe;
-    private Map<String,Set<Integer>> sinks;
+    private Map<String, Set<Integer>> sinks;
     private FunctionModels functionModels;
 
     DepClientInfo(String name, String className) {
         this.name = name;
         this.className = className;
         this.performMe = false;
-        this.sinks = new HashMap<String,Set<Integer>>();
+        this.sinks = new HashMap<String, Set<Integer>>();
     }
 
-    void addSinks(Map<String,Set<Integer>> addUs) {
+    void addSinks(Map<String, Set<Integer>> addUs) {
         this.sinks.putAll(addUs);
     }
 
@@ -40,7 +40,7 @@ public class DepClientInfo {
         return this.className;
     }
 
-    public Map<String,Set<Integer>> getSinks() {
+    public Map<String, Set<Integer>> getSinks() {
         return this.sinks;
     }
 

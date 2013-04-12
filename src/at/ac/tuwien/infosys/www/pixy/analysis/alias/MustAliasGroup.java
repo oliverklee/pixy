@@ -58,7 +58,7 @@ public class MustAliasGroup {
     // returns an arbitrary global variable from this group, or null if there
     // are no global variables in this group
     public Variable getArbitraryGlobal() {
-        for (Iterator iter = this.group.iterator(); iter.hasNext();) {
+        for (Iterator iter = this.group.iterator(); iter.hasNext(); ) {
             Variable var = (Variable) iter.next();
             if (var.isGlobal()) {
                 return var;
@@ -70,7 +70,7 @@ public class MustAliasGroup {
     // returns all local variables in this group
     public Set<Variable> getLocals() {
         Set<Variable> retMe = new HashSet<Variable>();
-        for (Iterator iter = this.group.iterator(); iter.hasNext();) {
+        for (Iterator iter = this.group.iterator(); iter.hasNext(); ) {
             Variable var = (Variable) iter.next();
             if (var.isLocal()) {
                 retMe.add(var);
@@ -82,7 +82,7 @@ public class MustAliasGroup {
     // returns all global variables in this group
     public Set<Variable> getGlobals() {
         Set<Variable> retMe = new HashSet<Variable>();
-        for (Iterator iter = this.group.iterator(); iter.hasNext();) {
+        for (Iterator iter = this.group.iterator(); iter.hasNext(); ) {
             Variable var = (Variable) iter.next();
             if (var.isGlobal()) {
                 retMe.add(var);
@@ -97,7 +97,7 @@ public class MustAliasGroup {
 
     // removes all local variables
     public void removeLocals() {
-        for (Iterator iter = this.group.iterator(); iter.hasNext();) {
+        for (Iterator iter = this.group.iterator(); iter.hasNext(); ) {
             Object obj = iter.next();
             if (!(obj instanceof Variable)) {
                 throw new RuntimeException("unexpected class: " + obj.getClass());
@@ -112,7 +112,7 @@ public class MustAliasGroup {
 
     // removes all global variables
     public void removeGlobals() {
-        for (Iterator iter = this.group.iterator(); iter.hasNext();) {
+        for (Iterator iter = this.group.iterator(); iter.hasNext(); ) {
             Variable var = (Variable) iter.next();
             if (var.isGlobal()) {
                 iter.remove();
@@ -122,7 +122,7 @@ public class MustAliasGroup {
 
     // removes all variables that belong to the given symbol table
     public void removeVariables(SymbolTable symTab) {
-        for (Iterator iter = this.group.iterator(); iter.hasNext();) {
+        for (Iterator iter = this.group.iterator(); iter.hasNext(); ) {
             Variable var = (Variable) iter.next();
             if (var.belongsTo(symTab)) {
                 iter.remove();
@@ -138,7 +138,7 @@ public class MustAliasGroup {
 
     public void add(Variable var) {
         this.group.add(var); // uniqueness of members is already guaranteed by
-                             // the underlying HashSet
+        // the underlying HashSet
     }
 
     // expects a map Variable -> Variable (replaceMe -> replaceBy)

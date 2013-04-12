@@ -6,7 +6,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.type.TypeLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 public class TypeTfAssignArray
-extends TransferFunction {
+    extends TransferFunction {
 
     private Variable operand;
 

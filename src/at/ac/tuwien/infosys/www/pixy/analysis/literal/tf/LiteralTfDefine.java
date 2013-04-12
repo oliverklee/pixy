@@ -14,7 +14,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeDefine;
 
 public class LiteralTfDefine
-extends TransferFunction {
+    extends TransferFunction {
 
     private TacPlace setMe;
     private TacPlace setTo;
@@ -72,7 +72,7 @@ extends TransferFunction {
             // all constants in setMe's insensitivity group have to be set
             List insensGroup = this.constantsTable.getInsensitiveGroup(constantLit);
             if (insensGroup != null) {
-                for (Iterator iter = insensGroup.iterator(); iter.hasNext();) {
+                for (Iterator iter = insensGroup.iterator(); iter.hasNext(); ) {
                     Constant constant = (Constant) iter.next();
                     out.defineConstant(constant, valueLit);
                 }
@@ -117,7 +117,7 @@ extends TransferFunction {
             // (except setMe itself)
             List insensGroup = this.constantsTable.getInsensitiveGroup(constantLit);
             if (insensGroup != null) {
-                for (Iterator iter = insensGroup.iterator(); iter.hasNext();) {
+                for (Iterator iter = insensGroup.iterator(); iter.hasNext(); ) {
                     Constant weakConstant = (Constant) iter.next();
                     if (!weakConstant.equals(constant)) {
                         out.defineConstantWeak(weakConstant, valueLit);

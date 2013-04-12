@@ -6,7 +6,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 public class IntraAnalysisInfo
-extends AnalysisInfo {
+    extends AnalysisInfo {
 
     public IntraAnalysisInfo() {
         super();
@@ -16,7 +16,7 @@ extends AnalysisInfo {
         return (IntraAnalysisNode) this.map.get(cfgNode);
     }
 
-    public TransferFunction getTransferFunction (CfgNode cfgNode) {
+    public TransferFunction getTransferFunction(CfgNode cfgNode) {
         AnalysisNode analysisNode = this.getAnalysisNode(cfgNode);
         return analysisNode.getTransferFunction();
     }

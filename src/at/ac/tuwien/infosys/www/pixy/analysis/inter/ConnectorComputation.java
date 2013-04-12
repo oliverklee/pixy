@@ -32,17 +32,17 @@ public class ConnectorComputation {
     // if a function has an empty ECS, it means that it is not called
     // from anywhere (or that we are working with kSize == 0);
     // the main procedure has only the empty call string
-    Map<TacFunction,ECS> function2ECS;
+    Map<TacFunction, ECS> function2ECS;
 
     // CfgNodeCall -> ConnectorFunction;
     // a connector function maps the context of the caller to the target
     // context in the callee;
     // a call node must never have an empty connector function
-    Map<CfgNodeCall,ConnectorFunction> call2ConnectorFunction;
+    Map<CfgNodeCall, ConnectorFunction> call2ConnectorFunction;
 
     // useful by-product of the computation;
     // associates every function with a list of contained calls
-    Map<TacFunction,List<CfgNodeCall>> containedCalls;
+    Map<TacFunction, List<CfgNodeCall>> containedCalls;
 
     private CallGraph callGraph;
 
@@ -60,10 +60,10 @@ public class ConnectorComputation {
         // and the call graph
 
         List<CfgNodeCall> callNodes = new LinkedList<CfgNodeCall>();
-        this.function2ECS = new HashMap<TacFunction,ECS>();
-        this.containedCalls = new HashMap<TacFunction,List<CfgNodeCall>>();
+        this.function2ECS = new HashMap<TacFunction, ECS>();
+        this.containedCalls = new HashMap<TacFunction, List<CfgNodeCall>>();
 
-        for (Iterator iter = functions.iterator(); iter.hasNext();) {
+        for (Iterator iter = functions.iterator(); iter.hasNext(); ) {
             TacFunction function = (TacFunction) iter.next();
 
             this.function2ECS.put(function, new ECS());
@@ -84,8 +84,8 @@ public class ConnectorComputation {
         this.workList.add(new ConnectorWorkListElement(mainFunction, emptyCallString));
 
         // initialize connector functions
-        this.call2ConnectorFunction = new HashMap<CfgNodeCall,ConnectorFunction>();
-        for (Iterator iter = callNodes.iterator(); iter.hasNext();) {
+        this.call2ConnectorFunction = new HashMap<CfgNodeCall, ConnectorFunction>();
+        for (Iterator iter = callNodes.iterator(); iter.hasNext(); ) {
             CfgNodeCall callNode = (CfgNodeCall) iter.next();
             this.call2ConnectorFunction.put(callNode, new ConnectorFunction());
         }
@@ -238,7 +238,7 @@ public class ConnectorComputation {
         return this.call2ConnectorFunction.get(callNode);
     }
 
-    public Map<TacFunction,ECS> getFunction2ECS() {
+    public Map<TacFunction, ECS> getFunction2ECS() {
         return this.function2ECS;
     }
 
@@ -247,14 +247,14 @@ public class ConnectorComputation {
         return this.function2ECS.get(f).size();
     }
 
-    public Map<CfgNodeCall,ConnectorFunction> getCall2ConnectorFunction() {
+    public Map<CfgNodeCall, ConnectorFunction> getCall2ConnectorFunction() {
         return this.call2ConnectorFunction;
     }
 
     public void stats(boolean verbose) {
         int sumPhiEntries = 0;
         int sumCfgNodes = 0;
-        for (Map.Entry<TacFunction,ECS> entry : this.function2ECS.entrySet()) {
+        for (Map.Entry<TacFunction, ECS> entry : this.function2ECS.entrySet()) {
             TacFunction function = entry.getKey();
             ECS ecs = entry.getValue();
             int cfgNodes = function.size();
@@ -263,8 +263,8 @@ public class ConnectorComputation {
             sumCfgNodes += cfgNodes;
             if (verbose) {
                 System.out.println("function " + function.getName() + ": "
-                        + cfgNodes + " cfg nodes, " + ecs.size() + " contexts, => " +
-                        phiEntries + " phi entries");
+                    + cfgNodes + " cfg nodes, " + ecs.size() + " contexts, => " +
+                    phiEntries + " phi entries");
             }
         }
         if (MyOptions.optionV) {

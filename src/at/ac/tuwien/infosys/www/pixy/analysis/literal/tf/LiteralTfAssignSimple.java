@@ -10,7 +10,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 // transfer function for simple assignment nodes
 public class LiteralTfAssignSimple
-extends TransferFunction {
+    extends TransferFunction {
 
     private Variable left;
     private TacPlace right;
@@ -23,7 +23,7 @@ extends TransferFunction {
 
     // mustAliases, mayAliases: of setMe
     public LiteralTfAssignSimple(TacPlace left, TacPlace right,
-            Set mustAliases, Set mayAliases) {
+                                 Set mustAliases, Set mayAliases) {
 
         this.left = (Variable) left;  // must be a variable
         this.right = right;

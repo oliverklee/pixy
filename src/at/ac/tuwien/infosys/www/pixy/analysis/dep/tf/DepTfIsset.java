@@ -14,7 +14,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 // transfer function for "isset" tests
 // LATER: make it intelligent
 public class DepTfIsset
-extends TransferFunction{
+    extends TransferFunction {
 
     private Variable setMe;
     private TacPlace testMe;

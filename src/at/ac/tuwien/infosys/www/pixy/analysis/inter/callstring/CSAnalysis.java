@@ -16,7 +16,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
 // base class for analysis using the call string approach of Sharir and
 // Pnueli; use this if your lattice has infinite breadth
 public class CSAnalysis
-extends AnalysisType {
+    extends AnalysisType {
 
     // INPUT ***********************************************************************
 

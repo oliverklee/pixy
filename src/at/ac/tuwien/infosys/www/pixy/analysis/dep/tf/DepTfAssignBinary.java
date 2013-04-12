@@ -11,7 +11,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 // transfer function for binary assignment nodes
 public class DepTfAssignBinary
-extends TransferFunction {
+    extends TransferFunction {
 
     private Variable left;
     private TacPlace leftOperand;
@@ -27,7 +27,7 @@ extends TransferFunction {
 
     // mustAliases, mayAliases: of setMe
     public DepTfAssignBinary(TacPlace left, TacPlace leftOperand, TacPlace rightOperand,
-            int op, Set mustAliases, Set mayAliases, CfgNode cfgNode) {
+                             int op, Set mustAliases, Set mayAliases, CfgNode cfgNode) {
 
         this.left = (Variable) left;  // must be a variable
         this.leftOperand = leftOperand;

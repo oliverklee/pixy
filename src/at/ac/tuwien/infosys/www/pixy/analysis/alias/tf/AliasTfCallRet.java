@@ -18,7 +18,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallPrep;
 
 public class AliasTfCallRet
-extends TransferFunction {
+    extends TransferFunction {
 
     private InterAnalysisNode analysisNodeAtCallPrep;
     private TacFunction callee;
@@ -30,9 +30,9 @@ extends TransferFunction {
 // *********************************************************************************
 
     public AliasTfCallRet(
-            InterAnalysisNode analysisNodeAtCallPrep,
-            TacFunction callee, AliasAnalysis aliasAnalysis,
-            CfgNodeCallPrep cfgNode) {
+        InterAnalysisNode analysisNodeAtCallPrep,
+        TacFunction callee, AliasAnalysis aliasAnalysis,
+        CfgNodeCallPrep cfgNode) {
 
         this.analysisNodeAtCallPrep = analysisNodeAtCallPrep;
         this.callee = callee;
@@ -69,16 +69,13 @@ extends TransferFunction {
         // add aliases between globals from inter-info
         outInfo.add(interInfo);
 
-
         // COMPUTE ALIASES BETWEEN LOCALS AND GLOBALS
         // USING G-SHADOWS AND F-SHADOWS
 
         // contains groups from orig-info that have been tagged as visited
         Set<MustAliasGroup> visitedGroups = new HashSet<MustAliasGroup>();
 
-
         // G-SHADOWS, MUST
-
 
         // for each must-alias-group in the orig-info
         for (Iterator iter = origInfo.getMustAliases().getGroups().iterator(); iter.hasNext(); ) {
@@ -130,16 +127,14 @@ extends TransferFunction {
             // - there is no global variable in this must-alias group, which leads to
             //   the iteration over an empty set here
             Set gShadowGlobalMayAliases = calleeIn.getGlobalMayAliases(gShadow);
-            for (Iterator globalIter = gShadowGlobalMayAliases.iterator(); globalIter.hasNext();) {
+            for (Iterator globalIter = gShadowGlobalMayAliases.iterator(); globalIter.hasNext(); ) {
                 Variable globalMayAlias = (Variable) globalIter.next();
                 outInfo.addMayAliasPairs(groupLocals, globalMayAlias);
             }
 
         }
 
-
         // G-SHADOWS, MAY
-
 
         // for each may-alias-pair in the orig-info
         for (Iterator iter = origInfo.getMayAliases().getPairs().iterator(); iter.hasNext(); ) {
@@ -158,19 +153,17 @@ extends TransferFunction {
 
             // for all global aliases (must and may) of the g-shadow...
             Set globalAliases = calleeIn.getGlobalAliases(gShadow);
-            for (Iterator globalIter = globalAliases.iterator(); globalIter.hasNext();) {
+            for (Iterator globalIter = globalAliases.iterator(); globalIter.hasNext(); ) {
                 Variable globalAlias = (Variable) globalIter.next();
                 MayAliasPair addMePair = new MayAliasPair(globalAlias, localGlobal[0]);
                 outInfo.add(addMePair);
             }
         }
 
-
         // F-SHADOWS
 
-
         // for all cbr-params...
-        for (Iterator iter = this.cbrParams.iterator(); iter.hasNext();) {
+        for (Iterator iter = this.cbrParams.iterator(); iter.hasNext(); ) {
 
             List paramPair = (List) iter.next();
             Variable actual = (Variable) paramPair.get(0);
@@ -220,7 +213,7 @@ extends TransferFunction {
                 }
 
                 // for each global may-alias of the f-shadow...
-                for (Iterator iterator = fShadowGlobalMayAliases.iterator(); iterator.hasNext();) {
+                for (Iterator iterator = fShadowGlobalMayAliases.iterator(); iterator.hasNext(); ) {
                     Variable fShadowGlobalMayAlias = (Variable) iterator.next();
                     outInfo.addMayAliasPairs(actualGroupLocals, fShadowGlobalMayAlias);
                 }
@@ -243,7 +236,6 @@ extends TransferFunction {
                 }
             }
         }
-
 
         // FINAL
 

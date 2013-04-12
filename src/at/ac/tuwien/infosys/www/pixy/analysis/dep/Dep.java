@@ -7,7 +7,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 // corresponds to one dependency label, consisting of
 // <source descriptor (e.g., variable or function name)>, <location (cfg node)>
 public class Dep
-implements Recyclable {
+    implements Recyclable {
 
     public static GenericRepos<Dep> repos =
         new GenericRepos<Dep>();
@@ -98,7 +98,7 @@ implements Recyclable {
 
     public int structureHashCode() {
         int hashCode = 17;
-        hashCode = 37*hashCode + this.cfgNode.hashCode();
+        hashCode = 37 * hashCode + this.cfgNode.hashCode();
         return hashCode;
     }
 }

@@ -31,10 +31,10 @@ public abstract class MyAutomaton {
     // TRANSITION INFO *************************************************
 
     // state -> set of transitions that have this state as start node
-    protected Map<MyState,Set<MyTransition>> state2trans;
+    protected Map<MyState, Set<MyTransition>> state2trans;
 
     // state -> set of transitions that have this state as end node
-    protected Map<MyState,Set<MyTransition>> reverseState2trans;
+    protected Map<MyState, Set<MyTransition>> reverseState2trans;
 
 //  ********************************************************************************
 //  CONSTRUCTORS *******************************************************************
@@ -48,8 +48,8 @@ public abstract class MyAutomaton {
         this.states = new HashSet<MyState>();
         this.initial = null;
         this.terminals = new HashSet<MyState>();
-        this.state2trans = new HashMap<MyState,Set<MyTransition>>();
-        this.reverseState2trans = new HashMap<MyState,Set<MyTransition>>();
+        this.state2trans = new HashMap<MyState, Set<MyTransition>>();
+        this.reverseState2trans = new HashMap<MyState, Set<MyTransition>>();
     }
 
 //  ********************************************************************************
@@ -60,7 +60,7 @@ public abstract class MyAutomaton {
         this();
 
         // map from orig state to cloned state
-        Map<MyState,MyState> map = new HashMap<MyState,MyState>();
+        Map<MyState, MyState> map = new HashMap<MyState, MyState>();
 
         // copy states and fill auxiliary map along the way
         for (MyState origState : orig.states) {
@@ -71,9 +71,9 @@ public abstract class MyAutomaton {
         for (Set<MyTransition> origTransSet : orig.state2trans.values()) {
             for (MyTransition t : origTransSet) {
                 this.addTransition(new MyTransition(
-                        map.get(t.getStart()),
-                        t.getLabel(),
-                        map.get(t.getEnd())));
+                    map.get(t.getStart()),
+                    t.getLabel(),
+                    map.get(t.getEnd())));
             }
         }
     }
@@ -86,7 +86,7 @@ public abstract class MyAutomaton {
         this();
 
         // auxiliary map from foreign state to my cloned state
-        Map<rationals.State,MyState> map = new HashMap<rationals.State,MyState>();
+        Map<rationals.State, MyState> map = new HashMap<rationals.State, MyState>();
 
         // copy states, updating auxiliary map on the way
         for (Iterator iter = a.states().iterator(); iter.hasNext(); ) {
@@ -98,9 +98,9 @@ public abstract class MyAutomaton {
         for (Iterator iter = a.delta().iterator(); iter.hasNext(); ) {
             rationals.Transition t = (rationals.Transition) iter.next();
             this.addTransition(new MyTransition(
-                    map.get(t.start()),
-                    t.label(),
-                    map.get(t.end())));
+                map.get(t.start()),
+                t.label(),
+                map.get(t.end())));
         }
     }
 
@@ -200,7 +200,6 @@ public abstract class MyAutomaton {
         return s;
     }
 
-
 //  ********************************************************************************
 //  OTHER **************************************************************************
 //  ********************************************************************************
@@ -279,7 +278,7 @@ public abstract class MyAutomaton {
 //  ********************************************************************************
 
     // adds the given transition
-    public void addTransition(MyTransition transition)  {
+    public void addTransition(MyTransition transition) {
 
         if (!states.contains(transition.getStart()))
             throw new RuntimeException("SNH: start " + transition.getStart());
@@ -320,7 +319,7 @@ public abstract class MyAutomaton {
 
         // remove matching transitions from the out-map
         Set<MyTransition> fromSet = this.state2trans.get(from);
-        for (Iterator iter = fromSet.iterator(); iter.hasNext();) {
+        for (Iterator iter = fromSet.iterator(); iter.hasNext(); ) {
             MyTransition trans = (MyTransition) iter.next();
             if (to.equals(trans.getEnd())) {
                 iter.remove();
@@ -329,7 +328,7 @@ public abstract class MyAutomaton {
 
         // remove matching transitions from the in-map
         Set<MyTransition> toSet = this.reverseState2trans.get(to);
-        for (Iterator iter = toSet.iterator(); iter.hasNext();) {
+        for (Iterator iter = toSet.iterator(); iter.hasNext(); ) {
             MyTransition trans = (MyTransition) iter.next();
             if (from.equals(trans.getStart())) {
                 iter.remove();
@@ -408,7 +407,7 @@ public abstract class MyAutomaton {
             while (iter.hasNext()) {
                 MyTransition trans_next = iter.next();
                 if (trans1.getStart().equals(trans_next.getStart()) &&
-                        trans1.getEnd().equals(trans_next.getEnd())) {
+                    trans1.getEnd().equals(trans_next.getEnd())) {
                     competing.add(trans_next);
                     iter.remove();
                 }
@@ -425,7 +424,7 @@ public abstract class MyAutomaton {
                 regex_merged.append(label);
                 regex_merged.append("+");
             }
-            regex_merged.deleteCharAt(regex_merged.length()-1);
+            regex_merged.deleteCharAt(regex_merged.length() - 1);
             regex_merged.append(")");
 
             // add appropriate merged transition to the new list
@@ -495,7 +494,7 @@ public abstract class MyAutomaton {
 
         // header
         String name = "jauto";
-        pw.println("digraph "+ name+" {");
+        pw.println("digraph " + name + " {");
 
         // initial state
         MyState initial = this.getInitial();
@@ -504,30 +503,30 @@ public abstract class MyAutomaton {
         } else {
             pw.println("node [shape=circle, color=black, fontcolor=white];");
         }
-        pw.println("s"+initial+";");
+        pw.println("s" + initial + ";");
 
         // terminal states
         pw.println("node [shape=doublecircle,color=white, fontcolor=black];");
-        for(Iterator i = this.getTerminals().iterator();i.hasNext();) {
-            MyState st = (MyState)i.next();
-            if(st.isInitial())
+        for (Iterator i = this.getTerminals().iterator(); i.hasNext(); ) {
+            MyState st = (MyState) i.next();
+            if (st.isInitial())
                 continue;
-            pw.println("s"+st+";");
+            pw.println("s" + st + ";");
         }
 
         // normal states
         pw.println("node [shape=circle,color=white, fontcolor=black];");
-        for(Iterator i = this.getStates().iterator();i.hasNext();) {
-            MyState st = (MyState)i.next();
-            if(st.isInitial() || st.isTerminal())
+        for (Iterator i = this.getStates().iterator(); i.hasNext(); ) {
+            MyState st = (MyState) i.next();
+            if (st.isInitial() || st.isTerminal())
                 continue;
-            pw.println("s"+st+";");
+            pw.println("s" + st + ";");
         }
 
         // transitions
-        for(Iterator i = this.getDelta().iterator();i.hasNext();) {
-            MyTransition tr =(MyTransition)i.next();
-            pw.println("s"+tr.getStart()+" -> "+ "s"+tr.getEnd() +" [ label=\""+tr.getLabel()+"\" ];");
+        for (Iterator i = this.getDelta().iterator(); i.hasNext(); ) {
+            MyTransition tr = (MyTransition) i.next();
+            pw.println("s" + tr.getStart() + " -> " + "s" + tr.getEnd() + " [ label=\"" + tr.getLabel() + "\" ];");
         }
         pw.println("}");
         pw.flush();

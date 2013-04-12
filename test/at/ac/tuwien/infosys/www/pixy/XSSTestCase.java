@@ -14,7 +14,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
 // resembles DepGraphTestCase, but does not perform alias analysis
 // (see mySetUp()) and tests object-oriented stuff
 public class XSSTestCase
-extends TestCase {
+    extends TestCase {
 
     private String path;    // complete path to the testfile directory (with trailing slash)
 
@@ -30,7 +30,6 @@ extends TestCase {
         this.path = MyOptions.pixy_home + "/testfiles/xss/";
         MyOptions.graphPath = MyOptions.pixy_home + "/graphs";
     }
-
 
     // call this at the beginning of each test; optionally uses
     // a functional analysis instead of call-string ("functional" param),

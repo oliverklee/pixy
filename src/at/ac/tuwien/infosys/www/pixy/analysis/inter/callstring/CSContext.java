@@ -3,7 +3,7 @@ package at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.Context;
 
 public class CSContext
-extends Context {
+    extends Context {
 
     private int position;
 

@@ -15,25 +15,25 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
 
 public class TypeLatticeElement
-extends LatticeElement {
+    extends LatticeElement {
 
-    private Map<Variable,Set<Type>> var2Type;
+    private Map<Variable, Set<Type>> var2Type;
 
     // an empty lattice element (the analysis starts with this one)
     public TypeLatticeElement() {
-        this.var2Type = new HashMap<Variable,Set<Type>>();
+        this.var2Type = new HashMap<Variable, Set<Type>>();
     }
 
     // clones the given element
     public TypeLatticeElement(TypeLatticeElement element) {
-        this.var2Type = new HashMap<Variable,Set<Type>>(element.var2Type);
+        this.var2Type = new HashMap<Variable, Set<Type>>(element.var2Type);
     }
 
     // lubs the given lattice element over <<this>> lattice element
     public void lub(LatticeElement foreignX) {
         TypeLatticeElement foreign = (TypeLatticeElement) foreignX;
         // for all foreign mappings...
-        for (Map.Entry<Variable,Set<Type>> entry : foreign.var2Type.entrySet()) {
+        for (Map.Entry<Variable, Set<Type>> entry : foreign.var2Type.entrySet()) {
             Variable foreignVar = entry.getKey();
             Set<Type> foreignTypes = entry.getValue();
             Set<Type> myTypes = this.var2Type.get(foreignVar);
@@ -116,7 +116,7 @@ extends LatticeElement {
 
     // resets all variables that belong to the given symbol table
     public void resetVariables(SymbolTable symTab) {
-        for (Iterator iter = this.var2Type.entrySet().iterator(); iter.hasNext();) {
+        for (Iterator iter = this.var2Type.entrySet().iterator(); iter.hasNext(); ) {
             Map.Entry entry = (Map.Entry) iter.next();
             Variable var = (Variable) entry.getKey();
 
@@ -129,7 +129,7 @@ extends LatticeElement {
     // resets all temporaries that belong to the given symbol table
     public void resetTemporaries(SymbolTable symTab) {
 
-        for (Iterator iter = this.var2Type.entrySet().iterator(); iter.hasNext();) {
+        for (Iterator iter = this.var2Type.entrySet().iterator(); iter.hasNext(); ) {
             Map.Entry entry = (Map.Entry) iter.next();
             Variable var = (Variable) entry.getKey();
 
@@ -149,7 +149,7 @@ extends LatticeElement {
     // constants)
     public void copyGlobalLike(TypeLatticeElement interIn) {
 
-        for (Map.Entry<Variable,Set<Type>> entry : interIn.var2Type.entrySet()) {
+        for (Map.Entry<Variable, Set<Type>> entry : interIn.var2Type.entrySet()) {
 
             Variable origVar = entry.getKey();
             Set<Type> origTypes = entry.getValue();
@@ -163,7 +163,7 @@ extends LatticeElement {
     // copies the mappings for local temporaries of the main function
     public void copyMainTemporaries(TypeLatticeElement origElement) {
 
-        for (Map.Entry<Variable,Set<Type>> entry : origElement.var2Type.entrySet()) {
+        for (Map.Entry<Variable, Set<Type>> entry : origElement.var2Type.entrySet()) {
 
             Variable origVar = entry.getKey();
             Set<Type> origTypes = entry.getValue();
@@ -184,7 +184,7 @@ extends LatticeElement {
     // sets the temporary responsible for catching the return value
     // and resets the return variable
     public void handleReturnValue(CfgNodeCall callNode,
-            TypeLatticeElement calleeIn, TacFunction callee) {
+                                  TypeLatticeElement calleeIn, TacFunction callee) {
 
         Variable tempVar = callNode.getTempVar();
         Set<Type> types = calleeIn.getType(callNode.getRetVar());
@@ -204,7 +204,7 @@ extends LatticeElement {
     // copies the mappings for local variables from origElement
     public void copyLocals(TypeLatticeElement origElement) {
 
-        for (Map.Entry<Variable,Set<Type>> entry : origElement.var2Type.entrySet()) {
+        for (Map.Entry<Variable, Set<Type>> entry : origElement.var2Type.entrySet()) {
 
             Variable origVar = entry.getKey();
             Set<Type> origTypes = entry.getValue();
@@ -253,7 +253,7 @@ extends LatticeElement {
 
     public int structureHashCode() {
         int hashCode = 17;
-        hashCode = 37*hashCode + this.var2Type.hashCode();
+        hashCode = 37 * hashCode + this.var2Type.hashCode();
         return hashCode;
     }
 

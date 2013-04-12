@@ -11,7 +11,7 @@ class IncludeNode {
     IncludeNode(File file) {
         this.file = file;
         try {
-        this.canonicalPath = file.getCanonicalPath();
+            this.canonicalPath = file.getCanonicalPath();
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage());
         }

@@ -12,7 +12,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 // return from called function; "2nd half" of a function call node
 public class CfgNodeCallRet
-extends CfgNode {
+    extends CfgNode {
 
 // CONSTRUCTORS ********************************************************************
 

@@ -26,9 +26,9 @@ public class ParseNodeHeuristics {
     // - an empty list if there is no possibility
     // - a one-element list if there is exactly one possibility
     public static List<String> getPossibleIncludeTargets(
-            CfgNodeInclude includeNode, LiteralAnalysis literalAnalysis,
-            Map<CfgNodeInclude,String> include2String,
-            String workingDirectory) {
+        CfgNodeInclude includeNode, LiteralAnalysis literalAnalysis,
+        Map<CfgNodeInclude, String> include2String,
+        String workingDirectory) {
 
         ParseNodeHeuristics.literalAnalysis = literalAnalysis;
         ParseNodeHeuristics.includeNode = includeNode;
@@ -41,7 +41,7 @@ public class ParseNodeHeuristics {
             throw new RuntimeException("SNH");
         }
         ParseNode firstChild = parseNode.getChild(0);
-        switch(firstChild.getSymbol()) {
+        switch (firstChild.getSymbol()) {
             case PhpSymbols.T_INCLUDE:
             case PhpSymbols.T_INCLUDE_ONCE:
             case PhpSymbols.T_REQUIRE:
@@ -175,18 +175,16 @@ public class ParseNodeHeuristics {
         LinkedList<String> myList = null;
 
         ParseNode firstChild = node.getChild(0);
-        switch(firstChild.getSymbol()) {
+        switch (firstChild.getSymbol()) {
 
             // -> r_cvar
-            case PhpSymbols.r_cvar:
-            {
+            case PhpSymbols.r_cvar: {
                 myList = r_cvar(firstChild);
                 break;
             }
 
             // -> expr_without_variable
-            case PhpSymbols.expr_without_variable:
-            {
+            case PhpSymbols.expr_without_variable: {
                 myList = expr_without_variable(firstChild);
                 break;
             }
@@ -200,16 +198,14 @@ public class ParseNodeHeuristics {
         LinkedList<String> myList = null;
 
         ParseNode firstChild = node.getChild(0);
-        switch(firstChild.getSymbol()) {
+        switch (firstChild.getSymbol()) {
 
             // -> expr ...
-            case PhpSymbols.expr:
-            {
-                switch(node.getChild(1).getSymbol()) {
+            case PhpSymbols.expr: {
+                switch (node.getChild(1).getSymbol()) {
 
                     // -> expr . expr
-                    case PhpSymbols.T_POINT:
-                    {
+                    case PhpSymbols.T_POINT: {
                         LinkedList<String> list0 = expr(node.getChild(0));
                         List<String> list2 = expr(node.getChild(2));
                         myList = list0;
@@ -217,8 +213,7 @@ public class ParseNodeHeuristics {
                         break;
                     }
 
-                    default:
-                    {
+                    default: {
                         myList = new LinkedList<String>();
                         myList.add(null);
                     }
@@ -229,21 +224,18 @@ public class ParseNodeHeuristics {
             }
 
             // -> ( expr )
-            case PhpSymbols.T_OPEN_BRACES:
-            {
+            case PhpSymbols.T_OPEN_BRACES: {
                 myList = expr(node.getChild(1));
                 break;
             }
 
             // -> scalar
-            case PhpSymbols.scalar:
-            {
+            case PhpSymbols.scalar: {
                 myList = scalar(firstChild);
                 break;
             }
 
-            default:
-            {
+            default: {
                 myList = new LinkedList<String>();
                 myList.add(null);
             }
@@ -257,25 +249,21 @@ public class ParseNodeHeuristics {
         LinkedList<String> myList = null;
 
         ParseNode firstChild = node.getChild(0);
-        switch(firstChild.getSymbol()) {
+        switch (firstChild.getSymbol()) {
 
             // -> common_scalar
-            case PhpSymbols.common_scalar:
-            {
+            case PhpSymbols.common_scalar: {
                 myList = common_scalar(firstChild);
                 break;
             }
 
             // -> " encaps_list "
-            case PhpSymbols.T_DOUBLE_QUOTE:
-            {
+            case PhpSymbols.T_DOUBLE_QUOTE: {
                 myList = encaps_list(node.getChild(1));
                 break;
             }
 
-
-            default:
-            {
+            default: {
                 myList = new LinkedList<String>();
                 myList.add(null);
             }
@@ -290,10 +278,9 @@ public class ParseNodeHeuristics {
         LinkedList<String> myList = null;
 
         ParseNode firstChild = node.getChild(0);
-        switch(firstChild.getSymbol()) {
+        switch (firstChild.getSymbol()) {
 
-            case PhpSymbols.T_CONSTANT_ENCAPSED_STRING:
-            {
+            case PhpSymbols.T_CONSTANT_ENCAPSED_STRING: {
                 myList = new LinkedList<String>();
 
                 // use Literal() to peel off quotes,
@@ -301,8 +288,7 @@ public class ParseNodeHeuristics {
                 break;
             }
 
-            default:
-            {
+            default: {
                 myList = new LinkedList<String>();
                 myList.add(null);
             }
@@ -335,25 +321,22 @@ public class ParseNodeHeuristics {
         LinkedList<String> myList = null;
 
         ParseNode firstChild = node.getChild(0);
-        switch(firstChild.getSymbol()) {
+        switch (firstChild.getSymbol()) {
 
             // -> reference_variable
-            case PhpSymbols.reference_variable:
-            {
+            case PhpSymbols.reference_variable: {
                 myList = reference_variable(firstChild);
                 break;
             }
 
             // -> simple_indirect_reference reference_variable
-            case PhpSymbols.simple_indirect_reference:
-            {
+            case PhpSymbols.simple_indirect_reference: {
                 myList = new LinkedList<String>();
                 myList.add(null);
                 break;
             }
 
-            default:
-            {
+            default: {
                 throw new RuntimeException("SNH");
             }
         }
@@ -365,25 +348,22 @@ public class ParseNodeHeuristics {
         LinkedList<String> myList = null;
 
         ParseNode firstChild = node.getChild(0);
-        switch(firstChild.getSymbol()) {
+        switch (firstChild.getSymbol()) {
 
             // -> reference_variable ...
-            case PhpSymbols.reference_variable:
-            {
+            case PhpSymbols.reference_variable: {
                 myList = new LinkedList<String>();
                 myList.add(null);
                 break;
             }
 
             // -> compound_variable
-            case PhpSymbols.compound_variable:
-            {
+            case PhpSymbols.compound_variable: {
                 myList = compound_variable(firstChild);
                 break;
             }
 
-            default:
-            {
+            default: {
                 throw new RuntimeException("SNH");
             }
 
@@ -396,11 +376,10 @@ public class ParseNodeHeuristics {
         LinkedList<String> myList = null;
 
         ParseNode firstChild = node.getChild(0);
-        switch(firstChild.getSymbol()) {
+        switch (firstChild.getSymbol()) {
 
             // -> T_VARIABLE
-            case PhpSymbols.T_VARIABLE:
-            {
+            case PhpSymbols.T_VARIABLE: {
                 myList = new LinkedList<String>();
 
                 // try to resolve with literal analysis!
@@ -415,15 +394,13 @@ public class ParseNodeHeuristics {
             }
 
             // -> $ { expr }
-            case PhpSymbols.T_DOLLAR:
-            {
+            case PhpSymbols.T_DOLLAR: {
                 myList = new LinkedList<String>();
                 myList.add(null);
                 break;
             }
 
-            default:
-            {
+            default: {
                 throw new RuntimeException("SNH");
             }
 
@@ -444,11 +421,10 @@ public class ParseNodeHeuristics {
         }
 
         ParseNode secondChild = node.getChild(1);
-        switch(secondChild.getSymbol()) {
+        switch (secondChild.getSymbol()) {
 
             // -> encaps_list encaps_var
-            case PhpSymbols.encaps_var:
-            {
+            case PhpSymbols.encaps_var: {
                 LinkedList<String> list0 = encaps_list(firstChild);
                 LinkedList<String> list1 = encaps_var(secondChild);
                 myList = list0;
@@ -457,72 +433,62 @@ public class ParseNodeHeuristics {
             }
 
             // -> encaps_list T_STRING
-            case PhpSymbols.T_STRING:
-            {
+            case PhpSymbols.T_STRING: {
                 myList = encapsListHelper(node);
                 break;
             }
 
             // -> encaps_list T_NUM_STRING
-            case PhpSymbols.T_NUM_STRING:
-            {
+            case PhpSymbols.T_NUM_STRING: {
                 myList = encapsListHelper(node);
                 break;
             }
 
             // -> encaps_list T_ENCAPSED_AND_WHITESPACE
-            case PhpSymbols.T_ENCAPSED_AND_WHITESPACE:
-            {
+            case PhpSymbols.T_ENCAPSED_AND_WHITESPACE: {
                 myList = encapsListHelper(node);
                 break;
             }
 
             // -> encaps_list T_CHARACTER
             // escaped character?
-            case PhpSymbols.T_CHARACTER:
-            {
+            case PhpSymbols.T_CHARACTER: {
                 myList = encapsListHelper(node);
                 break;
             }
 
             // -> encaps_list [
-            case PhpSymbols.T_OPEN_RECT_BRACES:
-            {
+            case PhpSymbols.T_OPEN_RECT_BRACES: {
                 myList = encapsListHelper(node);
                 break;
             }
 
             // -> encaps_list ]
-            case PhpSymbols.T_CLOSE_RECT_BRACES:
-            {
+            case PhpSymbols.T_CLOSE_RECT_BRACES: {
                 myList = encapsListHelper(node);
                 break;
             }
 
             // -> encaps_list {
-            case PhpSymbols.T_OPEN_CURLY_BRACES:
-            {
+            case PhpSymbols.T_OPEN_CURLY_BRACES: {
                 myList = encapsListHelper(node);
                 break;
             }
 
             // -> encaps_list }
-            case PhpSymbols.T_CLOSE_CURLY_BRACES:
-            {
+            case PhpSymbols.T_CLOSE_CURLY_BRACES: {
                 myList = encapsListHelper(node);
                 break;
             }
 
             // -> encaps_list T_OBJECT_OPERATOR
-            case PhpSymbols.T_OBJECT_OPERATOR:
-            {
+            case PhpSymbols.T_OBJECT_OPERATOR: {
                 myList = new LinkedList<String>();
                 myList.add(null);
                 break;
             }
 
-            default:
-            {
+            default: {
                 throw new RuntimeException("SNH");
             }
         }

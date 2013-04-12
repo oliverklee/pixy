@@ -36,7 +36,7 @@ public final class CfgEdge {
     }
 
     public String getName() {
-        switch(this.type) {
+        switch (this.type) {
             case CfgEdge.FALSE_EDGE:
                 return "false";
             case CfgEdge.TRUE_EDGE:

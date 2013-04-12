@@ -13,7 +13,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 // *********************************************************************************
 
 public class CfgNodeEcho
-extends CfgNode {
+    extends CfgNode {
 
     private TacPlace place;
 
@@ -44,11 +44,11 @@ extends CfgNode {
 
     public void replaceVariable(int index, Variable replacement) {
         switch (index) {
-        case 0:
-            this.place = replacement;
-            break;
-        default:
-            throw new RuntimeException("SNH");
+            case 0:
+                this.place = replacement;
+                break;
+            default:
+                throw new RuntimeException("SNH");
         }
     }
 }

@@ -28,7 +28,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeHotspot;
 
 // doesn't use builtin functions file
 public class AliasTestCase
-extends TestCase {
+    extends TestCase {
 
     private String path;
     private TacConverter tac;
@@ -100,16 +100,16 @@ extends TestCase {
     // lattice elements contained in expectedElements
     private void checkContext(List expectedElements, int hotspotId) {
 
-        Map<Context,LatticeElement> hotspotPhi =
-            new HashMap<Context,LatticeElement>(this.getHotspotInfo(hotspotId).getPhi());
+        Map<Context, LatticeElement> hotspotPhi =
+            new HashMap<Context, LatticeElement>(this.getHotspotInfo(hotspotId).getPhi());
 
         // for each expected element...
-        for (Iterator expectedIter = expectedElements.iterator(); expectedIter.hasNext();) {
+        for (Iterator expectedIter = expectedElements.iterator(); expectedIter.hasNext(); ) {
             AliasLatticeElement expected = (AliasLatticeElement) expectedIter.next();
 
             // if you find it in the real context map: OK and remove it from there
             boolean foundIt = false;
-            for (Iterator elementIter = hotspotPhi.entrySet().iterator(); elementIter.hasNext();) {
+            for (Iterator elementIter = hotspotPhi.entrySet().iterator(); elementIter.hasNext(); ) {
                 Map.Entry entry = (Map.Entry) elementIter.next();
                 AliasLatticeElement element = (AliasLatticeElement) entry.getValue();
                 if (element.structureEquals(expected)) {
@@ -196,7 +196,6 @@ extends TestCase {
         Assert.assertTrue(elements[1].structureEquals(expected));
 
     }
-
 
     public void testDev01() {
 
@@ -1214,7 +1213,6 @@ extends TestCase {
         Assert.assertTrue(elements[0].structureEquals(expected));
 
     }
-
 
 //  test files from the tutorial ***************************************************
 

@@ -18,10 +18,10 @@ public class IncludeGraph {
     private Set<IncludeNode> nodes;
 
     // IncludeNode -> Set of IncludeNodes (successors)
-    private HashMap<IncludeNode,Set<IncludeNode>> adjSets;
+    private HashMap<IncludeNode, Set<IncludeNode>> adjSets;
 
     // IncludeNode -> Integer
-    private HashMap<IncludeNode,Integer> inDegrees;
+    private HashMap<IncludeNode, Integer> inDegrees;
 
 //  ********************************************************************************
 //  CONSTRUCTORS *******************************************************************
@@ -33,18 +33,18 @@ public class IncludeGraph {
         this.nodes = new HashSet<IncludeNode>();
         this.nodes.add(root);
 
-        this.adjSets = new HashMap<IncludeNode,Set<IncludeNode>>();
+        this.adjSets = new HashMap<IncludeNode, Set<IncludeNode>>();
         this.adjSets.put(root, new HashSet<IncludeNode>());
 
-        this.inDegrees = new HashMap<IncludeNode,Integer>();
+        this.inDegrees = new HashMap<IncludeNode, Integer>();
         this.inDegrees.put(root, new Integer(0));
     }
 
     private IncludeGraph(IncludeGraph cloneMe) {
         this.root = cloneMe.root;
         this.nodes = new HashSet<IncludeNode>(cloneMe.nodes);
-        this.adjSets = new HashMap<IncludeNode,Set<IncludeNode>>(cloneMe.adjSets);
-        this.inDegrees = new HashMap<IncludeNode,Integer>(cloneMe.inDegrees);
+        this.adjSets = new HashMap<IncludeNode, Set<IncludeNode>>(cloneMe.adjSets);
+        this.inDegrees = new HashMap<IncludeNode, Integer>(cloneMe.inDegrees);
     }
 
 //  ********************************************************************************
@@ -191,11 +191,11 @@ public class IncludeGraph {
             // nodes with in-degree == 0
             Set inDegreeZeros = clone.getInDegreeZeros();
 
-            if (inDegreeZeros.isEmpty())  {
+            if (inDegreeZeros.isEmpty()) {
                 goOn = false;
             } else {
                 // remove these nodes (together with their outgoing edges)
-                for (Iterator iter = inDegreeZeros.iterator(); iter.hasNext();) {
+                for (Iterator iter = inDegreeZeros.iterator(); iter.hasNext(); ) {
                     IncludeNode node = (IncludeNode) iter.next();
                     clone.removeZero(node);
                 }
@@ -231,7 +231,7 @@ public class IncludeGraph {
     // for all its successors); assumes that the given node has no incoming edges
     private void removeZero(IncludeNode node) {
         Set adjSet = (Set) this.adjSets.get(node);
-        for (Iterator iter = adjSet.iterator(); iter.hasNext();) {
+        for (Iterator iter = adjSet.iterator(); iter.hasNext(); ) {
             IncludeNode successor = (IncludeNode) iter.next();
             this.decreaseInDegree(successor);
         }

@@ -17,7 +17,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 public class LiteralTfCallPrep
-extends TransferFunction {
+    extends TransferFunction {
 
     private List actualParams;
     private List formalParams;
@@ -31,9 +31,9 @@ extends TransferFunction {
 //  *********************************************************************************
 
     public LiteralTfCallPrep(List actualParams, List formalParams,
-            TacFunction caller, TacFunction callee,
-            LiteralAnalysis literalAnalysis,
-            CfgNode cfgNode) {
+                             TacFunction caller, TacFunction callee,
+                             LiteralAnalysis literalAnalysis,
+                             CfgNode cfgNode) {
 
         this.actualParams = actualParams;
         this.formalParams = formalParams;

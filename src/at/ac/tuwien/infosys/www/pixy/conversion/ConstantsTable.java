@@ -11,19 +11,19 @@ public class ConstantsTable {
 
     // constant's label (String) -> Constant;
     // works in a case-sensitive way (i.e. nothing unusual to be done)
-    private Map<String,Constant> constants;
+    private Map<String, Constant> constants;
 
     // lowercase Constant label -> list of Constants;
     // each list contains Constants whose labels only differ in case
-    private Map<String,List<Constant>> insensitiveGroups;
+    private Map<String, List<Constant>> insensitiveGroups;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
     ConstantsTable() {
-        this.constants = new LinkedHashMap<String,Constant>();
-        this.insensitiveGroups = new HashMap<String,List<Constant>>();
+        this.constants = new LinkedHashMap<String, Constant>();
+        this.insensitiveGroups = new HashMap<String, List<Constant>>();
     }
 
 // *********************************************************************************
@@ -38,7 +38,7 @@ public class ConstantsTable {
         return ((List) this.insensitiveGroups.get(label.toLowerCase()));
     }
 
-    public Map<String,Constant> getConstants() {
+    public Map<String, Constant> getConstants() {
         return this.constants;
     }
 

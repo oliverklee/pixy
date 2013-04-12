@@ -8,7 +8,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 // transfer function for array assignment nodes ("left = array()")
 public class LiteralTfAssignArray
-extends TransferFunction {
+    extends TransferFunction {
 
     private Variable left;
     private boolean supported;

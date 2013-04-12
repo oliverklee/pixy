@@ -164,7 +164,7 @@ public final class Cfg {
 // bfIteratorHelper ****************************************************************
 
     private void bfIteratorHelper(List<CfgNode> list, LinkedList<CfgNode> queue,
-            Set<CfgNode> visited) {
+                                  Set<CfgNode> visited) {
 
         CfgNode cfgNode = (CfgNode) queue.removeFirst();
         list.add(cfgNode);
@@ -186,7 +186,7 @@ public final class Cfg {
 
         // if the queue is non-empty: recurse
         if (queue.size() > 0) {
-            bfIteratorHelper(list, queue,visited);
+            bfIteratorHelper(list, queue, visited);
         }
     }
 

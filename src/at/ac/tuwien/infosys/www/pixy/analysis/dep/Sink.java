@@ -10,7 +10,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 // note: this class has a natural ordering that is inconsistent with equals()
 public class Sink
-implements Comparable<Sink> {
+    implements Comparable<Sink> {
 
     // a list of sensitive places
     // (i.e. places for which we want to get dependency graphs)

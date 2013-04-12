@@ -65,7 +65,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeUnset;
 
 // dependency analysis
 public class DepAnalysis
-extends InterAnalysis {
+    extends InterAnalysis {
 
     private TacConverter tac;
     private List<TacPlace> places;
@@ -81,8 +81,6 @@ extends InterAnalysis {
     // has detectVulns() already been called?
     private boolean finishedDetection;
 
-
-
 //  ********************************************************************************
 //  CONSTRUCTORS *******************************************************************
 //  ********************************************************************************
@@ -90,11 +88,11 @@ extends InterAnalysis {
 //  ExTaintAnalysis ****************************************************************
 
     public DepAnalysis(TacConverter tac,
-            AliasAnalysis aliasAnalysis,
-            LiteralAnalysis literalAnalysis,
-            AnalysisType analysisType,
-            InterWorkList workList,
-            ModAnalysis modAnalysis) {
+                       AliasAnalysis aliasAnalysis,
+                       LiteralAnalysis literalAnalysis,
+                       AnalysisType analysisType,
+                       InterWorkList workList,
+                       ModAnalysis modAnalysis) {
 
         this.tac = tac;
         this.places = tac.getPlacesList();
@@ -110,7 +108,7 @@ extends InterAnalysis {
         this.finishedDetection = false;
 
         this.initGeneral(tac.getAllFunctions(), tac.getMainFunction(),
-                analysisType, workList);
+            analysisType, workList);
 
     }
 
@@ -139,7 +137,7 @@ extends InterAnalysis {
     // of this node is NOT applied);
     // only required by DepGraph
     public DepLatticeElement applyInsideBasicBlock(
-            CfgNodeBasicBlock basicBlock, CfgNode untilHere, DepLatticeElement invalue) {
+        CfgNodeBasicBlock basicBlock, CfgNode untilHere, DepLatticeElement invalue) {
 
         DepLatticeElement outValue = new DepLatticeElement((DepLatticeElement) invalue);
         List containedNodes = basicBlock.getContainedNodes();
@@ -167,7 +165,7 @@ extends InterAnalysis {
     // (i.e., the transfer function of this node is NOT applied);
     // only required by DepGraph
     public DepLatticeElement applyInsideDefaultCfg(CfgNode defaultNode,
-            CfgNode untilHere, DepLatticeElement invalue) {
+                                                   CfgNode untilHere, DepLatticeElement invalue) {
 
         DepLatticeElement out = new DepLatticeElement((DepLatticeElement) invalue);
 
@@ -197,11 +195,11 @@ extends InterAnalysis {
         Set mayAliases = this.aliasAnalysis.getMayAliases(left, aliasInNode);
 
         return new DepTfAssignSimple(
-                        left,
-                        cfgNode.getRight(),
-                        mustAliases,
-                        mayAliases,
-                        cfgNode);
+            left,
+            cfgNode.getRight(),
+            mustAliases,
+            mayAliases,
+            cfgNode);
     }
 
     protected TransferFunction assignUnary(CfgNode cfgNodeX, CfgNode aliasInNode) {
@@ -212,12 +210,12 @@ extends InterAnalysis {
         Set mayAliases = this.aliasAnalysis.getMayAliases(left, aliasInNode);
 
         return new DepTfAssignUnary(
-                        left,
-                        cfgNode.getRight(),
-                        cfgNode.getOperator(),
-                        mustAliases,
-                        mayAliases,
-                        cfgNode);
+            left,
+            cfgNode.getRight(),
+            cfgNode.getOperator(),
+            mustAliases,
+            mayAliases,
+            cfgNode);
     }
 
     protected TransferFunction assignBinary(CfgNode cfgNodeX, CfgNode aliasInNode) {
@@ -228,21 +226,21 @@ extends InterAnalysis {
         Set mayAliases = this.aliasAnalysis.getMayAliases(left, aliasInNode);
 
         return new DepTfAssignBinary(
-                        left,
-                        cfgNode.getLeftOperand(),
-                        cfgNode.getRightOperand(),
-                        cfgNode.getOperator(),
-                        mustAliases,
-                        mayAliases,
-                        cfgNode);
+            left,
+            cfgNode.getLeftOperand(),
+            cfgNode.getRightOperand(),
+            cfgNode.getOperator(),
+            mustAliases,
+            mayAliases,
+            cfgNode);
     }
 
     protected TransferFunction assignRef(CfgNode cfgNodeX) {
         CfgNodeAssignRef cfgNode = (CfgNodeAssignRef) cfgNodeX;
         return new DepTfAssignRef(
-                cfgNode.getLeft(),
-                cfgNode.getRight(),
-                cfgNode);
+            cfgNode.getLeft(),
+            cfgNode.getRight(),
+            cfgNode);
     }
 
     protected TransferFunction unset(CfgNode cfgNodeX) {
@@ -306,11 +304,11 @@ extends InterAnalysis {
             // the unknown function
             throw new RuntimeException(
                 "More actual than formal params for function " +
-                cfgNode.getFunctionNamePlace().toString() + " on line " + cfgNode.getOrigLineno());
+                    cfgNode.getFunctionNamePlace().toString() + " on line " + cfgNode.getOrigLineno());
 
         } else {
             tf = new DepTfCallPrep(actualParams, formalParams,
-                    callingFunction, calledFunction, this, cfgNode);
+                callingFunction, calledFunction, this, cfgNode);
         }
 
         return tf;
@@ -345,13 +343,13 @@ extends InterAnalysis {
 
             // quite powerful transfer function, does many things
             tf = new DepTfCallRet(
-                    this.interAnalysisInfo.getAnalysisNode(cfgNodePrep),
-                    callingFunction,
-                    calledFunction,
-                    cfgNodePrep,
-                    cfgNodeRet,
-                    this.aliasAnalysis,
-                    modSet);
+                this.interAnalysisInfo.getAnalysisNode(cfgNodePrep),
+                callingFunction,
+                calledFunction,
+                cfgNodePrep,
+                cfgNodeRet,
+                this.aliasAnalysis,
+                modSet);
         }
 
         return tf;
@@ -400,9 +398,9 @@ extends InterAnalysis {
 
         CfgNodeIsset cfgNode = (CfgNodeIsset) cfgNodeX;
         return new DepTfIsset(
-                cfgNode.getLeft(),
-                cfgNode.getRight(),
-                cfgNode);
+            cfgNode.getLeft(),
+            cfgNode.getRight(),
+            cfgNode);
     }
 
     protected TransferFunction define(CfgNode cfgNodeX) {
@@ -453,7 +451,7 @@ extends InterAnalysis {
         for (SinkProblem problem : problems) {
 
             DepGraph depGraph = DepGraph.create(problem.getPlace(),
-                    sink.getNode(), this.interAnalysisInfo, mainSymTab, this);
+                sink.getNode(), this.interAnalysisInfo, mainSymTab, this);
 
             // a null depGraph is returned if this sink is unreachable
             if (depGraph == null) {
@@ -501,7 +499,7 @@ extends InterAnalysis {
         SymbolTable mainSymTab = mainFunc.getSymbolTable();
 
         // map operation name -> number of occurrences
-        Map<String,Integer> opMap = new HashMap<String,Integer>();
+        Map<String, Integer> opMap = new HashMap<String, Integer>();
 
         // for each sink...
         int i = 0;
@@ -522,7 +520,7 @@ extends InterAnalysis {
             for (SinkProblem problem : problems) {
 
                 DepGraph depGraph = DepGraph.create(problem.getPlace(),
-                        sink.getNode(), this.interAnalysisInfo, mainSymTab, this);
+                    sink.getNode(), this.interAnalysisInfo, mainSymTab, this);
 
                 // a null depGraph is returned if this sink is unreachable
                 if (depGraph == null) {
@@ -565,7 +563,7 @@ extends InterAnalysis {
                     // operation counters
                     System.out.println("Dep Graph Operation Counters");
                     System.out.println("------------------------------");
-                    Map<String,Integer> singleOpMap = depGraph.getOpMap();
+                    Map<String, Integer> singleOpMap = depGraph.getOpMap();
                     for (Map.Entry<String, Integer> entry : singleOpMap.entrySet()) {
                         String opName = entry.getKey();
                         Integer opCount = entry.getValue();
@@ -631,7 +629,7 @@ extends InterAnalysis {
     public void detectVulns() {
 
         if (true)
-        throw new RuntimeException("dummy method");
+            throw new RuntimeException("dummy method");
     }
 
 //  recycle ************************************************************************

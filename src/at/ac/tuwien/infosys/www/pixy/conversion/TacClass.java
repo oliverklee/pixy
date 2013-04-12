@@ -16,15 +16,15 @@ public class TacClass {
     private String name;
 
     // method name -> TacFunction
-    private Map<String,TacFunction> methods;
+    private Map<String, TacFunction> methods;
 
     // member name -> Pair(initializer cfg, TacPlace that summarizes the cfg)
-    private Map<String,TacMember> members;
+    private Map<String, TacMember> members;
 
     TacClass(String name, ParseNode parseNode) {
         this.name = name;
-        this.methods = new HashMap<String,TacFunction>();
-        this.members = new HashMap<String,TacMember>();
+        this.methods = new HashMap<String, TacFunction>();
+        this.members = new HashMap<String, TacMember>();
         this.parseNode = parseNode;
     }
 

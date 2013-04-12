@@ -53,7 +53,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeTester;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeUnset;
 
 public class LiteralAnalysis
-extends InterAnalysis {
+    extends InterAnalysis {
 
     private TacConverter tac;
 
@@ -72,9 +72,9 @@ extends InterAnalysis {
 //  LiteralAnalysis ****************************************************************
 
     public LiteralAnalysis(
-            TacConverter tac,
-            AliasAnalysis aliasAnalysis, AnalysisType analysisType,
-            InterWorkList workList) {
+        TacConverter tac,
+        AliasAnalysis aliasAnalysis, AnalysisType analysisType,
+        InterWorkList workList) {
 
         this.tac = tac;
         this.repos = new GenericRepos<LatticeElement>();
@@ -82,7 +82,7 @@ extends InterAnalysis {
         this.includeNodes = new LinkedList<CfgNodeInclude>();
 
         this.initGeneral(tac.getAllFunctions(), tac.getMainFunction(),
-                analysisType, workList);
+            analysisType, workList);
     }
 
     // dummy constructor
@@ -93,8 +93,8 @@ extends InterAnalysis {
 
     protected void initLattice() {
         this.lattice = new LiteralLattice(
-                this.tac.getPlacesList(), this.tac.getConstantsTable(), this.functions,
-                this.tac.getSuperSymbolTable());
+            this.tac.getPlacesList(), this.tac.getConstantsTable(), this.functions,
+            this.tac.getSuperSymbolTable());
         // start value for literal analysis:
         // a lattice element that adds no information to the default lattice element
         this.startValue = new LiteralLatticeElement();
@@ -117,10 +117,10 @@ extends InterAnalysis {
         Set mayAliases = this.aliasAnalysis.getMayAliases(left, aliasInNode);
 
         return new LiteralTfAssignSimple(
-                left,
-                cfgNode.getRight(),
-                mustAliases,
-                mayAliases);
+            left,
+            cfgNode.getRight(),
+            mustAliases,
+            mayAliases);
     }
 
     protected TransferFunction assignUnary(CfgNode cfgNodeX, CfgNode aliasInNode) {
@@ -131,11 +131,11 @@ extends InterAnalysis {
         Set mayAliases = this.aliasAnalysis.getMayAliases(left, aliasInNode);
 
         return new LiteralTfAssignUnary(
-                        left,
-                        cfgNode.getRight(),
-                        cfgNode.getOperator(),
-                        mustAliases,
-                        mayAliases);
+            left,
+            cfgNode.getRight(),
+            cfgNode.getOperator(),
+            mustAliases,
+            mayAliases);
     }
 
     protected TransferFunction assignBinary(CfgNode cfgNodeX, CfgNode aliasInNode) {
@@ -146,20 +146,20 @@ extends InterAnalysis {
         Set mayAliases = this.aliasAnalysis.getMayAliases(left, aliasInNode);
 
         return new LiteralTfAssignBinary(
-                        left,
-                        cfgNode.getLeftOperand(),
-                        cfgNode.getRightOperand(),
-                        cfgNode.getOperator(),
-                        mustAliases,
-                        mayAliases,
-                        cfgNode);
+            left,
+            cfgNode.getLeftOperand(),
+            cfgNode.getRightOperand(),
+            cfgNode.getOperator(),
+            mustAliases,
+            mayAliases,
+            cfgNode);
     }
 
     protected TransferFunction assignRef(CfgNode cfgNodeX) {
         CfgNodeAssignRef cfgNode = (CfgNodeAssignRef) cfgNodeX;
         return new LiteralTfAssignRef(
-                cfgNode.getLeft(),
-                cfgNode.getRight());
+            cfgNode.getLeft(),
+            cfgNode.getRight());
     }
 
     protected TransferFunction unset(CfgNode cfgNodeX) {
@@ -210,12 +210,12 @@ extends InterAnalysis {
             // the unknown function
             throw new RuntimeException(
                 "More actual than formal params for function " +
-                cfgNode.getFunctionNamePlace().toString() + " in file " +
-                cfgNode.getFileName() + ", line " + cfgNode.getOrigLineno());
+                    cfgNode.getFunctionNamePlace().toString() + " in file " +
+                    cfgNode.getFileName() + ", line " + cfgNode.getOrigLineno());
 
         } else {
             tf = new LiteralTfCallPrep(actualParams, formalParams,
-                    callingFunction, calledFunction, this, cfgNode);
+                callingFunction, calledFunction, this, cfgNode);
         }
 
         return tf;
@@ -241,8 +241,8 @@ extends InterAnalysis {
             tf = new LiteralTfCallRetUnknown(cfgNodeRet);
         } else {
 
-        // quite powerful transfer function, does many things
-        tf = new LiteralTfCallRet(
+            // quite powerful transfer function, does many things
+            tf = new LiteralTfCallRet(
                 (InterAnalysisNode) this.interAnalysisInfo.getAnalysisNode(cfgNodePrep),
                 callingFunction,
                 calledFunction,
@@ -290,10 +290,10 @@ extends InterAnalysis {
             Set mayAliases = this.aliasAnalysis.getMayAliases(globalOp, cfgNode);
 
             return new LiteralTfAssignSimple(
-                    globalOp,
-                    Literal.TOP,
-                    mustAliases,
-                    mayAliases);
+                globalOp,
+                Literal.TOP,
+                mustAliases,
+                mayAliases);
 
         } else {
             return new LiteralTfAssignRef(globalOp, realGlobal);
@@ -305,8 +305,8 @@ extends InterAnalysis {
 
         CfgNodeIsset cfgNode = (CfgNodeIsset) cfgNodeX;
         return new LiteralTfIsset(
-                    cfgNode.getLeft(),
-                    cfgNode.getRight());
+            cfgNode.getLeft(),
+            cfgNode.getRight());
     }
 
     protected TransferFunction define(CfgNode cfgNodeX) {

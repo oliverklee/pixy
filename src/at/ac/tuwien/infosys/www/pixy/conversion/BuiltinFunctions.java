@@ -11,7 +11,8 @@ public class BuiltinFunctions {
     private static Set allBuiltinFunctions = BuiltinFunctions.initBuiltinFunctions();
 
     // we don't want instances of this helper class
-    private BuiltinFunctions() { }
+    private BuiltinFunctions() {
+    }
 
     // initializes the builtin functions set
     private static Set initBuiltinFunctions() {

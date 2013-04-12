@@ -11,11 +11,11 @@ import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 
 // an AnalysisNode holds analysis-specific information for a certain CFGNode
 public abstract class InterAnalysisNode
-extends AnalysisNode {
+    extends AnalysisNode {
 
     // context map for interprocedural analysis
     // (Context -> input LatticeElement at current CFG node)
-    Map<Context,LatticeElement> phi;
+    Map<Context, LatticeElement> phi;
 
     // value resulting from lazy table folding; must only be modified
     // via setFoldedValue, since we want it to be recycled for some analyses!
@@ -27,7 +27,7 @@ extends AnalysisNode {
 
     protected InterAnalysisNode(TransferFunction tf) {
         super(tf);
-        this.phi = new HashMap<Context,LatticeElement>();
+        this.phi = new HashMap<Context, LatticeElement>();
         this.foldedValue = null;
     }
 
@@ -35,7 +35,7 @@ extends AnalysisNode {
 // GET *****************************************************************************
 // *********************************************************************************
 
-    public Map<Context,LatticeElement> getPhi() {
+    public Map<Context, LatticeElement> getPhi() {
         return this.phi;
     }
 
@@ -123,8 +123,6 @@ extends AnalysisNode {
 
         return this.foldedValue;
     }
-
-
 
 // *********************************************************************************
 // SET *****************************************************************************

@@ -56,7 +56,6 @@ public class MyTransductions {
             throw new RuntimeException("");
         }
 
-
         // read result back into an Automaton
         Automaton result = Automaton.fromFsmTools(tempDir + "result.txt");
 
@@ -76,14 +75,13 @@ public class MyTransductions {
     }
 
     private MyTransducer str_replace_transducer(String search, String replace)
-    throws Exception {
+        throws Exception {
 
         if (search.length() == 0 || replace.length() == 0) {
             throw new RuntimeException("not yet");
         }
 
         TransducerNivat t = new TransducerNivat();
-
 
         // the start state
         State start = t.addState(true, true);
@@ -102,7 +100,7 @@ public class MyTransductions {
         for (int i = 1; i < search.length(); i++) {
             State next = t.addState(false, false);
 
-            pushback.add(search.charAt(i-1));
+            pushback.add(search.charAt(i - 1));
 
             // outgoing linear acceptor transition
             t.addTransition(new Transition(current, new TransducerRelation(search.charAt(i), null), next));
@@ -136,10 +134,9 @@ public class MyTransductions {
         return new MyTransducer(t);
     }
 
-
     public static void makeCompositeTransition(
-            TransducerNivat t, List<Object> composite, Object firstInLabel, State from, State to)
-    throws Exception {
+        TransducerNivat t, List<Object> composite, Object firstInLabel, State from, State to)
+        throws Exception {
 
         if (composite.size() == 0) {
             throw new RuntimeException("SNH");
@@ -174,13 +171,11 @@ public class MyTransductions {
             i++;
         }
 
-
-
     }
 
     public static void addPrefixedRemainingTransitions(
-            TransducerNivat t, MyAlphabet alphabet, List<Object> prefix, State from, State to)
-    throws Exception {
+        TransducerNivat t, MyAlphabet alphabet, List<Object> prefix, State from, State to)
+        throws Exception {
 
         Set fromTrans = t.delta(from);
         Set<Object> existingInLabels = new HashSet<Object>();
@@ -207,14 +202,14 @@ public class MyTransductions {
     // adds id-transducer-transitions for all labels for which there is no
     // transition yet
     public static void addRemainingTransitions(
-            TransducerNivat t, MyAlphabet alphabet, State from, State to)
-    throws Exception {
+        TransducerNivat t, MyAlphabet alphabet, State from, State to)
+        throws Exception {
 
         Set fromTrans = t.delta(from);
         Set<Object> existingInLabels = new HashSet<Object>();
 
         // collect existing in-labels from all transitions leaving "from"
-        for (Iterator iter = fromTrans.iterator(); iter.hasNext();) {
+        for (Iterator iter = fromTrans.iterator(); iter.hasNext(); ) {
             Transition trans = (Transition) iter.next();
             TransducerRelation rel = (TransducerRelation) trans.label();
             Object inLabel = rel.getIn();

@@ -14,7 +14,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 // transfer function for unset nodes
 public class LiteralTfUnset
-extends TransferFunction {
+    extends TransferFunction {
 
     private Variable operand;
     private boolean supported;

@@ -11,7 +11,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 // transfer function for simple assignment nodes
 public class DepTfAssignSimple
-extends TransferFunction {
+    extends TransferFunction {
 
     private Variable left;
     private Set mustAliases;
@@ -23,7 +23,7 @@ extends TransferFunction {
 // *********************************************************************************
 
     public DepTfAssignSimple(TacPlace left, TacPlace right,
-            Set mustAliases, Set mayAliases, CfgNode cfgNode) {
+                             Set mustAliases, Set mayAliases, CfgNode cfgNode) {
 
         this.left = (Variable) left;  // must be a variable
         this.mustAliases = mustAliases;

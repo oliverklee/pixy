@@ -15,7 +15,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeTester;
 
 // transfer function for special ~_test_ node
 public class DepTfTester
-extends TransferFunction {
+    extends TransferFunction {
 
     // provides access to the return variable of the function enclosing
     // this ~_test_ node
@@ -39,14 +39,14 @@ extends TransferFunction {
         this.testUs = new LinkedList<Variable>();
 
         // extract formals that are to be tested
-        for (Iterator iter = cfgNode.getParamNumbers().iterator(); iter.hasNext();) {
+        for (Iterator iter = cfgNode.getParamNumbers().iterator(); iter.hasNext(); ) {
             Integer paramNum = (Integer) iter.next();
             int param_int = paramNum.intValue();
             TacFormalParam formalParam = function.getParam(param_int);
             if (formalParam == null) {
                 throw new RuntimeException("Error: Function " + function.getName() +
-                        " has no param #" + param_int + "; check builtin functions" +
-                        "file");
+                    " has no param #" + param_int + "; check builtin functions" +
+                    "file");
             }
             this.testUs.add(formalParam.getVariable());
         }

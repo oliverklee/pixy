@@ -18,7 +18,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeIncludeStart;
 
 // inclusion dominator analysis
 public class IncDomAnalysis
-extends IntraAnalysis {
+    extends IntraAnalysis {
 
     private GenericRepos<LatticeElement> repos;
 
@@ -28,7 +28,7 @@ extends IntraAnalysis {
 
 //  IncDomAnalysis *****************************************************************
 
-    public IncDomAnalysis (TacFunction function) {
+    public IncDomAnalysis(TacFunction function) {
         this.repos = new GenericRepos<LatticeElement>();
         this.initGeneral(function);
     }
@@ -79,7 +79,7 @@ extends IntraAnalysis {
         //   includeStart
         // * output: a chain of unclosed includeStart nodes
         LinkedList<CfgNode> chain = new LinkedList<CfgNode>();
-        for (Iterator iterator = dominators.iterator(); iterator.hasNext();) {
+        for (Iterator iterator = dominators.iterator(); iterator.hasNext(); ) {
             CfgNode dom = (CfgNode) iterator.next();
             if (dom instanceof CfgNodeIncludeStart) {
                 chain.add(dom);
@@ -110,7 +110,6 @@ extends IntraAnalysis {
         incDomAnalysis.analyze();
         return incDomAnalysis.getIncludeChain(cfgNode);
     }
-
 
 //  recycle ************************************************************************
 

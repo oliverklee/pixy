@@ -10,7 +10,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 // transfer function for simple assignment nodes
 public class AliasTfAssignRef
-extends TransferFunction {
+    extends TransferFunction {
 
     private Variable left;
     private Variable right;
@@ -28,7 +28,7 @@ extends TransferFunction {
         this.left = (Variable) left;
         this.right = (Variable) right;
 
-        this.aliasAnalysis= aliasAnalysis;
+        this.aliasAnalysis = aliasAnalysis;
 
         // check for unsupported features
         this.supported =

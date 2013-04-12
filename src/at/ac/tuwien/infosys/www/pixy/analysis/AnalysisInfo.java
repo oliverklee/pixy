@@ -12,17 +12,15 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 public abstract class AnalysisInfo {
 
     // CfgNode -> AnalysisNode
-    protected HashMap<CfgNode,AnalysisNode> map;
+    protected HashMap<CfgNode, AnalysisNode> map;
 
     protected AnalysisInfo() {
-        this.map = new HashMap<CfgNode,AnalysisNode>();
+        this.map = new HashMap<CfgNode, AnalysisNode>();
     }
 
     public void add(CfgNode cfgNode, AnalysisNode analysisNode) {
         this.map.put(cfgNode, analysisNode);
     }
-
-
 
     public int size() {
         return this.map.size();

@@ -13,8 +13,8 @@ import at.ac.tuwien.infosys.www.pixy.conversion.SymbolTable;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 public class AliasLatticeElement
-extends LatticeElement
-implements Recyclable {
+    extends LatticeElement
+    implements Recyclable {
 
     private MustAliases mustAliases;
     private MayAliases mayAliases;
@@ -121,7 +121,7 @@ implements Recyclable {
         // we will create a new MayAlias object as replacement for our current one
         MayAliases newMayAliases = new MayAliases();
 
-        for (Iterator iter = this.mayAliases.getPairs().iterator(); iter.hasNext();) {
+        for (Iterator iter = this.mayAliases.getPairs().iterator(); iter.hasNext(); ) {
             MayAliasPair pair = (MayAliasPair) iter.next();
             Iterator pairIter = pair.getPair().iterator();
             Variable firstElement = (Variable) pairIter.next();
@@ -137,7 +137,7 @@ implements Recyclable {
     // merges the must-alias-groups that the given variables belong to (also
     // considering implicit one-element groups)
     public void merge(Variable x, Variable y) {
-        this.mustAliases.merge(x, y );
+        this.mustAliases.merge(x, y);
     }
 
     // adds the info from "source" to *this* alias information
@@ -151,7 +151,7 @@ implements Recyclable {
 
     // adds all pairs (variable from varSet, var) to the may-aliases
     public void addMayAliasPairs(Set varSet, Variable var) {
-        for (Iterator iter = varSet.iterator(); iter.hasNext();) {
+        for (Iterator iter = varSet.iterator(); iter.hasNext(); ) {
             Variable varFromSet = (Variable) iter.next();
             this.add(new MayAliasPair(varFromSet, var));
         }
@@ -180,7 +180,7 @@ implements Recyclable {
     }
 
     // lubs the given element over *this* element
-    public void lub (LatticeElement element) {
+    public void lub(LatticeElement element) {
         if (!(element instanceof AliasLatticeElement)) {
             throw new RuntimeException("SNH");
         }
@@ -188,7 +188,7 @@ implements Recyclable {
     }
 
     // lubs the given element over *this* element
-    public void lub (AliasLatticeElement element) {
+    public void lub(AliasLatticeElement element) {
 
         // easy: union of may-aliases
         this.mayAliases.add(element.getMayAliases());
@@ -219,12 +219,12 @@ implements Recyclable {
 
         // single edges in the resulting graph correspond to may-alias pairs
         Set singleEdges = sccGraph.getSingleEdges();
-        for (Iterator iter = singleEdges.iterator(); iter.hasNext();) {
+        for (Iterator iter = singleEdges.iterator(); iter.hasNext(); ) {
             SccEdge singleEdge = (SccEdge) iter.next();
             this.mayAliases.add(
-                    new MayAliasPair(
-                            singleEdge.getN1().getLabel(),
-                            singleEdge.getN2().getLabel()));
+                new MayAliasPair(
+                    singleEdge.getN1().getLabel(),
+                    singleEdge.getN2().getLabel()));
         }
 
         // SCC's formed by double edges in the resulting graph correspond
@@ -236,7 +236,6 @@ implements Recyclable {
         }
         this.mustAliases = myNewMustAliases;
     }
-
 
     // responsible for redirection "left =& right"
     public void redirect(Variable left, Variable right) {
@@ -271,7 +270,7 @@ implements Recyclable {
     public boolean structureEquals(Object compX) {
         AliasLatticeElement comp = (AliasLatticeElement) compX;
         if (this.mustAliases.structureEquals(comp.getMustAliases()) &&
-                this.mayAliases.structureEquals(comp.getMayAliases())) {
+            this.mayAliases.structureEquals(comp.getMayAliases())) {
             return true;
         } else {
             return false;
@@ -280,8 +279,8 @@ implements Recyclable {
 
     public int structureHashCode() {
         int hashCode = 17;
-        hashCode = 37*hashCode + this.mustAliases.structureHashCode();
-        hashCode = 37*hashCode + this.mayAliases.structureHashCode();
+        hashCode = 37 * hashCode + this.mustAliases.structureHashCode();
+        hashCode = 37 * hashCode + this.mayAliases.structureHashCode();
         return hashCode;
     }
 

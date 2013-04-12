@@ -9,16 +9,16 @@ import java.util.Map;
 public class SymbolTable {
 
     // map variable object -> Variable object
-    private Map<Variable,Variable> variables;
+    private Map<Variable, Variable> variables;
     private String name;    // usually corresponds to a function name (lowercase)
     private boolean isSuperSymTab;
     private boolean isMain;
 
     // auxiliary map for g-shadows: global -> g-shadow
-    private Map<Variable,Variable> globals2GShadows;
+    private Map<Variable, Variable> globals2GShadows;
 
     // auxiliary map for f-shadows: formal -> f-shadow
-    private Map<Variable,Variable> formals2FShadows;
+    private Map<Variable, Variable> formals2FShadows;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
@@ -28,7 +28,7 @@ public class SymbolTable {
         if (name == null) {
             throw new RuntimeException("SNH");
         }
-        this.variables = new LinkedHashMap<Variable,Variable>();
+        this.variables = new LinkedHashMap<Variable, Variable>();
         this.name = name;
         this.isSuperSymTab = isSuperSymTab;
         this.isMain = false;
@@ -42,8 +42,8 @@ public class SymbolTable {
         if (name.equals(InternalStrings.mainFunctionName)) {
             this.isMain = true;
         }
-        this.globals2GShadows = new HashMap<Variable,Variable>();
-        this.formals2FShadows = new HashMap<Variable,Variable>();
+        this.globals2GShadows = new HashMap<Variable, Variable>();
+        this.formals2FShadows = new HashMap<Variable, Variable>();
     }
 
 // *********************************************************************************
@@ -58,7 +58,7 @@ public class SymbolTable {
         return ((Variable) this.variables.get(new Variable(varName, this)));
     }
 
-    public Map<Variable,Variable> getVariables() {
+    public Map<Variable, Variable> getVariables() {
         return this.variables;
     }
 
@@ -98,11 +98,11 @@ public class SymbolTable {
         return this.formals2FShadows.get(formal);
     }
 
-    public Map<Variable,Variable> getGlobals2GShadows() {
+    public Map<Variable, Variable> getGlobals2GShadows() {
         return this.globals2GShadows;
     }
 
-    public Map<Variable,Variable> getFormals2FShadows() {
+    public Map<Variable, Variable> getFormals2FShadows() {
         return this.formals2FShadows;
     }
 
@@ -118,7 +118,7 @@ public class SymbolTable {
     // creates and adds a g-shadow for the given global variable
     void addGShadow(Variable global) {
         Variable gShadow = new Variable(
-                global.getName() + InternalStrings.gShadowSuffix, this);
+            global.getName() + InternalStrings.gShadowSuffix, this);
         this.variables.put(gShadow, gShadow);
         this.globals2GShadows.put(global, gShadow);
     }
@@ -126,7 +126,7 @@ public class SymbolTable {
     // creates and adds an f-shadow for the given variable (formal param)
     void addFShadow(Variable formal) {
         Variable fShadow = new Variable(
-                formal.getName() + InternalStrings.fShadowSuffix, this);
+            formal.getName() + InternalStrings.fShadowSuffix, this);
         this.variables.put(fShadow, fShadow);
         this.formals2FShadows.put(formal, fShadow);
     }

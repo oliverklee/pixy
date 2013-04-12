@@ -2,7 +2,7 @@ package at.ac.tuwien.infosys.www.pixy.analysis.dep;
 
 // special node for approximating SCCs in the string graph
 public class DepGraphSccNode
-extends DepGraphNode {
+    extends DepGraphNode {
 
     DepGraphSccNode() {
     }

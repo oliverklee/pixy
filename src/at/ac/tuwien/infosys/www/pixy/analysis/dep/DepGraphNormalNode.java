@@ -9,7 +9,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 public class DepGraphNormalNode
-extends DepGraphNode {
+    extends DepGraphNode {
 
     private TacPlace place;
     private CfgNode cfgNode;
@@ -33,14 +33,14 @@ extends DepGraphNode {
 
     public String comparableName() {
         return Dumper.escapeDot(this.place.toString(), 0) + " (" + this.cfgNode.getOrigLineno() + ")" +
-        "\\n" + this.cfgNode.getFileName();
+            "\\n" + this.cfgNode.getFileName();
     }
 
     // no path
     public String dotNameShort() {
         String fileName = this.cfgNode.getFileName();
         return Dumper.escapeDot(this.place.toString(), 0) + " (" + this.cfgNode.getOrigLineno() + ")" +
-        "\\n" + fileName.substring(fileName.lastIndexOf('/')+1);
+            "\\n" + fileName.substring(fileName.lastIndexOf('/') + 1);
     }
 
     public String dotNameVerbose(boolean isModelled) {
@@ -58,9 +58,9 @@ extends DepGraphNode {
             Variable var = (Variable) this.place;
             retme += "Var: " + Dumper.escapeDot(var.getName(), 0) + "\\n";
             retme += "Func: " + Dumper.escapeDot(var.getSymbolTable().getName(), 0) + "\\n";
-        } else if (this.place instanceof Constant){
+        } else if (this.place instanceof Constant) {
             retme += "Const: " + Dumper.escapeDot(this.place.toString(), 0) + "\\n";
-        } else if (this.place instanceof Literal){
+        } else if (this.place instanceof Literal) {
             retme += "Lit: " + Dumper.escapeDot(this.place.toString(), 0) + "\\n";
         } else {
             throw new RuntimeException("SNH");
@@ -68,8 +68,6 @@ extends DepGraphNode {
 
         return retme;
     }
-
-
 
 //  ********************************************************************************
 
@@ -137,8 +135,8 @@ extends DepGraphNode {
 
     public int hashCode() {
         int hashCode = 17;
-        hashCode = 37*hashCode + this.place.hashCode();
-        hashCode = 37*hashCode + this.cfgNode.hashCode();
+        hashCode = 37 * hashCode + this.place.hashCode();
+        hashCode = 37 * hashCode + this.cfgNode.hashCode();
         return hashCode;
     }
 

@@ -7,5 +7,6 @@ public interface Recyclable {
     // structural comparison rather than physical (==);
     // only to be used by GenericRepos
     public abstract boolean structureEquals(Object compX);
+
     public abstract int structureHashCode();
 }

@@ -15,22 +15,21 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 // "temp = include <place>" (can also be require or *_once)
 public class CfgNodeInclude
-extends CfgNode
-implements Comparable<CfgNodeInclude> {
+    extends CfgNode
+    implements Comparable<CfgNodeInclude> {
 
     private Variable temp;
     private TacPlace includeMe;
     private File file;  // file in which this node occurs
     private TacFunction includeFunction; // function in which this node occurs
 
-
 //  CONSTRUCTORS *******************************************************************
 
     public CfgNodeInclude(TacPlace temp, TacPlace includeMe,
-            File file, TacFunction includeFunction, ParseNode parseNode) {
+                          File file, TacFunction includeFunction, ParseNode parseNode) {
         super(parseNode);
         this.temp = (Variable) temp;
-        this.includeMe= includeMe;
+        this.includeMe = includeMe;
         this.file = file;
         this.includeFunction = includeFunction;
     }
@@ -79,14 +78,14 @@ implements Comparable<CfgNodeInclude> {
 
     public void replaceVariable(int index, Variable replacement) {
         switch (index) {
-        case 0:
-            this.temp = replacement;
-            break;
-        case 1:
-            this.includeMe= replacement;
-            break;
-        default:
-            throw new RuntimeException("SNH");
+            case 0:
+                this.temp = replacement;
+                break;
+            case 1:
+                this.includeMe = replacement;
+                break;
+            default:
+                throw new RuntimeException("SNH");
         }
     }
 

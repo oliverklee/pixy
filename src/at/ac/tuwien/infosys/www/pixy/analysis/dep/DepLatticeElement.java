@@ -23,21 +23,21 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallRet;
 
 public class DepLatticeElement
-extends LatticeElement {
+    extends LatticeElement {
 
     // contains only non-default mappings;
     // does not contain mappings for non-literal array elements, because:
     // the dep value of such elements solely depends on the array label
     // of their root array;
     // also: contains only mappings for Variables and Constants, not for Literals
-    private Map<TacPlace,DepSet> placeToDep;
+    private Map<TacPlace, DepSet> placeToDep;
 
     // "array labels";
     // remotely resemble "clean array flags" (caFlags) from XSS taint analysis;
     // gives an upper bound for the label of non-literal array elements;
     // contains only non-default mappings;
     // only defined for non-array-elements
-    private Map<Variable,DepSet> arrayLabels;
+    private Map<Variable, DepSet> arrayLabels;
 
     // the default lattice element; IT MUST NOT BE USED DIRECTLY BY THE ANALYSIS!
     // can be seen as "grounding", "fall-back" for normal lattice elements
@@ -52,8 +52,8 @@ extends LatticeElement {
     // a lattice element that doesn't modify the information of the
     // default lattice element
     public DepLatticeElement() {
-        this.placeToDep = new HashMap<TacPlace,DepSet>();
-        this.arrayLabels = new HashMap<Variable,DepSet>();
+        this.placeToDep = new HashMap<TacPlace, DepSet>();
+        this.arrayLabels = new HashMap<Variable, DepSet>();
     }
 
 //  DepLatticeElement(DepLatticeElement) ***********************************
@@ -61,9 +61,9 @@ extends LatticeElement {
     // clones the given element
     public DepLatticeElement(DepLatticeElement element) {
         this.placeToDep =
-            new HashMap<TacPlace,DepSet>(element.getPlaceToDep());
+            new HashMap<TacPlace, DepSet>(element.getPlaceToDep());
         this.arrayLabels =
-            new HashMap<Variable,DepSet>(element.getArrayLabels());
+            new HashMap<Variable, DepSet>(element.getArrayLabels());
     }
 
 //  cloneMe ************************************************************************
@@ -80,22 +80,22 @@ extends LatticeElement {
     // TODO: the code for this can probably be simplified dramatically ;
     // also, the comments inside this function are partly obsolete
     private DepLatticeElement(
-            List<TacPlace> places,
-            ConstantsTable constantsTable,
-            List functions,
-            SymbolTable superSymbolTable,
-            Variable memberPlace) {
+        List<TacPlace> places,
+        ConstantsTable constantsTable,
+        List functions,
+        SymbolTable superSymbolTable,
+        Variable memberPlace) {
 
         // initialize base mapping for variables: UNINIT
         // (note: array elements have no explicit array label: their label is
         // that of their top enclosing array)
-        this.placeToDep = new HashMap<TacPlace,DepSet>();
-        this.arrayLabels = new HashMap<Variable,DepSet>();
+        this.placeToDep = new HashMap<TacPlace, DepSet>();
+        this.arrayLabels = new HashMap<Variable, DepSet>();
         for (TacPlace place : places) {
 
             if ((place instanceof Variable) &&
-                    place.getVariable().isArrayElement() &&
-                    place.getVariable().hasNonLiteralIndices()) {
+                place.getVariable().isArrayElement() &&
+                place.getVariable().hasNonLiteralIndices()) {
                 // if this is a non-literal array element:
                 // don't add a mapping
             } else {
@@ -195,7 +195,7 @@ extends LatticeElement {
         Variable argv = superSymbolTable.getVariable("$_SERVER[argv]");
         if (argv != null) {
             List argvElements = argv.getElements();
-            for (Iterator iter = argvElements.iterator(); iter.hasNext();) {
+            for (Iterator iter = argvElements.iterator(); iter.hasNext(); ) {
                 Variable argvElement = (Variable) iter.next();
                 harmlessSuperGlobals.add(argvElement);
             }
@@ -203,7 +203,7 @@ extends LatticeElement {
         argv = superSymbolTable.getVariable("$HTTP_SERVER_VARS[argv]");
         if (argv != null) {
             List argvElements = argv.getElements();
-            for (Iterator iter = argvElements.iterator(); iter.hasNext();) {
+            for (Iterator iter = argvElements.iterator(); iter.hasNext(); ) {
                 Variable argvElement = (Variable) iter.next();
                 harmlessSuperGlobals.add(argvElement);
             }
@@ -218,13 +218,12 @@ extends LatticeElement {
             }
         }
 
-
     }
 
 //  ********************************************************************************
 
     private void addHarmlessServerVar(List<Variable> harmlessSuperGlobals,
-            SymbolTable superSymbolTable, String name) {
+                                      SymbolTable superSymbolTable, String name) {
 
         Variable v1 = superSymbolTable.getVariable("$_SERVER[" + name + "]");
         Variable v2 = superSymbolTable.getVariable("$HTTP_SERVER_VARS[" + name + "]");
@@ -240,16 +239,16 @@ extends LatticeElement {
 
     // initializes the default lattice element
     static void initDefault(
-            List<TacPlace> places,
-            ConstantsTable constantsTable,
-            List functions,
-            SymbolTable superSymbolTable,
-            Variable memberPlace) {
+        List<TacPlace> places,
+        ConstantsTable constantsTable,
+        List functions,
+        SymbolTable superSymbolTable,
+        Variable memberPlace) {
 
         DepLatticeElement.DEFAULT =
             new DepLatticeElement(
-                    places, constantsTable, functions, superSymbolTable,
-                    memberPlace);
+                places, constantsTable, functions, superSymbolTable,
+                memberPlace);
     }
 
 //  *********************************************************************************
@@ -258,13 +257,13 @@ extends LatticeElement {
 
 //  getPlaceToDep *****************************************************************
 
-    public Map<TacPlace,DepSet> getPlaceToDep() {
+    public Map<TacPlace, DepSet> getPlaceToDep() {
         return this.placeToDep;
     }
 
 //  *********************************************************************************
 
-    public Map<Variable,DepSet> getArrayLabels() {
+    public Map<Variable, DepSet> getArrayLabels() {
         return this.arrayLabels;
     }
 
@@ -279,7 +278,7 @@ extends LatticeElement {
     // returns the non-default dep for this place if that mapping exists,
     // or the default dep otherwise
     private DepSet getDepFrom(
-            TacPlace place, Map<? extends TacPlace,DepSet> readFrom) {
+        TacPlace place, Map<? extends TacPlace, DepSet> readFrom) {
 
         if (place instanceof Literal) {
             throw new RuntimeException("SNH any longer");
@@ -393,7 +392,6 @@ extends LatticeElement {
         }
     }
 
-
 //  ***********************************************************************
 
     private void lubDep(TacPlace place, DepSet depSet) {
@@ -503,9 +501,9 @@ extends LatticeElement {
         // lub over my non-default mappings;
         // this one is necessary because we must not modify a map while
         // iterating over it
-        Map<TacPlace,DepSet> newPlaceToDep =
-            new HashMap<TacPlace,DepSet>(this.placeToDep);
-        for (Map.Entry<TacPlace,DepSet> myEntry : this.placeToDep.entrySet()) {
+        Map<TacPlace, DepSet> newPlaceToDep =
+            new HashMap<TacPlace, DepSet>(this.placeToDep);
+        for (Map.Entry<TacPlace, DepSet> myEntry : this.placeToDep.entrySet()) {
             TacPlace myPlace = myEntry.getKey();
             DepSet myDep = myEntry.getValue();
             DepSet foreignDep = foreign.getDep(myPlace);
@@ -515,8 +513,8 @@ extends LatticeElement {
 
         // lub the remaining non-default mappings of "foreign" over my
         // default mappings
-        Map<TacPlace,DepSet> foreignPlaceToDep = foreign.getPlaceToDep();
-        for (Map.Entry<TacPlace,DepSet> foreignEntry : foreignPlaceToDep.entrySet()) {
+        Map<TacPlace, DepSet> foreignPlaceToDep = foreign.getPlaceToDep();
+        for (Map.Entry<TacPlace, DepSet> foreignEntry : foreignPlaceToDep.entrySet()) {
             TacPlace foreignPlace = foreignEntry.getKey();
             DepSet foreignDep = foreignEntry.getValue();
 
@@ -530,7 +528,7 @@ extends LatticeElement {
 
         // cleaning pass: remove defaults
         for (Iterator<Map.Entry<TacPlace, DepSet>> iter =
-            this.placeToDep.entrySet().iterator(); iter.hasNext(); ) {
+                 this.placeToDep.entrySet().iterator(); iter.hasNext(); ) {
 
             Map.Entry<TacPlace, DepSet> entry = iter.next();
             TacPlace place = entry.getKey();
@@ -543,8 +541,8 @@ extends LatticeElement {
         // ARRAY LABELS ***
 
         // lub over my non-default mappings
-        Map<Variable,DepSet> newArrayLabels = new HashMap<Variable,DepSet>(this.arrayLabels);
-        for (Map.Entry<Variable,DepSet> myEntry : this.arrayLabels.entrySet()) {
+        Map<Variable, DepSet> newArrayLabels = new HashMap<Variable, DepSet>(this.arrayLabels);
+        for (Map.Entry<Variable, DepSet> myEntry : this.arrayLabels.entrySet()) {
             Variable myVar = myEntry.getKey();
             DepSet myArrayLabel = myEntry.getValue();
             DepSet foreignArrayLabel = foreign.getArrayLabel(myVar);
@@ -554,8 +552,8 @@ extends LatticeElement {
 
         // lub the remaining non-default mappings of "foreign" over my
         // default mappings
-        Map<Variable,DepSet> foreignArrayLabels = foreign.getArrayLabels();
-        for (Map.Entry<Variable,DepSet> foreignEntry : foreignArrayLabels.entrySet()) {
+        Map<Variable, DepSet> foreignArrayLabels = foreign.getArrayLabels();
+        for (Map.Entry<Variable, DepSet> foreignEntry : foreignArrayLabels.entrySet()) {
             Variable foreignVar = foreignEntry.getKey();
             DepSet foreignArrayLabel = foreignEntry.getValue();
 
@@ -570,9 +568,9 @@ extends LatticeElement {
 
         // cleaning pass: remove defaults
         for (Iterator<Map.Entry<Variable, DepSet>> iter =
-            this.arrayLabels.entrySet().iterator(); iter.hasNext(); ) {
+                 this.arrayLabels.entrySet().iterator(); iter.hasNext(); ) {
 
-            Map.Entry<Variable,DepSet> entry = iter.next();
+            Map.Entry<Variable, DepSet> entry = iter.next();
             Variable var = entry.getKey();
             DepSet arrayLabel = entry.getValue();
             if (getDefaultArrayLabel(var).equals(arrayLabel)) {
@@ -595,7 +593,7 @@ extends LatticeElement {
     // difference to setTree: doesn't call setDep (which tries
     // to reduce defaults, which don't exist during initialization),
     // but modifies placeToDep directly
-    void initTree(Variable root,  DepSet dep) {
+    void initTree(Variable root, DepSet dep) {
         this.placeToDep.put(root, dep);
         if (!root.isArray()) {
             return;
@@ -610,7 +608,7 @@ extends LatticeElement {
     // mustAliases and mayAliases: of left; mustAliases always have to
     // include left itself
     public void assign(Variable left,
-            Set mustAliases, Set mayAliases, CfgNode cfgNode) {
+                       Set mustAliases, Set mayAliases, CfgNode cfgNode) {
 
         // dep to be assigned to the left side
         DepSet dep = DepSet.create(Dep.create(cfgNode));
@@ -642,66 +640,62 @@ extends LatticeElement {
         // take appropariate actions
         switch (leftCase) {
 
-        // not an array element and not known as array ("normal variable")
-        case 1:
-        {
-            // strong update for must-aliases (including left itself)
-            for (Iterator iter = mustAliases.iterator(); iter.hasNext();) {
-                Variable mustAlias = (Variable) iter.next();
+            // not an array element and not known as array ("normal variable")
+            case 1: {
+                // strong update for must-aliases (including left itself)
+                for (Iterator iter = mustAliases.iterator(); iter.hasNext(); ) {
+                    Variable mustAlias = (Variable) iter.next();
 
-                this.setDep(mustAlias, dep);
-                this.setArrayLabel(mustAlias, dep);
+                    this.setDep(mustAlias, dep);
+                    this.setArrayLabel(mustAlias, dep);
+                }
+
+                // weak update for may-aliases
+                for (Iterator iter = mayAliases.iterator(); iter.hasNext(); ) {
+                    Variable mayAlias = (Variable) iter.next();
+                    this.lubDep(mayAlias, dep);
+                    this.lubArrayLabel(mayAlias, dep);
+                }
+
+                break;
             }
 
-            // weak update for may-aliases
-            for (Iterator iter = mayAliases.iterator(); iter.hasNext();) {
-                Variable mayAlias = (Variable) iter.next();
-                this.lubDep(mayAlias, dep);
-                this.lubArrayLabel(mayAlias, dep);
+            // array, but not an array element
+            case 2: {
+                // set target.caFlag
+                this.setArrayLabel(left, dep);
+
+                // no strong overlap here, but: set the whole subtree to resultDep
+                this.setWholeTree(left, dep);
+                break;
             }
 
-            break;
-        }
+            // array element (and maybe an array) without non-literal indices
+            case 3: {
+                // lub target.root.caFlag
+                this.lubArrayLabel(left.getTopEnclosingArray(), dep);
 
-        // array, but not an array element
-        case 2:
-        {
-            // set target.caFlag
-            this.setArrayLabel(left, dep);
-
-            // no strong overlap here, but: set the whole subtree to resultDep
-            this.setWholeTree(left, dep);
-            break;
-        }
-
-        // array element (and maybe an array) without non-literal indices
-        case 3:
-        {
-            // lub target.root.caFlag
-            this.lubArrayLabel(left.getTopEnclosingArray(), dep);
-
-            // no strong overlap here, but: set the whole subtree to resultDep
-            this.setWholeTree(left, dep);
-            break;
-        }
-
-        // array element (and maybe an array) with non-literal indices
-        case 4:
-        {
-            // lub target.root.caFlag
-            this.lubArrayLabel(left.getTopEnclosingArray(), dep);
-
-            // "weak overlap for all MI variables of left"
-            // here: lub the whole subtrees of all MI variables of left
-            for (Iterator iter = this.getMiList(left).iterator(); iter.hasNext();) {
-                Variable miVar = (Variable) iter.next();
-                this.lubWholeTree(miVar, dep);
+                // no strong overlap here, but: set the whole subtree to resultDep
+                this.setWholeTree(left, dep);
+                break;
             }
-            break;
-        }
 
-        default:
-            throw new RuntimeException("SNH");
+            // array element (and maybe an array) with non-literal indices
+            case 4: {
+                // lub target.root.caFlag
+                this.lubArrayLabel(left.getTopEnclosingArray(), dep);
+
+                // "weak overlap for all MI variables of left"
+                // here: lub the whole subtrees of all MI variables of left
+                for (Iterator iter = this.getMiList(left).iterator(); iter.hasNext(); ) {
+                    Variable miVar = (Variable) iter.next();
+                    this.lubWholeTree(miVar, dep);
+                }
+                break;
+            }
+
+            default:
+                throw new RuntimeException("SNH");
         }
     }
 
@@ -729,17 +723,6 @@ extends LatticeElement {
     public void defineConstantWeak(Constant c, CfgNode cfgNode) {
         this.lubDep(c, DepSet.create(Dep.create(cfgNode)));
     }
-
-
-
-
-
-
-
-
-
-
-
 
 // getMiList ***********************************************************************
 
@@ -826,7 +809,7 @@ extends LatticeElement {
     public void resetVariables(SymbolTable symTab) {
 
         // reset deps
-        for (Iterator iter = this.placeToDep.entrySet().iterator(); iter.hasNext();) {
+        for (Iterator iter = this.placeToDep.entrySet().iterator(); iter.hasNext(); ) {
             Map.Entry entry = (Map.Entry) iter.next();
             TacPlace place = (TacPlace) entry.getKey();
 
@@ -842,7 +825,7 @@ extends LatticeElement {
         }
 
         // reset array labels
-        for (Iterator iter = this.arrayLabels.entrySet().iterator(); iter.hasNext();) {
+        for (Iterator iter = this.arrayLabels.entrySet().iterator(); iter.hasNext(); ) {
             Map.Entry entry = (Map.Entry) iter.next();
             TacPlace place = (TacPlace) entry.getKey();
 
@@ -866,7 +849,7 @@ extends LatticeElement {
     public void resetTemporaries(SymbolTable symTab) {
 
         // reset deps
-        for (Iterator iter = this.placeToDep.entrySet().iterator(); iter.hasNext();) {
+        for (Iterator iter = this.placeToDep.entrySet().iterator(); iter.hasNext(); ) {
             Map.Entry entry = (Map.Entry) iter.next();
             TacPlace place = (TacPlace) entry.getKey();
 
@@ -887,7 +870,7 @@ extends LatticeElement {
         }
 
         // reset array labels
-        for (Iterator iter = this.arrayLabels.entrySet().iterator(); iter.hasNext();) {
+        for (Iterator iter = this.arrayLabels.entrySet().iterator(); iter.hasNext(); ) {
             Map.Entry entry = (Map.Entry) iter.next();
             TacPlace place = (TacPlace) entry.getKey();
 
@@ -937,7 +920,7 @@ extends LatticeElement {
 
         // dep mappings
         Map origPlaceToDep = interIn.getPlaceToDep();
-        for (Iterator iter = origPlaceToDep.entrySet().iterator(); iter.hasNext();) {
+        for (Iterator iter = origPlaceToDep.entrySet().iterator(); iter.hasNext(); ) {
 
             Map.Entry entry = (Map.Entry) iter.next();
             TacPlace origPlace = (TacPlace) entry.getKey();
@@ -963,7 +946,7 @@ extends LatticeElement {
 
         // array label mappings
         Map origArrayLabels = interIn.getArrayLabels();
-        for (Iterator iter = origArrayLabels.entrySet().iterator(); iter.hasNext();) {
+        for (Iterator iter = origArrayLabels.entrySet().iterator(); iter.hasNext(); ) {
 
             Map.Entry entry = (Map.Entry) iter.next();
             TacPlace origPlace = (TacPlace) entry.getKey();
@@ -991,11 +974,11 @@ extends LatticeElement {
     // analogous to the one-parameter copyGlobalLike, but also takes into account
     // MOD-info; currently, constants are not considered as global-like for this
     public void copyGlobalLike(DepLatticeElement interIn, DepLatticeElement intraIn,
-            Set<TacPlace> calleeMod) {
+                               Set<TacPlace> calleeMod) {
 
         // dep mappings
         Map origPlaceToDep = interIn.getPlaceToDep();
-        for (Iterator iter = origPlaceToDep.entrySet().iterator(); iter.hasNext();) {
+        for (Iterator iter = origPlaceToDep.entrySet().iterator(); iter.hasNext(); ) {
 
             Map.Entry entry = (Map.Entry) iter.next();
             TacPlace interPlace = (TacPlace) entry.getKey();
@@ -1028,7 +1011,7 @@ extends LatticeElement {
 
         // array label mappings
         Map interArrayLabels = interIn.getArrayLabels();
-        for (Iterator iter = interArrayLabels.entrySet().iterator(); iter.hasNext();) {
+        for (Iterator iter = interArrayLabels.entrySet().iterator(); iter.hasNext(); ) {
 
             Map.Entry entry = (Map.Entry) iter.next();
             TacPlace interPlace = (TacPlace) entry.getKey();
@@ -1063,7 +1046,7 @@ extends LatticeElement {
 
         // dep mappings
         Map origPlaceToDep = origElement.getPlaceToDep();
-        for (Iterator iter = origPlaceToDep.entrySet().iterator(); iter.hasNext();) {
+        for (Iterator iter = origPlaceToDep.entrySet().iterator(); iter.hasNext(); ) {
 
             Map.Entry entry = (Map.Entry) iter.next();
             TacPlace origPlace = (TacPlace) entry.getKey();
@@ -1088,7 +1071,7 @@ extends LatticeElement {
 
         // array label mappings
         Map origArrayLabels = origElement.getArrayLabels();
-        for (Iterator iter = origArrayLabels.entrySet().iterator(); iter.hasNext();) {
+        for (Iterator iter = origArrayLabels.entrySet().iterator(); iter.hasNext(); ) {
 
             Map.Entry entry = (Map.Entry) iter.next();
             TacPlace origPlace = (TacPlace) entry.getKey();
@@ -1118,7 +1101,7 @@ extends LatticeElement {
 
         // dep mappings
         Map origPlaceToDep = origElement.getPlaceToDep();
-        for (Iterator iter = origPlaceToDep.entrySet().iterator(); iter.hasNext();) {
+        for (Iterator iter = origPlaceToDep.entrySet().iterator(); iter.hasNext(); ) {
 
             Map.Entry entry = (Map.Entry) iter.next();
             TacPlace origPlace = (TacPlace) entry.getKey();
@@ -1140,7 +1123,7 @@ extends LatticeElement {
 
         // array label mappings
         Map origArrayLabels = origElement.getArrayLabels();
-        for (Iterator iter = origArrayLabels.entrySet().iterator(); iter.hasNext();) {
+        for (Iterator iter = origArrayLabels.entrySet().iterator(); iter.hasNext(); ) {
 
             Map.Entry entry = (Map.Entry) iter.next();
             TacPlace origPlace = (TacPlace) entry.getKey();
@@ -1167,7 +1150,7 @@ extends LatticeElement {
 
         // dep mappings
         Map origPlaceToDep = origElement.getPlaceToDep();
-        for (Iterator iter = origPlaceToDep.entrySet().iterator(); iter.hasNext();) {
+        for (Iterator iter = origPlaceToDep.entrySet().iterator(); iter.hasNext(); ) {
 
             Map.Entry entry = (Map.Entry) iter.next();
             TacPlace origPlace = (TacPlace) entry.getKey();
@@ -1187,7 +1170,7 @@ extends LatticeElement {
 
         // array label mappings
         Map origArrayLabels = origElement.getArrayLabels();
-        for (Iterator iter = origArrayLabels.entrySet().iterator(); iter.hasNext();) {
+        for (Iterator iter = origArrayLabels.entrySet().iterator(); iter.hasNext(); ) {
 
             Map.Entry entry = (Map.Entry) iter.next();
             TacPlace origPlace = (TacPlace) entry.getKey();
@@ -1230,7 +1213,7 @@ extends LatticeElement {
 //  handleReturnValueUnknown *******************************************************
 
     public void handleReturnValueUnknown(Variable tempVar, DepSet dep,
-            DepSet arrayLabel, Variable retVar) {
+                                         DepSet arrayLabel, Variable retVar) {
 
         //System.out.println("callretunknown: " + tempVar + " -> " + dep);
 
@@ -1243,7 +1226,7 @@ extends LatticeElement {
 //  handleReturnValueBuiltin *******************************************************
 
     public void handleReturnValueBuiltin(Variable tempVar, DepSet dep,
-            DepSet arrayLabel) {
+                                         DepSet arrayLabel) {
 
         this.setWholeTree(tempVar, dep);
         this.setArrayLabel(tempVar, arrayLabel);
@@ -1296,8 +1279,8 @@ extends LatticeElement {
 
     public int structureHashCode() {
         int hashCode = 17;
-        hashCode = 37*hashCode + this.placeToDep.hashCode();
-        hashCode = 37*hashCode + this.arrayLabels.hashCode();
+        hashCode = 37 * hashCode + this.placeToDep.hashCode();
+        hashCode = 37 * hashCode + this.arrayLabels.hashCode();
         return hashCode;
     }
 

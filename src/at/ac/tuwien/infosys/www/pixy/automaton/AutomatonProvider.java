@@ -36,11 +36,14 @@ import java.io.IOException;
  */
 public interface AutomatonProvider {
 
-	/**
-	 * Returns automaton of the given name.
-	 * @param name automaton name
-	 * @return automaton
-	 * @throws IOException if errors occur
-	 */
-	public Automaton getAutomaton(String name) throws IOException;
+    /**
+     * Returns automaton of the given name.
+     *
+     * @param name automaton name
+     *
+     * @return automaton
+     *
+     * @throws IOException if errors occur
+     */
+    public Automaton getAutomaton(String name) throws IOException;
 }

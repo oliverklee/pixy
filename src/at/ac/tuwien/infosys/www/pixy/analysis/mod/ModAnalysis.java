@@ -34,7 +34,7 @@ public class ModAnalysis {
     // a set of modified global-likes for each function
     // (global variables, superglobals, and constants)
     // NOTE: currently, we do NOT support constants for this
-    Map<TacFunction,Set<TacPlace>> func2Mod;
+    Map<TacFunction, Set<TacPlace>> func2Mod;
 
 //  ********************************************************************************
 
@@ -52,7 +52,7 @@ public class ModAnalysis {
 
     private void analyze(List<TacFunction> functions, CallGraph callGraph) {
 
-        this.func2Mod = new HashMap<TacFunction,Set<TacPlace>>();
+        this.func2Mod = new HashMap<TacFunction, Set<TacPlace>>();
 
         // intraprocedural analysis
 
@@ -85,11 +85,11 @@ public class ModAnalysis {
         //       - set mod(c) = u
         //       - add c to the worklist
 
-        Map<TacFunction,Integer> postorder = callGraph.getPostOrder();
+        Map<TacFunction, Integer> postorder = callGraph.getPostOrder();
 
         // initialize worklist
-        SortedMap<Integer,TacFunction> worklist = new TreeMap<Integer,TacFunction>();
-        for (Map.Entry<TacFunction,Integer> entry : postorder.entrySet()) {
+        SortedMap<Integer, TacFunction> worklist = new TreeMap<Integer, TacFunction>();
+        for (Map.Entry<TacFunction, Integer> entry : postorder.entrySet()) {
             worklist.put(entry.getValue(), entry.getKey());
         }
 
@@ -144,7 +144,8 @@ public class ModAnalysis {
             CfgNodeAssignBinary cfgNode = (CfgNodeAssignBinary) cfgNodeX;
             Variable modVar = cfgNode.getLeft();
             if (modVar.isGlobal() || modVar.isSuperGlobal()) {
-                this.modify(modVar, modSet);            }
+                this.modify(modVar, modSet);
+            }
 
         } else if (cfgNodeX instanceof CfgNodeAssignArray) {
 
@@ -192,7 +193,7 @@ public class ModAnalysis {
 
     public String dump() {
         StringBuilder b = new StringBuilder();
-        for (Map.Entry<TacFunction,Set<TacPlace>> entry : this.func2Mod.entrySet()) {
+        for (Map.Entry<TacFunction, Set<TacPlace>> entry : this.func2Mod.entrySet()) {
             b.append("** ");
             b.append(entry.getKey().getName());
             b.append("\n");

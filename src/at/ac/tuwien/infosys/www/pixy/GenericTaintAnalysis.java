@@ -34,21 +34,21 @@ public class GenericTaintAnalysis {
 
     // returns null if the given taintString is illegal
     static GenericTaintAnalysis createAnalysis(TacConverter tac,
-            AnalysisType enclosingAnalysis, Checker checker,
-            InterWorkList workList, ModAnalysis modAnalysis) {
+                                               AnalysisType enclosingAnalysis, Checker checker,
+                                               InterWorkList workList, ModAnalysis modAnalysis) {
 
         GenericTaintAnalysis gta = new GenericTaintAnalysis();
 
         gta.depAnalysis = new DepAnalysis(tac,
-                checker.aliasAnalysis, checker.literalAnalysis, enclosingAnalysis,
-                workList, modAnalysis);
+            checker.aliasAnalysis, checker.literalAnalysis, enclosingAnalysis,
+            workList, modAnalysis);
 
         try {
 
             // each of the depclients will get the depAnalysis as parameter
-            Class<?>[] argsClass = new Class<?>[] {
-                    Class.forName("at.ac.tuwien.infosys.www.pixy.analysis.dep.DepAnalysis")};
-            Object[] args = new Object[] {gta.depAnalysis};
+            Class<?>[] argsClass = new Class<?>[]{
+                Class.forName("at.ac.tuwien.infosys.www.pixy.analysis.dep.DepAnalysis")};
+            Object[] args = new Object[]{gta.depAnalysis};
 
             // for each requested depclient...
             for (DepClientInfo dci : MyOptions.getDepClients()) {

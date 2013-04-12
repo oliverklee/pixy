@@ -11,18 +11,18 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 // a lattice of source labels
 class DepLattice
-extends Lattice {
+    extends Lattice {
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
     DepLattice(
-            List<TacPlace> places,
-            ConstantsTable constantsTable,
-            List functions,
-            SymbolTable superSymbolTable,
-            Variable memberPlace) {
+        List<TacPlace> places,
+        ConstantsTable constantsTable,
+        List functions,
+        SymbolTable superSymbolTable,
+        Variable memberPlace) {
 
         // initialize the default element
         DepLatticeElement.initDefault(
@@ -37,8 +37,8 @@ extends Lattice {
     // input elements (incoming and target) are not modified,
     // output element is newly allocated
     public LatticeElement lub(
-            LatticeElement incomingElementX,
-            LatticeElement targetElementX) {
+        LatticeElement incomingElementX,
+        LatticeElement targetElementX) {
 
         // if the incoming element is the bottom element: return the other element
         if (incomingElementX == this.bottom) {

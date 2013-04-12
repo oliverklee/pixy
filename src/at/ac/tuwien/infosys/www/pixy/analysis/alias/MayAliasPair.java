@@ -173,7 +173,7 @@ public class MayAliasPair {
     // returns true if at least one of the contained variables is a local
     // variable, and false otherwise
     public boolean containsLocals() {
-        for (Iterator iter = this.pair.iterator(); iter.hasNext();) {
+        for (Iterator iter = this.pair.iterator(); iter.hasNext(); ) {
             Variable var = (Variable) iter.next();
             if (var.isLocal()) {
                 return true;
@@ -185,7 +185,7 @@ public class MayAliasPair {
     // returns true if at least one of the contained variables is a local
     // variable, and false otherwise
     public boolean containsGlobals() {
-        for (Iterator iter = this.pair.iterator(); iter.hasNext();) {
+        for (Iterator iter = this.pair.iterator(); iter.hasNext(); ) {
             Variable var = (Variable) iter.next();
             if (var.isGlobal()) {
                 return true;
@@ -197,7 +197,7 @@ public class MayAliasPair {
     // returns true if at least one of the contained variables belongs to
     // the given symbol table, and false otherwise
     public boolean containsVariables(SymbolTable symTab) {
-        for (Iterator iter = this.pair.iterator(); iter.hasNext();) {
+        for (Iterator iter = this.pair.iterator(); iter.hasNext(); ) {
             Variable var = (Variable) iter.next();
             if (var.belongsTo(symTab)) {
                 return true;

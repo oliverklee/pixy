@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.conversion;
 
 public class Constant
-extends TacPlace {
+    extends TacPlace {
 
     private String label;
 
@@ -17,7 +17,6 @@ extends TacPlace {
     private boolean isSpecial;
     // literal for the special constants above
     private Literal specialLiteral;
-
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
@@ -37,8 +36,6 @@ extends TacPlace {
         this.isSpecial = true;
         this.specialLiteral = specialLiteral;
     }
-
-
 
     static Constant getInstance(String label) {
         if (label.equalsIgnoreCase("true")) {

@@ -79,9 +79,9 @@ public class MyOptions {
         // extract index name
         String index;
         if (varName.startsWith("$_SERVER[") && varName.endsWith("]")) {
-            index = varName.substring(9, varName.length()-1);
+            index = varName.substring(9, varName.length() - 1);
         } else if (varName.startsWith("$HTTP_SERVER_VARS[") && varName.endsWith("]")) {
-            index = varName.substring(18, varName.length()-1);
+            index = varName.substring(18, varName.length() - 1);
         } else {
             return false;
         }
@@ -111,10 +111,10 @@ public class MyOptions {
     private static FunctionModels readModelFile(DepClientInfo dci) {
 
         Set<String> f_evil = new HashSet<String>();
-        Map<String,Set<Integer>> f_multi = new HashMap<String,Set<Integer>>();
-        Map<String,Set<Integer>> f_invMulti = new HashMap<String,Set<Integer>>();
+        Map<String, Set<Integer>> f_multi = new HashMap<String, Set<Integer>>();
+        Map<String, Set<Integer>> f_invMulti = new HashMap<String, Set<Integer>>();
         Set<String> f_strongSanit = new HashSet<String>();
-        Map<String,Set<Integer>> f_weakSanit = new HashMap<String,Set<Integer>>();
+        Map<String, Set<Integer>> f_weakSanit = new HashMap<String, Set<Integer>>();
 
         String strongSanitMarker = "0";
         String weakSanitMarker = "1";
@@ -134,7 +134,7 @@ public class MyOptions {
             Utils.bail("Error: Can't find configuration file: " + modelFileName);
         } catch (IOException e) {
             Utils.bail("Error: I/O exception while reading configuration file:" + modelFileName,
-                    e.getMessage());
+                e.getMessage());
         }
 
         Class tacOps;
@@ -236,7 +236,6 @@ public class MyOptions {
         return new FunctionModels(f_evil, f_multi, f_invMulti, f_strongSanit, f_weakSanit);
     }
 
-
     // custom, user-defined sinks *************************************
 
     public static boolean isSink(String functionName) {
@@ -251,7 +250,7 @@ public class MyOptions {
     // adds a sink (given by function name and sensitive indices) to the given sink map;
     // if indices == null, it means that ALL indices are sensitive (necessary for functions
     // with an arbitrary number of sensitive indices, e.g.: printf)
-    public static void addSink(Map<String,Set<Integer>> sinkMap, String name, int... indices) {
+    public static void addSink(Map<String, Set<Integer>> sinkMap, String name, int... indices) {
         Set<Integer> indexSet;
         if (indices == null) {
             indexSet = null;
@@ -267,7 +266,7 @@ public class MyOptions {
     // reads the given sink file, fills the given map with the contained info,
     // and returns the contained "sinkType" property (can also be null)
     private static String readSinkFile(String sinkFileName,
-            Map<String,Set<Integer>> sinks) {
+                                       Map<String, Set<Integer>> sinks) {
 
         // read file into properties object
         File sinkFile = new File(sinkFileName);
@@ -325,13 +324,11 @@ public class MyOptions {
     public static void initSinks() {
         for (DepClientInfo dci : analyses) {
             String sinkFileName = "sinks_" + dci.getName() + ".txt";
-            Map<String,Set<Integer>> sinks = new HashMap<String,Set<Integer>>();
+            Map<String, Set<Integer>> sinks = new HashMap<String, Set<Integer>>();
             readSinkFile(MyOptions.pixy_home + "/" + MyOptions.configDir + "/" + sinkFileName, sinks);
             dci.addSinks(sinks);
         }
     }
-
-
 
     // read user-defined custom sink files
     public static void readCustomSinkFiles() {
@@ -346,7 +343,7 @@ public class MyOptions {
                 String sinkFileName = sfnTokenizer.nextToken();
 
                 // fill this map with the information contained in the file
-                Map<String,Set<Integer>> sinks = new HashMap<String,Set<Integer>>();
+                Map<String, Set<Integer>> sinks = new HashMap<String, Set<Integer>>();
 
                 String sinkType = readSinkFile(sinkFileName, sinks);
 
@@ -365,7 +362,6 @@ public class MyOptions {
         }
     }
 
-
     private static DepClientInfo[] analyses = {
         new DepClientInfo("xss", "at.ac.tuwien.infosys.www.pixy.XSSAnalysis"),
         new DepClientInfo("sql", "at.ac.tuwien.infosys.www.pixy.SQLAnalysis"),
@@ -375,10 +371,10 @@ public class MyOptions {
     };
 
     // "name to depclientinfo" mapping
-    private static Map<String,DepClientInfo> name2Analysis;
+    private static Map<String, DepClientInfo> name2Analysis;
 
     // "class name to analysis name" mapping
-    private static Map<String,String> className2Name;
+    private static Map<String, String> className2Name;
 
     // flags requested analysis
     public static boolean setAnalyses(String taintStrings) {
@@ -404,8 +400,8 @@ public class MyOptions {
                     b.append(name + ", ");
                 }
                 if (!name2Analysis.isEmpty()) {
-                    b.deleteCharAt(b.length()-1);
-                    b.deleteCharAt(b.length()-1);
+                    b.deleteCharAt(b.length() - 1);
+                    b.deleteCharAt(b.length() - 1);
                 }
                 System.out.println(b.toString());
                 return false;
@@ -413,7 +409,6 @@ public class MyOptions {
         }
         return true;
     }
-
 
 //  ********************************************************************************
 
@@ -437,8 +432,8 @@ public class MyOptions {
 
         // name2depclient mapping
 
-        name2Analysis = new HashMap<String,DepClientInfo>();
-        className2Name = new HashMap<String,String>();
+        name2Analysis = new HashMap<String, DepClientInfo>();
+        className2Name = new HashMap<String, String>();
         for (DepClientInfo dci : analyses) {
             name2Analysis.put(dci.getName(), dci);
             className2Name.put(dci.getClassName(), dci.getName());
@@ -470,8 +465,8 @@ public class MyOptions {
             b.append(", ");
         }
         if (b.length() > 2) {
-            b.deleteCharAt(b.length()-1);
-            b.deleteCharAt(b.length()-1);
+            b.deleteCharAt(b.length() - 1);
+            b.deleteCharAt(b.length() - 1);
         }
         return b.toString();
     }

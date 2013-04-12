@@ -6,7 +6,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallUnknown;
 
 public class LiteralTfCallUnknown
-extends TransferFunction {
+    extends TransferFunction {
 
     private CfgNodeCallUnknown cfgNode;
 

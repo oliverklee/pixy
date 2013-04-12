@@ -11,7 +11,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 // transfer function for binary assignment nodes
 public class LiteralTfAssignBinary
-extends TransferFunction {
+    extends TransferFunction {
 
     private Variable left;
     private TacPlace leftOperand;
@@ -27,7 +27,7 @@ extends TransferFunction {
 
     // mustAliases, mayAliases: of setMe
     public LiteralTfAssignBinary(TacPlace left, TacPlace leftOperand, TacPlace rightOperand,
-            int op, Set mustAliases, Set mayAliases, CfgNode cfgNode) {
+                                 int op, Set mustAliases, Set mayAliases, CfgNode cfgNode) {
 
         this.left = (Variable) left;  // must be a variable
         this.leftOperand = leftOperand;
@@ -49,7 +49,7 @@ extends TransferFunction {
 
         // let the lattice element handle the details
         out.assignBinary(left, leftOperand, rightOperand, op,
-                mustAliases, mayAliases, cfgNode);
+            mustAliases, mayAliases, cfgNode);
 
         return out;
     }

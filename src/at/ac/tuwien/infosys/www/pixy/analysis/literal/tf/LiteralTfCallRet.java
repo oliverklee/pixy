@@ -19,7 +19,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallPrep;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallRet;
 
 public class LiteralTfCallRet
-extends TransferFunction {
+    extends TransferFunction {
 
     private InterAnalysisNode analysisNodeAtCallPrep;
     private TacFunction caller;
@@ -39,13 +39,13 @@ extends TransferFunction {
 // *********************************************************************************
 
     public LiteralTfCallRet(
-            InterAnalysisNode analysisNodeAtCallPrep,
-            TacFunction caller,
-            TacFunction callee,
-            CfgNodeCallPrep prepNode,
-            CfgNodeCallRet retNode,
-            AliasAnalysis aliasAnalysis,
-            LatticeElement bottom) {
+        InterAnalysisNode analysisNodeAtCallPrep,
+        TacFunction caller,
+        TacFunction callee,
+        CfgNodeCallPrep prepNode,
+        CfgNodeCallRet retNode,
+        AliasAnalysis aliasAnalysis,
+        LatticeElement bottom) {
 
         this.analysisNodeAtCallPrep = analysisNodeAtCallPrep;
         this.caller = caller;
@@ -93,7 +93,6 @@ extends TransferFunction {
         // ("global-like": globals, superglobals, and constants)
         outInfo.copyGlobalLike(calleeIn);
 
-
         // LOCAL VARIABLES *************
 
         // no need to do this if the caller is main:
@@ -109,7 +108,7 @@ extends TransferFunction {
         // MUST WITH GLOBALS
 
         // for all local variables of the calling function
-        for (Iterator iter = localCallerVars.iterator(); iter.hasNext();) {
+        for (Iterator iter = localCallerVars.iterator(); iter.hasNext(); ) {
             Variable localCallerVar = (Variable) iter.next();
 
             // an arbitrary global must-alias of this local
@@ -131,11 +130,10 @@ extends TransferFunction {
 
         }
 
-
         // MUST WITH FORMALS
 
         // for each call-by-reference parameter pair
-        for (Iterator iter = this.cbrParams.iterator(); iter.hasNext();) {
+        for (Iterator iter = this.cbrParams.iterator(); iter.hasNext(); ) {
 
             List paramPair = (List) iter.next();
             Iterator paramPairIter = paramPair.iterator();
@@ -146,7 +144,7 @@ extends TransferFunction {
             // so this set contains at least one element)
             Set localMustAliases = this.aliasAnalysis.getLocalMustAliases(actualVar, this.prepNode);
 
-            for (Iterator lmaIter = localMustAliases.iterator(); lmaIter.hasNext();) {
+            for (Iterator lmaIter = localMustAliases.iterator(); lmaIter.hasNext(); ) {
                 Variable localMustAlias = (Variable) lmaIter.next();
 
                 // no need to handle visited variables again
@@ -164,11 +162,10 @@ extends TransferFunction {
             }
         }
 
-
         // MAY WITH GLOBALS
 
         // for each local variable that was not visited yet
-        for (Iterator iter = localCallerVars.iterator(); iter.hasNext();) {
+        for (Iterator iter = localCallerVars.iterator(); iter.hasNext(); ) {
             Variable localCallerVar = (Variable) iter.next();
 
             if (visitedVars.contains(localCallerVar)) {
@@ -187,7 +184,7 @@ extends TransferFunction {
             Literal computedLit = origInfo.getLiteral(localCallerVar);
 
             // for all these global may-aliases...
-            for (Iterator gmaIter = globalMayAliases.iterator(); gmaIter.hasNext();) {
+            for (Iterator gmaIter = globalMayAliases.iterator(); gmaIter.hasNext(); ) {
                 Variable globalMayAlias = (Variable) gmaIter.next();
 
                 // its g-shadow
@@ -206,11 +203,10 @@ extends TransferFunction {
             // DON'T mark it as visited
         }
 
-
         // MAY WITH FORMALS
 
         // for each call-by-reference parameter pair
-        for (Iterator iter = this.cbrParams.iterator(); iter.hasNext();) {
+        for (Iterator iter = this.cbrParams.iterator(); iter.hasNext(); ) {
 
             List paramPair = (List) iter.next();
             Iterator paramPairIter = paramPair.iterator();
@@ -221,7 +217,7 @@ extends TransferFunction {
             Set localMayAliases = this.aliasAnalysis.getLocalMayAliases(actualVar, this.prepNode);
 
             // for each such may-alias that was not visited yet
-            for (Iterator lmaIter = localMayAliases.iterator(); lmaIter.hasNext();) {
+            for (Iterator lmaIter = localMayAliases.iterator(); lmaIter.hasNext(); ) {
                 Variable localMayAlias = (Variable) lmaIter.next();
 
                 if (visitedVars.contains(localMayAlias)) {

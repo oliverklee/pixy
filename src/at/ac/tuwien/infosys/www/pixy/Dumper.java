@@ -80,7 +80,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeUnset;
 public final class Dumper {
 
     // auxiliary HashMap: CfgNode -> Integer
-    private static HashMap<CfgNode,Integer> node2Int;
+    private static HashMap<CfgNode, Integer> node2Int;
     private static int idCounter;
     static final String linesep = System.getProperty("line.separator");
 
@@ -129,12 +129,11 @@ public final class Dumper {
         }
     }
 
-
 // dumpDot(ParseNode, Writer) ******************************************************
 
     // dumps the subtree starting at the given parse node in dot syntax
     static void dumpDot(ParseNode parseNode, Writer outWriter)
-    throws java.io.IOException {
+        throws java.io.IOException {
 
         outWriter.write("  n" + parseNode.getId() + " [label=\"");
 
@@ -154,7 +153,7 @@ public final class Dumper {
         ParseNode parent = parseNode.getParent();
         if (parent != null) {
             outWriter.write("  n" + parent.getId() + " -> n" +
-                    parseNode.getId() + ";\n");
+                parseNode.getId() + ";\n");
         }
         // recursion
         for (int i = 0; i < parseNode.getChildren().size(); i++) {
@@ -221,7 +220,7 @@ public final class Dumper {
     static void dumpDot(Cfg cfg, String graphName, Writer outWriter) {
 
         try {
-            Dumper.node2Int = new HashMap<CfgNode,Integer>();
+            Dumper.node2Int = new HashMap<CfgNode, Integer>();
             Dumper.idCounter = 0;
             outWriter.write("digraph cfg {\n  label=\"");
             outWriter.write(escapeDot(graphName, 0));
@@ -241,7 +240,7 @@ public final class Dumper {
     // recursively dumps the CfgNode in dot syntax
     // and returns the ID that is assigned to this node
     static int dumpDot(CfgNode cfgNode, Writer outWriter)
-    throws java.io.IOException {
+        throws java.io.IOException {
 
         // mark node as visited and store ID
         int nodeId = Dumper.idCounter;
@@ -321,7 +320,7 @@ public final class Dumper {
 
             CfgNodeBasicBlock cfgNode = (CfgNodeBasicBlock) cfgNodeX;
             StringBuilder label = new StringBuilder("basic block\\n");
-            for (Iterator iter = cfgNode.getContainedNodes().iterator(); iter.hasNext();) {
+            for (Iterator iter = cfgNode.getContainedNodes().iterator(); iter.hasNext(); ) {
                 CfgNode containedNode = (CfgNode) iter.next();
                 label.append(makeCfgNodeName(containedNode));
                 label.append("\\n");
@@ -345,10 +344,10 @@ public final class Dumper {
 
             return (
                 leftString +
-                " = " +
-                leftOperandString +
-                " " + TacOperators.opToName(op) + " " +
-                rightOperandString);
+                    " = " +
+                    leftOperandString +
+                    " " + TacOperators.opToName(op) + " " +
+                    rightOperandString);
 
         } else if (cfgNodeX instanceof CfgNodeAssignUnary) {
 
@@ -359,16 +358,16 @@ public final class Dumper {
 
             return (
                 leftString +
-                " = " +
-                " " + TacOperators.opToName(op) + " " +
-                rightString);
+                    " = " +
+                    " " + TacOperators.opToName(op) + " " +
+                    rightString);
 
         } else if (cfgNodeX instanceof CfgNodeAssignRef) {
 
             CfgNodeAssignRef cfgNode = (CfgNodeAssignRef) cfgNodeX;
             String leftString = getPlaceString(cfgNode.getLeft());
             String rightString = getPlaceString(cfgNode.getRight());
-            return (leftString + " =& " + rightString );
+            return (leftString + " =& " + rightString);
 
         } else if (cfgNodeX instanceof CfgNodeIf) {
 
@@ -377,11 +376,11 @@ public final class Dumper {
             String rightOperandString = getPlaceString(cfgNode.getRightOperand());
             int op = cfgNode.getOperator();
 
-            return(
+            return (
                 "if " +
-                leftOperandString +
-                " " + TacOperators.opToName(op) + " " +
-                rightOperandString);
+                    leftOperandString +
+                    " " + TacOperators.opToName(op) + " " +
+                    rightOperandString);
 
         } else if (cfgNodeX instanceof CfgNodeEmpty) {
             return ";";
@@ -418,8 +417,8 @@ public final class Dumper {
 
             return (
                 "prepare " +
-                cfgNode.getFunctionNamePlace().toString() + "(" +
-                paramListStringBuf.toString() + ")");
+                    cfgNode.getFunctionNamePlace().toString() + "(" +
+                    paramListStringBuf.toString() + ")");
 
         } else if (cfgNodeX instanceof CfgNodeCallRet) {
 
@@ -446,8 +445,8 @@ public final class Dumper {
 
             return (
                 cfgNode.getFunctionName() + "(" +
-                paramListStringBuf.toString() + ") " + "<" +
-                getPlaceString(cfgNode.getTempVar()) + ">");
+                    paramListStringBuf.toString() + ") " + "<" +
+                    getPlaceString(cfgNode.getTempVar()) + ">");
 
         } else if (cfgNodeX instanceof CfgNodeCallUnknown) {
 
@@ -468,9 +467,9 @@ public final class Dumper {
             }
 
             return ("UNKNOWN: " +
-                    cfgNode.getFunctionName() + "(" +
-                    paramListStringBuf.toString() + ") " + "<" +
-                    getPlaceString(cfgNode.getTempVar()) + ">");
+                cfgNode.getFunctionName() + "(" +
+                paramListStringBuf.toString() + ") " + "<" +
+                getPlaceString(cfgNode.getTempVar()) + ">");
 
         } else if (cfgNodeX instanceof CfgNodeAssignArray) {
 
@@ -488,13 +487,13 @@ public final class Dumper {
 
             CfgNodeEcho cfgNode = (CfgNodeEcho) cfgNodeX;
             String echoMe = getPlaceString(cfgNode.getPlace());
-            return("echo(" + echoMe + ")");
+            return ("echo(" + echoMe + ")");
 
         } else if (cfgNodeX instanceof CfgNodeGlobal) {
 
             CfgNodeGlobal cfgNode = (CfgNodeGlobal) cfgNodeX;
             String globMe = cfgNode.getOperand().toString();
-            return("global " + globMe);
+            return ("global " + globMe);
 
         } else if (cfgNodeX instanceof CfgNodeStatic) {
 
@@ -506,36 +505,36 @@ public final class Dumper {
             } else {
                 initial = "";
             }
-            return("static " + statMe + initial);
+            return ("static " + statMe + initial);
 
         } else if (cfgNodeX instanceof CfgNodeIsset) {
 
             CfgNodeIsset cfgNode = (CfgNodeIsset) cfgNodeX;
             String checkMe = cfgNode.getRight().getVariable().toString();
             String leftString = cfgNode.getLeft().getVariable().toString();
-            return(leftString + " = " + "isset(" + checkMe + ")");
+            return (leftString + " = " + "isset(" + checkMe + ")");
 
         } else if (cfgNodeX instanceof CfgNodeEmptyTest) {
 
             CfgNodeEmptyTest cfgNode = (CfgNodeEmptyTest) cfgNodeX;
             String checkMe = cfgNode.getRight().getVariable().toString();
             String leftString = cfgNode.getLeft().getVariable().toString();
-            return(leftString + " = " + "empty(" + checkMe + ")");
+            return (leftString + " = " + "empty(" + checkMe + ")");
 
         } else if (cfgNodeX instanceof CfgNodeEval) {
 
             CfgNodeEval cfgNode = (CfgNodeEval) cfgNodeX;
             String evalMe = cfgNode.getRight().getVariable().toString();
             String leftString = cfgNode.getLeft().getVariable().toString();
-            return(leftString + " = " + "eval(" + evalMe + ")");
+            return (leftString + " = " + "eval(" + evalMe + ")");
 
         } else if (cfgNodeX instanceof CfgNodeDefine) {
 
             CfgNodeDefine cfgNode = (CfgNodeDefine) cfgNodeX;
-            return("define(" +
-                    cfgNode.getSetMe() + ", " +
-                    cfgNode.getSetTo() + ", " +
-                    cfgNode.getCaseInsensitive() + ")");
+            return ("define(" +
+                cfgNode.getSetMe() + ", " +
+                cfgNode.getSetTo() + ", " +
+                cfgNode.getCaseInsensitive() + ")");
 
         } else if (cfgNodeX instanceof CfgNodeInclude) {
 
@@ -545,10 +544,10 @@ public final class Dumper {
             return (leftString + " = include " + rightString);
 
         } else if (cfgNodeX instanceof CfgNodeIncludeStart) {
-            return("incStart");
+            return ("incStart");
 
         } else if (cfgNodeX instanceof CfgNodeIncludeEnd) {
-            return("incEnd");
+            return ("incEnd");
 
         } else {
             return "to-do: " + cfgNodeX.getClass();
@@ -610,10 +609,10 @@ public final class Dumper {
         String spaces = buf.toString();
 
         System.out.print(spaces + "Sym: " + parseNode.getSymbol() + ", Name: " +
-                parseNode.getName());
+            parseNode.getName());
         if (parseNode.getLexeme() != null) {
             System.out.print(", Lex: " + parseNode.getLexeme() + ", lineno: " +
-                    parseNode.getLineno());
+                parseNode.getLineno());
         }
         System.out.println();
     }
@@ -669,7 +668,7 @@ public final class Dumper {
             System.out.println("enclosingArray:     " +
                 variable.getEnclosingArray().getName());
             System.out.println("topEnclosingArray:  " +
-                    variable.getTopEnclosingArray().getName());
+                variable.getTopEnclosingArray().getName());
             TacPlace indexPlace = variable.getIndex();
             System.out.print("index type:         ");
             if (indexPlace.isLiteral()) {
@@ -682,7 +681,7 @@ public final class Dumper {
                 System.out.println("UNKNOWN!");
             }
             System.out.print("indices:            ");
-            for (Iterator iter = variable.getIndices().iterator(); iter.hasNext();) {
+            for (Iterator iter = variable.getIndices().iterator(); iter.hasNext(); ) {
                 TacPlace index = (TacPlace) iter.next();
                 System.out.print(index + " ");
             }
@@ -699,7 +698,7 @@ public final class Dumper {
         List indexFor = variable.getIndexFor();
         if (!indexFor.isEmpty()) {
             System.out.print("indexFor:           ");
-            for (Iterator iter = indexFor.iterator(); iter.hasNext();) {
+            for (Iterator iter = indexFor.iterator(); iter.hasNext(); ) {
                 Variable indexed = (Variable) iter.next();
                 System.out.print(indexed + " ");
             }
@@ -735,7 +734,7 @@ public final class Dumper {
 
     static public void dump(IncDomAnalysis analysis) {
         IntraAnalysisInfo analysisInfo = analysis.getAnalysisInfo();
-        for (Iterator iter = analysisInfo.getMap().entrySet().iterator(); iter.hasNext();) {
+        for (Iterator iter = analysisInfo.getMap().entrySet().iterator(); iter.hasNext(); ) {
             Map.Entry entry = (Map.Entry) iter.next();
             CfgNode cfgNode = (CfgNode) entry.getKey();
             IntraAnalysisNode analysisNode = (IntraAnalysisNode) entry.getValue();
@@ -743,7 +742,6 @@ public final class Dumper {
             Dumper.dump((IncDomLatticeElement) analysisNode.getInValue());
         }
     }
-
 
     static public void dump(InterAnalysis analysis, String path, String filename) {
 
@@ -780,7 +778,7 @@ public final class Dumper {
                     CfgNode cfgNode = (CfgNode) bft.next();
                     writer.write("----------------------------------------" + linesep);
                     writer.write(cfgNode.getFileName() + ", " + cfgNode.getOrigLineno() +
-                            ", " + makeCfgNodeName(cfgNode) + linesep);
+                        ", " + makeCfgNodeName(cfgNode) + linesep);
                     dump(analysisInfoNew.getAnalysisNode(cfgNode).getRecycledFoldedValue(), writer);
                 }
                 writer.write("----------------------------------------" + linesep);
@@ -828,7 +826,7 @@ public final class Dumper {
 //  dump(LatticeElement) ************************************************************
 
     static public void dump(LatticeElement elementX, Writer writer)
-    throws IOException {
+        throws IOException {
 
         if (elementX instanceof AliasLatticeElement) {
 
@@ -842,7 +840,7 @@ public final class Dumper {
 
             // dump non-default literal mappings
             Map placeToLit = element.getPlaceToLit();
-            for (Iterator iterator = placeToLit.entrySet().iterator(); iterator.hasNext();) {
+            for (Iterator iterator = placeToLit.entrySet().iterator(); iterator.hasNext(); ) {
                 Map.Entry entry = (Map.Entry) iterator.next();
                 TacPlace place = (TacPlace) entry.getKey();
                 Literal lit = (Literal) entry.getValue();
@@ -860,7 +858,7 @@ public final class Dumper {
             if (dominators.isEmpty()) {
                 System.out.println("<<empty>>");
             } else {
-                for (Iterator iter = dominators.iterator(); iter.hasNext();) {
+                for (Iterator iter = dominators.iterator(); iter.hasNext(); ) {
                     CfgNode dominator = (CfgNode) iter.next();
                     System.out.println(dominator.toString() + ", " + dominator.getOrigLineno());
                 }
@@ -890,9 +888,9 @@ public final class Dumper {
         // to "rootkit effects"...; alternative would be: save additional
         // field for variables
         if (var.isTemp() ||
-                var.getName().endsWith(InternalStrings.gShadowSuffix) ||
-                var.getName().endsWith(InternalStrings.gShadowSuffix) ||
-                BuiltinFunctions.isBuiltinFunction(var.getSymbolTable().getName())) {
+            var.getName().endsWith(InternalStrings.gShadowSuffix) ||
+            var.getName().endsWith(InternalStrings.gShadowSuffix) ||
+            BuiltinFunctions.isBuiltinFunction(var.getSymbolTable().getName())) {
             return true;
         } else {
             return false;
@@ -902,12 +900,12 @@ public final class Dumper {
 //  ********************************************************************************
 
     static public void dumpComplete(DepLatticeElement element, Writer writer)
-    throws IOException {
+        throws IOException {
 
         // dump non-default dep mappings
         writer.write(linesep + "DEP MAPPINGS" + linesep + linesep);
         Map placeToDep = element.getPlaceToDep();
-        for (Iterator iterator = placeToDep.entrySet().iterator(); iterator.hasNext();) {
+        for (Iterator iterator = placeToDep.entrySet().iterator(); iterator.hasNext(); ) {
             Map.Entry entry = (Map.Entry) iterator.next();
             TacPlace place = (TacPlace) entry.getKey();
             DepSet depSet = (DepSet) entry.getValue();
@@ -917,7 +915,7 @@ public final class Dumper {
         // dump non-default array labels
         writer.write(linesep + "ARRAY LABELS" + linesep + linesep);
         Map arrayLabels = element.getArrayLabels();
-        for (Iterator iterator = arrayLabels.entrySet().iterator(); iterator.hasNext();) {
+        for (Iterator iterator = arrayLabels.entrySet().iterator(); iterator.hasNext(); ) {
             Map.Entry entry = (Map.Entry) iterator.next();
             Variable var = (Variable) entry.getKey();
             DepSet arrayLabel = (DepSet) entry.getValue();
@@ -940,12 +938,12 @@ public final class Dumper {
     // - non-shadows
     // - variables of non-builtin functions
     static public void dump(DepLatticeElement element, Writer writer)
-    throws IOException {
+        throws IOException {
 
         // dump non-default taint mappings
         writer.write(linesep + "TAINT MAPPINGS" + linesep + linesep);
         Map placeToDep = element.getPlaceToDep();
-        for (Iterator iterator = placeToDep.entrySet().iterator(); iterator.hasNext();) {
+        for (Iterator iterator = placeToDep.entrySet().iterator(); iterator.hasNext(); ) {
             Map.Entry entry = (Map.Entry) iterator.next();
             TacPlace place = (TacPlace) entry.getKey();
             if (place.isVariable()) {
@@ -961,7 +959,7 @@ public final class Dumper {
         // dump non-default array labels
         writer.write(linesep + "ARRAY LABELS" + linesep + linesep);
         Map arrayLabels = element.getArrayLabels();
-        for (Iterator iterator = arrayLabels.entrySet().iterator(); iterator.hasNext();) {
+        for (Iterator iterator = arrayLabels.entrySet().iterator(); iterator.hasNext(); ) {
             Map.Entry entry = (Map.Entry) iterator.next();
             Variable var = (Variable) entry.getKey();
             if (doNotDump(var)) {
@@ -972,12 +970,11 @@ public final class Dumper {
         }
     }
 
-
     static public void dump(MustAliases mustAliases, Writer writer)
-    throws IOException{
+        throws IOException {
         Set mustAliasGroups = mustAliases.getGroups();
         writer.write("u{ ");
-        for (Iterator iter = mustAliasGroups.iterator(); iter.hasNext();) {
+        for (Iterator iter = mustAliasGroups.iterator(); iter.hasNext(); ) {
             MustAliasGroup group = (MustAliasGroup) iter.next();
             dump(group, writer);
             writer.write(" ");
@@ -986,10 +983,10 @@ public final class Dumper {
     }
 
     static public void dump(MustAliasGroup mustAliasGroup, Writer writer)
-    throws IOException {
+        throws IOException {
         Set group = mustAliasGroup.getVariables();
         writer.write("( ");
-        for (Iterator iter = group.iterator(); iter.hasNext();) {
+        for (Iterator iter = group.iterator(); iter.hasNext(); ) {
             Variable var = (Variable) iter.next();
             writer.write(var + " ");
         }
@@ -997,10 +994,10 @@ public final class Dumper {
     }
 
     static public void dump(MayAliases mayAliases, Writer writer)
-    throws IOException {
+        throws IOException {
         Set mayAliasPairs = mayAliases.getPairs();
         writer.write("a{ ");
-        for (Iterator iter = mayAliasPairs.iterator(); iter.hasNext();) {
+        for (Iterator iter = mayAliasPairs.iterator(); iter.hasNext(); ) {
             MayAliasPair pair = (MayAliasPair) iter.next();
             dump(pair, writer);
             writer.write(" ");
@@ -1009,14 +1006,14 @@ public final class Dumper {
     }
 
     static public void dump(MayAliasPair mayAliasPair, Writer writer)
-    throws IOException {
+        throws IOException {
         Set pair = mayAliasPair.getPair();
         Object[] pairArray = pair.toArray();
         writer.write("(" + (Variable) pairArray[0] + " " + (Variable) pairArray[1] + ")" + linesep);
     }
 
     static public void dumpFunction2ECS(Map function2ECS) {
-        for (Iterator iter = function2ECS.entrySet().iterator(); iter.hasNext();) {
+        for (Iterator iter = function2ECS.entrySet().iterator(); iter.hasNext(); ) {
             Map.Entry entry = (Map.Entry) iter.next();
             TacFunction function = (TacFunction) entry.getKey();
             ECS ecs = (ECS) entry.getValue();
@@ -1033,7 +1030,7 @@ public final class Dumper {
 
         // TacFunction, # of ecs, # of cfg nodes, #ecs * #nodes
         List<List<Object>> output = new LinkedList<List<Object>>();
-        for (Iterator iter = function2ECS.entrySet().iterator(); iter.hasNext();) {
+        for (Iterator iter = function2ECS.entrySet().iterator(); iter.hasNext(); ) {
 
             Map.Entry entry = (Map.Entry) iter.next();
             TacFunction function = (TacFunction) entry.getKey();
@@ -1043,7 +1040,7 @@ public final class Dumper {
             int product = ecsLength * cfgSize;
 
             int insertAtIndex = 0;
-            for (Iterator iterator = output.iterator(); iterator.hasNext();) {
+            for (Iterator iterator = output.iterator(); iterator.hasNext(); ) {
                 List nextList = (List) iterator.next();
                 int compProduct = ((Integer) nextList.get(3)).intValue();
                 if (product > compProduct) {
@@ -1061,7 +1058,7 @@ public final class Dumper {
         }
 
         int total = 0;
-        for (Iterator iter = output.iterator(); iter.hasNext();) {
+        for (Iterator iter = output.iterator(); iter.hasNext(); ) {
             List outputList = (List) iter.next();
             TacFunction function = (TacFunction) outputList.get(0);
             int ecsLength = ((Integer) outputList.get(1)).intValue();

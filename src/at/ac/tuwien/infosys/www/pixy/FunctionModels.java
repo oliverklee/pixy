@@ -8,16 +8,16 @@ import java.util.Set;
 public class FunctionModels {
 
     private Set<String> f_evil;
-    private Map<String,Set<Integer>> f_multi;
-    private Map<String,Set<Integer>> f_invMulti;
+    private Map<String, Set<Integer>> f_multi;
+    private Map<String, Set<Integer>> f_invMulti;
     private Set<String> f_strongSanit;
-    private Map<String,Set<Integer>> f_weakSanit;
+    private Map<String, Set<Integer>> f_weakSanit;
 
     private Set<String> allModels;
 
-    public FunctionModels(Set<String> f_evil, Map<String,Set<Integer>> f_multi,
-            Map<String,Set<Integer>> f_invMulti, Set<String> f_strongSanit,
-            Map<String,Set<Integer>> f_weakSanit) {
+    public FunctionModels(Set<String> f_evil, Map<String, Set<Integer>> f_multi,
+                          Map<String, Set<Integer>> f_invMulti, Set<String> f_strongSanit,
+                          Map<String, Set<Integer>> f_weakSanit) {
 
         this.f_evil = f_evil;
         this.f_multi = f_multi;

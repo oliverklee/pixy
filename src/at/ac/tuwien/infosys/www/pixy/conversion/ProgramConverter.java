@@ -73,7 +73,9 @@ public class ProgramConverter {
     private SymbolTable superSymbolTable;
 
     // inclusion status
-    private enum IncStatus {NOTFOUND, INCLUDED, CYCLIC}
+    private enum IncStatus {
+        NOTFOUND, INCLUDED, CYCLIC
+    }
 
     // type analysis (for resolving ambiguous method calls)
     private TypeAnalysis typeAnalysis;
@@ -83,7 +85,7 @@ public class ProgramConverter {
 //  ********************************************************************************
 
     public ProgramConverter(boolean specialNodes,
-            boolean useAliasAnalysis/*, Properties props*/) {
+                            boolean useAliasAnalysis/*, Properties props*/) {
 
         this.numConvertedFiles = 0;
 
@@ -156,7 +158,7 @@ public class ProgramConverter {
         // convert entry file
         ParseTree parseTree = this.parse(MyOptions.entryFile.getPath());
         baseTac = new TacConverter(parseTree, this.specialNodes, this.numConvertedFiles++,
-                MyOptions.entryFile, this);
+            MyOptions.entryFile, this);
         baseTac.convert();
 
         List<CfgNodeInclude> processUs = baseTac.getIncludeNodes();
@@ -168,10 +170,10 @@ public class ProgramConverter {
         Set<CfgNodeInclude> topIncludes = new HashSet<CfgNodeInclude>();
         //
         // literal includes for which the target file could not be found
-        SortedMap<CfgNodeInclude,String> notFoundLiteralIncludes = new TreeMap<CfgNodeInclude,String>();
+        SortedMap<CfgNodeInclude, String> notFoundLiteralIncludes = new TreeMap<CfgNodeInclude, String>();
         //
         // dynamic includes for which the target file could not be found
-        SortedMap<CfgNodeInclude,String> notFoundDynamicIncludes = new TreeMap<CfgNodeInclude,String>();
+        SortedMap<CfgNodeInclude, String> notFoundDynamicIncludes = new TreeMap<CfgNodeInclude, String>();
         //
         // number of included literal includes
         int resolvedLit = 0;
@@ -209,7 +211,7 @@ public class ProgramConverter {
                 weComeAfterwards = new LinkedList<CfgNodeInclude>();
 
                 // process all literal include nodes in "processUs"
-                for (Iterator iter = processUs.iterator(); iter.hasNext();) {
+                for (Iterator iter = processUs.iterator(); iter.hasNext(); ) {
                     CfgNodeInclude includeNode = (CfgNodeInclude) iter.next();
                     if (this.skipUs.contains(includeNode)) {
                         continue;
@@ -219,26 +221,26 @@ public class ProgramConverter {
                         continue;
                     }
                     IncStatus status = this.include(includeNode.getIncludeMe().toString(), includeNode,
-                            includeNode.getIncludeFunction(), weComeAfterwards);
+                        includeNode.getIncludeFunction(), weComeAfterwards);
 
                     switch (status) {
-                    case INCLUDED:
-                        // fine!
-                        resolvedLit++;
-                        break;
-                    case NOTFOUND:
-                        // a literal include that was not found;
-                        // there is no need to retry
-                        this.skipUs.add(includeNode);
-                        notFound++;
-                        notFoundLiteralIncludes.put(includeNode, includeNode.getIncludeMe().toString());
-                        break;
-                    case CYCLIC:
-                        this.skipUs.add(includeNode);
-                        cyclic++;
-                        break;
-                    default:
-                        throw new RuntimeException("SNH");
+                        case INCLUDED:
+                            // fine!
+                            resolvedLit++;
+                            break;
+                        case NOTFOUND:
+                            // a literal include that was not found;
+                            // there is no need to retry
+                            this.skipUs.add(includeNode);
+                            notFound++;
+                            notFoundLiteralIncludes.put(includeNode, includeNode.getIncludeMe().toString());
+                            break;
+                        case CYCLIC:
+                            this.skipUs.add(includeNode);
+                            cyclic++;
+                            break;
+                        default:
+                            throw new RuntimeException("SNH");
                     }
 
                 }
@@ -267,7 +269,7 @@ public class ProgramConverter {
 
             int kSize = 1;
             ConnectorComputation connectorComp = new ConnectorComputation(
-                    baseTac.getAllFunctions(), baseTac.getMainFunction(), kSize);
+                baseTac.getAllFunctions(), baseTac.getMainFunction(), kSize);
             connectorComp.compute();
             InterWorkList workList = new InterWorkListBetter(new InterWorkListOrder(baseTac, connectorComp));
             connectorComp.stats(false);
@@ -275,12 +277,12 @@ public class ProgramConverter {
             AliasAnalysis aliasAnalysis = new DummyAliasAnalysis();
 
             literalAnalysis = new LiteralAnalysis(
-                    baseTac, aliasAnalysis, new CSAnalysis(connectorComp), workList);
+                baseTac, aliasAnalysis, new CSAnalysis(connectorComp), workList);
             literalAnalysis.analyze();
 
             processUs = literalAnalysis.getIncludeNodes();
             weComeAfterwards = new LinkedList<CfgNodeInclude>();
-            notFoundDynamicIncludes = new TreeMap<CfgNodeInclude,String>();
+            notFoundDynamicIncludes = new TreeMap<CfgNodeInclude, String>();
             topIncludes = new HashSet<CfgNodeInclude>();
 
             for (CfgNodeInclude includeNode : processUs) {
@@ -296,8 +298,8 @@ public class ProgramConverter {
 
                     // try heuristics
                     List<String> includeTargets = ParseNodeHeuristics.getPossibleIncludeTargets(
-                            includeNode, literalAnalysis, notFoundDynamicIncludes,
-                            this.workingDirectoryFile.getPath());
+                        includeNode, literalAnalysis, notFoundDynamicIncludes,
+                        this.workingDirectoryFile.getPath());
 
                     if (includeTargets == null) {
                         // more than one possibility
@@ -318,25 +320,25 @@ public class ProgramConverter {
 
                 // include!
                 IncStatus status = this.include(includedString, includeNode, includeNode.getIncludeFunction(),
-                        weComeAfterwards);
+                    weComeAfterwards);
 
                 switch (status) {
-                case INCLUDED:
-                    // we have included something, so continue with the next iteration
-                    goOn = true;
-                    resolvedNonLit++;
-                    break;
-                case CYCLIC:
-                    this.skipUs.add(includeNode);
-                    cyclic++;
-                    break;
-                case NOTFOUND:
-                    // a non-literal include that was not found:
-                    // perhaps we will succeed in a later iteration...
-                    notFoundDynamicIncludes.put(includeNode, includedString);
-                    break;
-                default:
-                    throw new RuntimeException("SNH");
+                    case INCLUDED:
+                        // we have included something, so continue with the next iteration
+                        goOn = true;
+                        resolvedNonLit++;
+                        break;
+                    case CYCLIC:
+                        this.skipUs.add(includeNode);
+                        cyclic++;
+                        break;
+                    case NOTFOUND:
+                        // a non-literal include that was not found:
+                        // perhaps we will succeed in a later iteration...
+                        notFoundDynamicIncludes.put(includeNode, includedString);
+                        break;
+                    default:
+                        throw new RuntimeException("SNH");
                 }
             }
 
@@ -382,11 +384,11 @@ public class ProgramConverter {
             System.out.println();
 
             ConnectorComputation connectorComp = new ConnectorComputation(
-                    baseTac.getAllFunctions(), baseTac.getMainFunction(), 0);
+                baseTac.getAllFunctions(), baseTac.getMainFunction(), 0);
             connectorComp.compute();
             InterWorkList workList = new InterWorkListBetter(new InterWorkListOrder(baseTac, connectorComp));
             this.typeAnalysis = new TypeAnalysis(
-                    this.baseTac, new CSAnalysis(connectorComp), workList);
+                this.baseTac, new CSAnalysis(connectorComp), workList);
             typeAnalysis.analyze();
 
             // final, verbose backpatching
@@ -422,26 +424,26 @@ public class ProgramConverter {
             System.out.println("resolved non-literal includes:   " + resolvedNonLit);
             System.out.println("cyclic includes:                 " + cyclic);
             System.out.println("not found includes:              " +
-                    (notFoundLiteralIncludes.size() + notFoundDynamicIncludes.size()));
-                for (Map.Entry<CfgNodeInclude,String> entry : notFoundLiteralIncludes.entrySet()) {
-                    System.out.println("- " + entry.getKey().getLoc());
-                    System.out.println("   [" + entry.getValue() + "]");
-                }
-                for (Map.Entry<CfgNodeInclude,String> entry : notFoundDynamicIncludes.entrySet()) {
-                    System.out.println("- " + entry.getKey().getLoc());
-                    System.out.println("   [" + entry.getValue() + "]");
-                }
+                (notFoundLiteralIncludes.size() + notFoundDynamicIncludes.size()));
+            for (Map.Entry<CfgNodeInclude, String> entry : notFoundLiteralIncludes.entrySet()) {
+                System.out.println("- " + entry.getKey().getLoc());
+                System.out.println("   [" + entry.getValue() + "]");
+            }
+            for (Map.Entry<CfgNodeInclude, String> entry : notFoundDynamicIncludes.entrySet()) {
+                System.out.println("- " + entry.getKey().getLoc());
+                System.out.println("   [" + entry.getValue() + "]");
+            }
             System.out.println("unresolved non-literal includes: " + topIncludes.size());
             List<CfgNodeInclude> topIncludesList = new LinkedList<CfgNodeInclude>(topIncludes);
             Collections.sort(topIncludesList);
-                for (CfgNodeInclude includeNode : topIncludesList) {
-                    System.out.println("- " + includeNode.getLoc());
-                }
+            for (CfgNodeInclude includeNode : topIncludesList) {
+                System.out.println("- " + includeNode.getLoc());
+            }
             System.out.println();
 
             // dump include relationships
             Utils.writeToFile(this.includeGraph.dump(),
-                    MyOptions.graphPath + "/includes_" + MyOptions.entryFile.getName() + ".txt");
+                MyOptions.graphPath + "/includes_" + MyOptions.entryFile.getName() + ".txt");
         }
 
         // we don't need these any more
@@ -468,16 +470,16 @@ public class ProgramConverter {
     // - output: the same set, but without those that are inside functions
     //   that are never called
     private void removeUnreachables(
-            Set<CfgNodeInclude> includeSet, Map<CfgNodeInclude,String> includeMap) {
+        Set<CfgNodeInclude> includeSet, Map<CfgNodeInclude, String> includeMap) {
 
-        for (Iterator iter = includeSet.iterator(); iter.hasNext();) {
+        for (Iterator iter = includeSet.iterator(); iter.hasNext(); ) {
             CfgNodeInclude includeNode = (CfgNodeInclude) iter.next();
             InterAnalysisNode incAnNode = literalAnalysis.getAnalysisNode(includeNode);
             if (incAnNode.getPhi().isEmpty()) {
                 iter.remove();
             }
         }
-        for (Iterator iter = includeMap.entrySet().iterator(); iter.hasNext();) {
+        for (Iterator iter = includeMap.entrySet().iterator(); iter.hasNext(); ) {
             Map.Entry entry = (Map.Entry) iter.next();
             CfgNodeInclude includeNode = (CfgNodeInclude) entry.getKey();
             InterAnalysisNode incAnNode = literalAnalysis.getAnalysisNode(includeNode);
@@ -515,7 +517,6 @@ public class ProgramConverter {
             }
         }
 
-
         if (this.countLines) {
             this.lines += this.countLines(fileName);
         }
@@ -541,7 +542,7 @@ public class ProgramConverter {
         // try to include the file relative to working directory first:
         // for each specified include path, append it to the working directory
         // and search there for the file that is to be included
-        for (Iterator iter = MyOptions.includePaths.iterator(); iter.hasNext();) {
+        for (Iterator iter = MyOptions.includePaths.iterator(); iter.hasNext(); ) {
             File includePath = (File) iter.next();
 
             File searchIn;  // directory to search in
@@ -563,7 +564,7 @@ public class ProgramConverter {
         // but only if the given file name doesn't start with "." or ".."
 
         if (!(fileName.startsWith("./") || fileName.startsWith("../"))) {
-            for (Iterator iter = MyOptions.includePaths.iterator(); iter.hasNext();) {
+            for (Iterator iter = MyOptions.includePaths.iterator(); iter.hasNext(); ) {
                 File includePath = (File) iter.next();
 
                 // we've already dealt with absolute include paths in the previous loop
@@ -573,8 +574,8 @@ public class ProgramConverter {
 
                 try {
                     File searchIn = new File(
-                            includingFile.getCanonicalFile().getParentFile(),
-                            includePath.getPath());
+                        includingFile.getCanonicalFile().getParentFile(),
+                        includePath.getPath());
                     findMe = new File(searchIn, fileName);
                     if (findMe.isFile()) {
                         // found it!
@@ -595,7 +596,7 @@ public class ProgramConverter {
 
     // function: the one that contains the given include node;
     public IncStatus include(String includedFileName, CfgNodeInclude includeNode, TacFunction function,
-            List<CfgNodeInclude> includeNodes) {
+                             List<CfgNodeInclude> includeNodes) {
 
         File includingFile = includeNode.getFile();
         File includedFile = this.makeFile(includedFileName, includingFile);
@@ -607,7 +608,6 @@ public class ProgramConverter {
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage());
         }
-
 
         // approximation for handling recursions:
         // if this is a recursive include (include graph would get cyclic), ignore it
@@ -627,7 +627,7 @@ public class ProgramConverter {
             }
             ParseTree parseTree = this.parse(includedFilePath);
             TacConverter tac = new TacConverter(
-                    parseTree, this.specialNodes, this.numConvertedFiles++, includedFile, this);
+                parseTree, this.specialNodes, this.numConvertedFiles++, includedFile, this);
             tac.convert();
             this.baseTac.include(tac, includeNode, function);
             includeNodes.addAll(tac.getIncludeNodes());
@@ -646,7 +646,7 @@ public class ProgramConverter {
         try {
             File countMe = new File(fileName);
             BufferedReader reader = new BufferedReader(new FileReader(countMe));
-            while(reader.readLine() != null) {
+            while (reader.readLine() != null) {
                 lines++;
             }
         } catch (FileNotFoundException e) {

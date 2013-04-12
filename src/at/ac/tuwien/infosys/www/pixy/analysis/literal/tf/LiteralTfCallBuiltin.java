@@ -19,7 +19,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallBuiltin;
 
 public class LiteralTfCallBuiltin
-extends TransferFunction {
+    extends TransferFunction {
 
     private CfgNodeCallBuiltin cfgNode;
 
@@ -40,10 +40,8 @@ extends TransferFunction {
         LiteralLatticeElement in = (LiteralLatticeElement) inX;
         LiteralLatticeElement out = new LiteralLatticeElement(in);
 
-
         // SIMULATION OF BUILTIN FUNCTIONS
         // ...by letting the php binary do the work
-
 
         String functionName = this.cfgNode.getFunctionName();
 
@@ -149,7 +147,8 @@ extends TransferFunction {
             resultString = inreader.readLine();
             inreader.close();
         } catch (IOException e) {
-            throw new RuntimeException(e.getMessage());        }
+            throw new RuntimeException(e.getMessage());
+        }
 
         if (resultString.startsWith("bool(")) {
             if (resultString.equals("bool(true)")) {
@@ -159,8 +158,8 @@ extends TransferFunction {
             }
         } else if (resultString.startsWith("string(")) {
             return new Literal(resultString.substring(
-                    resultString.indexOf(')') + 3,
-                    resultString.length() - 1));
+                resultString.indexOf(')') + 3,
+                resultString.length() - 1));
         } else {
             return Literal.TOP;
         }

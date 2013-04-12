@@ -6,7 +6,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 
 // an AnalysisNode holds analysis-specific information for a certain CFGNode
 public class IntraAnalysisNode
-extends AnalysisNode {
+    extends AnalysisNode {
 
     // input lattice element at current CFG node
     LatticeElement inValue;

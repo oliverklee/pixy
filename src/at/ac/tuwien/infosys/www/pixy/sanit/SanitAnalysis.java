@@ -27,7 +27,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallUnknown;
 
 // superclass for sanitization analyses
 public abstract class SanitAnalysis
-extends DepClient {
+    extends DepClient {
 
     // if this flag is active, untainted values (most notably: static strings)
     // are treated as empty strings during depgraph decoration
@@ -86,98 +86,98 @@ extends DepClient {
         Iterator<DepGraph> minIter = minDepGraphs.iterator();
         for (DepGraph depGraph : vulnDepGraphs) {
 
-                graphcount++;
+            graphcount++;
 
-                DepGraph minGraph = minIter.next();
+            DepGraph minGraph = minIter.next();
 
-                // in any case, dump the vulnerable depgraphs
-                depGraph.dumpDot(name + "sanit" + graphcount + "i", MyOptions.graphPath, depGraph.getUninitNodes(), this.dci);
-                minGraph.dumpDot(name + "sanit" + graphcount + "m", MyOptions.graphPath, depGraph.getUninitNodes(), this.dci);
+            // in any case, dump the vulnerable depgraphs
+            depGraph.dumpDot(name + "sanit" + graphcount + "i", MyOptions.graphPath, depGraph.getUninitNodes(), this.dci);
+            minGraph.dumpDot(name + "sanit" + graphcount + "m", MyOptions.graphPath, depGraph.getUninitNodes(), this.dci);
 
-                CfgNode cfgNode = depGraph.getRoot().getCfgNode();
+            CfgNode cfgNode = depGraph.getRoot().getCfgNode();
 
-                // retrieve custom sanitization routines from the minGraph
-                List<DepGraphNode> customSanitNodes = findCustomSanit(minGraph);
+            // retrieve custom sanitization routines from the minGraph
+            List<DepGraphNode> customSanitNodes = findCustomSanit(minGraph);
 
-                if (customSanitNodes.isEmpty()) {
-                    // we don't have to perform our detailed sanitization analysis
-                    // if no custom sanitization is performed
-                    System.out.println("No Sanitization!");
+            if (customSanitNodes.isEmpty()) {
+                // we don't have to perform our detailed sanitization analysis
+                // if no custom sanitization is performed
+                System.out.println("No Sanitization!");
+                System.out.println("- " + cfgNode.getLoc());
+                System.out.println("- Graphs: " + name + "sanit" + graphcount);
+                sure_vuln_1++;
+                no_sanit++;
+                continue;
+            }
+            have_sanit++;
+
+            DepGraph workGraph = new DepGraph(depGraph);
+
+            Map<DepGraphNode, FSAAutomaton> deco = new HashMap<DepGraphNode, FSAAutomaton>();
+            FSAAutomaton auto = this.toAutomatonSanit(workGraph, depGraph, deco);
+
+            // intersect this automaton with the undesired stuff;
+            // if the intersection is empty, it means that we are safe!
+            FSAAutomaton intersection = auto.intersect(this.undesir);
+            if (!intersection.isEmpty()) {
+
+                // dump the intersection automaton:
+                // represents counterexamples!
+                this.dumpDotAuto(intersection, name + "sanit" + graphcount + "intersect", MyOptions.graphPath);
+
+                // create a graph that is further minimized to the sanitization routines
+                // (regardless of the effectiveness of the applied sanitization)
+                DepGraph sanitMinGraph = new DepGraph(minGraph);
+                sanitMinGraph.reduceToInnerNodes(customSanitNodes);
+
+                // and now reduce this graph to the ineffective sanitization routines
+                int ineffBorder = sanitMinGraph.reduceToIneffectiveSanit(deco, this);
+
+                if (ineffBorder != 0) {
+
+                    System.out.println("Ineffective Sanitization!");
                     System.out.println("- " + cfgNode.getLoc());
-                    System.out.println("- Graphs: "+name+"sanit" + graphcount);
-                    sure_vuln_1++;
-                    no_sanit++;
-                    continue;
-                }
-                have_sanit++;
+                    System.out.println("- Graphs: " + name + "sanit" + graphcount);
+                    possible_vuln++;
 
-                DepGraph workGraph = new DepGraph(depGraph);
+                    // dump the minimized graph
+                    sanitMinGraph.dumpDot(name + "sanit" + graphcount + "mm", MyOptions.graphPath, depGraph.getUninitNodes(), this.dci);
 
-                Map<DepGraphNode,FSAAutomaton> deco = new HashMap<DepGraphNode,FSAAutomaton>();
-                FSAAutomaton auto = this.toAutomatonSanit(workGraph, depGraph, deco);
-
-                // intersect this automaton with the undesired stuff;
-                // if the intersection is empty, it means that we are safe!
-                FSAAutomaton intersection = auto.intersect(this.undesir);
-                if (!intersection.isEmpty()) {
-
-                    // dump the intersection automaton:
-                    // represents counterexamples!
-                    this.dumpDotAuto(intersection, name+"sanit" + graphcount + "intersect", MyOptions.graphPath);
-
-                    // create a graph that is further minimized to the sanitization routines
-                    // (regardless of the effectiveness of the applied sanitization)
-                    DepGraph sanitMinGraph = new DepGraph(minGraph);
-                    sanitMinGraph.reduceToInnerNodes(customSanitNodes);
-
-                    // and now reduce this graph to the ineffective sanitization routines
-                    int ineffBorder = sanitMinGraph.reduceToIneffectiveSanit(deco, this);
-
-                    if (ineffBorder != 0) {
-
-                        System.out.println("Ineffective Sanitization!");
-                        System.out.println("- " + cfgNode.getLoc());
-                        System.out.println("- Graphs: "+name+"sanit" + graphcount);
-                        possible_vuln++;
-
-                        // dump the minimized graph
-                        sanitMinGraph.dumpDot(name+"sanit" + graphcount + "mm", MyOptions.graphPath, depGraph.getUninitNodes(), this.dci);
-
-                        dynInfo.append("SINK:\n");
-                        dynInfo.append(sanitMinGraph.getRoot().toString());
+                    dynInfo.append("SINK:\n");
+                    dynInfo.append(sanitMinGraph.getRoot().toString());
+                    dynInfo.append("\n");
+                    dynInfo.append("SOURCES:\n");
+                    List<DepGraphNormalNode> dangerousSources = this.findDangerousSources(sanitMinGraph);
+                    for (DepGraphNormalNode dangerousSource : dangerousSources) {
+                        dynInfo.append(dangerousSource.toString());
                         dynInfo.append("\n");
-                        dynInfo.append("SOURCES:\n");
-                        List<DepGraphNormalNode> dangerousSources = this.findDangerousSources(sanitMinGraph);
-                        for (DepGraphNormalNode dangerousSource : dangerousSources) {
-                            dynInfo.append(dangerousSource.toString());
-                            dynInfo.append("\n");
-                        }
-                        dynInfo.append("\n");
+                    }
+                    dynInfo.append("\n");
 
-                        if (MyOptions.countPaths) {
-                            int paths = new DepGraph(sanitMinGraph).countPaths();
-                            dynpathcount += paths;
-                            // System.out.println("- paths: " + paths);
-                        }
-
-                    } else {
-                        // this means that this graph contains custom sanitization routines,
-                        // but they are not responsible for the vulnerability
-                        System.out.println("No Sanitization!");
-                        System.out.println("- " + cfgNode.getLoc());
-                        System.out.println("- Graphs: "+name+"sanit" + graphcount);
-                        sure_vuln_2++;
+                    if (MyOptions.countPaths) {
+                        int paths = new DepGraph(sanitMinGraph).countPaths();
+                        dynpathcount += paths;
+                        // System.out.println("- paths: " + paths);
                     }
 
                 } else {
-                    // eliminated false positive!
-                    eliminated++;
+                    // this means that this graph contains custom sanitization routines,
+                    // but they are not responsible for the vulnerability
+                    System.out.println("No Sanitization!");
+                    System.out.println("- " + cfgNode.getLoc());
+                    System.out.println("- Graphs: " + name + "sanit" + graphcount);
+                    sure_vuln_2++;
                 }
 
-                this.dumpDotAuto(auto, name+"sanit" + graphcount + "auto", MyOptions.graphPath);
+            } else {
+                // eliminated false positive!
+                eliminated++;
+            }
+
+            this.dumpDotAuto(auto, name + "sanit" + graphcount + "auto", MyOptions.graphPath);
         }
 
-        Utils.writeToFile(dynInfo.toString(), MyOptions.graphPath + "/"+name+"info.txt");
+        Utils.writeToFile(dynInfo.toString(), MyOptions.graphPath + "/" + name + "info.txt");
 
         System.out.println();
         System.out.println("Scanned depgraphs: " + scanned);
@@ -191,7 +191,7 @@ extends DepClient {
         }
         System.out.println("Total DepGraphs with custom sanitization: " + vulnInfo.getCustomSanitCount());
         System.out.println("DepGraphs with custom sanitization thrown away by basic analysis: " +
-                vulnInfo.getCustomSanitThrownAwayCount());
+            vulnInfo.getCustomSanitThrownAwayCount());
         System.out.println();
         System.out.println("Eliminated false positives: " + eliminated);
         System.out.println();
@@ -215,7 +215,7 @@ extends DepClient {
     // and returning the automaton that eventually decorates the root;
     // BEWARE: this also eliminates cycles!
     protected FSAAutomaton toAutomatonSanit(DepGraph depGraph, DepGraph origDepGraph,
-            Map<DepGraphNode,FSAAutomaton> deco) {
+                                            Map<DepGraphNode, FSAAutomaton> deco) {
         depGraph.eliminateCycles();
         DepGraphNode root = depGraph.getRoot();
         Set<DepGraphNode> visited = new HashSet<DepGraphNode>();
@@ -228,9 +228,9 @@ extends DepClient {
 //  ********************************************************************************
 
     // decorates the given node (and all its successors) with an automaton
-    private final void decorateSanit(DepGraphNode node, Map<DepGraphNode,FSAAutomaton> deco,
-            Set<DepGraphNode> visited, DepGraph depGraph, DepGraph origDepGraph,
-            boolean trimAllowed) {
+    private final void decorateSanit(DepGraphNode node, Map<DepGraphNode, FSAAutomaton> deco,
+                                     Set<DepGraphNode> visited, DepGraph depGraph, DepGraph origDepGraph,
+                                     boolean trimAllowed) {
 
         visited.add(node);
 
@@ -272,7 +272,7 @@ extends DepClient {
                     // this case should not happen any longer (now that
                     // we have "uninit" nodes, see below)
                     throw new RuntimeException("SNH: " + place + ", " + normalNode.getCfgNode().getFileName() + "," +
-                            normalNode.getCfgNode().getOrigLineno());
+                        normalNode.getCfgNode().getOrigLineno());
                 }
             } else {
                 // this is an interior node, not a leaf node;
@@ -355,19 +355,19 @@ extends DepClient {
             if (pre instanceof DepGraphNormalNode) {
                 DepGraphNormalNode preNormal = (DepGraphNormalNode) pre;
                 switch (this.initiallyTainted(preNormal.getPlace())) {
-                case ALWAYS:
-                case IFRG:
-                    auto = FSAAutomaton.makeAnyString();
-                    break;
-                case NEVER:
-                    if (trimUntainted && trimAllowed) {
-                        auto = FSAAutomaton.makeString("");
-                    } else {
+                    case ALWAYS:
+                    case IFRG:
                         auto = FSAAutomaton.makeAnyString();
-                    }
-                    break;
-                default:
-                    throw new RuntimeException("SNH");
+                        break;
+                    case NEVER:
+                        if (trimUntainted && trimAllowed) {
+                            auto = FSAAutomaton.makeString("");
+                        } else {
+                            auto = FSAAutomaton.makeAnyString();
+                        }
+                        break;
+                    default:
+                        throw new RuntimeException("SNH");
                 }
 
             } else if (pre instanceof DepGraphSccNode) {
@@ -384,19 +384,19 @@ extends DepClient {
                         DepGraphNormalNode origPreNormal = (DepGraphNormalNode) origPre;
 
                         switch (this.initiallyTainted(origPreNormal.getPlace())) {
-                        case ALWAYS:
-                        case IFRG:
-                            auto = FSAAutomaton.makeAnyString();
-                            break;
-                        case NEVER:
-                            if (trimUntainted && trimAllowed) {
-                                auto = FSAAutomaton.makeString("");
-                            } else {
+                            case ALWAYS:
+                            case IFRG:
                                 auto = FSAAutomaton.makeAnyString();
-                            }
-                            break;
-                        default:
-                            throw new RuntimeException("SNH");
+                                break;
+                            case NEVER:
+                                if (trimUntainted && trimAllowed) {
+                                    auto = FSAAutomaton.makeString("");
+                                } else {
+                                    auto = FSAAutomaton.makeAnyString();
+                                }
+                                break;
+                            default:
+                                throw new RuntimeException("SNH");
                         }
 
                     } else {
@@ -426,8 +426,8 @@ extends DepClient {
 //  ********************************************************************************
 
     // returns an automaton for the given operation node
-    private final FSAAutomaton makeAutoForOp(DepGraphOpNode node, Map<DepGraphNode,FSAAutomaton> deco,
-            DepGraph depGraph, boolean trimAllowed) {
+    private final FSAAutomaton makeAutoForOp(DepGraphOpNode node, Map<DepGraphNode, FSAAutomaton> deco,
+                                             DepGraph depGraph, boolean trimAllowed) {
 
         List<DepGraphNode> successors = depGraph.getSuccessors(node);
         if (successors == null) {
@@ -473,7 +473,7 @@ extends DepClient {
                 }
             }
 
-        // TRANSDUCIBLES ****************************************
+            // TRANSDUCIBLES ****************************************
 
         } else if (opName.equals("preg_replace")) {
 
@@ -490,7 +490,7 @@ extends DepClient {
             }
 
             FSAAutomaton transduced = FSAUtils.reg_replace(searchAuto, replaceAuto,
-                    subjectAuto, true, node.getCfgNode());
+                subjectAuto, true, node.getCfgNode());
             return transduced;
 
         } else if (opName.equals("ereg_replace")) {
@@ -508,7 +508,7 @@ extends DepClient {
             }
 
             FSAAutomaton transduced = FSAUtils.reg_replace(searchAuto, replaceAuto,
-                    subjectAuto, false, node.getCfgNode());
+                subjectAuto, false, node.getCfgNode());
             return transduced;
 
         } else if (opName.equals("str_replace")) {
@@ -526,7 +526,7 @@ extends DepClient {
             }
 
             FSAAutomaton transduced = FSAUtils.str_replace(
-                    searchAuto, replaceAuto, subjectAuto, node.getCfgNode());
+                searchAuto, replaceAuto, subjectAuto, node.getCfgNode());
             return transduced;
 
         } else if (opName.equals("addslashes")) {
@@ -537,12 +537,12 @@ extends DepClient {
             FSAAutomaton paramAuto = deco.get(successors.get(0));
 
             FSAAutomaton transduced = FSAUtils.addslashes(
-                    paramAuto, node.getCfgNode());
+                paramAuto, node.getCfgNode());
             return transduced;
 
-        // WEAK SANITIZATION FUNCTIONS *******************************
-        // ops that perform sanitization, but which are insufficient
-        // in cases where the output is not enclosed by quotes in an SQL query
+            // WEAK SANITIZATION FUNCTIONS *******************************
+            // ops that perform sanitization, but which are insufficient
+            // in cases where the output is not enclosed by quotes in an SQL query
 
         } else if (isWeakSanit(opName, multiList)) {
 
@@ -552,8 +552,8 @@ extends DepClient {
                 retMe = FSAAutomaton.makeAnyString();
             }
 
-        // STRONG SANITIZATION FUNCTIONS *******************************
-        // e.g., ops that return numeric values
+            // STRONG SANITIZATION FUNCTIONS *******************************
+            // e.g., ops that return numeric values
 
         } else if (isStrongSanit(opName)) {
 
@@ -563,11 +563,11 @@ extends DepClient {
                 retMe = FSAAutomaton.makeAnyString();
             }
 
-        // EVIL FUNCTIONS ***************************************
-        // take care: if you define evil functions, you must adjust
-        // the treatment of SCC nodes in decorate()
+            // EVIL FUNCTIONS ***************************************
+            // take care: if you define evil functions, you must adjust
+            // the treatment of SCC nodes in decorate()
 
-        // MULTI-OR-DEPENDENCY **********************************
+            // MULTI-OR-DEPENDENCY **********************************
 
         } else if (isMulti(opName, multiList)) {
 
@@ -577,7 +577,7 @@ extends DepClient {
 
             retMe = this.multiDependencyAutoSanit(successors, deco, multiList, true);
 
-        // CATCH-ALL ********************************************
+            // CATCH-ALL ********************************************
 
         } else {
             System.out.println("Unmodeled builtin function (SQL-Sanit): " + opName);
@@ -597,7 +597,7 @@ extends DepClient {
     // - if all successors are empty: returns empty
     // - else: returns .*
     private FSAAutomaton multiDependencyAutoSanit(List<DepGraphNode> succs,
-            Map<DepGraphNode,FSAAutomaton> deco, List<Integer> indices, boolean inverse) {
+                                                  Map<DepGraphNode, FSAAutomaton> deco, List<Integer> indices, boolean inverse) {
 
         if (!trimUntainted) {
             return FSAAutomaton.makeAnyString();
@@ -664,10 +664,10 @@ extends DepClient {
 
                     // here is the list of custom sanitization functions
                     if (
-                            funcName.equals("ereg_replace") ||
+                        funcName.equals("ereg_replace") ||
                             funcName.equals("preg_replace") ||
                             funcName.equals("str_replace")
-                            ) {
+                        ) {
 
                         // found it!
                         return true;
@@ -692,7 +692,7 @@ extends DepClient {
 //  ********************************************************************************
 
     public boolean isIneffective(DepGraphNode customSanit,
-            Map<DepGraphNode,FSAAutomaton> deco) {
+                                 Map<DepGraphNode, FSAAutomaton> deco) {
 
         FSAAutomaton auto = deco.get(customSanit);
         if (auto == null) {
@@ -737,8 +737,8 @@ extends DepClient {
             if (opNode.isBuiltin()) {
                 String opName = opNode.getName();
                 if (opName.equals("preg_replace") ||
-                        opName.equals("ereg_replace") ||
-                        opName.equals("str_replace")) {
+                    opName.equals("ereg_replace") ||
+                    opName.equals("str_replace")) {
                     retMe.addNoTrim(0);
                 }
             }

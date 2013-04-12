@@ -7,7 +7,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 // transfer function for unary assignment nodes
 public class TypeTfAssignBinary
-extends TransferFunction {
+    extends TransferFunction {
 
     private Variable left;
 

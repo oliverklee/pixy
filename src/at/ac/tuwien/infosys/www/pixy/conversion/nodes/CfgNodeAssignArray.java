@@ -11,7 +11,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 // *********************************************************************************
 
 public class CfgNodeAssignArray
-extends CfgNode {
+    extends CfgNode {
 
     private Variable left;
 
@@ -38,11 +38,11 @@ extends CfgNode {
 
     public void replaceVariable(int index, Variable replacement) {
         switch (index) {
-        case 0:
-            this.left = replacement;
-            break;
-        default:
-            throw new RuntimeException("SNH");
+            case 0:
+                this.left = replacement;
+                break;
+            default:
+                throw new RuntimeException("SNH");
         }
     }
 }

@@ -9,7 +9,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeTester;
 
 // transfer function for special ~_test_ node
 public class LiteralTfTester
-extends TransferFunction {
+    extends TransferFunction {
 
     // provides access to the return variable of the function enclosing
     // this ~_test_ node

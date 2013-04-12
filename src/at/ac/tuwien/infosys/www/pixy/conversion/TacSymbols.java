@@ -9,7 +9,6 @@ public class TacSymbols {
     public static final int R_top_statement_list = 3;
     public static final int T_dummy = 4;
 
-
     // this array maps symbol numbers to strings
     private static final String[] yytname = {
         "epsilon", "statement", "start", "top_statement_list", "dummy"

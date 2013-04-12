@@ -24,18 +24,18 @@ public class InterWorkListOrder {
 
     // this is what we want to compute: a mapping of interprocedural
     // worklist elements to some number (order)
-    private Map<InterWorkListElement,Integer> order;
+    private Map<InterWorkListElement, Integer> order;
 
 //  ********************************************************************************
 
     public InterWorkListOrder(TacConverter tac, ConnectorComputation cc) {
 
-        this.order = new HashMap<InterWorkListElement,Integer>();
+        this.order = new HashMap<InterWorkListElement, Integer>();
 
         TacFunction mainFunction = tac.getMainFunction();
         CfgNode startNode = mainFunction.getCfg().getHead();
 
-        Map<TacFunction,ECS> function2ECS = cc.getFunction2ECS();
+        Map<TacFunction, ECS> function2ECS = cc.getFunction2ECS();
         ECS mainECS = function2ECS.get(mainFunction);
         if (mainECS.size() != 1) {
             throw new RuntimeException("SNH");
@@ -58,7 +58,7 @@ public class InterWorkListOrder {
 
     // non-recursive postorder
     private LinkedList<InterWorkListElement> getPostorder(
-            InterWorkListElement start, ConnectorComputation cc) {
+        InterWorkListElement start, ConnectorComputation cc) {
 
         // this is what we want to compute
         LinkedList<InterWorkListElement> postorder = new LinkedList<InterWorkListElement>();

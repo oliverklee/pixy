@@ -12,16 +12,16 @@ import at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring.CSContext;
 public class ConnectorFunction {
 
     // CSContext -> CSContext
-    private Map<CSContext,CSContext> pos2pos;
+    private Map<CSContext, CSContext> pos2pos;
 
     // reverse mapping of pos2pos:
     // CSContext -> Set of CSContexts
-    private Map<CSContext,Set<CSContext>> reverse;
+    private Map<CSContext, Set<CSContext>> reverse;
 
     // creates an empty connector function
     public ConnectorFunction() {
-        this.pos2pos = new HashMap<CSContext,CSContext>();
-        this.reverse = new HashMap<CSContext,Set<CSContext>>();
+        this.pos2pos = new HashMap<CSContext, CSContext>();
+        this.reverse = new HashMap<CSContext, Set<CSContext>>();
     }
 
     // adds the given mapping
@@ -64,7 +64,7 @@ public class ConnectorFunction {
             return "<empty>";
         }
         StringBuilder myString = new StringBuilder();
-        for (Iterator iter = this.pos2pos.entrySet().iterator(); iter.hasNext();) {
+        for (Iterator iter = this.pos2pos.entrySet().iterator(); iter.hasNext(); ) {
             Map.Entry entry = (Map.Entry) iter.next();
             CSContext from = (CSContext) entry.getKey();
             CSContext to = (CSContext) entry.getValue();

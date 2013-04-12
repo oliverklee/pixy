@@ -12,7 +12,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 // transfer function for function entries
 public class AliasTfEntry
-extends TransferFunction {
+    extends TransferFunction {
 
     private TacFunction function;
     private AliasAnalysis aliasAnalysis;

@@ -53,7 +53,6 @@ public abstract class CfgNode {
         this.enclosingNode = null;
     }
 
-
 // GET *****************************************************************************
 
     // returns
@@ -124,7 +123,7 @@ public abstract class CfgNode {
 
     public List<CfgNode> getPredecessors() {
         List<CfgNode> predecessors = new LinkedList<CfgNode>();
-        for (Iterator iter = this.inEdges.iterator(); iter.hasNext();) {
+        for (Iterator iter = this.inEdges.iterator(); iter.hasNext(); ) {
             CfgEdge inEdge = (CfgEdge) iter.next();
             predecessors.add(inEdge.getSource());
         }
@@ -241,7 +240,7 @@ public abstract class CfgNode {
 
     // removes the edge coming in from the given predecessor
     public void removeInEdge(CfgNode predecessor) {
-        for (Iterator iter = this.inEdges.iterator(); iter.hasNext();) {
+        for (Iterator iter = this.inEdges.iterator(); iter.hasNext(); ) {
             CfgEdge inEdge = (CfgEdge) iter.next();
             if (inEdge.getSource() == predecessor) {
                 iter.remove();

@@ -4,7 +4,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.Lattice;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 
 public class IncDomLattice
-extends Lattice {
+    extends Lattice {
 
     private IncDomAnalysis incDomAnalysis;
 
@@ -13,8 +13,8 @@ extends Lattice {
     }
 
     public LatticeElement lub(
-            LatticeElement incomingElementX,
-            LatticeElement targetElementX) {
+        LatticeElement incomingElementX,
+        LatticeElement targetElementX) {
         // if the incoming element is the bottom element: return the other element
         if (incomingElementX == this.bottom) {
             // no need for cloning, since we work with a repository of alias

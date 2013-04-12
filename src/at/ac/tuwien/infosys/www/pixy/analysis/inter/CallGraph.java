@@ -17,11 +17,11 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
 // but also edges between call nodes and functions)
 public class CallGraph {
 
-    private Map<TacFunction,CallGraphNode> nodes;
+    private Map<TacFunction, CallGraphNode> nodes;
     private TacFunction mainFunction;
 
     CallGraph(TacFunction mainFunction) {
-        this.nodes = new HashMap<TacFunction,CallGraphNode>();
+        this.nodes = new HashMap<TacFunction, CallGraphNode>();
         this.mainFunction = mainFunction;
         this.nodes.put(mainFunction, new CallGraphNode(mainFunction));
     }
@@ -47,7 +47,7 @@ public class CallGraph {
     }
 
     // computes the postorder on the call graph
-    public Map<TacFunction,Integer> getPostOrder() {
+    public Map<TacFunction, Integer> getPostOrder() {
 
         List<CallGraphNode> postorder = new LinkedList<CallGraphNode>();
 
@@ -82,7 +82,7 @@ public class CallGraph {
             }
         }
 
-        Map<TacFunction,Integer> retMe = new HashMap<TacFunction,Integer>();
+        Map<TacFunction, Integer> retMe = new HashMap<TacFunction, Integer>();
         int i = 0;
         for (CallGraphNode f : postorder) {
             retMe.put(f.getFunction(), i++);

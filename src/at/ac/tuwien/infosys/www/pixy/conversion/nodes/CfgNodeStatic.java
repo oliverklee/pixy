@@ -12,7 +12,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 // *********************************************************************************
 
 public class CfgNodeStatic
-extends CfgNode {
+    extends CfgNode {
 
     private TacPlace operand;
     private TacPlace initialPlace;
@@ -67,14 +67,14 @@ extends CfgNode {
 
     public void replaceVariable(int index, Variable replacement) {
         switch (index) {
-        case 0:
-            this.operand = replacement;
-            break;
-        case 1:
-            this.initialPlace = replacement;
-            break;
-        default:
-            throw new RuntimeException("SNH");
+            case 0:
+                this.operand = replacement;
+                break;
+            case 1:
+                this.initialPlace = replacement;
+                break;
+            default:
+                throw new RuntimeException("SNH");
         }
     }
 }

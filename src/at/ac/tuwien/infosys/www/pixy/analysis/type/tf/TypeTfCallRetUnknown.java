@@ -7,7 +7,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.type.TypeLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallRet;
 
 public class TypeTfCallRetUnknown
-extends TransferFunction {
+    extends TransferFunction {
 
     private CfgNodeCallRet retNode;
 

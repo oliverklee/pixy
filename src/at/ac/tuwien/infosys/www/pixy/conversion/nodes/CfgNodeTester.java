@@ -12,7 +12,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 // a special node for the builtin functions file
 public class CfgNodeTester
-extends CfgNode {
+    extends CfgNode {
 
     // Set of Integer's indicating the positions of the parameters that
     // are to be tested

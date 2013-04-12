@@ -9,7 +9,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 // transfer function for array assignment nodes ("left = array()")
 public class DepTfAssignArray
-extends TransferFunction {
+    extends TransferFunction {
 
     private Variable left;
     private boolean supported;

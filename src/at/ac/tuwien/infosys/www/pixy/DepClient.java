@@ -36,7 +36,9 @@ public abstract class DepClient {
     // flags returned by initiallyTainted():
     // - always tainted
     // - tainted if register_globals is active
-    public enum InitialTaint {ALWAYS, IFRG, NEVER}
+    public enum InitialTaint {
+        ALWAYS, IFRG, NEVER
+    }
 
     // should members of the $_GET array be considered as initially tainted?
     // defaults to true, of course
@@ -61,7 +63,7 @@ public abstract class DepClient {
     // checks if the given node (inside the given function) is a sensitive sink;
     // adds an appropriate sink object to the given list if it is a sink
     protected abstract void checkForSink(CfgNode cfgNodeX, TacFunction traversedFunction,
-            List<Sink> sinks);
+                                         List<Sink> sinks);
 
 //  ********************************************************************************
 
@@ -143,7 +145,7 @@ public abstract class DepClient {
                     return DepClient.InitialTaint.NEVER;
 
                 } else if (MyOptions.isHarmlessServerVar(varName) ||
-                        varName.equals("$_SERVER")) {
+                    varName.equals("$_SERVER")) {
                     // harmless member of the SERVER array,
                     // or the SERVER array itself
                     return DepClient.InitialTaint.NEVER;
@@ -153,9 +155,9 @@ public abstract class DepClient {
                     return DepClient.InitialTaint.NEVER;
 
                 } else if (varName.equals("$_ENV") ||
-                        varName.equals("$_HTTP_ENV_VARS") ||
-                        varName.startsWith("$_ENV[") ||
-                        varName.startsWith("$HTTP_ENV_VARS[")) {
+                    varName.equals("$_HTTP_ENV_VARS") ||
+                    varName.startsWith("$_ENV[") ||
+                    varName.startsWith("$HTTP_ENV_VARS[")) {
                     // the whole env array
                     return DepClient.InitialTaint.NEVER;
 
@@ -169,7 +171,7 @@ public abstract class DepClient {
                     return DepClient.InitialTaint.ALWAYS;
                 }
 
-            // non-superglobals
+                // non-superglobals
             } else {
 
                 if (var.getSymbolTable().getName().equals("_special")) {
@@ -267,7 +269,7 @@ public abstract class DepClient {
                     CfgNodeCallUnknown callUnknown = (CfgNodeCallUnknown) cfgNodeX;
                     if (callUnknown.isMethod()) {
                         DepGraphNode sanitNode = new DepGraphNormalNode(
-                                new Literal("<method-call>"), opNode.getCfgNode());
+                            new Literal("<method-call>"), opNode.getCfgNode());
                         relevant.addNode(sanitNode);
                         relevant.addEdge(opNode, sanitNode);
                     } else {
@@ -280,23 +282,23 @@ public abstract class DepClient {
                 }
                 // end of recursion
 
-            // STRONG SANITIZATION FUNCTIONS ************************
+                // STRONG SANITIZATION FUNCTIONS ************************
 
             } else if (isStrongSanit(opName)) {
 
                 DepGraphNode sanitNode = new DepGraphNormalNode(
-                        new Literal("<sanitization>"), opNode.getCfgNode());
+                    new Literal("<sanitization>"), opNode.getCfgNode());
                 relevant.addNode(sanitNode);
                 relevant.addEdge(opNode, sanitNode);
                 // end of recursion
 
-            // WEAK SANITIZATION FUNCTIONS ************************
+                // WEAK SANITIZATION FUNCTIONS ************************
 
             } else if (isWeakSanit(opName, multiList)) {
 
                 multiDependencyRelevant(opNode, relevant, orig, multiList, false);
 
-            // EVIL FUNCTIONS ***************************************
+                // EVIL FUNCTIONS ***************************************
 
             } else if (isEvil(opName)) {
 
@@ -305,21 +307,21 @@ public abstract class DepClient {
                 relevant.addEdge(opNode, uninitNode);
                 // end of recursion
 
-            // MULTI-OR-DEPENDENCY **********************************
+                // MULTI-OR-DEPENDENCY **********************************
 
-            // TODO: generic value flows should better be modeled during
-            // depgraph construction, and not here
+                // TODO: generic value flows should better be modeled during
+                // depgraph construction, and not here
             } else if (isMulti(opName, multiList)) {
 
                 multiDependencyRelevant(opNode, relevant, orig, multiList, false);
 
-            // INVERSE MULTI-OR-DEPENDENCY **************************
+                // INVERSE MULTI-OR-DEPENDENCY **************************
 
             } else if (isInverseMulti(opName, multiList)) {
 
                 multiDependencyRelevant(opNode, relevant, orig, multiList, true);
 
-            // CATCH-ALL ********************************************
+                // CATCH-ALL ********************************************
 
             } else {
                 System.out.println("Unmodeled builtin function: " + opName);
@@ -341,7 +343,7 @@ public abstract class DepClient {
     // helper function for multi-dependency builtin functions
     // (in relevant subgraph construction)
     protected void multiDependencyRelevant(DepGraphOpNode opNode, DepGraph relevant,
-            DepGraph orig, List<Integer> indices, boolean inverse) {
+                                           DepGraph orig, List<Integer> indices, boolean inverse) {
 
         List<DepGraphNode> succs = orig.getSuccessors(opNode);
         Set<Integer> indexSet = new HashSet<Integer>(indices);
@@ -376,7 +378,7 @@ public abstract class DepClient {
         if (!created) {
             // if no successors have been created: make a harmless one
             DepGraphNode sanitNode = new DepGraphNormalNode(
-                    new Literal("<no-dep>"), opNode.getCfgNode());
+                new Literal("<no-dep>"), opNode.getCfgNode());
             relevant.addNode(sanitNode);
             relevant.addEdge(opNode, sanitNode);
         }
@@ -385,11 +387,11 @@ public abstract class DepClient {
 //  ********************************************************************************
 
     // finds those uninit nodes in the given *relevant* depgraph that are dangerous
-    protected Map<DepGraphUninitNode,InitialTaint> findDangerousUninit(DepGraph relevant) {
+    protected Map<DepGraphUninitNode, InitialTaint> findDangerousUninit(DepGraph relevant) {
 
         Set<DepGraphUninitNode> uninitNodes = relevant.getUninitNodes();
 
-        Map<DepGraphUninitNode,InitialTaint> retMe = new HashMap<DepGraphUninitNode,InitialTaint>();
+        Map<DepGraphUninitNode, InitialTaint> retMe = new HashMap<DepGraphUninitNode, InitialTaint>();
 
         for (Iterator iter = uninitNodes.iterator(); iter.hasNext(); ) {
             DepGraphUninitNode uninitNode = (DepGraphUninitNode) iter.next();
@@ -401,17 +403,17 @@ public abstract class DepClient {
             if (pre instanceof DepGraphNormalNode) {
                 DepGraphNormalNode preNormal = (DepGraphNormalNode) pre;
                 switch (this.initiallyTainted(preNormal.getPlace())) {
-                case ALWAYS:
-                    retMe.put(uninitNode, InitialTaint.ALWAYS);
-                    break;
-                case IFRG:
-                    retMe.put(uninitNode, InitialTaint.IFRG);
-                    break;
-                case NEVER:
-                    // nothing to do here
-                    break;
-                default:
-                    throw new RuntimeException("SNH");
+                    case ALWAYS:
+                        retMe.put(uninitNode, InitialTaint.ALWAYS);
+                        break;
+                    case IFRG:
+                        retMe.put(uninitNode, InitialTaint.IFRG);
+                        break;
+                    case NEVER:
+                        // nothing to do here
+                        break;
+                    default:
+                        throw new RuntimeException("SNH");
                 }
             } else if (pre instanceof DepGraphOpNode) {
                 // evil function, don't remove

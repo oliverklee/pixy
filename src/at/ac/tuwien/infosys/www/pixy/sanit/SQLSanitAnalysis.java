@@ -16,7 +16,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallPrep;
 
 // SQL Injection detection (with precise sanitization detection)
 public class SQLSanitAnalysis
-extends SanitAnalysis {
+    extends SanitAnalysis {
 
 //  ********************************************************************************
 
@@ -48,7 +48,7 @@ extends SanitAnalysis {
     // checks if the given node (inside the given function) is a sensitive sink;
     // adds an appropriate sink object to the given list if it is a sink
     protected void checkForSink(CfgNode cfgNodeX, TacFunction traversedFunction,
-            List<Sink> sinks) {
+                                List<Sink> sinks) {
 
         if (cfgNodeX instanceof CfgNodeCallBuiltin) {
 
@@ -64,7 +64,6 @@ extends SanitAnalysis {
             CfgNodeCallPrep cfgNode = (CfgNodeCallPrep) cfgNodeX;
             String functionName = cfgNode.getFunctionNamePlace().toString();
 
-
             // user-defined custom sinks
 
             checkForSinkHelper(functionName, cfgNode, cfgNode.getParamList(), traversedFunction, sinks);
@@ -77,7 +76,7 @@ extends SanitAnalysis {
 //  ********************************************************************************
 
     private void checkForSinkHelper(String functionName, CfgNode cfgNode,
-            List<TacActualParam> paramList, TacFunction traversedFunction, List<Sink> sinks) {
+                                    List<TacActualParam> paramList, TacFunction traversedFunction, List<Sink> sinks) {
 
         if (this.dci.getSinks().containsKey(functionName)) {
             Sink sink = new Sink(cfgNode, traversedFunction);

@@ -11,9 +11,8 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 // CfgNodeUnset ********************************************************************
 // *********************************************************************************
 
-
 public class CfgNodeUnset
-extends CfgNode {
+    extends CfgNode {
 
     private Variable operand;
 
@@ -44,11 +43,11 @@ extends CfgNode {
 
     public void replaceVariable(int index, Variable replacement) {
         switch (index) {
-        case 0:
-            this.operand = replacement;
-            break;
-        default:
-            throw new RuntimeException("SNH");
+            case 0:
+                this.operand = replacement;
+                break;
+            default:
+                throw new RuntimeException("SNH");
         }
     }
 }

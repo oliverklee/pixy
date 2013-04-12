@@ -13,7 +13,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 // transfer function for unset nodes
 public class DepTfUnset
-extends TransferFunction {
+    extends TransferFunction {
 
     private Variable operand;
     private CfgNode cfgNode;

@@ -16,7 +16,7 @@ public class CallString {
     }
 
     // shall only be used by CallString.append
-    private CallString (LinkedList<CfgNodeCall> callNodeList) {
+    private CallString(LinkedList<CfgNodeCall> callNodeList) {
         this.callNodeList = callNodeList;
     }
 

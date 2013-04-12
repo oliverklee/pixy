@@ -3,7 +3,7 @@ package at.ac.tuwien.infosys.www.pixy.analysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.Context;
 
 public class TransferFunctionId
-extends TransferFunction {
+    extends TransferFunction {
 
     public static final TransferFunctionId INSTANCE = new TransferFunctionId();
 

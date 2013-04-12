@@ -12,7 +12,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 //*********************************************************************************
 
 public class CfgNodeDefine
-extends CfgNode {
+    extends CfgNode {
 
     // the first parameter (the name of the constant to be set)
     private TacPlace setMe;
@@ -26,7 +26,7 @@ extends CfgNode {
 // CONSTRUCTORS ********************************************************************
 
     public CfgNodeDefine(TacPlace setMe, TacPlace setTo, TacPlace caseInsensitive,
-            ParseNode node) {
+                         ParseNode node) {
 
         super(node);
         this.setMe = setMe;
@@ -73,17 +73,17 @@ extends CfgNode {
 
     public void replaceVariable(int index, Variable replacement) {
         switch (index) {
-        case 0:
-            this.setMe = replacement;
-            break;
-        case 1:
-            this.setTo = replacement;
-            break;
-        case 2:
-            this.caseInsensitive = replacement;
-            break;
-        default:
-            throw new RuntimeException("SNH");
+            case 0:
+                this.setMe = replacement;
+                break;
+            case 1:
+                this.setTo = replacement;
+                break;
+            case 2:
+                this.caseInsensitive = replacement;
+                break;
+            default:
+                throw new RuntimeException("SNH");
         }
     }
 }

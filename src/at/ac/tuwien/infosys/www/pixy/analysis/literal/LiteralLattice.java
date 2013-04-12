@@ -8,23 +8,22 @@ import at.ac.tuwien.infosys.www.pixy.conversion.ConstantsTable;
 import at.ac.tuwien.infosys.www.pixy.conversion.SymbolTable;
 
 public class LiteralLattice
-extends Lattice {
+    extends Lattice {
 
     public LiteralLattice(
-            List places,
-            ConstantsTable constantsTable,
-            List functions,
-            SymbolTable superSymbolTable) {
+        List places,
+        ConstantsTable constantsTable,
+        List functions,
+        SymbolTable superSymbolTable) {
 
         // initialize the default element
         LiteralLatticeElement.initDefault(
-                places, constantsTable, functions, superSymbolTable);
+            places, constantsTable, functions, superSymbolTable);
     }
 
     public LatticeElement lub(
-            LatticeElement incomingElementX,
-            LatticeElement targetElementX) {
-
+        LatticeElement incomingElementX,
+        LatticeElement targetElementX) {
 
         // if the incoming element is the bottom element:
         // return (a clone of) the other element

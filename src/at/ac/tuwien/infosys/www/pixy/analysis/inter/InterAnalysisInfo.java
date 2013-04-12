@@ -9,7 +9,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 public class InterAnalysisInfo
-extends AnalysisInfo {
+    extends AnalysisInfo {
 
     public InterAnalysisInfo() {
         super();
@@ -18,7 +18,7 @@ extends AnalysisInfo {
     // folds all analysis nodes (using recycling) and clears the phi maps
     // (=> saves memory)
     public void foldRecycledAndClean(InterAnalysis analysis) {
-        for (Iterator iter = this.map.values().iterator(); iter.hasNext();) {
+        for (Iterator iter = this.map.values().iterator(); iter.hasNext(); ) {
             InterAnalysisNode analysisNode = (InterAnalysisNode) iter.next();
             LatticeElement foldedValue = analysisNode.computeFoldedValue();
             foldedValue = analysis.recycle(foldedValue);
@@ -37,7 +37,7 @@ extends AnalysisInfo {
         return (InterAnalysisNode) this.map.get(cfgNode);
     }
 
-    public TransferFunction getTransferFunction (CfgNode cfgNode) {
+    public TransferFunction getTransferFunction(CfgNode cfgNode) {
         AnalysisNode analysisNode = this.getAnalysisNode(cfgNode);
         return analysisNode.getTransferFunction();
     }

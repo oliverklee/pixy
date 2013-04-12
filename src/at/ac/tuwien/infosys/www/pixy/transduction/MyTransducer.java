@@ -1,4 +1,5 @@
 package at.ac.tuwien.infosys.www.pixy.transduction;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -10,7 +11,7 @@ import java.util.Set;
 import at.ac.tuwien.infosys.www.pixy.automaton.Transition;
 
 public class MyTransducer
-extends MyAutomaton {
+    extends MyAutomaton {
 
     // constructs a transducer from the given automaton by duplicating
     // the input labels into output labels.
@@ -38,7 +39,7 @@ extends MyAutomaton {
         super();
 
         // auxiliary map from foreign state to my cloned state
-        Map<rationals.State,MyState> map = new HashMap<rationals.State,MyState>();
+        Map<rationals.State, MyState> map = new HashMap<rationals.State, MyState>();
 
         // copy states, updating auxiliary map on the way
         for (Iterator iter = a.states().iterator(); iter.hasNext(); ) {
@@ -51,15 +52,15 @@ extends MyAutomaton {
             rationals.Transition t = (rationals.Transition) iter.next();
             rationals.transductions.TransducerRelation origtr = (rationals.transductions.TransducerRelation) t.label();
             this.addTransition(new MyTransition(
-                    map.get(t.start()),
-                    new MyTransducerRelation(origtr.getIn(), origtr.getOut()),
-                    map.get(t.end())));
+                map.get(t.start()),
+                new MyTransducerRelation(origtr.getIn(), origtr.getOut()),
+                map.get(t.end())));
         }
     }
 
     // label2Int: input/output label -> Integer
-    public void toFsmFile(String filename, Map<Object,Integer> label2Int)
-    throws IOException {
+    public void toFsmFile(String filename, Map<Object, Integer> label2Int)
+        throws IOException {
 
         Writer writer = new FileWriter(filename + ".txt");
 
@@ -86,7 +87,7 @@ extends MyAutomaton {
         // print symbols file
         Writer symWriter = new FileWriter(filename + ".sym");
         symWriter.write(eps + " 0\n");
-        for (Map.Entry<Object,Integer> entry : label2Int.entrySet()) {
+        for (Map.Entry<Object, Integer> entry : label2Int.entrySet()) {
             symWriter.write(entry.getKey() + " " + entry.getValue() + "\n");
         }
         symWriter.close();
@@ -114,7 +115,7 @@ extends MyAutomaton {
 
     // you can use this if you already have the symbols
     public void toFsmFile(String filename)
-    throws IOException {
+        throws IOException {
 
         Writer writer = new FileWriter(filename + ".txt");
 
@@ -144,7 +145,7 @@ extends MyAutomaton {
     }
 
     private void writeTransition(MyTransition t, Writer writer, String eps)
-    throws IOException {
+        throws IOException {
 
         MyTransducerRelation rel = (MyTransducerRelation) t.getLabel();
         Object inLabel = rel.getIn();
@@ -172,7 +173,7 @@ extends MyAutomaton {
         }
 
         writer.write(
-                t.getStart() + " " +
+            t.getStart() + " " +
                 t.getEnd() + " " +
                 inString + " " +
                 outString + " " +

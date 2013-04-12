@@ -6,7 +6,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.Lattice;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 
 public class TypeLattice
-extends Lattice {
+    extends Lattice {
 
     public TypeLattice(Collection<String> classNames) {
         Type.initTypes(classNames);
@@ -15,8 +15,8 @@ extends Lattice {
     // input elements (incoming and target) are not modified,
     // output element is newly allocated
     public LatticeElement lub(
-            LatticeElement incomingElementX,
-            LatticeElement targetElementX) {
+        LatticeElement incomingElementX,
+        LatticeElement targetElementX) {
 
         // if the incoming element is the bottom element: return the other element
         if (incomingElementX == this.bottom) {

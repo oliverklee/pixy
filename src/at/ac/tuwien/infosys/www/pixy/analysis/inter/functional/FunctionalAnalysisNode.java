@@ -14,11 +14,11 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
 
 // an AnalysisNode holds analysis-specific information for a certain CFGNode
 public class FunctionalAnalysisNode
-extends InterAnalysisNode {
+    extends InterAnalysisNode {
 
     // mapping input LatticeElement -> Set of context LatticeElements;
     // only needed for call nodes
-    Map<LatticeElement,Set<FunctionalContext>> reversePhi;
+    Map<LatticeElement, Set<FunctionalContext>> reversePhi;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
@@ -28,7 +28,7 @@ extends InterAnalysisNode {
         super(tf);
         // maintain reverse mapping for call nodes
         if (node instanceof CfgNodeCall) {
-            this.reversePhi = new HashMap<LatticeElement,Set<FunctionalContext>>();
+            this.reversePhi = new HashMap<LatticeElement, Set<FunctionalContext>>();
         } else {
             this.reversePhi = null;
         }

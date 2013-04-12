@@ -32,7 +32,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallPrep;
 
 // extracts strings used in file access functions
 public class FileAnalysis
-extends DepClient {
+    extends DepClient {
 
 //  ********************************************************************************
 
@@ -105,7 +105,6 @@ extends DepClient {
         throw new RuntimeException("not yet");
     }
 
-
 //  ********************************************************************************
 
     private void dumpDotAuto(Automaton auto, String graphName, String path) {
@@ -160,7 +159,7 @@ extends DepClient {
     private Automaton toAutomaton(DepGraph depGraph) {
         depGraph.eliminateCycles();
         DepGraphNode root = depGraph.getRoot();
-        Map<DepGraphNode,Automaton> deco = new HashMap<DepGraphNode,Automaton>();
+        Map<DepGraphNode, Automaton> deco = new HashMap<DepGraphNode, Automaton>();
         Set<DepGraphNode> visited = new HashSet<DepGraphNode>();
         this.decorate(root, deco, visited, depGraph);
         Automaton rootDeco = deco.get(root).clone();
@@ -172,8 +171,8 @@ extends DepClient {
 //  ********************************************************************************
 
     // decorates the given node (and all its successors) with an automaton
-    private void decorate(DepGraphNode node, Map<DepGraphNode,Automaton> deco,
-            Set<DepGraphNode> visited, DepGraph depGraph) {
+    private void decorate(DepGraphNode node, Map<DepGraphNode, Automaton> deco,
+                          Set<DepGraphNode> visited, DepGraph depGraph) {
 
         visited.add(node);
 
@@ -233,20 +232,19 @@ extends DepClient {
             }
             DepGraphNode pre = preds.iterator().next();
 
-
             if (pre instanceof DepGraphNormalNode) {
                 DepGraphNormalNode preNormal = (DepGraphNormalNode) pre;
 
                 switch (this.initiallyTainted(preNormal.getPlace())) {
-                case ALWAYS:
-                case IFRG:
-                    auto = Automaton.makeAnyString(Transition.Taint.Directly);
-                    break;
-                case NEVER:
-                    auto = Automaton.makeAnyString(Transition.Taint.Untainted);
-                    break;
-                default:
-                    throw new RuntimeException("SNH");
+                    case ALWAYS:
+                    case IFRG:
+                        auto = Automaton.makeAnyString(Transition.Taint.Directly);
+                        break;
+                    case NEVER:
+                        auto = Automaton.makeAnyString(Transition.Taint.Untainted);
+                        break;
+                    default:
+                        throw new RuntimeException("SNH");
                 }
 
             } else if (pre instanceof DepGraphOpNode) {
@@ -273,8 +271,8 @@ extends DepClient {
 //  ********************************************************************************
 
     // returns an automaton for the given operation node
-    private Automaton makeAutoForOp(DepGraphOpNode node, Map<DepGraphNode,Automaton> deco,
-            DepGraph depGraph) {
+    private Automaton makeAutoForOp(DepGraphOpNode node, Map<DepGraphNode, Automaton> deco,
+                                    DepGraph depGraph) {
 
         List<DepGraphNode> successors = depGraph.getSuccessors(node);
         if (successors == null) {
@@ -310,7 +308,7 @@ extends DepClient {
     // checks if the given node (inside the given function) is a sensitive sink;
     // adds an appropriate sink object to the given list if it is a sink
     protected void checkForSink(CfgNode cfgNodeX, TacFunction traversedFunction,
-            List<Sink> sinks) {
+                                List<Sink> sinks) {
 
         if (cfgNodeX instanceof CfgNodeCallBuiltin) {
 
@@ -334,7 +332,7 @@ extends DepClient {
 //  ********************************************************************************
 
     private void checkForSinkHelper(String functionName, CfgNode cfgNode,
-            List<TacActualParam> paramList, TacFunction traversedFunction, List<Sink> sinks) {
+                                    List<TacActualParam> paramList, TacFunction traversedFunction, List<Sink> sinks) {
 
         if (this.dci.getSinks().containsKey(functionName)) {
             Sink sink = new Sink(cfgNode, traversedFunction);

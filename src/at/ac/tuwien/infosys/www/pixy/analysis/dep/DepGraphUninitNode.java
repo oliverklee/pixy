@@ -2,7 +2,7 @@ package at.ac.tuwien.infosys.www.pixy.analysis.dep;
 
 // special node representing uninitialized variables
 public class DepGraphUninitNode
-extends DepGraphNode {
+    extends DepGraphNode {
 
     public DepGraphUninitNode() {
     }

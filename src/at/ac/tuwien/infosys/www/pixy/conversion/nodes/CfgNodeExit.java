@@ -12,7 +12,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 // don't assign any transfer function other than ID to this node!
 public class CfgNodeExit
-extends CfgNode {
+    extends CfgNode {
 
 // CONSTRUCTORS ********************************************************************
 

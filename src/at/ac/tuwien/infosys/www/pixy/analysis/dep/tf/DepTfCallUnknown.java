@@ -11,7 +11,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepSet;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallUnknown;
 
 public class DepTfCallUnknown
-extends TransferFunction {
+    extends TransferFunction {
 
     private CfgNodeCallUnknown cfgNode;
 

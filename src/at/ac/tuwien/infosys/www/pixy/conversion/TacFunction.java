@@ -38,7 +38,7 @@ public class TacFunction {
 
     // DON'T FORGET TO SET THE PARAMETERS with setParams()!
     TacFunction(String name, Cfg cfg, Variable retVar, boolean isReference,
-            ParseNode parseNode, String className) {
+                ParseNode parseNode, String className) {
 
         this.name = name;
         this.cfg = cfg;

@@ -24,11 +24,11 @@ public class Regex2Prolog {
 
         if (preg) {
             // if the preg regex is not delimited...
-            if (!phpRegex.get(0).equals(FSAAutomaton.slash) || !phpRegex.get(phpRegex.size()-1).equals(FSAAutomaton.slash)) {
+            if (!phpRegex.get(0).equals(FSAAutomaton.slash) || !phpRegex.get(phpRegex.size() - 1).equals(FSAAutomaton.slash)) {
                 throw new UnsupportedRegexException();
             }
             // peel off delimiter
-            phpRegex = phpRegex.subList(1, phpRegex.size()-1);
+            phpRegex = phpRegex.subList(1, phpRegex.size() - 1);
         }
 
         StringBuilder prologRegex = new StringBuilder();
@@ -281,8 +281,8 @@ public class Regex2Prolog {
             b.append(',');
             start++;
         }
-        if (b.charAt(b.length()-1) == ',') {
-            b.deleteCharAt(b.length()-1);
+        if (b.charAt(b.length() - 1) == ',') {
+            b.deleteCharAt(b.length() - 1);
         }
         b.append('}');
         return b;

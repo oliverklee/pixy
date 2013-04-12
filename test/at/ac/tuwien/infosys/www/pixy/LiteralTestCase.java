@@ -16,7 +16,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeHotspot;
 
 // these tests should work both with an enabled and a disabled builtin functions file
 public class LiteralTestCase
-extends TestCase {
+    extends TestCase {
 
     private String path;    // complete path to the testfile directory (with trailing slash)
 
@@ -75,7 +75,7 @@ extends TestCase {
 
         // variables to be tested
         Variable varX = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$x");
-        Variable varA1= this.tac.getFuncVariable("a", "$a1");
+        Variable varA1 = this.tac.getFuncVariable("a", "$a1");
 
         // init
         int hid;    // hotspot ID
@@ -248,7 +248,6 @@ extends TestCase {
         Variable varZ3_1_i_3_j =
             this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$z3[1][_main.$i][3][_main.$j]");
 
-
         // expected MI variables
         Variable varZ1_1 = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$z1[1]");
         Variable varZ1_2 = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$z1[2]");
@@ -311,7 +310,6 @@ extends TestCase {
         expected.add(varZ3_1_2_3_4);
         expected.add(varZ3_1_9_3_9);
         Assert.assertTrue(miSet.equals(expected));
-
 
     }
 
@@ -1184,7 +1182,6 @@ extends TestCase {
         Variable varC6 = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$C6");
         Variable varc6 = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$c6");
 
-
         // init
         int hid;    // hotspot ID
 
@@ -1263,7 +1260,6 @@ extends TestCase {
 
         // check literals
 
-
         // 0
         hid = 0;
         Assert.assertTrue(elements[hid] == null);   // unreachable
@@ -1283,7 +1279,6 @@ extends TestCase {
         int hid;    // hotspot ID
 
         // check literals
-
 
         // 0
         hid = 0;

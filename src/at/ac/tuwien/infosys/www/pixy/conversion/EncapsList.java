@@ -74,12 +74,12 @@ public class EncapsList {
                         // if the temporary is still empty, we can simply
                         // assign the literal to it
                         cfgNode = new CfgNodeAssignSimple(
-                                temp, lastLiteral, node);
+                            temp, lastLiteral, node);
                         tempEmpty = false;
                     } else {
                         // if the temporary is non-empty, we have to concat
                         cfgNode = new CfgNodeAssignBinary(
-                                temp, temp, lastLiteral, TacOperators.CONCAT, node);
+                            temp, temp, lastLiteral, TacOperators.CONCAT, node);
                     }
                     TacConverter.connect(contd, cfgNode);
                     contd = cfgNode;
@@ -92,11 +92,11 @@ public class EncapsList {
                 CfgNode cfgNode;
                 if (tempEmpty) {
                     cfgNode = new CfgNodeAssignSimple(
-                            temp, (TacPlace) obj, node);
+                        temp, (TacPlace) obj, node);
                     tempEmpty = false;
                 } else {
                     cfgNode = new CfgNodeAssignBinary(
-                            temp, temp, (TacPlace) obj, TacOperators.CONCAT, node);
+                        temp, temp, (TacPlace) obj, TacOperators.CONCAT, node);
                 }
                 TacConverter.connect(contd, nextCfg);
                 TacConverter.connect(nextCfg, cfgNode);
@@ -112,11 +112,11 @@ public class EncapsList {
             CfgNode cfgNode;
             if (tempEmpty) {
                 cfgNode = new CfgNodeAssignSimple(
-                        temp, lastLiteral, node);
+                    temp, lastLiteral, node);
                 tempEmpty = false;
             } else {
                 cfgNode = new CfgNodeAssignBinary(
-                        temp, temp, lastLiteral, TacOperators.CONCAT, node);
+                    temp, temp, lastLiteral, TacOperators.CONCAT, node);
             }
             TacConverter.connect(contd, cfgNode);
             contd = cfgNode;

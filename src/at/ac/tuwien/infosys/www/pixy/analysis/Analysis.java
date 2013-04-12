@@ -175,7 +175,7 @@ public abstract class Analysis {
                 throw new RuntimeException("SNH");
             }
             this.genericAnalysisInfo.add(cfgNodeX, this.makeAnalysisNode(
-                    cfgNodeX, tf));
+                cfgNodeX, tf));
         }
     }
 
@@ -219,7 +219,7 @@ public abstract class Analysis {
 
         CompositeTransferFunction ctf = new CompositeTransferFunction();
 
-        for (Iterator iter = basicBlock.getContainedNodes().iterator(); iter.hasNext();) {
+        for (Iterator iter = basicBlock.getContainedNodes().iterator(); iter.hasNext(); ) {
             CfgNode cfgNodeX = (CfgNode) iter.next();
             ctf.add(this.createTf(cfgNodeX, traversedFunction, basicBlock));
         }
@@ -239,54 +239,71 @@ public abstract class Analysis {
     protected TransferFunction assignSimple(CfgNode cfgNodeX, CfgNode aliasInNode) {
         return TransferFunctionId.INSTANCE;
     }
+
     protected TransferFunction assignUnary(CfgNode cfgNodeX, CfgNode aliasInNode) {
         return TransferFunctionId.INSTANCE;
     }
+
     protected TransferFunction assignBinary(CfgNode cfgNodeX, CfgNode aliasInNode) {
         return TransferFunctionId.INSTANCE;
     }
+
     protected TransferFunction assignRef(CfgNode cfgNodeX) {
         return TransferFunctionId.INSTANCE;
     }
+
     protected TransferFunction unset(CfgNode cfgNodeX) {
         return TransferFunctionId.INSTANCE;
     }
+
     protected TransferFunction assignArray(CfgNode cfgNodeX) {
         return TransferFunctionId.INSTANCE;
     }
+
     protected TransferFunction callPrep(CfgNode cfgNodeX, TacFunction traversedFunction) {
         return TransferFunctionId.INSTANCE;
     }
+
     protected TransferFunction entry(TacFunction traversedFunction) {
         return TransferFunctionId.INSTANCE;
     }
+
     protected TransferFunction callRet(CfgNode cfgNodeX, TacFunction traversedFunction) {
         return TransferFunctionId.INSTANCE;
     }
+
     protected TransferFunction callBuiltin(CfgNode cfgNodeX, TacFunction traversedFunction) {
         return TransferFunctionId.INSTANCE;
     }
+
     protected TransferFunction callUnknown(CfgNode cfgNodeX, TacFunction traversedFunction) {
         return TransferFunctionId.INSTANCE;
     }
+
     protected TransferFunction global(CfgNode cfgNodeX) {
         return TransferFunctionId.INSTANCE;
     }
+
     protected TransferFunction isset(CfgNode cfgNodeX) {
         return TransferFunctionId.INSTANCE;
     }
+
     protected TransferFunction define(CfgNode cfgNodeX) {
         return TransferFunctionId.INSTANCE;
     }
+
     protected TransferFunction tester(CfgNode cfgNodeX) {
         return TransferFunctionId.INSTANCE;
     }
+
     protected TransferFunction echo(CfgNode cfgNodeX, TacFunction traversedFunction) {
         return TransferFunctionId.INSTANCE;
     }
+
     protected TransferFunction staticNode() {
         return TransferFunctionId.INSTANCE;
     }
+
     protected TransferFunction include(CfgNode cfgNodeX) {
         return TransferFunctionId.INSTANCE;
     }

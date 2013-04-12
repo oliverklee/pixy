@@ -95,10 +95,10 @@ public class MyTransition {
 
     public int hashCode() {
         int hashCode = 17;
-        hashCode = 37*hashCode + this.start.hashCode();
-        hashCode = 37*hashCode + this.end.hashCode();
+        hashCode = 37 * hashCode + this.start.hashCode();
+        hashCode = 37 * hashCode + this.end.hashCode();
         if (this.label != null) {
-            hashCode = 37*hashCode + this.label.hashCode();
+            hashCode = 37 * hashCode + this.label.hashCode();
         }
         return hashCode;
     }

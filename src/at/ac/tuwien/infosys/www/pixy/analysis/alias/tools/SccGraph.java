@@ -14,7 +14,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 public class SccGraph {
 
     // Variable (label) -> SccNode
-    private Map<Variable,SccNode> label2nodes;
+    private Map<Variable, SccNode> label2nodes;
 
     // Sets of SccEdge's
     private Set<SccEdge> singleEdges;
@@ -22,10 +22,10 @@ public class SccGraph {
 
     // expects a set of variables for which to create nodes
     public SccGraph(Set variables) {
-        this.label2nodes = new HashMap<Variable,SccNode>();
+        this.label2nodes = new HashMap<Variable, SccNode>();
         this.singleEdges = new HashSet<SccEdge>();
         this.doubleEdges = new HashSet<SccEdge>();
-        for (Iterator iter = variables.iterator(); iter.hasNext();) {
+        for (Iterator iter = variables.iterator(); iter.hasNext(); ) {
             Variable variable = (Variable) iter.next();
             this.createNode(variable);
         }
@@ -54,7 +54,7 @@ public class SccGraph {
 
     private void drawFirstEdge(Variable fromVar, Set toVarSet) {
         SccNode fromNode = (SccNode) this.label2nodes.get(fromVar);
-        for (Iterator iter = toVarSet.iterator(); iter.hasNext();) {
+        for (Iterator iter = toVarSet.iterator(); iter.hasNext(); ) {
             Variable var = (Variable) iter.next();
             SccNode toNode = (SccNode) this.label2nodes.get(var);
             SccEdge edge = new SccEdge(fromNode, toNode);
@@ -75,7 +75,7 @@ public class SccGraph {
 
     private void drawSecondEdge(Variable fromVar, Set toVarSet) {
         SccNode fromNode = (SccNode) this.label2nodes.get(fromVar);
-        for (Iterator iter = toVarSet.iterator(); iter.hasNext();) {
+        for (Iterator iter = toVarSet.iterator(); iter.hasNext(); ) {
             Variable var = (Variable) iter.next();
             SccNode toNode = (SccNode) this.label2nodes.get(var);
             SccEdge edge = new SccEdge(fromNode, toNode);
@@ -119,7 +119,7 @@ public class SccGraph {
 
                 // transform this set of SccNodes into a set of Variables
                 Set<Variable> scc = new HashSet<Variable>();
-                for (Iterator iter = doubleTargets.iterator(); iter.hasNext();) {
+                for (Iterator iter = doubleTargets.iterator(); iter.hasNext(); ) {
                     SccNode sccNode = (SccNode) iter.next();
                     scc.add(sccNode.getLabel());
                 }

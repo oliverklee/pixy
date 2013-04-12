@@ -13,8 +13,8 @@ public class FSAUtils {
     private static String mohri = MyOptions.fsa_home + "/Examples/MohriSproat96/ops.pl";
 
     public static FSAAutomaton reg_replace(FSAAutomaton phpPatternAuto,
-            FSAAutomaton replaceAuto, FSAAutomaton subjectAuto, boolean preg,
-            CfgNode cfgNode) {
+                                           FSAAutomaton replaceAuto, FSAAutomaton subjectAuto, boolean preg,
+                                           CfgNode cfgNode) {
 
         // get a finite string from the pattern
         List<String> finitePattern = phpPatternAuto.getFiniteString();
@@ -59,7 +59,7 @@ public class FSAUtils {
             String subjectFile = subjectAuto.toFile("temp3.auto");
 
             String c = MyOptions.fsa_home + "/" +
-                "fsa -aux "+mohri+" -r compose(file('"+subjectFile+"'),replace(file('"+patternFile+"'),file('"+replaceFile+"'))) ";
+                "fsa -aux " + mohri + " -r compose(file('" + subjectFile + "'),replace(file('" + patternFile + "'),file('" + replaceFile + "'))) ";
             String autoString = Utils.exec(c);
             retMe = new FSAAutomaton(autoString);
 
@@ -67,13 +67,12 @@ public class FSAUtils {
             retMe = retMe.projectOut();
         }
 
-
         return retMe;
 
     }
 
     public static FSAAutomaton str_replace(FSAAutomaton searchAuto,
-            FSAAutomaton replaceAuto, FSAAutomaton subjectAuto, CfgNode cfgNode) {
+                                           FSAAutomaton replaceAuto, FSAAutomaton subjectAuto, CfgNode cfgNode) {
 
         // current approximation:
         // if the search automaton does not encode a finite string,
@@ -94,7 +93,7 @@ public class FSAUtils {
         String subjectFile = subjectAuto.toFile("temp3.auto");
 
         String c = MyOptions.fsa_home + "/" +
-        "fsa -aux "+mohri+" -r compose(file('"+subjectFile+"'),replace(file('"+searchFile+"'),file('"+replaceFile+"'))) ";
+            "fsa -aux " + mohri + " -r compose(file('" + subjectFile + "'),replace(file('" + searchFile + "'),file('" + replaceFile + "'))) ";
 
         String autoString = Utils.exec(c);
 

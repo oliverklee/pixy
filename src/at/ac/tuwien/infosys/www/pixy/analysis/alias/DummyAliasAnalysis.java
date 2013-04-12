@@ -8,9 +8,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 public class DummyAliasAnalysis
-extends AliasAnalysis {
+    extends AliasAnalysis {
 
-    public DummyAliasAnalysis () {
+    public DummyAliasAnalysis() {
         super();
     }
 

@@ -79,8 +79,6 @@ public class Utils {
 
     }
 
-
-
     // - input: the name of some file
     // - output: a list with all files (canonical) located in the
     //   same directory and in enclosed directories
@@ -200,7 +198,6 @@ public class Utils {
             }
             outWriter.close();
 
-
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException();
@@ -262,7 +259,7 @@ public class Utils {
     }
 
     // deletes a directory, even if it is non-empty
-    public static void deleteDirectory (File dir) {
+    public static void deleteDirectory(File dir) {
         for (File entry : dir.listFiles()) {
             if (entry.isDirectory()) {
                 deleteDirectory(entry);

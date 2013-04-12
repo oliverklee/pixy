@@ -78,7 +78,7 @@ class SpecialNodes {
     // with numX from {0, 1, 2, ...};
     // output: Set of Integers
     private static Set<Integer> makeNumSet(String numString)
-    throws NumberFormatException {
+        throws NumberFormatException {
 
         Set<Integer> numSet = new HashSet<Integer>();
 

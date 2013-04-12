@@ -18,19 +18,17 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 // a function call
 public class CfgNodeCall
-extends CfgNode {
+    extends CfgNode {
 
     // can also be a variable
     private TacPlace functionNamePlace;
 
     private TacFunction callee;
 
-
     // the return variable of the called function
     private Variable retVar;
     // temporary variable to hold the return value
     private Variable tempVar;
-
 
     // a list of actual params (TacActualParam objects)
     private List<TacActualParam> paramList;
@@ -49,7 +47,6 @@ extends CfgNode {
     // - or if it is a static one
     // - of it it is a constructor invocation ("new")
     private Variable object;
-
 
 // CONSTRUCTORS ********************************************************************
 
@@ -91,7 +88,7 @@ extends CfgNode {
     public List<Variable> getVariables() {
         // only the params are relevant for globals replacement
         List<Variable> retMe = new LinkedList<Variable>();
-        for (Iterator iter = this.paramList.iterator(); iter.hasNext();) {
+        for (Iterator iter = this.paramList.iterator(); iter.hasNext(); ) {
             TacActualParam param = (TacActualParam) iter.next();
             TacPlace paramPlace = param.getPlace();
             if (paramPlace instanceof Variable) {
@@ -151,7 +148,7 @@ extends CfgNode {
                 // none of the variables must be an array or etc.;
                 // in such a case, ignore it and continue with the next cbr-param
                 boolean supported = AliasAnalysis.isSupported(
-                        formalVar, actualVar, true, this.getOrigLineno());
+                    formalVar, actualVar, true, this.getOrigLineno());
 
                 if (!supported) {
                     continue;

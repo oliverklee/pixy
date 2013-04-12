@@ -23,7 +23,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
 // resembles DepGraphTestCase, but does not perform alias analysis
 // (see mySetUp()) and tests object-oriented stuff
 public class DepGraphTestCaseNA
-extends TestCase {
+    extends TestCase {
 
     private String path;    // complete path to the testfile directory (with trailing slash)
 
@@ -40,7 +40,6 @@ extends TestCase {
     protected void setUp() {
         this.path = MyOptions.pixy_home + "/testfiles/depgraph/";
     }
-
 
     // call this at the beginning of each test; optionally uses
     // a functional analysis instead of call-string ("functional" param),
@@ -81,23 +80,22 @@ extends TestCase {
         return ret.toString();
     }
 
-
     // set "generate" to false if you want to generate graphs
     // (instead of checking against existing graphs)
     private void performTest(String testNum, int sinkNum, int graphNum,
-            boolean generate, int vulnNum) {
+                             boolean generate, int vulnNum) {
         performTest(testNum, sinkNum, graphNum, generate, false, vulnNum);
     }
 
     private void performTest(String testNum, int sinkNum, int graphNum,
-            boolean generate, boolean functional, int vulnNum) {
+                             boolean generate, boolean functional, int vulnNum) {
 
         //generate = true;
 
         mySetUp("test" + testNum + ".php", functional);
 
         Assert.assertTrue("Sinks real: " + sinks.size() + ", expected: "
-                + sinkNum, sinks.size() == sinkNum);
+            + sinkNum, sinks.size() == sinkNum);
 
         // collect depGraphs
         List<DepGraph> depGraphs = new LinkedList<DepGraph>();
@@ -106,7 +104,7 @@ extends TestCase {
         }
 
         Assert.assertTrue("Graphs real: " + depGraphs.size() + ", expected: "
-                + graphNum, depGraphs.size() == graphNum);
+            + graphNum, depGraphs.size() == graphNum);
 
         int graphCount = 0;
         int vulnCount = 0;

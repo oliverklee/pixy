@@ -12,7 +12,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 // indicates the end of an included section (inserted during include resolution)
 public class CfgNodeIncludeEnd
-extends CfgNode {
+    extends CfgNode {
 
     private File file;  // file in which this node occurs
     private CfgNodeIncludeStart peer;
@@ -28,7 +28,6 @@ extends CfgNode {
         this.file = start.getContainingFile();
         this.peer = start;
     }
-
 
 //  GET ****************************************************************************
 

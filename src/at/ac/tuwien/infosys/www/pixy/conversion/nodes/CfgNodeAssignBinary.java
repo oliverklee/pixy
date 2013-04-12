@@ -18,7 +18,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 // SL, SR, IS_IDENTICAL, IS_NOT_IDENTICAL, IS_EQUAL, IS_NOT_EQUAL,
 // IS_SMALLER, IS_SMALLER_OR_EQUAL, IS_GREATER, IS_GREATER_OR_EQUAL
 public class CfgNodeAssignBinary
-extends CfgNode {
+    extends CfgNode {
 
     private Variable left;
     private TacPlace leftOperand;
@@ -76,17 +76,17 @@ extends CfgNode {
 
     public void replaceVariable(int index, Variable replacement) {
         switch (index) {
-        case 0:
-            this.left = replacement;
-            break;
-        case 1:
-            this.leftOperand = replacement;
-            break;
-        case 2:
-            this.rightOperand = replacement;
-            break;
-        default:
-            throw new RuntimeException("SNH");
+            case 0:
+                this.left = replacement;
+                break;
+            case 1:
+                this.leftOperand = replacement;
+                break;
+            case 2:
+                this.rightOperand = replacement;
+                break;
+            default:
+                throw new RuntimeException("SNH");
         }
     }
 }

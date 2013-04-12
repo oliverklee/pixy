@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.analysis;
 
 public class LatticeElementTop
-extends LatticeElement {
+    extends LatticeElement {
 
     public static final LatticeElementTop INSTANCE = new LatticeElementTop();
 

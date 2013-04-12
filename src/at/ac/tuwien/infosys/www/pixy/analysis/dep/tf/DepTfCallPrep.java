@@ -15,7 +15,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 public class DepTfCallPrep
-extends TransferFunction {
+    extends TransferFunction {
 
     private List actualParams;
     private List formalParams;
@@ -29,9 +29,9 @@ extends TransferFunction {
 //  *********************************************************************************
 
     public DepTfCallPrep(List actualParams, List formalParams,
-            TacFunction caller, TacFunction callee,
-            DepAnalysis depAnalysis,
-            CfgNode cfgNode) {
+                         TacFunction caller, TacFunction callee,
+                         DepAnalysis depAnalysis,
+                         CfgNode cfgNode) {
 
         this.actualParams = actualParams;
         this.formalParams = formalParams;

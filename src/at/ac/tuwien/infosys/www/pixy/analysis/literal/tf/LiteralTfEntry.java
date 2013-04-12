@@ -11,7 +11,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 // transfer function for function entries
 public class LiteralTfEntry
-extends TransferFunction {
+    extends TransferFunction {
 
     private TacFunction function;
 

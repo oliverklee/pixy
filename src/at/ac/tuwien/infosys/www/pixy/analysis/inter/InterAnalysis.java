@@ -37,7 +37,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeIf;
 // - call initGeneral()
 
 public abstract class InterAnalysis
-extends Analysis {
+    extends Analysis {
 
     // INPUT ***********************************************************************
 
@@ -70,7 +70,7 @@ extends Analysis {
     // restriction that superclass constructors have to be called first;
     // the "functions" map has to map function name -> TacFunction object
     protected void initGeneral(List<TacFunction> functions, TacFunction mainFunction,
-            AnalysisType analysisType, InterWorkList workList) {
+                               AnalysisType analysisType, InterWorkList workList) {
 
         this.analysisType = analysisType;
         this.analysisType.setAnalysis(this);
@@ -179,7 +179,6 @@ extends Analysis {
         return (InterAnalysisNode) this.interAnalysisInfo.getAnalysisNode(cfgNode);
     }
 
-
 // *********************************************************************************
 // OTHER ***************************************************************************
 // *********************************************************************************
@@ -245,212 +244,212 @@ extends Analysis {
 
             try {
 
-            // distinguish between various types of CFG nodes
-            if (node instanceof CfgNodeCall) {
+                // distinguish between various types of CFG nodes
+                if (node instanceof CfgNodeCall) {
 
-                CfgNodeCall callNode = (CfgNodeCall) node;
+                    CfgNodeCall callNode = (CfgNodeCall) node;
 
-                // get necessary function information (= called function)
-                TacFunction function = callNode.getCallee();
-                CfgNodeCallRet callRet = (CfgNodeCallRet) node.getOutEdge(0).getDest();
+                    // get necessary function information (= called function)
+                    TacFunction function = callNode.getCallee();
+                    CfgNodeCallRet callRet = (CfgNodeCallRet) node.getOutEdge(0).getDest();
 
-                if (function == null) {
-                    // callee could not be determined yet;
-                    // the search for a function summary doesn't make
-                    // sense; simply go on to the return node;
-                    // the concrete analysis is responsible for handling
-                    // calls to unknown functions in the transfer functions
-                    // for CallPrep and CallRet
+                    if (function == null) {
+                        // callee could not be determined yet;
+                        // the search for a function summary doesn't make
+                        // sense; simply go on to the return node;
+                        // the concrete analysis is responsible for handling
+                        // calls to unknown functions in the transfer functions
+                        // for CallPrep and CallRet
 
-                    // note: even though calls to unknown functions will be
-                    // replaced with a special cfg node at the end of tac conversion,
-                    // this case might still occur *during* tac conversion
-                    // (especially during include file resolution)
+                        // note: even though calls to unknown functions will be
+                        // replaced with a special cfg node at the end of tac conversion,
+                        // this case might still occur *during* tac conversion
+                        // (especially during include file resolution)
 
-                    propagate(context, inValue, callRet);
-                    continue;
-                }
+                        propagate(context, inValue, callRet);
+                        continue;
+                    }
 
-                Cfg functionCfg = function.getCfg();
+                    Cfg functionCfg = function.getCfg();
 
-                CfgNode exitNode = functionCfg.getTail();
-                // the tail of the function's CFG has to be an exit node
-                if (!(exitNode instanceof CfgNodeExit)) {
-                    throw new RuntimeException("SNH");
-                }
+                    CfgNode exitNode = functionCfg.getTail();
+                    // the tail of the function's CFG has to be an exit node
+                    if (!(exitNode instanceof CfgNodeExit)) {
+                        throw new RuntimeException("SNH");
+                    }
 
-                Context propagationContext = this.getPropagationContext(callNode, context);
+                    Context propagationContext = this.getPropagationContext(callNode, context);
 
-                // look if the exit node's PHI map has an entry under the context
-                // resulting from this call
-                InterAnalysisNode exitAnalysisNode = (InterAnalysisNode) this.interAnalysisInfo.getAnalysisNode(exitNode);
-                if (exitAnalysisNode == null) {
-                    // this can only mean that there is no way to reach the
-                    // function's natural exit node, i.e. there is something like
-                    // die() on each path to the natural exit node; in this
-                    // case, we simply enter the function; this can lead to
-                    // redundant computations, but it is simpler than a
-                    // special, more efficient treatment of this rare case
-                    CfgNode entryNode = functionCfg.getHead();
-                    propagate(propagationContext, inValue, entryNode);
-                    continue;
-                }
+                    // look if the exit node's PHI map has an entry under the context
+                    // resulting from this call
+                    InterAnalysisNode exitAnalysisNode = (InterAnalysisNode) this.interAnalysisInfo.getAnalysisNode(exitNode);
+                    if (exitAnalysisNode == null) {
+                        // this can only mean that there is no way to reach the
+                        // function's natural exit node, i.e. there is something like
+                        // die() on each path to the natural exit node; in this
+                        // case, we simply enter the function; this can lead to
+                        // redundant computations, but it is simpler than a
+                        // special, more efficient treatment of this rare case
+                        CfgNode entryNode = functionCfg.getHead();
+                        propagate(propagationContext, inValue, entryNode);
+                        continue;
+                    }
 
-                LatticeElement exitInValue = exitAnalysisNode.getPhiValue(propagationContext);
+                    LatticeElement exitInValue = exitAnalysisNode.getPhiValue(propagationContext);
 
-                if (this.useSummaries() && exitInValue != null) {
+                    if (this.useSummaries() && exitInValue != null) {
 
-                    // previously computed function summary can be used;
-                    // determine successor node (unique) of this call node
-                    CfgEdge[] outEdges = callNode.getOutEdges();
-                    CfgNode succ = outEdges[0].getDest();
-                    propagate(context, exitInValue, succ);
+                        // previously computed function summary can be used;
+                        // determine successor node (unique) of this call node
+                        CfgEdge[] outEdges = callNode.getOutEdges();
+                        CfgNode succ = outEdges[0].getDest();
+                        propagate(context, exitInValue, succ);
+
+                    } else {
+
+                        // there is no function summary yet (or we don't want to
+                        // use summaries)
+
+                        // necessary for call-string analyses
+                        // EFF: think about additional conditions to add here
+                        if ((this.analysisType instanceof CSAnalysis) && exitInValue != null) {
+                            this.workList.add(exitNode, propagationContext);
+                        }
+
+                        // there is no function summary yet (or we don't want to
+                        // use summaries), so compute it now by entering the function
+                        CfgNode entryNode = functionCfg.getHead();
+                        propagate(propagationContext, inValue, entryNode);
+                    }
+
+                    // calls to a builtin function are simply treated by invoking
+                    // the corresponding transfer function; covered by the catch-all below
+                    //} else if (node instanceof CfgNodeCallBuiltin) {
+
+                } else if (node instanceof CfgNodeExit) {
+
+                    CfgNodeExit exitNode = (CfgNodeExit) node;
+
+                    // the function to this exit node
+                    TacFunction function = exitNode.getEnclosingFunction();
+
+                    // no need to proceed if this is the exit node of the
+                    // main function
+                    if (function == this.mainFunction) {
+                        continue;
+                    }
+
+                    // the exit node gets a special treatment: pass incoming value
+                    // in a lazy manner
+                    // LatticeElement outValue = this.analysisInfo[node.getId()].transfer(inValue);
+                    LatticeElement outValue = inValue;
+
+                    // get targets that we have to return to
+                    List reverseTargets = this.getReverseTargets(function, context);
+
+                    // for each target
+                    for (Iterator iter = reverseTargets.iterator(); iter.hasNext(); ) {
+                        ReverseTarget reverseTarget = (ReverseTarget) iter.next();
+
+                        // extract target call node
+                        CfgNodeCall callNode = reverseTarget.getCallNode();
+
+                        // determine successor node (unique) of the call node
+                        CfgEdge[] outEdges = callNode.getOutEdges();
+                        CfgNodeCallRet callRetNode = (CfgNodeCallRet) outEdges[0].getDest();
+
+                        // determine predecessor node (unique) of the call node
+                        CfgNodeCallPrep callPrepNode = callRetNode.getCallPrepNode();
+
+                        // extract set of target contexts
+                        Set contextSet = reverseTarget.getContexts();
+                        for (Iterator contextIter = contextSet.iterator(); contextIter.hasNext(); ) {
+                            Context targetContext = (Context) contextIter.next();
+
+                            // if the incoming value at the callprep node is undefined, this means
+                            // that the analysis hasn't made the call under this context
+                            // (can happen for call-string analysis);
+                            // => don't propagate
+                            //if (this.analysisInfo[callPrepNode.getId()].getPhiValue(targetContext) == null) {
+                            InterAnalysisNode callPrepANode = (InterAnalysisNode) this.interAnalysisInfo.getAnalysisNode(callPrepNode);
+                            if (callPrepANode.getPhiValue(targetContext) == null) {
+                                // don't propagate
+                            } else {
+                                // propagate!
+                                propagate(targetContext, outValue, callRetNode);
+                            }
+                        }
+                    }
+
+                } else if (node instanceof CfgNodeIf) {
+
+                    CfgNodeIf ifNode = (CfgNodeIf) node;
+
+                    LatticeElement outValue = this.interAnalysisInfo.getAnalysisNode(node).transfer(inValue);
+                    CfgEdge[] outEdges = node.getOutEdges();
+
+                    // try to evaluate the "if" condition
+                    Boolean eval = this.evalIf(ifNode, inValue);
+
+                    if (eval == null) {
+                        // static evaluation of if condition failed, continue
+                        // analysis along both outgoing edges
+
+                        propagate(context, outValue, outEdges[0].getDest());
+                        propagate(context, outValue, outEdges[1].getDest());
+
+                    } else if (eval == Boolean.TRUE) {
+                        // continue analysis along true edge
+                        propagate(context, outValue, outEdges[1].getDest());
+                    } else {
+                        // continue analysis along false edge
+                        propagate(context, outValue, outEdges[0].getDest());
+                    }
+
+                } else if (node instanceof CfgNodeCallRet) {
+
+                    // a call return node is to be handled just as a normal node,
+                    // with the exception that it also needs to know about the
+                    // current context
+
+                    // apply transfer function to incoming value
+                    InterAnalysisNode aNode = (InterAnalysisNode) this.interAnalysisInfo.getAnalysisNode(node);
+                    LatticeElement outValue = aNode.transfer(inValue, context);
+
+                    // for each outgoing edge...
+                    CfgEdge[] outEdges = node.getOutEdges();
+                    for (int i = 0; i < outEdges.length; i++) {
+                        if (outEdges[i] != null) {
+
+                            // determine the successor
+                            CfgNode succ = outEdges[i].getDest();
+
+                            // propagate the result of applying the transfer function
+                            // to the successor (under the current context)
+                            propagate(context, outValue, succ);
+                        }
+                    }
 
                 } else {
 
-                    // there is no function summary yet (or we don't want to
-                    // use summaries)
+                    // apply transfer function to incoming value
+                    LatticeElement outValue;
+                    outValue = this.interAnalysisInfo.getAnalysisNode(node).transfer(inValue);
 
-                    // necessary for call-string analyses
-                    // EFF: think about additional conditions to add here
-                    if ((this.analysisType instanceof CSAnalysis) && exitInValue != null) {
-                        this.workList.add(exitNode, propagationContext);
-                    }
+                    // for each outgoing edge...
+                    CfgEdge[] outEdges = node.getOutEdges();
+                    for (int i = 0; i < outEdges.length; i++) {
+                        if (outEdges[i] != null) {
 
-                    // there is no function summary yet (or we don't want to
-                    // use summaries), so compute it now by entering the function
-                    CfgNode entryNode = functionCfg.getHead();
-                    propagate(propagationContext, inValue, entryNode);
-                }
+                            // determine the successor
+                            CfgNode succ = outEdges[i].getDest();
 
-            // calls to a builtin function are simply treated by invoking
-            // the corresponding transfer function; covered by the catch-all below
-            //} else if (node instanceof CfgNodeCallBuiltin) {
-
-            } else if (node instanceof CfgNodeExit) {
-
-                CfgNodeExit exitNode = (CfgNodeExit) node;
-
-                // the function to this exit node
-                TacFunction function = exitNode.getEnclosingFunction();
-
-                // no need to proceed if this is the exit node of the
-                // main function
-                if (function == this.mainFunction) {
-                    continue;
-                }
-
-                // the exit node gets a special treatment: pass incoming value
-                // in a lazy manner
-                // LatticeElement outValue = this.analysisInfo[node.getId()].transfer(inValue);
-                LatticeElement outValue = inValue;
-
-                // get targets that we have to return to
-                List reverseTargets = this.getReverseTargets(function, context);
-
-                // for each target
-                for (Iterator iter = reverseTargets.iterator(); iter.hasNext();) {
-                    ReverseTarget reverseTarget = (ReverseTarget) iter.next();
-
-                    // extract target call node
-                    CfgNodeCall callNode = reverseTarget.getCallNode();
-
-                    // determine successor node (unique) of the call node
-                    CfgEdge[] outEdges = callNode.getOutEdges();
-                    CfgNodeCallRet callRetNode = (CfgNodeCallRet) outEdges[0].getDest();
-
-                    // determine predecessor node (unique) of the call node
-                    CfgNodeCallPrep callPrepNode = callRetNode.getCallPrepNode();
-
-                    // extract set of target contexts
-                    Set contextSet = reverseTarget.getContexts();
-                    for (Iterator contextIter = contextSet.iterator(); contextIter.hasNext();) {
-                        Context targetContext = (Context) contextIter.next();
-
-                        // if the incoming value at the callprep node is undefined, this means
-                        // that the analysis hasn't made the call under this context
-                        // (can happen for call-string analysis);
-                        // => don't propagate
-                        //if (this.analysisInfo[callPrepNode.getId()].getPhiValue(targetContext) == null) {
-                        InterAnalysisNode callPrepANode = (InterAnalysisNode) this.interAnalysisInfo.getAnalysisNode(callPrepNode);
-                        if (callPrepANode.getPhiValue(targetContext) == null) {
-                            // don't propagate
-                        } else {
-                            // propagate!
-                            propagate(targetContext, outValue, callRetNode);
+                            // propagate the result of applying the transfer function
+                            // to the successor (under the current context)
+                            propagate(context, outValue, succ);
                         }
                     }
                 }
-
-            } else if (node instanceof CfgNodeIf) {
-
-                CfgNodeIf ifNode = (CfgNodeIf) node;
-
-                LatticeElement outValue = this.interAnalysisInfo.getAnalysisNode(node).transfer(inValue);
-                CfgEdge[] outEdges = node.getOutEdges();
-
-                // try to evaluate the "if" condition
-                Boolean eval = this.evalIf(ifNode, inValue);
-
-                if (eval == null) {
-                    // static evaluation of if condition failed, continue
-                    // analysis along both outgoing edges
-
-                    propagate(context, outValue, outEdges[0].getDest());
-                    propagate(context, outValue, outEdges[1].getDest());
-
-                } else if(eval == Boolean.TRUE) {
-                    // continue analysis along true edge
-                    propagate(context, outValue, outEdges[1].getDest());
-                } else {
-                    // continue analysis along false edge
-                    propagate(context, outValue, outEdges[0].getDest());
-                }
-
-            } else if (node instanceof CfgNodeCallRet) {
-
-                // a call return node is to be handled just as a normal node,
-                // with the exception that it also needs to know about the
-                // current context
-
-                // apply transfer function to incoming value
-                InterAnalysisNode aNode = (InterAnalysisNode) this.interAnalysisInfo.getAnalysisNode(node);
-                LatticeElement outValue = aNode.transfer(inValue, context);
-
-                // for each outgoing edge...
-                CfgEdge[] outEdges = node.getOutEdges();
-                for (int i = 0; i < outEdges.length; i++) {
-                    if (outEdges[i] != null) {
-
-                        // determine the successor
-                        CfgNode succ = outEdges[i].getDest();
-
-                        // propagate the result of applying the transfer function
-                        // to the successor (under the current context)
-                        propagate(context, outValue, succ);
-                    }
-                }
-
-            } else {
-
-                // apply transfer function to incoming value
-                LatticeElement outValue;
-                outValue = this.interAnalysisInfo.getAnalysisNode(node).transfer(inValue);
-
-                // for each outgoing edge...
-                CfgEdge[] outEdges = node.getOutEdges();
-                for (int i = 0; i < outEdges.length; i++) {
-                    if (outEdges[i] != null) {
-
-                        // determine the successor
-                        CfgNode succ = outEdges[i].getDest();
-
-                        // propagate the result of applying the transfer function
-                        // to the successor (under the current context)
-                        propagate(context, outValue, succ);
-                    }
-                }
-            }
 
             } catch (RuntimeException ex) {
                 System.out.println("File:" + node.getFileName() + ", Line: " + node.getOrigLineno());

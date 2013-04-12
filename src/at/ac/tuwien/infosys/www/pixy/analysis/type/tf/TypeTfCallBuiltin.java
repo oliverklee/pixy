@@ -6,7 +6,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.type.TypeLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallBuiltin;
 
 public class TypeTfCallBuiltin
-extends TransferFunction {
+    extends TransferFunction {
 
     private CfgNodeCallBuiltin cfgNode;
 

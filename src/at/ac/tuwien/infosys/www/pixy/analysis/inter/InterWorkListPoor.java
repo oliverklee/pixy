@@ -14,7 +14,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
  * nodes are returned accordingly
  */
 public final class InterWorkListPoor
-implements InterWorkList {
+    implements InterWorkList {
 
     private LinkedList<InterWorkListElement> unsortedWorkList;
     private SortedMap<Integer, InterWorkListElement> sortedWorkList;

@@ -13,7 +13,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 //*********************************************************************************
 
 public class CfgNodeIf
-extends CfgNode {
+    extends CfgNode {
 
     private TacPlace leftOperand;
     private TacPlace rightOperand;  // may only be Constant.TRUE or Constant.FALSE
@@ -21,13 +21,13 @@ extends CfgNode {
 
 //CONSTRUCTORS ********************************************************************
 
-    public CfgNodeIf (TacPlace leftOperand, TacPlace rightOperand, int op, ParseNode node) {
+    public CfgNodeIf(TacPlace leftOperand, TacPlace rightOperand, int op, ParseNode node) {
         super(node);
         // make sure that right operand is valid (i.e. true or false)
         if (!(rightOperand == Constant.TRUE || rightOperand == Constant.FALSE)) {
             throw new RuntimeException(
                 "SNH: illegal right operand for if node at line " +
-                node.getLinenoLeft());
+                    node.getLinenoLeft());
         }
         this.leftOperand = leftOperand;
         this.rightOperand = rightOperand;
@@ -60,11 +60,11 @@ extends CfgNode {
 
     public void replaceVariable(int index, Variable replacement) {
         switch (index) {
-        case 0:
-            this.leftOperand = replacement;
-            break;
-        default:
-            throw new RuntimeException("SNH");
+            case 0:
+                this.leftOperand = replacement;
+                break;
+            default:
+                throw new RuntimeException("SNH");
         }
     }
 }

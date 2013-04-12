@@ -10,7 +10,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
 
 public class TypeTfCallRet
-extends TransferFunction {
+    extends TransferFunction {
 
     private InterAnalysisNode analysisNodeAtCallPrep;
     private TacFunction caller;
@@ -22,10 +22,10 @@ extends TransferFunction {
 // *********************************************************************************
 
     public TypeTfCallRet(
-            InterAnalysisNode analysisNodeAtCallPrep,
-            TacFunction caller,
-            TacFunction callee,
-            CfgNodeCall retNode) {
+        InterAnalysisNode analysisNodeAtCallPrep,
+        TacFunction caller,
+        TacFunction callee,
+        CfgNodeCall retNode) {
 
         this.analysisNodeAtCallPrep = analysisNodeAtCallPrep;
         this.caller = caller;

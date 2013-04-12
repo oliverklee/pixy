@@ -13,7 +13,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 // base class for intraprocedural analyses
 public abstract class IntraAnalysis
-extends Analysis {
+    extends Analysis {
 
     // INPUT ***********************************************************************
 

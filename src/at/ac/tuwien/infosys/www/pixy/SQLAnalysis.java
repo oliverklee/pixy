@@ -35,7 +35,7 @@ import at.ac.tuwien.infosys.www.pixy.transduction.MyTransductions;
 
 // SQL Injection detection
 public class SQLAnalysis
-extends DepClient {
+    extends DepClient {
 
     // flag indicating whether to use transducers or not (are still unstable)
     private boolean useTransducers = false;
@@ -240,7 +240,7 @@ extends DepClient {
     Automaton toAutomaton(DepGraph depGraph, DepGraph origDepGraph) {
         depGraph.eliminateCycles();
         DepGraphNode root = depGraph.getRoot();
-        Map<DepGraphNode,Automaton> deco = new HashMap<DepGraphNode,Automaton>();
+        Map<DepGraphNode, Automaton> deco = new HashMap<DepGraphNode, Automaton>();
         Set<DepGraphNode> visited = new HashSet<DepGraphNode>();
         this.decorate(root, deco, visited, depGraph, origDepGraph);
         Automaton rootDeco = deco.get(root).clone();
@@ -251,8 +251,8 @@ extends DepClient {
 //  ********************************************************************************
 
     // decorates the given node (and all its successors) with an automaton
-    private void decorate(DepGraphNode node, Map<DepGraphNode,Automaton> deco,
-            Set<DepGraphNode> visited, DepGraph depGraph, DepGraph origDepGraph) {
+    private void decorate(DepGraphNode node, Map<DepGraphNode, Automaton> deco,
+                          Set<DepGraphNode> visited, DepGraph depGraph, DepGraph origDepGraph) {
 
         visited.add(node);
 
@@ -280,7 +280,7 @@ extends DepClient {
                     // this case should not happen any longer (now that
                     // we have "uninit" nodes, see below)
                     throw new RuntimeException("SNH: " + place + ", " + normalNode.getCfgNode().getFileName() + "," +
-                            normalNode.getCfgNode().getOrigLineno());
+                        normalNode.getCfgNode().getOrigLineno());
                 }
             } else {
                 // this is an interior node, not a leaf node;
@@ -358,15 +358,15 @@ extends DepClient {
             if (pre instanceof DepGraphNormalNode) {
                 DepGraphNormalNode preNormal = (DepGraphNormalNode) pre;
                 switch (this.initiallyTainted(preNormal.getPlace())) {
-                case ALWAYS:
-                case IFRG:
-                    auto = Automaton.makeAnyString(Transition.Taint.Directly);
-                    break;
-                case NEVER:
-                    auto = Automaton.makeAnyString(Transition.Taint.Untainted);
-                    break;
-                default:
-                    throw new RuntimeException("SNH");
+                    case ALWAYS:
+                    case IFRG:
+                        auto = Automaton.makeAnyString(Transition.Taint.Directly);
+                        break;
+                    case NEVER:
+                        auto = Automaton.makeAnyString(Transition.Taint.Untainted);
+                        break;
+                    default:
+                        throw new RuntimeException("SNH");
                 }
 
             } else if (pre instanceof DepGraphSccNode) {
@@ -383,15 +383,15 @@ extends DepClient {
                         DepGraphNormalNode origPreNormal = (DepGraphNormalNode) origPre;
 
                         switch (this.initiallyTainted(origPreNormal.getPlace())) {
-                        case ALWAYS:
-                        case IFRG:
-                            auto = Automaton.makeAnyString(Transition.Taint.Directly);
-                            break;
-                        case NEVER:
-                            auto = Automaton.makeAnyString(Transition.Taint.Untainted);
-                            break;
-                        default:
-                            throw new RuntimeException("SNH");
+                            case ALWAYS:
+                            case IFRG:
+                                auto = Automaton.makeAnyString(Transition.Taint.Directly);
+                                break;
+                            case NEVER:
+                                auto = Automaton.makeAnyString(Transition.Taint.Untainted);
+                                break;
+                            default:
+                                throw new RuntimeException("SNH");
                         }
 
                     } else {
@@ -421,8 +421,8 @@ extends DepClient {
 //  ********************************************************************************
 
     // returns an automaton for the given operation node
-    private Automaton makeAutoForOp(DepGraphOpNode node, Map<DepGraphNode,Automaton> deco,
-            DepGraph depGraph) {
+    private Automaton makeAutoForOp(DepGraphOpNode node, Map<DepGraphNode, Automaton> deco,
+                                    DepGraph depGraph) {
 
         List<DepGraphNode> successors = depGraph.getSuccessors(node);
         if (successors == null) {
@@ -462,26 +462,26 @@ extends DepClient {
                 }
             }
 
-        // WEAK SANITIZATION FUNCTIONS *******************************
-        // ops that perform sanitization, but which are insufficient
-        // in cases where the output is not enclosed by quotes in an SQL query
+            // WEAK SANITIZATION FUNCTIONS *******************************
+            // ops that perform sanitization, but which are insufficient
+            // in cases where the output is not enclosed by quotes in an SQL query
 
         } else if (isWeakSanit(opName, multiList)) {
 
             retMe = Automaton.makeAnyString(Transition.Taint.Indirectly);
 
-        // STRONG SANITIZATION FUNCTIONS *******************************
-        // e.g., ops that return numeric values
+            // STRONG SANITIZATION FUNCTIONS *******************************
+            // e.g., ops that return numeric values
 
         } else if (isStrongSanit(opName)) {
 
             retMe = Automaton.makeAnyString(Transition.Taint.Untainted);
 
-        // EVIL FUNCTIONS ***************************************
-        // take care: if you define evil functions, you must adjust
-        // the treatment of SCC nodes in decorate()
+            // EVIL FUNCTIONS ***************************************
+            // take care: if you define evil functions, you must adjust
+            // the treatment of SCC nodes in decorate()
 
-        // MULTI-OR-DEPENDENCY **********************************
+            // MULTI-OR-DEPENDENCY **********************************
 
         } else if (useTransducers && opName.equals("str_replace")) {
 
@@ -526,7 +526,7 @@ extends DepClient {
             Transition.Taint taint = this.multiDependencyAuto(successors, deco, multiList, true);
             retMe = Automaton.makeAnyString(taint);
 
-        // CATCH-ALL ********************************************
+            // CATCH-ALL ********************************************
 
         } else {
             System.out.println("Unmodeled builtin function (SQL): " + opName);
@@ -544,7 +544,7 @@ extends DepClient {
     // checks if the given node (inside the given function) is a sensitive sink;
     // adds an appropriate sink object to the given list if it is a sink
     protected void checkForSink(CfgNode cfgNodeX, TacFunction traversedFunction,
-            List<Sink> sinks) {
+                                List<Sink> sinks) {
 
         if (cfgNodeX instanceof CfgNodeCallBuiltin) {
 
@@ -568,7 +568,7 @@ extends DepClient {
 //  ********************************************************************************
 
     private void checkForSinkHelper(String functionName, CfgNode cfgNode,
-            List<TacActualParam> paramList, TacFunction traversedFunction, List<Sink> sinks) {
+                                    List<TacActualParam> paramList, TacFunction traversedFunction, List<Sink> sinks) {
 
         if (this.dci.getSinks().containsKey(functionName)) {
             Sink sink = new Sink(cfgNode, traversedFunction);
@@ -585,7 +585,7 @@ extends DepClient {
 //  ********************************************************************************
 
     private Transition.Taint multiDependencyAuto(List<DepGraphNode> succs,
-            Map<DepGraphNode,Automaton> deco, List<Integer> indices, boolean inverse) {
+                                                 Map<DepGraphNode, Automaton> deco, List<Integer> indices, boolean inverse) {
 
         boolean indirectly = false;
         Set<Integer> indexSet = new HashSet<Integer>(indices);

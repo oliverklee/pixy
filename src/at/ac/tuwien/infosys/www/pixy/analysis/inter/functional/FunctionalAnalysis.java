@@ -19,7 +19,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
 // base class for analysis using the functional approach of Sharir and
 // Pnueli; use this if your lattice is finite
 public class FunctionalAnalysis
-extends AnalysisType {
+    extends AnalysisType {
 
 // *********************************************************************************
 // GET *****************************************************************************

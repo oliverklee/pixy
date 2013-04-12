@@ -16,7 +16,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallPrep;
 
 public class AliasTfCallPrep
-extends TransferFunction {
+    extends TransferFunction {
 
     private List cbrParams;
     private TacFunction caller;
@@ -55,7 +55,7 @@ extends TransferFunction {
 
             SymbolTable placeHolderSymTab = new SymbolTable("_placeHolder");
             // placeholder -> real formal
-            Map<Variable,Variable> replacements = new HashMap<Variable,Variable>();
+            Map<Variable, Variable> replacements = new HashMap<Variable, Variable>();
 
             // for all cbr-params...
             for (Iterator iter = this.cbrParams.iterator(); iter.hasNext(); ) {

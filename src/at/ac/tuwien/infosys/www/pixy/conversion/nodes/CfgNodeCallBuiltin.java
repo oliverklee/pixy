@@ -15,7 +15,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 // a function call
 public class CfgNodeCallBuiltin
-extends CfgNode {
+    extends CfgNode {
 
     // name of the called builtin function
     private String functionName;
@@ -26,11 +26,10 @@ extends CfgNode {
     // temporary variable to hold the return value
     private Variable tempVar;
 
-
 // CONSTRUCTORS ********************************************************************
 
     public CfgNodeCallBuiltin(String functionName,
-            List<TacActualParam> paramList, TacPlace tempPlace, ParseNode node) {
+                              List<TacActualParam> paramList, TacPlace tempPlace, ParseNode node) {
 
         super(node);
         this.functionName = functionName.toLowerCase();
@@ -54,7 +53,7 @@ extends CfgNode {
 
     public List<Variable> getVariables() {
         List<Variable> retMe = new LinkedList<Variable>();
-        for (Iterator iter = this.paramList.iterator(); iter.hasNext();) {
+        for (Iterator iter = this.paramList.iterator(); iter.hasNext(); ) {
             TacActualParam param = (TacActualParam) iter.next();
             TacPlace paramPlace = param.getPlace();
             if (paramPlace instanceof Variable) {

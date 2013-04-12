@@ -12,11 +12,11 @@ public class SccNode {
 
     private Variable label;
     // Map SccNode -> SccEdge (i.e., target node -> edge)
-    private Map<SccNode,SccEdge> doubleEdges;
+    private Map<SccNode, SccEdge> doubleEdges;
 
     public SccNode(Variable label) {
         this.label = label;
-        this.doubleEdges = new HashMap<SccNode,SccEdge>();
+        this.doubleEdges = new HashMap<SccNode, SccEdge>();
     }
 
     public Variable getLabel() {

@@ -7,7 +7,7 @@ import java.util.List;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 public class CfgNodeBasicBlock
-extends CfgNode {
+    extends CfgNode {
 
     List<CfgNode> containedNodes;
 
@@ -36,7 +36,7 @@ extends CfgNode {
 
     public List<Variable> getVariables() {
         List<Variable> variables = new LinkedList<Variable>();
-        for (Iterator iter = this.containedNodes.iterator(); iter.hasNext();) {
+        for (Iterator iter = this.containedNodes.iterator(); iter.hasNext(); ) {
             CfgNode node = (CfgNode) iter.next();
             variables.addAll(node.getVariables());
         }
@@ -44,7 +44,7 @@ extends CfgNode {
     }
 
     public void replaceVariable(int index, Variable replacement) {
-        for (Iterator iter = this.containedNodes.iterator(); iter.hasNext();) {
+        for (Iterator iter = this.containedNodes.iterator(); iter.hasNext(); ) {
             CfgNode node = (CfgNode) iter.next();
             List gotVariables = node.getVariables();
             if (gotVariables.size() > index) {

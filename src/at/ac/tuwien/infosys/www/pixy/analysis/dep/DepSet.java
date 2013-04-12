@@ -8,12 +8,13 @@ import at.ac.tuwien.infosys.www.pixy.analysis.Recyclable;
 
 // just a set of Dep's
 public class DepSet
-implements Recyclable {
+    implements Recyclable {
 
     public static GenericRepos<DepSet> repos = new GenericRepos<DepSet>();
 
     // no special treatment necessary for the following:
     static public final DepSet UNINIT = new DepSet(Dep.UNINIT);
+
     static {
         repos.recycle(UNINIT);
     }
@@ -117,7 +118,7 @@ implements Recyclable {
 
     public int structureHashCode() {
         int hashCode = 17;
-        hashCode = 37*hashCode + this.depSet.hashCode();
+        hashCode = 37 * hashCode + this.depSet.hashCode();
         return hashCode;
     }
 }

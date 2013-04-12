@@ -30,7 +30,7 @@ public class MustAliases {
     public MustAliases(MustAliases cloneMe) {
         this.groups = new HashSet<MustAliasGroup>();
         Set<MustAliasGroup> origGroup = cloneMe.getGroups();
-        for (Iterator iter = origGroup.iterator(); iter.hasNext();) {
+        for (Iterator iter = origGroup.iterator(); iter.hasNext(); ) {
             MustAliasGroup group = (MustAliasGroup) iter.next();
             this.groups.add(new MustAliasGroup(group));
         }
@@ -47,7 +47,7 @@ public class MustAliases {
     // returns a set of all variables that occur in the contained groups
     public Set<Variable> getVariables() {
         Set<Variable> variables = new HashSet<Variable>();
-        for (Iterator iter = this.groups.iterator(); iter.hasNext();) {
+        for (Iterator iter = this.groups.iterator(); iter.hasNext(); ) {
             MustAliasGroup group = (MustAliasGroup) iter.next();
             variables.addAll(group.getVariables());
         }
@@ -133,7 +133,7 @@ public class MustAliases {
     public void removeLocals() {
 
         List<MustAliasGroup> keepUs = new LinkedList<MustAliasGroup>();
-        for (Iterator iter = this.groups.iterator(); iter.hasNext();) {
+        for (Iterator iter = this.groups.iterator(); iter.hasNext(); ) {
             MustAliasGroup group = (MustAliasGroup) iter.next();
             group.removeLocals();
 
@@ -147,7 +147,7 @@ public class MustAliases {
     public void removeGlobals() {
 
         List<MustAliasGroup> keepUs = new LinkedList<MustAliasGroup>();
-        for (Iterator iter = this.groups.iterator(); iter.hasNext();) {
+        for (Iterator iter = this.groups.iterator(); iter.hasNext(); ) {
             MustAliasGroup group = (MustAliasGroup) iter.next();
             group.removeGlobals();
 
@@ -161,7 +161,7 @@ public class MustAliases {
     public void removeVariables(SymbolTable symTab) {
 
         List<MustAliasGroup> keepUs = new LinkedList<MustAliasGroup>();
-        for (Iterator iter = this.groups.iterator(); iter.hasNext();) {
+        for (Iterator iter = this.groups.iterator(); iter.hasNext(); ) {
             MustAliasGroup group = (MustAliasGroup) iter.next();
             group.removeVariables(symTab);
 
@@ -220,7 +220,7 @@ public class MustAliases {
     }
 
     public void replace(Map replacements) {
-        for (Iterator iter = this.groups.iterator(); iter.hasNext();) {
+        for (Iterator iter = this.groups.iterator(); iter.hasNext(); ) {
             MustAliasGroup group = (MustAliasGroup) iter.next();
             group.replace(replacements);
         }
@@ -236,7 +236,7 @@ public class MustAliases {
         }
 
         // for each of my own groups: check if it is contained in the other group set
-        for (Iterator iter = this.groups.iterator(); iter.hasNext();) {
+        for (Iterator iter = this.groups.iterator(); iter.hasNext(); ) {
             MustAliasGroup group = (MustAliasGroup) iter.next();
 
             // linear, slow implementation; but unfortunately, contains() doesn't
@@ -244,7 +244,7 @@ public class MustAliases {
             // the "if" construct and run the analysis on the
             // PHP program given (far) below: sometimes contains() returns true,
             // sometimes it returns false (although it should always return true)
-            for (Iterator iterator = compGroupSet.iterator(); iterator.hasNext();) {
+            for (Iterator iterator = compGroupSet.iterator(); iterator.hasNext(); ) {
                 MustAliasGroup compGroup = (MustAliasGroup) iterator.next();
                 if (compGroup.equals(group)) {
                     return true;

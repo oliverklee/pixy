@@ -13,7 +13,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 // indicates the start of an included section (inserted during include resolution)
 public class CfgNodeIncludeStart
-extends CfgNode {
+    extends CfgNode {
 
     private File containingFile;  // file in which this node occurs
     private CfgNodeIncludeEnd peer;

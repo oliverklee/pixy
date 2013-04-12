@@ -15,7 +15,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeDefine;
 
 public class DepTfDefine
-extends TransferFunction {
+    extends TransferFunction {
 
     private TacPlace setMe;
     //private TacPlace setTo;
@@ -30,7 +30,7 @@ extends TransferFunction {
 // *********************************************************************************
 
     public DepTfDefine(ConstantsTable table, LiteralAnalysis literalAnalysis,
-            CfgNodeDefine cfgNode) {
+                       CfgNodeDefine cfgNode) {
 
         this.setMe = cfgNode.getSetMe();
         this.caseInsensitive = cfgNode.getCaseInsensitive();
@@ -78,7 +78,7 @@ extends TransferFunction {
             // all constants in setMe's insensitivity group have to be set
             List insensGroup = this.constantsTable.getInsensitiveGroup(constantLit);
             if (insensGroup != null) {
-                for (Iterator iter = insensGroup.iterator(); iter.hasNext();) {
+                for (Iterator iter = insensGroup.iterator(); iter.hasNext(); ) {
                     Constant constant = (Constant) iter.next();
                     out.defineConstant(constant, this.cfgNode);
                 }
@@ -123,7 +123,7 @@ extends TransferFunction {
             // (except setMe itself)
             List insensGroup = this.constantsTable.getInsensitiveGroup(constantLit);
             if (insensGroup != null) {
-                for (Iterator iter = insensGroup.iterator(); iter.hasNext();) {
+                for (Iterator iter = insensGroup.iterator(); iter.hasNext(); ) {
                     Constant weakConstant = (Constant) iter.next();
                     if (!weakConstant.equals(constant)) {
                         out.defineConstantWeak(weakConstant, this.cfgNode);

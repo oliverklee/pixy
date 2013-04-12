@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 public class Literal
-extends TacPlace {
+    extends TacPlace {
 
     public static final Literal TRUE = new Literal("_true");
     public static final Literal FALSE = new Literal("_false");
@@ -36,9 +36,9 @@ extends TacPlace {
         boolean in_single_quotes = false;
 
         if (literal.length() > 1) {
-            if ((literal.charAt(0) == '"' && literal.charAt(literal.length()-1) == '"')) {
+            if ((literal.charAt(0) == '"' && literal.charAt(literal.length() - 1) == '"')) {
                 in_double_quotes = true;
-            } else if (literal.charAt(0) == '\'' && literal.charAt(literal.length()-1) == '\'') {
+            } else if (literal.charAt(0) == '\'' && literal.charAt(literal.length() - 1) == '\'') {
                 in_single_quotes = true;
             }
         }
@@ -60,26 +60,26 @@ extends TacPlace {
 
             while (backSlash != null) {
 
-                char escapedCharOld = literal.charAt(backSlash+1);
+                char escapedCharOld = literal.charAt(backSlash + 1);
                 String escapedResult;
                 switch (escapedCharOld) {
-                case '\\':
-                    escapedResult = "\\";
-                    break;
-                case '\'':
-                    escapedResult = "'";
-                    break;
-                default:
-                    escapedResult = "\\" + escapedCharOld;
+                    case '\\':
+                        escapedResult = "\\";
+                        break;
+                    case '\'':
+                        escapedResult = "'";
+                        break;
+                    default:
+                        escapedResult = "\\" + escapedCharOld;
                 }
                 buf.append(escapedResult);
 
-                int nextBackSlash = literal.indexOf('\\', backSlash+2);
+                int nextBackSlash = literal.indexOf('\\', backSlash + 2);
                 if (nextBackSlash == -1) {
-                    buf.append(literal.substring(backSlash+2));
+                    buf.append(literal.substring(backSlash + 2));
                     backSlash = null;
                 } else {
-                    buf.append(literal.substring(backSlash+2, nextBackSlash));
+                    buf.append(literal.substring(backSlash + 2, nextBackSlash));
                     backSlash = nextBackSlash;
                 }
             }
@@ -100,29 +100,29 @@ extends TacPlace {
 
             while (backSlash != null) {
 
-                char escapedCharOld = literal.charAt(backSlash+1);
+                char escapedCharOld = literal.charAt(backSlash + 1);
                 String escapedResult;
                 switch (escapedCharOld) {
-                case '\\':
-                    escapedResult = "\\";
-                    break;
-                case '$':
-                    escapedResult = "$";
-                    break;
-                case '"':
-                    escapedResult = "\"";
-                    break;
-                default:
-                    escapedResult = "\\" + escapedCharOld;
+                    case '\\':
+                        escapedResult = "\\";
+                        break;
+                    case '$':
+                        escapedResult = "$";
+                        break;
+                    case '"':
+                        escapedResult = "\"";
+                        break;
+                    default:
+                        escapedResult = "\\" + escapedCharOld;
                 }
                 buf.append(escapedResult);
 
-                int nextBackSlash = literal.indexOf('\\', backSlash+2);
+                int nextBackSlash = literal.indexOf('\\', backSlash + 2);
                 if (nextBackSlash == -1) {
-                    buf.append(literal.substring(backSlash+2));
+                    buf.append(literal.substring(backSlash + 2));
                     backSlash = null;
                 } else {
-                    buf.append(literal.substring(backSlash+2, nextBackSlash));
+                    buf.append(literal.substring(backSlash + 2, nextBackSlash));
                     backSlash = nextBackSlash;
                 }
             }
@@ -155,8 +155,8 @@ extends TacPlace {
         if (this == Literal.TRUE) {
             return Literal.TRUE;
         }
-        if (this == Literal.FALSE      ||
-            this == Literal.NULL       ||
+        if (this == Literal.FALSE ||
+            this == Literal.NULL ||
             this.literal.length() == 0 ||
             this.literal.equals("0")) {
 

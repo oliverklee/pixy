@@ -4,7 +4,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.Lattice;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 
 public class AliasLattice
-extends Lattice {
+    extends Lattice {
 
     private AliasAnalysis aliasAnalysis;
 
@@ -13,8 +13,8 @@ extends Lattice {
     }
 
     public LatticeElement lub(
-            LatticeElement incomingElementX,
-            LatticeElement targetElementX) {
+        LatticeElement incomingElementX,
+        LatticeElement targetElementX) {
 
         // if the incoming element is the bottom element: return the other element
         if (incomingElementX == this.bottom) {

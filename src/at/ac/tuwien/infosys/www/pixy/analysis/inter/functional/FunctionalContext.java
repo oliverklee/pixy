@@ -5,7 +5,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.inter.Context;
 
 // context for Sharir & Pnueli's functional approach
 public class FunctionalContext
-extends Context {
+    extends Context {
 
     private LatticeElement latticeElement;
 

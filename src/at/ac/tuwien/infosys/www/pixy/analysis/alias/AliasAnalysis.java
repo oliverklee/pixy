@@ -33,7 +33,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeIf;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeUnset;
 
 public class AliasAnalysis
-extends InterAnalysis {
+    extends InterAnalysis {
 
     private GenericRepos<LatticeElement> repos;
 
@@ -43,10 +43,10 @@ extends InterAnalysis {
 
 //  AliasAnalysis ******************************************************************
 
-    public AliasAnalysis (TacConverter tac, AnalysisType analysisType) {
+    public AliasAnalysis(TacConverter tac, AnalysisType analysisType) {
         this.repos = new GenericRepos<LatticeElement>();
         this.initGeneral(tac.getAllFunctions(), tac.getMainFunction(),
-                analysisType, new InterWorkListPoor());
+            analysisType, new InterWorkListPoor());
 
     }
 
@@ -79,10 +79,10 @@ extends InterAnalysis {
     protected TransferFunction assignRef(CfgNode cfgNodeX) {
         CfgNodeAssignRef cfgNode = (CfgNodeAssignRef) cfgNodeX;
         return new AliasTfAssignRef(
-                        cfgNode.getLeft(),
-                        cfgNode.getRight(),
-                        this,
-                        cfgNode);
+            cfgNode.getLeft(),
+            cfgNode.getRight(),
+            this,
+            cfgNode);
     }
 
     protected TransferFunction global(CfgNode cfgNodeX) {
@@ -108,10 +108,10 @@ extends InterAnalysis {
             return TransferFunctionId.INSTANCE;
         } else {
             return new AliasTfAssignRef(
-                            globalOp,
-                            realGlobal,
-                            this,
-                            cfgNode);
+                globalOp,
+                realGlobal,
+                this,
+                cfgNode);
         }
     }
 
@@ -166,7 +166,7 @@ extends InterAnalysis {
             // the unknown function
             throw new RuntimeException(
                 "More actual than formal params for function " +
-                cfgNode.getFunctionNamePlace().toString() + " on line " + cfgNode.getOrigLineno());
+                    cfgNode.getFunctionNamePlace().toString() + " on line " + cfgNode.getOrigLineno());
 
         } else {
             tf = new AliasTfCallPrep(callingFunction, this, cfgNode);
@@ -194,10 +194,10 @@ extends InterAnalysis {
 
         // quite powerful transfer function, does many things
         TransferFunction tf = new AliasTfCallRet(
-                (InterAnalysisNode) this.interAnalysisInfo.getAnalysisNode(cfgNodePrep),
-                calledFunction,
-                this,
-                cfgNodePrep);
+            (InterAnalysisNode) this.interAnalysisInfo.getAnalysisNode(cfgNodePrep),
+            calledFunction,
+            this,
+            cfgNodePrep);
 
         return tf;
     }
@@ -246,7 +246,7 @@ extends InterAnalysis {
     // the given node (folded over all contexts); null if there is none
     public Variable getGlobalMustAlias(Variable var, CfgNode cfgNode) {
         Set mustAliases = this.getMustAliases(var, cfgNode);
-        for (Iterator iter = mustAliases.iterator(); iter.hasNext();) {
+        for (Iterator iter = mustAliases.iterator(); iter.hasNext(); ) {
             Variable mustAlias = (Variable) iter.next();
             if (mustAlias.isGlobal()) {
                 return mustAlias;
@@ -261,7 +261,7 @@ extends InterAnalysis {
     public Set getLocalMustAliases(Variable var, CfgNode cfgNode) {
         Set mustAliases = this.getMustAliases(var, cfgNode);
         Set<Variable> retMe = new HashSet<Variable>();
-        for (Iterator iter = mustAliases.iterator(); iter.hasNext();) {
+        for (Iterator iter = mustAliases.iterator(); iter.hasNext(); ) {
             Variable mustAlias = (Variable) iter.next();
             if (mustAlias.isLocal()) {
                 retMe.add(mustAlias);
@@ -276,7 +276,7 @@ extends InterAnalysis {
     public Set getGlobalMayAliases(Variable var, CfgNode cfgNode) {
         Set mayAliases = this.getMayAliases(var, cfgNode);
         Set<Variable> retMe = new HashSet<Variable>();
-        for (Iterator iter = mayAliases.iterator(); iter.hasNext();) {
+        for (Iterator iter = mayAliases.iterator(); iter.hasNext(); ) {
             Variable mayAlias = (Variable) iter.next();
             if (mayAlias.isGlobal()) {
                 retMe.add(mayAlias);
@@ -291,7 +291,7 @@ extends InterAnalysis {
     public Set getLocalMayAliases(Variable var, CfgNode cfgNode) {
         Set mayAliases = this.getMayAliases(var, cfgNode);
         Set<Variable> retMe = new HashSet<Variable>();
-        for (Iterator iter = mayAliases.iterator(); iter.hasNext();) {
+        for (Iterator iter = mayAliases.iterator(); iter.hasNext(); ) {
             Variable mayAlias = (Variable) iter.next();
             if (mayAlias.isLocal()) {
                 retMe.add(mayAlias);
@@ -305,7 +305,7 @@ extends InterAnalysis {
     // in case of unsupported features (in this case, also supply the correct line
     // number)
     public static boolean isSupported(Variable left, Variable right,
-            boolean verbose, int lineno) {
+                                      boolean verbose, int lineno) {
 
         // - none of the variables must be an array or an array element
         // - none of the variables must be a variable variable
@@ -319,23 +319,23 @@ extends InterAnalysis {
             supported = false;
         } else if (right.isArray()) {
             message.append("Warning: Rereferencing to arrays not supported: " +
-                    description + "\nLine: " + lineno);
+                description + "\nLine: " + lineno);
             supported = false;
         } else if (left.isArrayElement()) {
             message.append("Warning: Rereferencing of array elements not supported: " +
-                    description + "\nLine: " + lineno);
+                description + "\nLine: " + lineno);
             supported = false;
         } else if (right.isArrayElement()) {
             message.append("Warning: Rereferencing to array elements not supported: " +
-                    description + "\nLine: " + lineno);
+                description + "\nLine: " + lineno);
             supported = false;
         } else if (left.isVariableVariable()) {
             message.append("Warning: Rereferencing of variable variables not supported: " +
-                    description + "\nLine: " + lineno);
+                description + "\nLine: " + lineno);
             supported = false;
         } else if (right.isVariableVariable()) {
             message.append("Warning: Rereferencing to variable variables not supported: " +
-                    description + "\nLine: " + lineno);
+                description + "\nLine: " + lineno);
             supported = false;
         } else if (left.isMember()) {
             // stay silent

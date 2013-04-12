@@ -13,7 +13,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 // "left = right"
 public class CfgNodeAssignSimple
-extends CfgNode {
+    extends CfgNode {
 
     private Variable left;
     private TacPlace right;
@@ -51,14 +51,14 @@ extends CfgNode {
 
     public void replaceVariable(int index, Variable replacement) {
         switch (index) {
-        case 0:
-            this.left = replacement;
-            break;
-        case 1:
-            this.right = replacement;
-            break;
-        default:
-            throw new RuntimeException("SNH");
+            case 0:
+                this.left = replacement;
+                break;
+            case 1:
+                this.right = replacement;
+                break;
+            default:
+                throw new RuntimeException("SNH");
         }
     }
 }

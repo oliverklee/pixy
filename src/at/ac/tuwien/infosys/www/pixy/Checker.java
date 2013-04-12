@@ -66,7 +66,7 @@ public final class Checker {
 
     private static void help(Options cliOptions) {
         HelpFormatter helpFormatter = new HelpFormatter();
-        helpFormatter.printHelp( "check [options] file", cliOptions);
+        helpFormatter.printHelp("check [options] file", cliOptions);
     }
 
     public static void main(String[] args) {
@@ -99,7 +99,7 @@ public final class Checker {
         cliOptions.addOption("v", "verbose", false, "enable verbose output");
         cliOptions.addOption("V", "verbosegraphs", false, "disable verbose depgraphs");
         cliOptions.addOption("y", "analysistype", true,
-                "type of taint analysis (" + MyOptions.getAnalysisNames() + ")");
+            "type of taint analysis (" + MyOptions.getAnalysisNames() + ")");
 
         CommandLineParser cliParser = new PosixParser();
         CommandLine cmd = null;
@@ -265,7 +265,7 @@ public final class Checker {
             Utils.bail("Can't find configuration file: " + configPath);
         } catch (IOException e) {
             Utils.bail("I/O exception while reading configuration file:" + configPath,
-                    e.getMessage());
+                e.getMessage());
         }
 
         // read PHP include path from the config file
@@ -320,7 +320,7 @@ public final class Checker {
             Utils.bail("Can't find configuration file: " + hsvPath);
         } catch (IOException e) {
             Utils.bail("I/O exception while reading configuration file:" + hsvPath,
-                    e.getMessage());
+                e.getMessage());
         }
         Enumeration<Object> hsvKeys = hsvProps.keys();
         while (hsvKeys.hasMoreElements()) {
@@ -358,7 +358,7 @@ public final class Checker {
 
         // convert the program
         ProgramConverter pcv = new ProgramConverter(
-                this.specialNodes, MyOptions.option_A/*, props*/);
+            this.specialNodes, MyOptions.option_A/*, props*/);
 
         // print parse tree in dot syntax
         if (MyOptions.optionP) {
@@ -411,7 +411,6 @@ public final class Checker {
             System.exit(0);
         }
 
-
         return pcv;
     }
 
@@ -463,7 +462,7 @@ public final class Checker {
         // do it now
         if (this.connectorComp == null) {
             this.connectorComp = new ConnectorComputation(
-                    tac.getAllFunctions(), tac.getMainFunction(), this.kSize);
+                tac.getAllFunctions(), tac.getMainFunction(), this.kSize);
             connectorComp.compute();
             this.workList = new InterWorkListBetter(new InterWorkListOrder(tac, this.connectorComp));
         }
@@ -471,7 +470,7 @@ public final class Checker {
         System.out.println("\n*** initializing literal analysis ***\n");
         this.literalAnalysis =
             new LiteralAnalysis(tac, this.aliasAnalysis,
-                    new CSAnalysis(this.connectorComp), this.workList);
+                new CSAnalysis(this.connectorComp), this.workList);
         System.out.println("\n*** performing literal analysis ***\n");
         this.literalAnalysis.analyze();
         System.out.println("\n*** cleaning up ***\n");
@@ -508,7 +507,7 @@ public final class Checker {
         } else {
             if (this.connectorComp == null) {
                 this.connectorComp = new ConnectorComputation(
-                        tac.getAllFunctions(), tac.getMainFunction(), this.kSize);
+                    tac.getAllFunctions(), tac.getMainFunction(), this.kSize);
                 connectorComp.compute();
                 this.workList = new InterWorkListBetter(new InterWorkListOrder(tac, this.connectorComp));
                 connectorComp.stats(false);
@@ -520,7 +519,7 @@ public final class Checker {
 
             // write called-by relations to file; can be quite useful
             Utils.writeToFile(this.connectorComp.dump(),
-                    MyOptions.graphPath + "/" + "/calledby_"  + MyOptions.entryFile.getName() + ".txt");
+                MyOptions.graphPath + "/" + "/calledby_" + MyOptions.entryFile.getName() + ".txt");
 
             callGraph = this.connectorComp.getCallGraph();
             if (this.aliasAnalysis instanceof DummyAliasAnalysis) {
@@ -530,7 +529,7 @@ public final class Checker {
         }
 
         this.gta = GenericTaintAnalysis.createAnalysis(tac, enclosingAnalysis,
-                this, this.workList, modAnalysis);
+            this, this.workList, modAnalysis);
         if (this.gta == null) {
             Utils.bail("Please specify a valid type of taint analysis.");
         }
