@@ -62,6 +62,5 @@ public class LiteralTfEntry
         }
 
         return out;
-
     }
 }

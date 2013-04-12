@@ -31,7 +31,6 @@ public class TypeTfCallRetUnknown
         out.handleReturnValueUnknown(this.retNode.getTempVar());
 
         return out;
-
     }
 
     // just a dummy method in order to make me conform to the interface;

@@ -326,7 +326,6 @@ public class Literal
             }
         } else {
             return Literal.TOP;
-
         }
     }
 
@@ -415,7 +414,6 @@ public class Literal
         // in all other cases, we don't know the exact result since we aren't
         // performing type analysis
         return Literal.TOP;
-
     }
 
 // invert **************************************************************************
@@ -450,7 +448,6 @@ public class Literal
         }
         // all other cases yield FALSE
         return Literal.FALSE;
-
     }
 
 // isBool **************************************************************************

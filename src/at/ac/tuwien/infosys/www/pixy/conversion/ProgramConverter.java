@@ -122,7 +122,6 @@ public class ProgramConverter {
         this.addSuperGlobal("$_REQUEST");
         this.addSuperGlobal("$_SESSION");
         this.addSuperGlobal("$HTTP_SESSION_VARS");
-
     }
 
 //  ********************************************************************************
@@ -242,7 +241,6 @@ public class ProgramConverter {
                         default:
                             throw new RuntimeException("SNH");
                     }
-
                 }
 
                 processUs = weComeAfterwards;
@@ -313,7 +311,6 @@ public class ProgramConverter {
                     } else {
                         throw new RuntimeException("SNH");
                     }
-
                 } else {
                     includedString = includedLit.toString();
                 }
@@ -365,7 +362,6 @@ public class ProgramConverter {
 
             // shadow generation
             this.baseTac.generateShadows();
-
         } else {
 
             // approximate effects of "global" statements
@@ -393,7 +389,6 @@ public class ProgramConverter {
 
             // final, verbose backpatching
             this.baseTac.backpatch(true, true, typeAnalysis, connectorComp.getCallGraph());
-
         }
 
         // summarize into basic blocks;
@@ -461,7 +456,6 @@ public class ProgramConverter {
         // final node order
         // EFF: only needed for functional analyses
         baseTac.assignReversePostOrder();
-
     }
 
 //  ********************************************************************************
@@ -581,7 +575,6 @@ public class ProgramConverter {
                         // found it!
                         return findMe;
                     }
-
                 } catch (IOException e) {
                     throw new RuntimeException(e.getMessage());
                 }
@@ -635,7 +628,6 @@ public class ProgramConverter {
         } else {
             return IncStatus.CYCLIC;
         }
-
     }
 
 //  countLines *********************************************************************
@@ -655,7 +647,6 @@ public class ProgramConverter {
             throw new RuntimeException(e.getMessage());
         }
         return lines;
-
     }
 
 // addSuperGlobal ******************************************************************

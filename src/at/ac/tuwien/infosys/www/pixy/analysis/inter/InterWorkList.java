@@ -9,5 +9,4 @@ public interface InterWorkList {
     InterWorkListElement removeNext();
 
     boolean hasNext();
-
 }

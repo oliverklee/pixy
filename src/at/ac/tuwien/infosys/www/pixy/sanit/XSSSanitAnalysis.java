@@ -53,7 +53,6 @@ public class XSSSanitAnalysis
 
             // add it to the list of sensitive sinks
             sinks.add(sink);
-
         } else if (cfgNodeX instanceof CfgNodeCallBuiltin) {
 
             // builtin function sinks
@@ -62,7 +61,6 @@ public class XSSSanitAnalysis
             String functionName = cfgNode.getFunctionName();
 
             checkForSinkHelper(functionName, cfgNode, cfgNode.getParamList(), traversedFunction, sinks);
-
         } else if (cfgNodeX instanceof CfgNodeCallPrep) {
 
             CfgNodeCallPrep cfgNode = (CfgNodeCallPrep) cfgNodeX;
@@ -71,7 +69,6 @@ public class XSSSanitAnalysis
             // user-defined custom sinks
 
             checkForSinkHelper(functionName, cfgNode, cfgNode.getParamList(), traversedFunction, sinks);
-
         } else {
             // not a sink
         }

@@ -146,7 +146,6 @@ public class Regex2Prolog {
         prologRegex.insert(0, '[');
         prologRegex.append(']');
         return prologRegex;
-
     }
 
 //  ********************************************************************************
@@ -222,7 +221,6 @@ public class Regex2Prolog {
 
                         done = true;
                     }
-
                 }
             }
 
@@ -237,7 +235,6 @@ public class Regex2Prolog {
                     prologRegex.append(seq);
                     prologRegex.append(escaped);
                     seq = ",";
-
                 } else {
                     // not a meta-character
                     prologRegex.append(seq);
@@ -259,7 +256,6 @@ public class Regex2Prolog {
         }
 
         return prologRegex;
-
     }
 
 //  ********************************************************************************

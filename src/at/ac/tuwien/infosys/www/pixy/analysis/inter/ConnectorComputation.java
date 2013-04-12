@@ -72,7 +72,6 @@ public class ConnectorComputation {
             callNodes.addAll(calls);
 
             this.containedCalls.put(function, calls);
-
         }
 
         // initialize ECS for main function with empty call string
@@ -89,7 +88,6 @@ public class ConnectorComputation {
             CfgNodeCall callNode = (CfgNodeCall) iter.next();
             this.call2ConnectorFunction.put(callNode, new ConnectorFunction());
         }
-
     }
 
     public CallGraph getCallGraph() {
@@ -162,7 +160,6 @@ public class ConnectorComputation {
 
                     // expand worklist
                     this.workList.add(new ConnectorWorkListElement(q, gamma_2));
-
                 }
 
                 // expand connector function for this call
@@ -216,7 +213,6 @@ public class ConnectorComputation {
             for (CfgNodeCall callNode : callNodes) {
                 reverseTargets.add(new ReverseTarget(callNode, contextSet));
             }
-
         } else {
 
             // get the call node at the end of the call string (given by

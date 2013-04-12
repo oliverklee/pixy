@@ -212,7 +212,6 @@ public class LiteralAnalysis
                 "More actual than formal params for function " +
                     cfgNode.getFunctionNamePlace().toString() + " in file " +
                     cfgNode.getFileName() + ", line " + cfgNode.getOrigLineno());
-
         } else {
             tf = new LiteralTfCallPrep(actualParams, formalParams,
                 callingFunction, calledFunction, this, cfgNode);
@@ -294,11 +293,9 @@ public class LiteralAnalysis
                 Literal.TOP,
                 mustAliases,
                 mayAliases);
-
         } else {
             return new LiteralTfAssignRef(globalOp, realGlobal);
         }
-
     }
 
     protected TransferFunction isset(CfgNode cfgNodeX) {

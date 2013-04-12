@@ -68,7 +68,6 @@ public class FSAUtils {
         }
 
         return retMe;
-
     }
 
     public static FSAAutomaton str_replace(FSAAutomaton searchAuto,
@@ -103,7 +102,6 @@ public class FSAUtils {
         retMe = retMe.projectOut();
 
         return retMe;
-
     }
 
     public static FSAAutomaton addslashes(FSAAutomaton subjectAuto, CfgNode cfgNode) {

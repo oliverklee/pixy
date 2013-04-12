@@ -159,7 +159,6 @@ public final class Dumper {
         for (int i = 0; i < parseNode.getChildren().size(); i++) {
             dumpDot(parseNode.getChild(i), outWriter);
         }
-
     }
 
 // *********************************************************************************
@@ -228,7 +227,6 @@ public final class Dumper {
             outWriter.write("  labelloc=t;\n");
             dumpDot(cfg.getHead(), outWriter);
             outWriter.write("}\n");
-
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return;
@@ -274,7 +272,6 @@ public final class Dumper {
                     outWriter.write(" [label=\"" + outEdge.getName() + "\"]");
                 }
                 outWriter.write(";\n");
-
             }
         }
 
@@ -326,14 +323,12 @@ public final class Dumper {
                 label.append("\\n");
             }
             return label.toString();
-
         } else if (cfgNodeX instanceof CfgNodeAssignSimple) {
 
             CfgNodeAssignSimple cfgNode = (CfgNodeAssignSimple) cfgNodeX;
             String leftString = getPlaceString(cfgNode.getLeft());
             String rightString = getPlaceString(cfgNode.getRight());
             return (leftString + " = " + rightString);
-
         } else if (cfgNodeX instanceof CfgNodeAssignBinary) {
 
             CfgNodeAssignBinary cfgNode = (CfgNodeAssignBinary) cfgNodeX;
@@ -348,7 +343,6 @@ public final class Dumper {
                     leftOperandString +
                     " " + TacOperators.opToName(op) + " " +
                     rightOperandString);
-
         } else if (cfgNodeX instanceof CfgNodeAssignUnary) {
 
             CfgNodeAssignUnary cfgNode = (CfgNodeAssignUnary) cfgNodeX;
@@ -361,14 +355,12 @@ public final class Dumper {
                     " = " +
                     " " + TacOperators.opToName(op) + " " +
                     rightString);
-
         } else if (cfgNodeX instanceof CfgNodeAssignRef) {
 
             CfgNodeAssignRef cfgNode = (CfgNodeAssignRef) cfgNodeX;
             String leftString = getPlaceString(cfgNode.getLeft());
             String rightString = getPlaceString(cfgNode.getRight());
             return (leftString + " =& " + rightString);
-
         } else if (cfgNodeX instanceof CfgNodeIf) {
 
             CfgNodeIf cfgNode = (CfgNodeIf) cfgNodeX;
@@ -381,7 +373,6 @@ public final class Dumper {
                     leftOperandString +
                     " " + TacOperators.opToName(op) + " " +
                     rightOperandString);
-
         } else if (cfgNodeX instanceof CfgNodeEmpty) {
             return ";";
         } else if (cfgNodeX instanceof CfgNodeEntry) {
@@ -419,12 +410,10 @@ public final class Dumper {
                 "prepare " +
                     cfgNode.getFunctionNamePlace().toString() + "(" +
                     paramListStringBuf.toString() + ")");
-
         } else if (cfgNodeX instanceof CfgNodeCallRet) {
 
             CfgNodeCallRet cfgNode = (CfgNodeCallRet) cfgNodeX;
             return ("call-return (" + cfgNode.getTempVar() + ")");
-
         } else if (cfgNodeX instanceof CfgNodeCallBuiltin) {
 
             CfgNodeCallBuiltin cfgNode = (CfgNodeCallBuiltin) cfgNodeX;
@@ -447,7 +436,6 @@ public final class Dumper {
                 cfgNode.getFunctionName() + "(" +
                     paramListStringBuf.toString() + ") " + "<" +
                     getPlaceString(cfgNode.getTempVar()) + ">");
-
         } else if (cfgNodeX instanceof CfgNodeCallUnknown) {
 
             CfgNodeCallUnknown cfgNode = (CfgNodeCallUnknown) cfgNodeX;
@@ -470,31 +458,26 @@ public final class Dumper {
                 cfgNode.getFunctionName() + "(" +
                 paramListStringBuf.toString() + ") " + "<" +
                 getPlaceString(cfgNode.getTempVar()) + ">");
-
         } else if (cfgNodeX instanceof CfgNodeAssignArray) {
 
             CfgNodeAssignArray cfgNode = (CfgNodeAssignArray) cfgNodeX;
             String leftString = getPlaceString(cfgNode.getLeft());
             return (leftString + " = array()");
-
         } else if (cfgNodeX instanceof CfgNodeUnset) {
 
             CfgNodeUnset cfgNode = (CfgNodeUnset) cfgNodeX;
             String unsetMe = cfgNode.getOperand().getVariable().toString();
             return ("unset(" + unsetMe + ")");
-
         } else if (cfgNodeX instanceof CfgNodeEcho) {
 
             CfgNodeEcho cfgNode = (CfgNodeEcho) cfgNodeX;
             String echoMe = getPlaceString(cfgNode.getPlace());
             return ("echo(" + echoMe + ")");
-
         } else if (cfgNodeX instanceof CfgNodeGlobal) {
 
             CfgNodeGlobal cfgNode = (CfgNodeGlobal) cfgNodeX;
             String globMe = cfgNode.getOperand().toString();
             return ("global " + globMe);
-
         } else if (cfgNodeX instanceof CfgNodeStatic) {
 
             CfgNodeStatic cfgNode = (CfgNodeStatic) cfgNodeX;
@@ -506,28 +489,24 @@ public final class Dumper {
                 initial = "";
             }
             return ("static " + statMe + initial);
-
         } else if (cfgNodeX instanceof CfgNodeIsset) {
 
             CfgNodeIsset cfgNode = (CfgNodeIsset) cfgNodeX;
             String checkMe = cfgNode.getRight().getVariable().toString();
             String leftString = cfgNode.getLeft().getVariable().toString();
             return (leftString + " = " + "isset(" + checkMe + ")");
-
         } else if (cfgNodeX instanceof CfgNodeEmptyTest) {
 
             CfgNodeEmptyTest cfgNode = (CfgNodeEmptyTest) cfgNodeX;
             String checkMe = cfgNode.getRight().getVariable().toString();
             String leftString = cfgNode.getLeft().getVariable().toString();
             return (leftString + " = " + "empty(" + checkMe + ")");
-
         } else if (cfgNodeX instanceof CfgNodeEval) {
 
             CfgNodeEval cfgNode = (CfgNodeEval) cfgNodeX;
             String evalMe = cfgNode.getRight().getVariable().toString();
             String leftString = cfgNode.getLeft().getVariable().toString();
             return (leftString + " = " + "eval(" + evalMe + ")");
-
         } else if (cfgNodeX instanceof CfgNodeDefine) {
 
             CfgNodeDefine cfgNode = (CfgNodeDefine) cfgNodeX;
@@ -535,20 +514,16 @@ public final class Dumper {
                 cfgNode.getSetMe() + ", " +
                 cfgNode.getSetTo() + ", " +
                 cfgNode.getCaseInsensitive() + ")");
-
         } else if (cfgNodeX instanceof CfgNodeInclude) {
 
             CfgNodeInclude cfgNode = (CfgNodeInclude) cfgNodeX;
             String leftString = getPlaceString(cfgNode.getTemp());
             String rightString = getPlaceString(cfgNode.getIncludeMe());
             return (leftString + " = include " + rightString);
-
         } else if (cfgNodeX instanceof CfgNodeIncludeStart) {
             return ("incStart");
-
         } else if (cfgNodeX instanceof CfgNodeIncludeEnd) {
             return ("incEnd");
-
         } else {
             return "to-do: " + cfgNodeX.getClass();
         }
@@ -785,12 +760,10 @@ public final class Dumper {
             }
 
             writer.close();
-
         } catch (IOException e) {
             System.out.println(e.getMessage());
             return;
         }
-
     }
 
 // dump(AnalysisNode) **************************************************************
@@ -820,7 +793,6 @@ public final class Dumper {
         } catch (IOException e) {
             throw new RuntimeException("SNH:" + e.getStackTrace());
         }
-
     }
 
 //  dump(LatticeElement) ************************************************************
@@ -833,7 +805,6 @@ public final class Dumper {
             AliasLatticeElement element = (AliasLatticeElement) elementX;
             dump(element.getMustAliases(), writer);
             dump(element.getMayAliases(), writer);
-
         } else if (elementX instanceof LiteralLatticeElement) {
 
             LiteralLatticeElement element = (LiteralLatticeElement) elementX;
@@ -846,11 +817,9 @@ public final class Dumper {
                 Literal lit = (Literal) entry.getValue();
                 writer.write(place + ":      " + lit + linesep);
             }
-
         } else if (elementX instanceof DepLatticeElement) {
 
             dumpComplete((DepLatticeElement) elementX, writer);
-
         } else if (elementX instanceof IncDomLatticeElement) {
 
             IncDomLatticeElement element = (IncDomLatticeElement) elementX;
@@ -863,15 +832,12 @@ public final class Dumper {
                     System.out.println(dominator.toString() + ", " + dominator.getOrigLineno());
                 }
             }
-
         } else if (elementX instanceof LatticeElementBottom) {
 
             writer.write(linesep + "Bottom Element" + linesep + linesep);
-
         } else if (elementX == null) {
 
             writer.write(linesep + "<<null>>" + linesep + linesep);
-
         } else {
             throw new RuntimeException("SNH: " + elementX.getClass());
         }

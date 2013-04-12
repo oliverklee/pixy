@@ -232,7 +232,6 @@ public class DepGraph {
         }
 
         return depGraph;
-
     }
 
 //  *********************************************************************************
@@ -397,7 +396,6 @@ public class DepGraph {
             DepLatticeElement propagated = this.depAnalysis.applyInsideBasicBlock(
                 (CfgNodeBasicBlock) enclosingX, cfgNode, latticeElement);
             depSet = propagated.getDep(place);
-
         } else if (enclosingX instanceof CfgNodeEntry) {
             // the current node is inside a function's default cfg
             // (i.e., we want to retrieve the value of a default parameter)
@@ -413,7 +411,6 @@ public class DepGraph {
                 }
 
                 depSet = this.newFold(phi, place, contexts);
-
             } else {
 
                 // this happens if the default parameter is assigned
@@ -434,7 +431,6 @@ public class DepGraph {
                     defaultHead, cfgNode, latticeElement);
                 depSet = propagated.getDep(place);
             }
-
         } else {
             // none of the above applies, so the current node has
             // directly associated analysis info
@@ -549,7 +545,6 @@ public class DepGraph {
         retMe.targetFunction = targetFunction;
         retMe.targetContexts = targetContexts;
         return retMe;
-
     }
 
 //  *********************************************************************************
@@ -577,13 +572,11 @@ public class DepGraph {
                 // the depgraph with nodes for these calls
                 return null;
             }
-
         } else if (targetNode instanceof CfgNodeCallBuiltin) {
             // a builtin function
             CfgNodeCallBuiltin cfgNode = (CfgNodeCallBuiltin) targetNode;
             String functionName = cfgNode.getFunctionName();
             return new DepGraphOpNode(targetNode, functionName, true);
-
         } else if (targetNode instanceof CfgNodeCallUnknown) {
             // a function / method for which no definition could be found
             CfgNodeCallUnknown callNode = (CfgNodeCallUnknown) targetNode;
@@ -593,7 +586,6 @@ public class DepGraph {
         }
 
         return null;
-
     }
 
 //  *********************************************************************************
@@ -650,16 +642,13 @@ public class DepGraph {
         // by client analyses
         if (cfgNodeX instanceof CfgNodeAssignArray) {
             retMe.add(new Literal(""));
-
         } else if (cfgNodeX instanceof CfgNodeAssignBinary) {
             CfgNodeAssignBinary cfgNode = (CfgNodeAssignBinary) cfgNodeX;
             retMe.add(cfgNode.getLeftOperand());
             retMe.add(cfgNode.getRightOperand());
-
         } else if (cfgNodeX instanceof CfgNodeAssignRef) {
             CfgNodeAssignRef cfgNode = (CfgNodeAssignRef) cfgNodeX;
             retMe.add(cfgNode.getRight());
-
         } else if (cfgNodeX instanceof CfgNodeAssignSimple) {
 
             CfgNodeAssignSimple cfgNode = (CfgNodeAssignSimple) cfgNodeX;
@@ -706,7 +695,6 @@ public class DepGraph {
             } else {
                 retMe.add(right);
             }
-
         } else if (cfgNodeX instanceof CfgNodeAssignUnary) {
             CfgNodeAssignUnary cfgNode = (CfgNodeAssignUnary) cfgNodeX;
             retMe.add(cfgNode.getRight());
@@ -779,15 +767,12 @@ public class DepGraph {
                 System.out.println("victim: " + victim);
                 throw new RuntimeException("SNH");
             }
-
         } else if (cfgNodeX instanceof CfgNodeCallRet) {
 
             // either a call to a user-defined function
             return this.getUsedPlacesForCall((CfgNodeCallRet) cfgNodeX, victim, oldIndices, newIndices);
-
         } else if (cfgNodeX instanceof CfgNodeCallBuiltin) {
             return this.getUsedPlacesForBuiltin((CfgNodeCallBuiltin) cfgNodeX);
-
         } else if (cfgNodeX instanceof CfgNodeCallUnknown) {
             // call to an unknown function;
             // simply add all parameters;
@@ -924,7 +909,6 @@ public class DepGraph {
         }
 
         return retMe;
-
     }
 
 //  ********************************************************************************
@@ -1070,7 +1054,6 @@ public class DepGraph {
             }
         }
         return false;
-
     }
 
 //  ********************************************************************************
@@ -1279,7 +1262,6 @@ public class DepGraph {
             String name = tgn.dotNameVerbose(isModelled);
             outWriter.write("  n" + idCounter + " [" + shapeString + ", label=\"" +
                 name + "\"" + styleString + "];\n");
-
         }
 
         // print edges
@@ -1340,7 +1322,6 @@ public class DepGraph {
             String name = tgn.dotName();
             outWriter.write("  n" + idCounter + " [" + shapeString + ", label=\"" +
                 name + "\"" + styleString + "];\n");
-
         }
 
         // print edges
@@ -1409,7 +1390,6 @@ public class DepGraph {
             }
             outWriter.write("  n" + idCounter + " [" + shapeString + ", label=\"" +
                 name + "\"" + styleString + "];\n");
-
         }
 
         // print edges
@@ -1504,7 +1484,6 @@ public class DepGraph {
             // done!
 
         }
-
     }
 
 //  ********************************************************************************
@@ -1881,7 +1860,6 @@ public class DepGraph {
         this.reduceToInnerNodes(ineffectiveBorder);
 
         return ineffectiveBorder.size();
-
     }
 
     private void getCustomSanitBorder(DepGraphNode node,
@@ -1903,7 +1881,6 @@ public class DepGraph {
         for (DepGraphNode succ : this.getSuccessors(node)) {
             getCustomSanitBorder(succ, visited, border);
         }
-
     }
 
 //  ********************************************************************************
@@ -1961,7 +1938,6 @@ public class DepGraph {
 
         // recurse downwards
         reduceToSanitInnerDown(node, reachable);
-
     }
 
 //  ********************************************************************************
@@ -1982,7 +1958,6 @@ public class DepGraph {
         for (DepGraphNode pre : this.getPredecessors(node)) {
             reduceToInnerHelperUp(pre, reachable);
         }
-
     }
 
 //  ********************************************************************************
@@ -2047,7 +2022,6 @@ public class DepGraph {
             // no successors
             node2p.put(node, 1);
         }
-
     }
 
 //  ********************************************************************************

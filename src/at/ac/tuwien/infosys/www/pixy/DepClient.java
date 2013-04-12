@@ -143,29 +143,24 @@ public abstract class DepClient {
                 // return variables
                 if (var.isReturnVariable()) {
                     return DepClient.InitialTaint.NEVER;
-
                 } else if (MyOptions.isHarmlessServerVar(varName) ||
                     varName.equals("$_SERVER")) {
                     // harmless member of the SERVER array,
                     // or the SERVER array itself
                     return DepClient.InitialTaint.NEVER;
-
                 } else if (varName.startsWith("$_SESSION[")) {
                     // the whole session array
                     return DepClient.InitialTaint.NEVER;
-
                 } else if (varName.equals("$_ENV") ||
                     varName.equals("$_HTTP_ENV_VARS") ||
                     varName.startsWith("$_ENV[") ||
                     varName.startsWith("$HTTP_ENV_VARS[")) {
                     // the whole env array
                     return DepClient.InitialTaint.NEVER;
-
                 } else if (!this.getIsTainted && varName.startsWith("$_GET[")) {
                     // the whole GET array, if it shall be considered
                     // as not tainted
                     return DepClient.InitialTaint.NEVER;
-
                 } else {
                     // non-harmless superglobal
                     return DepClient.InitialTaint.ALWAYS;
@@ -178,21 +173,17 @@ public abstract class DepClient {
                     if (varName.equals(InternalStrings.memberName)) {
                         return DepClient.InitialTaint.NEVER;
                     }
-
                 } else if (varName.equals("$PHPSESSID")) {
                     // the special php session id variable is harmless
                     return DepClient.InitialTaint.NEVER;
-
                 } else if (MyOptions.harmlessServerIndices.contains(varName.substring(1))) {
                     // something like $SERVER_NAME etc.
                     // (i.e. harmless indices of the SERVER array that have been
                     // exported into main's scope due to register_globals
                     return DepClient.InitialTaint.NEVER;
-
                 } else if (!var.getSymbolTable().isMain()) {
                     // local function variables are untainted
                     return DepClient.InitialTaint.NEVER;
-
                 } else {
                     // a global variable
                     if (!MyOptions.optionG) {
@@ -204,7 +195,6 @@ public abstract class DepClient {
                     }
                 }
             }
-
         } else if (place instanceof Constant) {
             // uninitialized constants are untainted
             return DepClient.InitialTaint.NEVER;
@@ -212,7 +202,6 @@ public abstract class DepClient {
 
         // did we miss something? everything else is tainted
         return DepClient.InitialTaint.ALWAYS;
-
     }
 
 //  ********************************************************************************
@@ -251,7 +240,6 @@ public abstract class DepClient {
                 relevant.addEdge(node, succ);
                 getRelevantHelper(succ, relevant, orig);
             }
-
         } else if (node instanceof DepGraphOpNode) {
 
             DepGraphOpNode opNode = (DepGraphOpNode) node;
@@ -330,7 +318,6 @@ public abstract class DepClient {
                 relevant.addEdge(opNode, uninitNode);
                 // end of recursion
             }
-
         } else if (node instanceof DepGraphUninitNode) {
             // end of recursion: this is always a leaf node
         } else {

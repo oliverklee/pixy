@@ -49,19 +49,16 @@ public class LiteralTfCallBuiltin
 
             // don't simulate
             out.handleReturnValueBuiltin(this.cfgNode.getTempVar());
-
         } else {
 
             if (functionName.equals("realpath")) {
 
                 Literal resultLit = this.simulate(in, functionName);
                 out.handleReturnValue(this.cfgNode.getTempVar(), resultLit);
-
             } else if (functionName.equals("dirname")) {
 
                 Literal resultLit = this.simulate(in, functionName);
                 out.handleReturnValue(this.cfgNode.getTempVar(), resultLit);
-
             } else {
                 // this function is not explicitly modelled
                 out.handleReturnValueBuiltin(this.cfgNode.getTempVar());
@@ -69,7 +66,6 @@ public class LiteralTfCallBuiltin
         }
 
         return out;
-
     }
 
     private Literal simulate(LiteralLatticeElement in, String functionName) {
@@ -127,7 +123,6 @@ public class LiteralTfCallBuiltin
             p.waitFor();
 
             resultLit = this.parseOutput(instream);
-
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage());
         } catch (InterruptedException e) {
@@ -135,7 +130,6 @@ public class LiteralTfCallBuiltin
         }
 
         return resultLit;
-
     }
 
     // parses the output returned by the php invocation into a literal

@@ -63,7 +63,6 @@ public class EncapsList {
                     // start new
                     lastLiteral = lit;
                 }
-
             } else if (obj instanceof TacPlace) {
 
                 if (lastLiteral != null) {
@@ -101,7 +100,6 @@ public class EncapsList {
                 TacConverter.connect(contd, nextCfg);
                 TacConverter.connect(nextCfg, cfgNode);
                 contd = cfgNode;
-
             } else {
                 throw new RuntimeException("SNH");
             }

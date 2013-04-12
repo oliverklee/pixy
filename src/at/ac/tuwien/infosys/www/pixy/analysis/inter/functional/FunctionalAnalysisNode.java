@@ -63,6 +63,5 @@ public class FunctionalAnalysisNode
             }
             contextSet.add(context);
         }
-
     }
 }

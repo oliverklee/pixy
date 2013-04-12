@@ -121,7 +121,6 @@ public class LiteralTestCase
         Assert.assertTrue(elements[hid].getLiteral(varX4).equals(new Literal("5")));
         Assert.assertTrue(elements[hid].getLiteral(varX5).equals(new Literal("5")));
         Assert.assertTrue(elements[hid].getLiteral(varX6).equals(Literal.TOP));
-
     }
 
     public void test03() {
@@ -197,7 +196,6 @@ public class LiteralTestCase
         Assert.assertTrue(elements[hid].getLiteral(varZ4_2_1).equals(new Literal("a")));
         Assert.assertTrue(elements[hid].getLiteral(varZ4_2_3).equals(Literal.TOP));
         Assert.assertTrue(elements[hid].getLiteral(varZ4_2_2_1).equals(new Literal("b")));
-
     }
 
     public void test04() {
@@ -230,7 +228,6 @@ public class LiteralTestCase
         // 1
         hid = 1;
         Assert.assertTrue(elements[hid].getLiteral(varX1).equals(Literal.TOP));
-
     }
 
     public void test05() {
@@ -310,7 +307,6 @@ public class LiteralTestCase
         expected.add(varZ3_1_2_3_4);
         expected.add(varZ3_1_9_3_9);
         Assert.assertTrue(miSet.equals(expected));
-
     }
 
     public void test06() {
@@ -331,7 +327,6 @@ public class LiteralTestCase
         hid = 0;
         Assert.assertTrue(elements[hid].getLiteral(varX1).equals(new Literal("1")));
         Assert.assertTrue(elements[hid].getLiteral(varX2).equals(new Literal("-1.0")));
-
     }
 
     public void test07() {
@@ -354,7 +349,6 @@ public class LiteralTestCase
         Assert.assertTrue(elements[hid].getLiteral(varX1).equals(new Literal("1")));
         Assert.assertTrue(elements[hid].getLiteral(varX2).equals(new Literal("2")));
         Assert.assertTrue(elements[hid].getLiteral(varX3).equals(new Literal("3.0")));
-
     }
 
     public void test08() {
@@ -383,7 +377,6 @@ public class LiteralTestCase
         Assert.assertTrue(elements[hid].getLiteral(varX1).equals(new Literal("1")));
         Assert.assertTrue(elements[hid].getLiteral(varX2).equals(new Literal("3")));
         Assert.assertTrue(elements[hid].getLiteral(varX3).equals(new Literal("3")));
-
     }
 
     public void test09() {
@@ -404,7 +397,6 @@ public class LiteralTestCase
         hid = 0;
         Assert.assertTrue(elements[hid].getLiteral(varX1).equals(new Literal("1")));
         Assert.assertTrue(elements[hid].getLiteral(varX2).equals(Literal.NULL));
-
     }
 
     public void test10() {
@@ -429,7 +421,6 @@ public class LiteralTestCase
         Assert.assertTrue(elements[hid].getLiteral(varX1_1).equals(Literal.TOP));
         Assert.assertTrue(elements[hid].getLiteral(varX1_2).equals(Literal.TOP));
         Assert.assertTrue(elements[hid].getLiteral(varX1_2_1).equals(Literal.TOP));
-
     }
 
     // disabled: path pruning (dangerous)
@@ -453,7 +444,6 @@ public class LiteralTestCase
         Assert.assertTrue(elements[hid].getLiteral(varX1).equals(new Literal("1")));
         Assert.assertTrue(elements[hid].getLiteral(varX2).equals(new Literal("2")));
         Assert.assertTrue(elements[hid].getLiteral(varX3).equals(new Literal("3")));
-
     }
 
     public void test12() {
@@ -474,7 +464,6 @@ public class LiteralTestCase
         hid = 0;
         Assert.assertTrue(elements[hid].getLiteral(varX1).equals(new Literal("1")));
         Assert.assertTrue(elements[hid].getLiteral(varX2).equals(Literal.TOP));
-
     }
 
     public void test13() {
@@ -495,7 +484,6 @@ public class LiteralTestCase
         hid = 0;
         Assert.assertTrue(elements[hid].getLiteral(varX1).equals(new Literal("2")));
         Assert.assertTrue(elements[hid].getLiteral(varA1).equals(new Literal("2")));
-
     }
 
     public void test14() {
@@ -518,7 +506,6 @@ public class LiteralTestCase
         Assert.assertTrue(elements[hid].getLiteral(varX1).equals(new Literal("3")));
         Assert.assertTrue(elements[hid].getLiteral(varX2).equals(new Literal("3")));
         Assert.assertTrue(elements[hid].getLiteral(varA1).equals(new Literal("1")));
-
     }
 
     public void test14a() {
@@ -541,7 +528,6 @@ public class LiteralTestCase
         Assert.assertTrue(elements[hid].getLiteral(varX1).equals(new Literal("8")));
         Assert.assertTrue(elements[hid].getLiteral(varX2).equals(new Literal("8")));
         Assert.assertTrue(elements[hid].getLiteral(varA1).equals(new Literal("7")));
-
     }
 
     public void test15() {
@@ -560,7 +546,6 @@ public class LiteralTestCase
         // 0
         hid = 0;
         Assert.assertTrue(elements[hid].getLiteral(varA1).equals(new Literal("2")));
-
     }
 
     public void test16() {
@@ -579,7 +564,6 @@ public class LiteralTestCase
         // 0
         hid = 0;
         Assert.assertTrue(elements[hid].getLiteral(varA1).equals(new Literal("1")));
-
     }
 
     public void test16a() {
@@ -600,7 +584,6 @@ public class LiteralTestCase
         hid = 0;
         Assert.assertTrue(elements[hid].getLiteral(varA1).equals(new Literal("7")));
         Assert.assertTrue(elements[hid].getLiteral(varA2).equals(new Literal("7")));
-
     }
 
     public void test17() {
@@ -628,7 +611,6 @@ public class LiteralTestCase
         Assert.assertTrue(elements[hid].getLiteral(varX1).equals(new Literal("2")));
         Assert.assertTrue(elements[hid].getLiteral(varAP1).equals(new Literal("4")));
         Assert.assertTrue(elements[hid].getLiteral(varA2).equals(new Literal("4")));
-
     }
 
     public void test18() {
@@ -952,7 +934,6 @@ public class LiteralTestCase
         hid = 2;
         Assert.assertTrue(elements[hid].getLiteral(varX1).equals(new Literal("3")));
         Assert.assertTrue(elements[hid].getLiteral(varAX1).equals(new Literal("3")));
-
     }
 
     public void test29() {
@@ -1120,7 +1101,6 @@ public class LiteralTestCase
         Assert.assertTrue(elements[hid].getLiteral(varBP2).equals(new Literal("8")));
         Assert.assertTrue(elements[hid].getLiteral(varBP3).equals(new Literal("3")));
         Assert.assertTrue(elements[hid].getLiteral(varBP4).equals(new Literal("4")));
-
     }
 
     public void test37() {
@@ -1161,7 +1141,6 @@ public class LiteralTestCase
         hid = 4;
         Assert.assertTrue(elements[hid].getLiteral(varGET_Y).equals(new Literal("3")));
         Assert.assertTrue(elements[hid].getLiteral(varGET_Z).equals(new Literal("5")));
-
     }
 
     public void test38() {
@@ -1215,7 +1194,6 @@ public class LiteralTestCase
         hid = 5;
         Assert.assertTrue(elements[hid].getLiteral(varC6).equals(new Literal("c6")));
         Assert.assertTrue(elements[hid].getLiteral(varc6).equals(new Literal("c6")));
-
     }
 
     public void test39() {
@@ -1243,7 +1221,6 @@ public class LiteralTestCase
         hid = 1;
         Assert.assertTrue(elements[hid].getLiteral(varA1).equals(new Literal("1")));
         Assert.assertTrue(elements[hid].getLiteral(varA2).equals(new Literal("2")));
-
     }
 
     // disabled: path pruning (dangerous)
@@ -1263,7 +1240,6 @@ public class LiteralTestCase
         // 0
         hid = 0;
         Assert.assertTrue(elements[hid] == null);   // unreachable
-
     }
 
     // with disabled path pruning: just terminate!
@@ -1283,7 +1259,6 @@ public class LiteralTestCase
         // 0
         hid = 0;
         Assert.assertTrue(elements[hid].getLiteral(varX1).equals(Literal.TOP));
-
     }
 
     public void test41() {
@@ -1312,7 +1287,6 @@ public class LiteralTestCase
         hid = 2;
         Assert.assertTrue(elements[hid].getLiteral(varX1).equals(Literal.TOP));
         Assert.assertTrue(elements[hid].getLiteral(varX2).equals(new Literal("1")));
-
     }
 
     public void test42() {
@@ -1331,7 +1305,6 @@ public class LiteralTestCase
         // 0
         hid = 0;
         Assert.assertTrue(elements[hid] != null);
-
     }
 
     public void test43() {
@@ -1350,7 +1323,6 @@ public class LiteralTestCase
         // 0
         hid = 0;
         Assert.assertTrue(elements[hid].getLiteral(varX1_1).equals(new Literal("1")));
-
     }
 
     public void test44() {
@@ -1369,7 +1341,6 @@ public class LiteralTestCase
         // 0
         hid = 0;
         Assert.assertTrue(elements[hid].getLiteral(varX1).equals(Literal.TOP));
-
     }
 
     public void test45() {
@@ -1388,7 +1359,6 @@ public class LiteralTestCase
         // 0
         hid = 0;
         Assert.assertTrue(elements[hid].getLiteral(varY).equals(Literal.TOP));
-
     }
 
     public void test46() {

@@ -66,7 +66,6 @@ public class TypeTfCallPrep
 
                 // set the formal
                 out.assign(formalParam.getVariable(), actualParam.getPlace());
-
             } else {
 
                 // there is no corresponding actual parameter, use default values
@@ -91,7 +90,6 @@ public class TypeTfCallPrep
                             out = (TypeLatticeElement) tf.transfer(out);
                             defaultNode = defaultNode.getSuccessor(0);
                         }
-
                     } else {
                         // missing actual parameter;
                         // we have already generated a warning for this during conversion;

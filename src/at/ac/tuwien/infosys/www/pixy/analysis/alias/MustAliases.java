@@ -259,7 +259,6 @@ public class MustAliases {
     public int structureHashCode() {
         return this.groups.hashCode();
     }
-
 }
 
 /* Example PHP Program

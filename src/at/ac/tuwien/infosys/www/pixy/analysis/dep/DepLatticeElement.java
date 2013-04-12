@@ -217,7 +217,6 @@ public class DepLatticeElement
                 this.placeToDep.put(harmlessSuperGlobal, DepSet.UNINIT);
             }
         }
-
     }
 
 //  ********************************************************************************
@@ -839,7 +838,6 @@ public class DepLatticeElement
                 iter.remove();
             }
         }
-
     }
 
 //  resetTemporaries ***************************************************************
@@ -889,7 +887,6 @@ public class DepLatticeElement
                 iter.remove();
             }
         }
-
     }
 
 //  setFormal **********************************************************************
@@ -1036,7 +1033,6 @@ public class DepLatticeElement
                 }
             }
         }
-
     }
 
 //  copyMainTemporaries ****************************************************************

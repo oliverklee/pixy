@@ -98,7 +98,6 @@ public class FileAnalysis
         System.out.println();
 
         return retMe;
-
     }
 
     public VulnInfo detectAlternative() {
@@ -147,7 +146,6 @@ public class FileAnalysis
             System.out.println("Suffix END");
             System.out.println();
         }
-
     }
 
 //  ********************************************************************************
@@ -215,14 +213,11 @@ public class FileAnalysis
                     }
                 }
             }
-
         } else if (node instanceof DepGraphOpNode) {
             auto = this.makeAutoForOp((DepGraphOpNode) node, deco, depGraph);
-
         } else if (node instanceof DepGraphSccNode) {
             // conservative decision for SCCs
             auto = Automaton.makeAnyString(Transition.Taint.Directly);
-
         } else if (node instanceof DepGraphUninitNode) {
 
             // retrieve predecessor
@@ -246,7 +241,6 @@ public class FileAnalysis
                     default:
                         throw new RuntimeException("SNH");
                 }
-
             } else if (pre instanceof DepGraphOpNode) {
                 throw new RuntimeException("not yet");
             } else if (pre instanceof DepGraphSccNode) {
@@ -255,7 +249,6 @@ public class FileAnalysis
             } else {
                 throw new RuntimeException("SNH");
             }
-
         } else {
             throw new RuntimeException("SNH");
         }
@@ -265,7 +258,6 @@ public class FileAnalysis
         }
 
         deco.put(node, auto);
-
     }
 
 //  ********************************************************************************
@@ -293,7 +285,6 @@ public class FileAnalysis
                     retMe = retMe.concatenate(succAuto);
                 }
             }
-
         } else {
             // conservative decision for operations that have not been
             // modeled yet: .*

@@ -159,7 +159,6 @@ public abstract class SanitAnalysis
                         dynpathcount += paths;
                         // System.out.println("- paths: " + paths);
                     }
-
                 } else {
                     // this means that this graph contains custom sanitization routines,
                     // but they are not responsible for the vulnerability
@@ -168,7 +167,6 @@ public abstract class SanitAnalysis
                     System.out.println("- Graphs: " + name + "sanit" + graphcount);
                     sure_vuln_2++;
                 }
-
             } else {
                 // eliminated false positive!
                 eliminated++;
@@ -205,7 +203,6 @@ public abstract class SanitAnalysis
         System.out.println();
 
         return new LinkedList<Integer>();
-
     }
 
 //  ********************************************************************************
@@ -294,10 +291,8 @@ public abstract class SanitAnalysis
                     }
                 }
             }
-
         } else if (node instanceof DepGraphOpNode) {
             auto = this.makeAutoForOp((DepGraphOpNode) node, deco, depGraph, trimAllowed);
-
         } else if (node instanceof DepGraphSccNode) {
 
             // for SCC nodes, we generate a coarse string approximation (.* automaton);
@@ -338,11 +333,9 @@ public abstract class SanitAnalysis
                         break;
                     }
                 }
-
             } else {
                 auto = FSAAutomaton.makeAnyString();
             }
-
         } else if (node instanceof DepGraphUninitNode) {
 
             // retrieve predecessor
@@ -369,7 +362,6 @@ public abstract class SanitAnalysis
                     default:
                         throw new RuntimeException("SNH");
                 }
-
             } else if (pre instanceof DepGraphSccNode) {
                 // this case can really happen (e.g.: dcpportal: advertiser.php, forums.php);
 
@@ -398,7 +390,6 @@ public abstract class SanitAnalysis
                             default:
                                 throw new RuntimeException("SNH");
                         }
-
                     } else {
                         auto = FSAAutomaton.makeAnyString();
                     }
@@ -406,11 +397,9 @@ public abstract class SanitAnalysis
                     // conservative decision for this SCC
                     auto = FSAAutomaton.makeAnyString();
                 }
-
             } else {
                 throw new RuntimeException("SNH: " + pre.getClass());
             }
-
         } else {
             throw new RuntimeException("SNH");
         }
@@ -420,7 +409,6 @@ public abstract class SanitAnalysis
         }
 
         deco.put(node, auto);
-
     }
 
 //  ********************************************************************************
@@ -460,7 +448,6 @@ public abstract class SanitAnalysis
             } else {
                 throw new RuntimeException("SNH");
             }
-
         } else if (opName.equals(".")) {
 
             // CONCAT
@@ -492,7 +479,6 @@ public abstract class SanitAnalysis
             FSAAutomaton transduced = FSAUtils.reg_replace(searchAuto, replaceAuto,
                 subjectAuto, true, node.getCfgNode());
             return transduced;
-
         } else if (opName.equals("ereg_replace")) {
 
             if (successors.size() < 3) {
@@ -510,7 +496,6 @@ public abstract class SanitAnalysis
             FSAAutomaton transduced = FSAUtils.reg_replace(searchAuto, replaceAuto,
                 subjectAuto, false, node.getCfgNode());
             return transduced;
-
         } else if (opName.equals("str_replace")) {
 
             if (successors.size() < 3) {
@@ -528,7 +513,6 @@ public abstract class SanitAnalysis
             FSAAutomaton transduced = FSAUtils.str_replace(
                 searchAuto, replaceAuto, subjectAuto, node.getCfgNode());
             return transduced;
-
         } else if (opName.equals("addslashes")) {
 
             if (successors.size() != 1) {
@@ -572,7 +556,6 @@ public abstract class SanitAnalysis
         } else if (isMulti(opName, multiList)) {
 
             retMe = this.multiDependencyAutoSanit(successors, deco, multiList, false);
-
         } else if (isInverseMulti(opName, multiList)) {
 
             retMe = this.multiDependencyAutoSanit(successors, deco, multiList, true);
@@ -671,11 +654,9 @@ public abstract class SanitAnalysis
 
                         // found it!
                         return true;
-
                     } else {
                         return false;
                     }
-
                 } else {
                     return false;
                 }
@@ -707,7 +688,6 @@ public abstract class SanitAnalysis
         } else {
             return false;
         }
-
     }
 
 //  ********************************************************************************

@@ -60,7 +60,6 @@ public class MyTransductions {
         Automaton result = Automaton.fromFsmTools(tempDir + "result.txt");
 
         return result;
-
     }
 
     private void write(String filename, String contents) {
@@ -115,7 +114,6 @@ public class MyTransductions {
             addPrefixedRemainingTransitions(t, alphabet, pushback, current, start);
 
             current = next;
-
         }
 
         // the last acceptor state
@@ -170,7 +168,6 @@ public class MyTransductions {
 
             i++;
         }
-
     }
 
     public static void addPrefixedRemainingTransitions(

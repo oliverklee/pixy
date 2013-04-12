@@ -59,7 +59,6 @@ public class TypeAnalysis
         this.classNames = tac.getUserClasses().keySet();
         this.initGeneral(tac.getAllFunctions(), tac.getMainFunction(),
             analysisType, workList);
-
     }
 
 //  ********************************************************************************
@@ -100,7 +99,6 @@ public class TypeAnalysis
 
         // initialize initial value
         this.initialValue = this.lattice.getBottom();
-
     }
 
     public LatticeElement recycle(LatticeElement recycleMe) {
@@ -194,14 +192,12 @@ public class TypeAnalysis
             throw new RuntimeException(
                 "More actual than formal params for function " +
                     cfgNode.getFunctionNamePlace().toString() + " on line " + cfgNode.getOrigLineno());
-
         } else {
             tf = new TypeTfCallPrep(actualParams, formalParams,
                 callingFunction, calledFunction, this);
         }
 
         return tf;
-
     }
 
     protected TransferFunction callRet(CfgNode cfgNodeX, TacFunction traversedFunction) {
@@ -219,7 +215,6 @@ public class TypeAnalysis
         if (calledFunction == null) {
 
             tf = new TypeTfCallRetUnknown(cfgNodeRet);
-
         } else {
 
             tf = new TypeTfCallRet(
@@ -227,7 +222,6 @@ public class TypeAnalysis
                 callingFunction,
                 calledFunction,
                 cfgNodeCall);
-
         }
 
         return tf;

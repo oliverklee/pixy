@@ -78,7 +78,6 @@ public class DepTfTester
 
             out.setRetVar(this.retVar, useMe, useMe);
             return out;
-
         } else if (whatToTest == CfgNodeTester.TEST_ARRAYLABEL) {
             throw new RuntimeException("not yet");
         } else {

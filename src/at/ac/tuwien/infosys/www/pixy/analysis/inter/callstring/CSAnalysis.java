@@ -51,7 +51,6 @@ public class CSAnalysis
 
         CSContext context = (CSContext) contextX;
         return this.connectorComp.getReverseTargets(exitedFunction, context.getPosition());
-
     }
 
 //  *********************************************************************************

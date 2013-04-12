@@ -60,7 +60,6 @@ public class GenericTaintAnalysis {
                 DepClient depClient = (DepClient) constructor.newInstance(args);
                 gta.addDepClient(depClient);
             }
-
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

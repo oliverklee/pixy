@@ -76,7 +76,6 @@ public class Utils {
         }
 
         return retme.toString();
-
     }
 
     // - input: the name of some file
@@ -116,7 +115,6 @@ public class Utils {
             for (File d : dirList) {
                 fileListHelper(d, retMe);
             }
-
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -197,7 +195,6 @@ public class Utils {
                 new RuntimeException().printStackTrace();
             }
             outWriter.close();
-
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException();
@@ -207,7 +204,6 @@ public class Utils {
         }
 
         return retMe.toString();
-
     }
 
     // saves typing during debugging
@@ -230,7 +226,6 @@ public class Utils {
             p.waitFor();
 
             p.waitFor();
-
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException();
@@ -238,7 +233,6 @@ public class Utils {
             e.printStackTrace();
             throw new RuntimeException();
         }
-
     }
 
     public static void copyFile(String src, String dst) {

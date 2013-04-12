@@ -198,7 +198,6 @@ public class TypeLatticeElement
 
         this.setType(tempVar, types);
         this.var2Type.remove(retVar);
-
     }
 
     // copies the mappings for local variables from origElement

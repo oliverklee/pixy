@@ -89,7 +89,6 @@ public class DepTfDefine
                 System.out.println("- name:    " + constantLit.toString());
                 System.out.println("- defined: " + this.cfgNode.getLoc());
             }
-
         } else if (this.caseInsensitive == Constant.FALSE) {
             // define sensitive constant
 
@@ -102,7 +101,6 @@ public class DepTfDefine
             } else {
                 out.defineConstant(constant, this.cfgNode);
             }
-
         } else {
 
             // we don't know the exact value of this flag;

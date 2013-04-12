@@ -31,7 +31,6 @@ public class FunctionModels {
         this.allModels.addAll(f_invMulti.keySet());
         this.allModels.addAll(f_strongSanit);
         this.allModels.addAll(f_weakSanit.keySet());
-
     }
 
     public Set<String> getF_evil() {

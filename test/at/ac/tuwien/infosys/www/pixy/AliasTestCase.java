@@ -123,7 +123,6 @@ public class AliasTestCase
 
         // the phi map should be empty now
         Assert.assertTrue(hotspotPhi.isEmpty());
-
     }
 
 //  ********************************************************************************
@@ -194,7 +193,6 @@ public class AliasTestCase
         may.add(new MayAliasPair(varAX2_gs, varA1));
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[1].structureEquals(expected));
-
     }
 
     public void testDev01() {
@@ -277,7 +275,6 @@ public class AliasTestCase
         expected = new AliasLatticeElement(must, may);
         // Assert.assertTrue(elements[5].structureEquals(expected));
         this.myAssertTrue(elements[5], expected);
-
     }
 
     public void testDev02() {
@@ -317,7 +314,6 @@ public class AliasTestCase
         may.add(new MayAliasPair(varA, varB));
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[2].structureEquals(expected));
-
     }
 
     public void testDev03() {
@@ -558,7 +554,6 @@ public class AliasTestCase
         may.add(new MayAliasPair(varZ, varY));
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[0].structureEquals(expected));
-
     }
 
     public void testDev07() {
@@ -585,7 +580,6 @@ public class AliasTestCase
         may = new MayAliases();
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[0].structureEquals(expected));
-
     }
 
     public void testDev08() {
@@ -625,7 +619,6 @@ public class AliasTestCase
         may = new MayAliases();
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[1].structureEquals(expected));
-
     }
 
     public void testDev09() {
@@ -656,7 +649,6 @@ public class AliasTestCase
         may = new MayAliases();
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[0].structureEquals(expected));
-
     }
 
     public void testDev10() {
@@ -687,7 +679,6 @@ public class AliasTestCase
         may = new MayAliases();
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[0].structureEquals(expected));
-
     }
 
     public void testDev11() {
@@ -722,7 +713,6 @@ public class AliasTestCase
         may.add(new MayAliasPair(varBP1_fs, varBP2_fs));
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[0].structureEquals(expected));
-
     }
 
     public void testDev12() {
@@ -766,7 +756,6 @@ public class AliasTestCase
         may = new MayAliases();
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[1].structureEquals(expected));
-
     }
 
     public void testDev13() {
@@ -842,7 +831,6 @@ public class AliasTestCase
         may.add(new MayAliasPair(varBP1_fs, varBX_gs));
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[3].structureEquals(expected));
-
     }
 
     public void testDev14() {
@@ -869,7 +857,6 @@ public class AliasTestCase
         may = new MayAliases();
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[0].structureEquals(expected));
-
     }
 
     public void testDev15() {
@@ -913,7 +900,6 @@ public class AliasTestCase
         expectedList.add(expected);
 
         this.checkContext(expectedList, 0);
-
     }
 
     public void testDev16() {
@@ -947,7 +933,6 @@ public class AliasTestCase
         expectedList.add(expected);
 
         this.checkContext(expectedList, 0);
-
     }
 
     public void testDev17() {
@@ -986,7 +971,6 @@ public class AliasTestCase
         may = new MayAliases();
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[0].structureEquals(expected));
-
     }
 
     public void testDev18() {
@@ -1021,7 +1005,6 @@ public class AliasTestCase
         may = new MayAliases();
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[0].structureEquals(expected));
-
     }
 
     public void testDev19() {
@@ -1058,7 +1041,6 @@ public class AliasTestCase
         may.add(new MayAliasPair(varY, varX));
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[1].structureEquals(expected));
-
     }
 
     public void testDev20() {
@@ -1085,7 +1067,6 @@ public class AliasTestCase
         may = new MayAliases();
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[0].structureEquals(expected));
-
     }
 
     public void testDev21() {
@@ -1121,7 +1102,6 @@ public class AliasTestCase
         may = new MayAliases();
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[2].structureEquals(expected));
-
     }
 
     public void testDev22() {
@@ -1157,7 +1137,6 @@ public class AliasTestCase
         may = new MayAliases();
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[2].structureEquals(expected));
-
     }
 
     public void testDev23() {
@@ -1184,7 +1163,6 @@ public class AliasTestCase
         may = new MayAliases();
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[0].structureEquals(expected));
-
     }
 
     public void testDev24() {
@@ -1211,7 +1189,6 @@ public class AliasTestCase
         may = new MayAliases();
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[0].structureEquals(expected));
-
     }
 
 //  test files from the tutorial ***************************************************
@@ -1241,7 +1218,6 @@ public class AliasTestCase
         may.add(new MayAliasPair(varA, varC));
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[0].structureEquals(expected));
-
     }
 
     public void testTut02() {
@@ -1271,7 +1247,6 @@ public class AliasTestCase
         may.add(new MayAliasPair(varA, varC));
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[0].structureEquals(expected));
-
     }
 
     public void testTut03() {
@@ -1312,7 +1287,6 @@ public class AliasTestCase
         may.add(new MayAliasPair(varC, varE));
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[0].structureEquals(expected));
-
     }
 
     public void testTut04() {
@@ -1383,7 +1357,6 @@ public class AliasTestCase
         may = new MayAliases();
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[3].structureEquals(expected));
-
     }
 
     public void testTut05() {
@@ -1418,7 +1391,6 @@ public class AliasTestCase
         may = new MayAliases();
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[0].structureEquals(expected));
-
     }
 
     public void testTut06() {
@@ -1453,7 +1425,6 @@ public class AliasTestCase
         may = new MayAliases();
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[0].structureEquals(expected));
-
     }
 
     public void testTut07() {
@@ -1488,7 +1459,6 @@ public class AliasTestCase
         may.add(new MayAliasPair(varBP1_fs, varBP2_fs));
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[0].structureEquals(expected));
-
     }
 
     public void testTut08() {
@@ -1530,7 +1500,6 @@ public class AliasTestCase
         may = new MayAliases();
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[1].structureEquals(expected));
-
     }
 
     public void testTut09() {
@@ -1561,7 +1530,6 @@ public class AliasTestCase
         may = new MayAliases();
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[0].structureEquals(expected));
-
     }
 
     public void testTut10() {
@@ -1608,7 +1576,6 @@ public class AliasTestCase
         may.add(new MayAliasPair(varBX1_gs, varBP1_fs));
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[1].structureEquals(expected));
-
     }
 
     public void testTut11() {
@@ -1669,7 +1636,6 @@ public class AliasTestCase
         may.add(new MayAliasPair(varBP1_fs, varBX2_gs));
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[1].structureEquals(expected));
-
     }
 
     public void testTut12() {
@@ -1708,7 +1674,6 @@ public class AliasTestCase
         may = new MayAliases();
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[1].structureEquals(expected));
-
     }
 
     public void testTut13() {
@@ -1763,7 +1728,6 @@ public class AliasTestCase
         may.add(new MayAliasPair(varX2, varBX2_gs));
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[2].structureEquals(expected));
-
     }
 
     public void testTut14() {
@@ -1804,7 +1768,6 @@ public class AliasTestCase
         may.add(new MayAliasPair(varA1, varAX1_gs));
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[1].structureEquals(expected));
-
     }
 
     public void testTut15() {
@@ -1847,7 +1810,6 @@ public class AliasTestCase
         may.add(new MayAliasPair(varA1, varX2));
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[1].structureEquals(expected));
-
     }
 
     public void testTut16() {
@@ -1875,7 +1837,6 @@ public class AliasTestCase
         may.add(new MayAliasPair(varB, varC));
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[0].structureEquals(expected));
-
     }
 
     public void testTut17() {
@@ -1908,7 +1869,6 @@ public class AliasTestCase
         may.add(new MayAliasPair(varB, varD));
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[0].structureEquals(expected));
-
     }
 
     public void testTut18() {
@@ -1966,7 +1926,6 @@ public class AliasTestCase
         may.add(new MayAliasPair(varA2, varAX1_gs));
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[2].structureEquals(expected));
-
     }
 
     public void testTut19() {
@@ -2027,7 +1986,6 @@ public class AliasTestCase
         may.add(new MayAliasPair(varX1, varBX2_gs));
         expected = new AliasLatticeElement(must, may);
         Assert.assertTrue(elements[2].structureEquals(expected));
-
     }
 
     public void testTut20() {

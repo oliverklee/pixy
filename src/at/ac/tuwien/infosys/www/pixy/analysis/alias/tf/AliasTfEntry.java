@@ -71,6 +71,5 @@ public class AliasTfEntry
         out = (AliasLatticeElement) this.aliasAnalysis.recycle(out);
 
         return out;
-
     }
 }

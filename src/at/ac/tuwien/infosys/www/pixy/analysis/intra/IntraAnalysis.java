@@ -64,7 +64,6 @@ public abstract class IntraAnalysis
         IntraAnalysisNode startAnalysisNode =
             (IntraAnalysisNode) this.analysisInfo.getAnalysisNode(function.getCfg().getHead());
         startAnalysisNode.setInValue(this.startValue);
-
     }
 
 // *********************************************************************************
@@ -141,7 +140,6 @@ public abstract class IntraAnalysis
                         propagate(outValue, succ);
                     }
                 }
-
             } catch (RuntimeException ex) {
                 System.out.println("File:" + node.getFileName() + ", Line: " + node.getOrigLineno());
                 throw ex;

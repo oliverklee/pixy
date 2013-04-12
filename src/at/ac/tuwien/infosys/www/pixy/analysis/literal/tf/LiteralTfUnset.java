@@ -32,7 +32,6 @@ public class LiteralTfUnset
 
         this.operand = (Variable) operand;
         this.supported = AliasAnalysis.isSupported(this.operand);
-
     }
 
 // *********************************************************************************

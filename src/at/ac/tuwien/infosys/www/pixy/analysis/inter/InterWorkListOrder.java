@@ -107,7 +107,6 @@ public class InterWorkListOrder {
                     if (visited.contains(nextElement)) {
                         nextElement = null;
                     }
-
                 } else {
 
                     // for normal calls:
@@ -123,9 +122,7 @@ public class InterWorkListOrder {
                     if (visited.contains(nextElement)) {
                         nextElement = null;
                     }
-
                 }
-
             } else if (cfgNode instanceof CfgNodeExit) {
 
                 CfgNodeExit exitNode = (CfgNodeExit) cfgNode;
@@ -159,7 +156,6 @@ public class InterWorkListOrder {
                         }
                     }
                 }
-
             } else {
 
                 // handle successors

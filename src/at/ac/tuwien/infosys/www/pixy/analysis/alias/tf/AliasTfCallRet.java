@@ -131,7 +131,6 @@ public class AliasTfCallRet
                 Variable globalMayAlias = (Variable) globalIter.next();
                 outInfo.addMayAliasPairs(groupLocals, globalMayAlias);
             }
-
         }
 
         // G-SHADOWS, MAY
@@ -209,7 +208,6 @@ public class AliasTfCallRet
                     // that contains this global must-alias, considering implicit
                     // one-element groups as well
                     outInfo.merge(actual, fShadowGlobalMustAlias);
-
                 }
 
                 // for each global may-alias of the f-shadow...

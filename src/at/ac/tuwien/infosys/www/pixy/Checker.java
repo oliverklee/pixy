@@ -176,7 +176,6 @@ public final class Checker {
             for (File file : graphPathFile.listFiles()) {
                 file.delete();
             }
-
         }
 
         if (!MyOptions.optionW) {
@@ -234,7 +233,6 @@ public final class Checker {
         } catch (IOException e) {
             Utils.bail("File not found: " + fileName);
         }
-
     }
 
 //  ********************************************************************************
@@ -328,7 +326,6 @@ public final class Checker {
             hsvElement = hsvElement.trim();
             MyOptions.addHarmlessServerIndex(hsvElement);
         }
-
     }
 
 //  initialize *********************************************************************
@@ -439,7 +436,6 @@ public final class Checker {
         System.out.println("\nFinished.");
 
         return this.aliasAnalysis;
-
     }
 
 //  analyzeLiterals ****************************************************************
@@ -478,7 +474,6 @@ public final class Checker {
         System.out.println("\nFinished.");
 
         return this.literalAnalysis;
-
     }
 
 //  ********************************************************************************
@@ -525,7 +520,6 @@ public final class Checker {
             if (this.aliasAnalysis instanceof DummyAliasAnalysis) {
                 modAnalysis = new ModAnalysis(tac.getAllFunctions(), callGraph);
             }
-
         }
 
         this.gta = GenericTaintAnalysis.createAnalysis(tac, enclosingAnalysis,

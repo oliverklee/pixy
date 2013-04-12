@@ -178,7 +178,6 @@ public class MyOptions {
 
                 // strong sanitization
                 f_strongSanit.add(funcName);
-
             } else if (type.equals(weakSanitMarker)) {
 
                 // weak sanitization
@@ -192,7 +191,6 @@ public class MyOptions {
                     }
                 }
                 f_weakSanit.put(funcName, params);
-
             } else if (type.equals(multiMarker)) {
 
                 // multi-dependency
@@ -206,7 +204,6 @@ public class MyOptions {
                     }
                 }
                 f_multi.put(funcName, params);
-
             } else if (type.equals(invMultiMarker)) {
 
                 // inverse multi-dependency
@@ -220,14 +217,12 @@ public class MyOptions {
                     }
                 }
                 f_invMulti.put(funcName, params);
-
             } else if (type.equals(evilMarker)) {
                 // evil functions
                 f_evil.add(funcName);
             } else {
                 Utils.bail("Error: Unknown type for builtin function model: " + funcName);
             }
-
         }
 
         // add Pixy's suppression function
@@ -438,7 +433,6 @@ public class MyOptions {
             name2Analysis.put(dci.getName(), dci);
             className2Name.put(dci.getClassName(), dci.getName());
         }
-
     }
 
     public static DepClientInfo getDepClientInfo(String analysisClassName) {
@@ -451,7 +445,6 @@ public class MyOptions {
             throw new RuntimeException("Illegal analysis name: " + analysisName);
         }
         return dci;
-
     }
 
     public static DepClientInfo[] getDepClients() {

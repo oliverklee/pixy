@@ -58,7 +58,6 @@ public class SQLSanitAnalysis
             String functionName = cfgNode.getFunctionName();
 
             checkForSinkHelper(functionName, cfgNode, cfgNode.getParamList(), traversedFunction, sinks);
-
         } else if (cfgNodeX instanceof CfgNodeCallPrep) {
 
             CfgNodeCallPrep cfgNode = (CfgNodeCallPrep) cfgNodeX;
@@ -67,7 +66,6 @@ public class SQLSanitAnalysis
             // user-defined custom sinks
 
             checkForSinkHelper(functionName, cfgNode, cfgNode.getParamList(), traversedFunction, sinks);
-
         } else {
             // not a sink
         }

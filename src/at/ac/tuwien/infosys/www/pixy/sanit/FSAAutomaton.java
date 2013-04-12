@@ -63,7 +63,6 @@ public class FSAAutomaton {
         FSAAutomaton retMe = new FSAAutomaton(autoString);
 
         return retMe;
-
     }
 
     // converts the given string into an appropriate regexp,
@@ -229,7 +228,6 @@ public class FSAAutomaton {
                 // more than one outgoing transitions
                 return null;
             }
-
         }
 
         return retMe;
@@ -274,7 +272,6 @@ public class FSAAutomaton {
         FSAAutomaton retMe = new FSAAutomaton(autoString);
 
         return retMe;
-
     }
 
     // returns an automaton for the language of undesired strings for xss analysis (test);
@@ -305,7 +302,6 @@ public class FSAAutomaton {
         FSAAutomaton retMe = new FSAAutomaton(autoString);
 
         return retMe;
-
     }
 
     private AutoInfo parseAutomaton() {
@@ -412,7 +408,6 @@ public class FSAAutomaton {
         }
 
         return new AutoInfo(sigma, startStates, finalStates, transitions, numStates);
-
     }
 
     // returns true if this automaton has only one state and
@@ -441,7 +436,6 @@ public class FSAAutomaton {
         retMe = new FSAAutomaton(autoString);
 
         return retMe;
-
     }
 
     // helper class for exchanging automaton information;
@@ -461,7 +455,6 @@ public class FSAAutomaton {
             this.transitions = t;
             this.numStates = n;
         }
-
     }
 
     private class TransitionInfo {

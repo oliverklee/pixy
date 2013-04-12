@@ -33,7 +33,6 @@ public class DepTfUnset
         this.operand = (Variable) operand;
         this.cfgNode = cfgNode;
         this.supported = true;
-
     }
 
 // *********************************************************************************

@@ -136,7 +136,6 @@ public class SQLAnalysis
                 }
 
                 this.dumpDotAuto(auto, graphNameBase + "_auto", MyOptions.graphPath);
-
             }
         }
 
@@ -154,7 +153,6 @@ public class SQLAnalysis
         System.out.println();
 
         return retMe;
-
     }
 
 //  ********************************************************************************
@@ -228,7 +226,6 @@ public class SQLAnalysis
         retMe.setCustomSanitCount(hasCustomSanitCount);
         retMe.setCustomSanitThrownAwayCount(customSanitThrownAwayCount);
         return retMe;
-
     }
 
 //  ********************************************************************************
@@ -302,10 +299,8 @@ public class SQLAnalysis
                     }
                 }
             }
-
         } else if (node instanceof DepGraphOpNode) {
             auto = this.makeAutoForOp((DepGraphOpNode) node, deco, depGraph);
-
         } else if (node instanceof DepGraphSccNode) {
 
             // for SCC nodes, we generate a coarse string approximation (.* automaton);
@@ -345,7 +340,6 @@ public class SQLAnalysis
             }
 
             auto = Automaton.makeAnyString(taint);
-
         } else if (node instanceof DepGraphUninitNode) {
 
             // retrieve predecessor
@@ -368,7 +362,6 @@ public class SQLAnalysis
                     default:
                         throw new RuntimeException("SNH");
                 }
-
             } else if (pre instanceof DepGraphSccNode) {
                 // this case can really happen (e.g.: dcpportal: advertiser.php, forums.php);
 
@@ -393,7 +386,6 @@ public class SQLAnalysis
                             default:
                                 throw new RuntimeException("SNH");
                         }
-
                     } else {
                         auto = Automaton.makeAnyString(Transition.Taint.Directly);
                     }
@@ -401,11 +393,9 @@ public class SQLAnalysis
                     // conservative decision for this SCC
                     auto = Automaton.makeAnyString(Transition.Taint.Directly);
                 }
-
             } else {
                 throw new RuntimeException("SNH: " + pre.getClass());
             }
-
         } else {
             throw new RuntimeException("SNH");
         }
@@ -415,7 +405,6 @@ public class SQLAnalysis
         }
 
         deco.put(node, auto);
-
     }
 
 //  ********************************************************************************
@@ -515,12 +504,10 @@ public class SQLAnalysis
 
             Automaton transduced = new MyTransductions().str_replace(searchString, replaceString, subjectAuto);
             return transduced;
-
         } else if (isMulti(opName, multiList)) {
 
             Transition.Taint taint = this.multiDependencyAuto(successors, deco, multiList, false);
             retMe = Automaton.makeAnyString(taint);
-
         } else if (isInverseMulti(opName, multiList)) {
 
             Transition.Taint taint = this.multiDependencyAuto(successors, deco, multiList, true);
@@ -668,7 +655,6 @@ public class SQLAnalysis
             System.out.println("Suffix END");
             System.out.println();
         }
-
     }
 
 //  ********************************************************************************

@@ -68,7 +68,6 @@ public class DepTfCallPrep
 
                 // set the formal
                 out.setFormal(formalParam, cfgNode);
-
             } else {
 
                 // there is no corresponding actual parameter, use default values
@@ -92,7 +91,6 @@ public class DepTfCallPrep
                             out = (DepLatticeElement) tf.transfer(out);
                             defaultNode = defaultNode.getSuccessor(0);
                         }
-
                     } else {
                         // missing actual parameter;
                         // we have already generated a warning for this during conversion;

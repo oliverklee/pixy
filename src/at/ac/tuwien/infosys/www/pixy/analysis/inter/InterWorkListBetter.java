@@ -37,7 +37,6 @@ public final class InterWorkListBetter
             throw new RuntimeException("SNH");
         }
         this.sortedWorkList.put(rpo, element);
-
     }
 
     public InterWorkListElement removeNext() {

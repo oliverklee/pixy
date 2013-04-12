@@ -109,7 +109,6 @@ public class DepAnalysis
 
         this.initGeneral(tac.getAllFunctions(), tac.getMainFunction(),
             analysisType, workList);
-
     }
 
 //  initLattice ********************************************************************
@@ -127,7 +126,6 @@ public class DepAnalysis
 
         // initialize initial value
         this.initialValue = this.lattice.getBottom();
-
     }
 
 //  applyInsideBasicBlock **********************************************************
@@ -176,7 +174,6 @@ public class DepAnalysis
         }
 
         return out;
-
     }
 
 //  ********************************************************************************
@@ -305,14 +302,12 @@ public class DepAnalysis
             throw new RuntimeException(
                 "More actual than formal params for function " +
                     cfgNode.getFunctionNamePlace().toString() + " on line " + cfgNode.getOrigLineno());
-
         } else {
             tf = new DepTfCallPrep(actualParams, formalParams,
                 callingFunction, calledFunction, this, cfgNode);
         }
 
         return tf;
-
     }
 
     protected TransferFunction entry(TacFunction traversedFunction) {
@@ -387,7 +382,6 @@ public class DepAnalysis
             // => approximate by assigning unknown/unknown to the operand
             // LATER: this, on the other hand, is unsound, but it reduces the false positive rate:
             return TransferFunctionId.INSTANCE;
-
         } else {
             // found existent global
             return new DepTfAssignRef(globalOp, realGlobal, cfgNode);
@@ -578,7 +572,6 @@ public class DepAnalysis
                         opMap.put(opName, totalCount);
                     }
                     System.out.println();
-
                 }
             }
         }
@@ -616,11 +609,9 @@ public class DepAnalysis
                 System.out.println(opName + ": " + opCount);
             }
             System.out.println();
-
         }
 
         return retMe;
-
     }
 
 //  detectVulns *********************************************************************

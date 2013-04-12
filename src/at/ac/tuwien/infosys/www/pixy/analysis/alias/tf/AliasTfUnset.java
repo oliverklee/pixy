@@ -29,7 +29,6 @@ public class AliasTfUnset
         this.operand = operand.getVariable();
         this.aliasAnalysis = aliasAnalysis;
         this.supported = AliasAnalysis.isSupported(this.operand);
-
     }
 
 // *********************************************************************************

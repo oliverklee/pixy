@@ -122,7 +122,6 @@ public class ModAnalysis {
             for (CfgNode cfgNode : basicBlock.getContainedNodes()) {
                 processNode(cfgNode, modSet);
             }
-
         } else if (cfgNodeX instanceof CfgNodeAssignSimple) {
 
             CfgNodeAssignSimple cfgNode = (CfgNodeAssignSimple) cfgNodeX;
@@ -130,7 +129,6 @@ public class ModAnalysis {
             if (modVar.isGlobal() || modVar.isSuperGlobal()) {
                 this.modify(modVar, modSet);
             }
-
         } else if (cfgNodeX instanceof CfgNodeAssignUnary) {
 
             CfgNodeAssignUnary cfgNode = (CfgNodeAssignUnary) cfgNodeX;
@@ -138,7 +136,6 @@ public class ModAnalysis {
             if (modVar.isGlobal() || modVar.isSuperGlobal()) {
                 this.modify(modVar, modSet);
             }
-
         } else if (cfgNodeX instanceof CfgNodeAssignBinary) {
 
             CfgNodeAssignBinary cfgNode = (CfgNodeAssignBinary) cfgNodeX;
@@ -146,7 +143,6 @@ public class ModAnalysis {
             if (modVar.isGlobal() || modVar.isSuperGlobal()) {
                 this.modify(modVar, modSet);
             }
-
         } else if (cfgNodeX instanceof CfgNodeAssignArray) {
 
             CfgNodeAssignArray cfgNode = (CfgNodeAssignArray) cfgNodeX;
@@ -154,7 +150,6 @@ public class ModAnalysis {
             if (modVar.isGlobal() || modVar.isSuperGlobal()) {
                 this.modify(modVar, modSet);
             }
-
         } else if (cfgNodeX instanceof CfgNodeAssignRef) {
 
             CfgNodeAssignRef cfgNode = (CfgNodeAssignRef) cfgNodeX;

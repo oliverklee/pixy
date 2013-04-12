@@ -27,7 +27,6 @@ public class LiteralTfAssignArray
         } else {
             this.supported = true;
         }
-
     }
 
 // *********************************************************************************

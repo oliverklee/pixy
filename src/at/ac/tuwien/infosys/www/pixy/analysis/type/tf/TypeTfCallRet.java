@@ -32,7 +32,6 @@ public class TypeTfCallRet
         this.callee = callee;
 
         this.callNode = retNode;
-
     }
 
 // *********************************************************************************
@@ -67,14 +66,12 @@ public class TypeTfCallRet
             outInfo.copyMainTemporaries(origInfo);
 
             outInfo.handleReturnValue(this.callNode, calleeIn, callee);
-
         } else {
 
             // initialize local variables with the mappings at call-time
             outInfo.copyLocals(origInfo);
 
             outInfo.handleReturnValue(this.callNode, calleeIn, callee);
-
         }
 
         // if we are in this transfer function, it means that we know
@@ -88,7 +85,6 @@ public class TypeTfCallRet
         }
 
         return outInfo;
-
     }
 
     // just a dummy method in order to make me conform to the interface;

@@ -59,7 +59,6 @@ public class DepGraphTestCaseNA
         // collect sinks
         this.sinks = xssAnalysis.collectSinks();
         Collections.sort(sinks);
-
     }
 
     // returns the contents of the given file as string
@@ -139,7 +138,6 @@ public class DepGraphTestCaseNA
                     Assert.assertEquals(expected, encountered);
                 }
             }
-
         }
 
         // check if all vulns were detected

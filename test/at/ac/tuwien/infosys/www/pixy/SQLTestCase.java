@@ -109,7 +109,6 @@ public class SQLTestCase
             if (generate) {
 
                 this.sqlAnalysis.dumpDotAutoUnique(auto, fileName, this.path);
-
             } else {
                 String encountered = auto.toDotUnique();
                 String expected = this.readFile(this.path + fileName + ".dot");

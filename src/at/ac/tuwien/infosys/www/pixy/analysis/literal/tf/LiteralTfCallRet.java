@@ -61,7 +61,6 @@ public class LiteralTfCallRet
 
         this.prepNode = prepNode;
         this.retNode = retNode;
-
     }
 
 // *********************************************************************************
@@ -127,7 +126,6 @@ public class LiteralTfCallRet
             }
             outInfo.setLocal(localCallerVar, calleeIn.getLiteral(globalMustAliasShadow));
             visitedVars.add(localCallerVar);
-
         }
 
         // MUST WITH FORMALS
@@ -158,7 +156,6 @@ public class LiteralTfCallRet
                 // set & mark
                 outInfo.setLocal(localMustAlias, calleeIn.getLiteral(fShadow));
                 visitedVars.add(localMustAlias);
-
             }
         }
 
@@ -242,7 +239,6 @@ public class LiteralTfCallRet
         this.handleReturnValue(calleeIn, outInfo);
 
         return outInfo;
-
     }
 
     private void handleReturnValue(LiteralLatticeElement calleeIn, LiteralLatticeElement outInfo) {
@@ -253,7 +249,6 @@ public class LiteralTfCallRet
         // assign this literal to the return node's temporary
         // and clear the return variable afterwards
         outInfo.handleReturnValue(this.retNode.getTempVar(), retLit, this.retNode.getRetVar());
-
     }
 
     // just a dummy method in order to make me conform to the interface;

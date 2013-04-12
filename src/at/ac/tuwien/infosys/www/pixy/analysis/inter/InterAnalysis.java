@@ -304,7 +304,6 @@ public abstract class InterAnalysis
                         CfgEdge[] outEdges = callNode.getOutEdges();
                         CfgNode succ = outEdges[0].getDest();
                         propagate(context, exitInValue, succ);
-
                     } else {
 
                         // there is no function summary yet (or we don't want to
@@ -380,7 +379,6 @@ public abstract class InterAnalysis
                             }
                         }
                     }
-
                 } else if (node instanceof CfgNodeIf) {
 
                     CfgNodeIf ifNode = (CfgNodeIf) node;
@@ -397,7 +395,6 @@ public abstract class InterAnalysis
 
                         propagate(context, outValue, outEdges[0].getDest());
                         propagate(context, outValue, outEdges[1].getDest());
-
                     } else if (eval == Boolean.TRUE) {
                         // continue analysis along true edge
                         propagate(context, outValue, outEdges[1].getDest());
@@ -405,7 +402,6 @@ public abstract class InterAnalysis
                         // continue analysis along false edge
                         propagate(context, outValue, outEdges[0].getDest());
                     }
-
                 } else if (node instanceof CfgNodeCallRet) {
 
                     // a call return node is to be handled just as a normal node,
@@ -429,7 +425,6 @@ public abstract class InterAnalysis
                             propagate(context, outValue, succ);
                         }
                     }
-
                 } else {
 
                     // apply transfer function to incoming value
@@ -450,7 +445,6 @@ public abstract class InterAnalysis
                         }
                     }
                 }
-
             } catch (RuntimeException ex) {
                 System.out.println("File:" + node.getFileName() + ", Line: " + node.getOrigLineno());
                 throw ex;

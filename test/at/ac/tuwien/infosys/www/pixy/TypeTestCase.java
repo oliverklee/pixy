@@ -58,7 +58,6 @@ public class TypeTestCase
         // collect sinks
         this.sinks = xssAnalysis.collectSinks();
         Collections.sort(sinks);
-
     }
 
     // returns the contents of the given file as string
@@ -135,7 +134,6 @@ public class TypeTestCase
                     Assert.assertEquals(expected, encountered);
                 }
             }
-
         }
 
         // check if all vulns were detected

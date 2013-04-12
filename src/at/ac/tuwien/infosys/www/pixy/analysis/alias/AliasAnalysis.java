@@ -47,7 +47,6 @@ public class AliasAnalysis
         this.repos = new GenericRepos<LatticeElement>();
         this.initGeneral(tac.getAllFunctions(), tac.getMainFunction(),
             analysisType, new InterWorkListPoor());
-
     }
 
     // dummy constructor
@@ -167,7 +166,6 @@ public class AliasAnalysis
             throw new RuntimeException(
                 "More actual than formal params for function " +
                     cfgNode.getFunctionNamePlace().toString() + " on line " + cfgNode.getOrigLineno());
-
         } else {
             tf = new AliasTfCallPrep(callingFunction, this, cfgNode);
         }
@@ -365,7 +363,6 @@ public class AliasAnalysis
         }
 
         return supported;
-
     }
 
     public AliasLatticeElement getFoldedValue(InterAnalysisNode node) {

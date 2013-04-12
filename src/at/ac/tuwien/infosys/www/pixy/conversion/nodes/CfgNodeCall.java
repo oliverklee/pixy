@@ -72,7 +72,6 @@ public class CfgNodeCall
 
         this.calleeClassName = null;
         this.object = object;
-
     }
 
 // GET *****************************************************************************

@@ -30,7 +30,6 @@ public class DepTfAssignArray
         } else {
             this.supported = true;
         }
-
     }
 
 // *********************************************************************************

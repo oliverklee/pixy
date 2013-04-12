@@ -31,6 +31,5 @@ public class LiteralTfCallUnknown
         out.handleReturnValueUnknown(this.cfgNode.getTempVar());
 
         return out;
-
     }
 }

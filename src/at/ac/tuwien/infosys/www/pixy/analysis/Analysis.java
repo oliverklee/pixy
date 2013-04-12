@@ -75,87 +75,66 @@ public abstract class Analysis {
 
             CfgNodeBasicBlock cfgNode = (CfgNodeBasicBlock) cfgNodeX;
             return this.makeBasicBlockTf(cfgNode, traversedFunction);
-
         } else if (cfgNodeX instanceof CfgNodeAssignSimple) {
 
             return this.assignSimple(cfgNodeX, enclosingNode);
-
         } else if (cfgNodeX instanceof CfgNodeAssignUnary) {
 
             return this.assignUnary(cfgNodeX, enclosingNode);
-
         } else if (cfgNodeX instanceof CfgNodeAssignBinary) {
 
             return this.assignBinary(cfgNodeX, enclosingNode);
-
         } else if (cfgNodeX instanceof CfgNodeAssignRef) {
 
             return this.assignRef(cfgNodeX);
-
         } else if (cfgNodeX instanceof CfgNodeUnset) {
 
             return this.unset(cfgNodeX);
-
         } else if (cfgNodeX instanceof CfgNodeAssignArray) {
 
             return this.assignArray(cfgNodeX);
-
         } else if (cfgNodeX instanceof CfgNodeIsset) {
 
             return this.isset(cfgNodeX);
-
         } else if (cfgNodeX instanceof CfgNodeCallPrep) {
 
             return this.callPrep(cfgNodeX, traversedFunction);
-
         } else if (cfgNodeX instanceof CfgNodeEntry) {
 
             return this.entry(traversedFunction);
-
         } else if (cfgNodeX instanceof CfgNodeCallRet) {
 
             return this.callRet(cfgNodeX, traversedFunction);
-
         } else if (cfgNodeX instanceof CfgNodeCallBuiltin) {
 
             return this.callBuiltin(cfgNodeX, traversedFunction);
-
         } else if (cfgNodeX instanceof CfgNodeCallUnknown) {
 
             return this.callUnknown(cfgNodeX, traversedFunction);
-
         } else if (cfgNodeX instanceof CfgNodeGlobal) {
 
             return this.global(cfgNodeX);
-
         } else if (cfgNodeX instanceof CfgNodeDefine) {
 
             return this.define(cfgNodeX);
-
         } else if (cfgNodeX instanceof CfgNodeTester) {
 
             return this.tester(cfgNodeX);
-
         } else if (cfgNodeX instanceof CfgNodeEcho) {
 
             return this.echo(cfgNodeX, traversedFunction);
-
         } else if (cfgNodeX instanceof CfgNodeStatic) {
 
             return this.staticNode();
-
         } else if (cfgNodeX instanceof CfgNodeInclude) {
 
             return this.include(cfgNodeX);
-
         } else if (cfgNodeX instanceof CfgNodeIncludeStart) {
 
             return this.includeStart(cfgNodeX);
-
         } else if (cfgNodeX instanceof CfgNodeIncludeEnd) {
 
             return this.includeEnd(cfgNodeX);
-
         } else {
             // ID transfer function for all remaining cfg node types
             return TransferFunctionId.INSTANCE;

@@ -29,7 +29,6 @@ public class DepTfAssignSimple
         this.mustAliases = mustAliases;
         this.mayAliases = mayAliases;
         this.cfgNode = cfgNode;
-
     }
 
 // *********************************************************************************

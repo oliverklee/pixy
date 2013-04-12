@@ -411,9 +411,7 @@ public class Automaton
 
                     state2Tre.get(state_qi).add(trans_total);
                     reverse.get(state_pj).add(state_qi);
-
                 }
-
             } // end "for each predecessor"
 
             // we have now processed all incoming and outgoing edges,
@@ -438,7 +436,6 @@ public class Automaton
 
             state2Tre.remove(state_s);
             reverse.remove(state_s);
-
         } // end "for each state"
 
         Set<TransitionRegExp> initialTrans = state2Tre.get(initialState);
@@ -448,7 +445,6 @@ public class Automaton
         }
         retMe.simplify();
         return retMe;
-
     }
 
     /**
@@ -2601,7 +2597,6 @@ public class Automaton
                 return "";
             else
                 return "\u0000";
-
         }
         return getShortestExample(initial, accepted, new HashMap<State, String>());
     }
@@ -2978,7 +2973,6 @@ public class Automaton
                         initial = sourceState;
                         retMe.initial = initial;
                     }
-
                 } else if (tokenizer.countTokens() == 1) {
 
                     // collect accept states
@@ -2995,7 +2989,6 @@ public class Automaton
                 }
                 acceptState.accept = true;
             }
-
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException();

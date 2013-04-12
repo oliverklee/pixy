@@ -217,10 +217,8 @@ public class ParseNodeHeuristics {
                         myList = new LinkedList<String>();
                         myList.add(null);
                     }
-
                 }
                 break;
-
             }
 
             // -> ( expr )
@@ -239,7 +237,6 @@ public class ParseNodeHeuristics {
                 myList = new LinkedList<String>();
                 myList.add(null);
             }
-
         }
 
         return myList;
@@ -267,11 +264,9 @@ public class ParseNodeHeuristics {
                 myList = new LinkedList<String>();
                 myList.add(null);
             }
-
         }
 
         return myList;
-
     }
 
     private static LinkedList<String> common_scalar(ParseNode node) {
@@ -292,7 +287,6 @@ public class ParseNodeHeuristics {
                 myList = new LinkedList<String>();
                 myList.add(null);
             }
-
         }
 
         return myList;
@@ -366,7 +360,6 @@ public class ParseNodeHeuristics {
             default: {
                 throw new RuntimeException("SNH");
             }
-
         }
 
         return myList;
@@ -403,7 +396,6 @@ public class ParseNodeHeuristics {
             default: {
                 throw new RuntimeException("SNH");
             }
-
         }
 
         return myList;
@@ -494,7 +486,6 @@ public class ParseNodeHeuristics {
         }
 
         return myList;
-
     }
 
     // encaps_list -> encaps_list, <some token>

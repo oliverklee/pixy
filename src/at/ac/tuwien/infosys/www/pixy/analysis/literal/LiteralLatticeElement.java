@@ -144,7 +144,6 @@ public class LiteralLatticeElement
         LiteralLatticeElement.DEFAULT =
             new LiteralLatticeElement(places, constantsTable, functions,
                 superSymbolTable);
-
     }
 
 //  ********************************************************************************
@@ -192,7 +191,6 @@ public class LiteralLatticeElement
         } else {
             return defaultLit;
         }
-
     }
 
 // getDefaultLiteral ***************************************************************
@@ -575,7 +573,6 @@ public class LiteralLatticeElement
 
         // assign
         this.assignSimple(left, effectiveRightLit, mustAliases, mayAliases);
-
     }
 
 //  assignBinary********************************************************************
@@ -745,7 +742,6 @@ public class LiteralLatticeElement
 
         // assign
         this.assignSimple(left, effectiveLit, mustAliases, mayAliases);
-
     }
 
 //  assignArray ********************************************************************

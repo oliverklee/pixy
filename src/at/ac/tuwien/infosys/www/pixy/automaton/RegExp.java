@@ -221,7 +221,6 @@ public class RegExp {
                 }
                 break;
         }
-
     }
 
     void copy(RegExp e) {

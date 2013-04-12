@@ -86,7 +86,6 @@ public class AliasTfCallPrep
 
             // replace the placeholders by the formals of the callee
             out.replace(replacements);
-
         } else {
             // there are no cbr params; hence, we can simply remove
             // all local variables of the caller

@@ -57,7 +57,6 @@ public class DepGraphTestCase
         // collect sinks
         this.sinks = this.xssAnalysis.collectSinks();
         Collections.sort(sinks);
-
     }
 
     // returns the contents of the given file as string

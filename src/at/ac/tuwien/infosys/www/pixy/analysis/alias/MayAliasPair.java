@@ -112,7 +112,6 @@ public class MayAliasPair {
         } else {
             return null;
         }
-
     }
 
     // if this pair contains one local and one global variable, an array containing
@@ -140,7 +139,6 @@ public class MayAliasPair {
         } else {
             throw new RuntimeException("SNH");
         }
-
     }
 
 //  ********************************************************************************

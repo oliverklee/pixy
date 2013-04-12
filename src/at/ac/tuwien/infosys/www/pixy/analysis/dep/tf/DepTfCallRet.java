@@ -66,7 +66,6 @@ public class DepTfCallRet
 
         this.prepNode = prepNode;
         this.retNode = retNode;
-
     }
 
 // *********************************************************************************
@@ -142,7 +141,6 @@ public class DepTfCallRet
                 calleeIn.getDep(globalMustAliasShadow),
                 calleeIn.getArrayLabel(globalMustAliasShadow));
             visitedVars.add(localCallerVar);
-
         }
 
         // MUST WITH FORMALS
@@ -176,7 +174,6 @@ public class DepTfCallRet
                     calleeIn.getDep(fShadow),
                     calleeIn.getArrayLabel(fShadow));
                 visitedVars.add(localMustAlias);
-
             }
         }
 
@@ -216,7 +213,6 @@ public class DepTfCallRet
                 // lub
                 computedTaint = DepLatticeElement.lub(computedTaint, shadowTaint);
                 computedArrayLabel = DepLatticeElement.lub(computedArrayLabel, shadowArrayLabel);
-
             }
 
             // set the local's taint/label to the computed taint/label in outInfo
@@ -268,7 +264,6 @@ public class DepTfCallRet
         outInfo.handleReturnValue(this.retNode/*, calleeIn*/);
 
         return outInfo;
-
     }
 
     // just a dummy method in order to make me conform to the interface;

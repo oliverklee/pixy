@@ -34,7 +34,6 @@ public class DepTfAssignRef
 
         // check for unsupported features
         this.supported = AliasAnalysis.isSupported(this.left, this.right, false, -1);
-
     }
 
 // *********************************************************************************

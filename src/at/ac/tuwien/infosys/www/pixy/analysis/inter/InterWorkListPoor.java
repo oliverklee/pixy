@@ -45,7 +45,6 @@ public final class InterWorkListPoor
         } else {
             this.sortedWorkList.put(rpo, element);
         }
-
     }
 
     public InterWorkListElement removeNext() {

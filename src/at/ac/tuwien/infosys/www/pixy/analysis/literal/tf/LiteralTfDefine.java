@@ -82,9 +82,7 @@ public class LiteralTfDefine
                 System.out.println("Warning: a constant is defined, but never used");
                 System.out.println("- name:    " + constantLit.toString());
                 System.out.println("- defined: " + this.cfgNode.getLoc());
-
             }
-
         } else if (caseLit == Literal.FALSE) {
             // define sensitive constant
 
@@ -97,7 +95,6 @@ public class LiteralTfDefine
             } else {
                 out.defineConstant(constant, valueLit);
             }
-
         } else if (caseLit == Literal.TOP) {
             // we don't know the exact value of this flag;
             // hence, we perform a strong update for the immediate constant in

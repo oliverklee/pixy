@@ -54,7 +54,6 @@ class SpecialNodes {
             }
 
             retMe = new CfgNodeTester(whatToTestInt, numSet);
-
         } else if (marker.startsWith("_hotspot")) {
             // hotspots are only used for JUnit tests
             try {
@@ -66,7 +65,6 @@ class SpecialNodes {
             } catch (NumberFormatException ex) {
                 throw new RuntimeException("Illegal hotspot marker: non-numeric ID suffix");
             }
-
         } else {
             System.out.println("Unkown marker: " + marker);
             throw new RuntimeException("SNH");

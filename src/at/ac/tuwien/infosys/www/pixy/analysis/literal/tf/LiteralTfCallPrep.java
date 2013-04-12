@@ -71,7 +71,6 @@ public class LiteralTfCallPrep
 
                 // set the literal of the formal to the literal of the actual
                 out.setFormal(formalParam, actualPlace);
-
             } else {
 
                 // there is no corresponding actual parameter, use default values
@@ -96,7 +95,6 @@ public class LiteralTfCallPrep
                             out = (LiteralLatticeElement) tf.transfer(out);
                             defaultNode = defaultNode.getSuccessor(0);
                         }
-
                     } else {
                         // we have already generated a warning for this during conversion;
                         // simply ignore it (=ok, is exactly what PHP does)

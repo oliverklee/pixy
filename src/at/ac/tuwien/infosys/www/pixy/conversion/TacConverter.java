@@ -230,7 +230,6 @@ public class TacConverter {
 
         this.userClasses = new HashMap<String, TacClass>();
         this.userMethods = new HashMap<String, Map<String, TacFunction>>();
-
     }
 
 // *********************************************************************************
@@ -367,7 +366,6 @@ public class TacConverter {
                     // if the successor node has more than 1 predecessors,
                     // we must not continue with our basic block here
                     break;
-
                 }
                 visited.add(succ);
                 basicBlock.addNode(succ);
@@ -404,7 +402,6 @@ public class TacConverter {
                 // continue algorithm at successor node
                 this.createBasicBlocksHelper(succ, visited);
             }
-
         } else {
             // try successors
             List successors = cfgNode.getSuccessors();
@@ -549,7 +546,6 @@ public class TacConverter {
                 // add method and function calls inside this method (for backpatching)
                 this.addFunctionCalls(includedMethod, includedTac.getFunctionCalls(includedMethod));
                 this.addMethodCalls(includedMethod, includedTac.getMethodCalls(includedMethod));
-
             }
         }
 
@@ -657,7 +653,6 @@ public class TacConverter {
             // connect includeEnd with the node following the include node
             connect(includeEnd, afterInclude);
         }
-
     }
 
 // resetId *************************************************************************
@@ -902,7 +897,6 @@ public class TacConverter {
             System.out.println();
             System.out.println("Classes: " + this.userClasses.size());
         }
-
     }
 
 // getMemberPlace ******************************************************************
@@ -960,7 +954,6 @@ public class TacConverter {
             var = this.superSymbolTable.getVariable(varName);
         }
         return var;
-
     }
 
 //  getVariable ********************************************************************
@@ -1150,7 +1143,6 @@ public class TacConverter {
                 cfgNode.replaceVariable(varCount, transformedVar);
             }
         }
-
     }
 
 //  ********************************************************************************
@@ -1336,7 +1328,6 @@ public class TacConverter {
 
             // add incoming edge to destination node
             dest.addInEdge(edge);
-
         }
     }
 
@@ -1483,7 +1474,6 @@ public class TacConverter {
 
             // if second test doesn't succeed: done, false!
             connect(ifNode2, falseNode, CfgEdge.FALSE_EDGE);
-
         } else {
             // AND, &&
 
@@ -1498,7 +1488,6 @@ public class TacConverter {
 
             // if test doesn't succeed: done, false!
             connect(ifNode2, falseNode, CfgEdge.FALSE_EDGE);
-
         }
 
         myAtts.setCfg(new Cfg(
@@ -1547,7 +1536,6 @@ public class TacConverter {
 
         myAtts.setCfg(new Cfg(atts0.getCfg().getHead(), cfgNode));
         myAtts.setPlace(myPlace);
-
     }
 
 // cvarOpExp ***********************************************************************
@@ -1848,7 +1836,6 @@ public class TacConverter {
             }
             symTab.addFShadow(var);
         }
-
     }
 
 // functionCallHelper **************************************************************
@@ -2044,7 +2031,6 @@ public class TacConverter {
         if (var == null) {
             this.makeArrayElementPlace(argv, new Literal("0"));
         }
-
     }
 
 // makeArrayElementPlace ***********************************************************
@@ -2117,7 +2103,6 @@ public class TacConverter {
         } else {
             return (new CfgNodeAssignSimple(arrayElementPlace, valuePlace, node));
         }
-
     }
 
 // encapsListHelper ****************************************************************
@@ -2132,7 +2117,6 @@ public class TacConverter {
         EncapsList encapsList = attsList.getEncapsList();
         encapsList.add((Literal) stringPlace);
         myAtts.setEncapsList(encapsList);
-
     }
 
 // exprVarHelper *******************************************************************
@@ -2165,7 +2149,6 @@ public class TacConverter {
             } else {
                 myPlace = this.makePlace("$" + literal);
             }
-
         } else if (exprPlace.isVariable()) {
             myPlace = this.makePlace("${" + exprPlace.getVariable().getName() + "}");
             myPlace.getVariable().setDependsOn(exprPlace);
@@ -2246,7 +2229,6 @@ public class TacConverter {
             connect(eachCallCfg.getTail(), attsValue.getCfg());
             connect(attsValue.getCfg(), valueNode);
             connect(valueNode, ifNode);
-
         } else {
 
             // there is a foreach_optional_arg, which means that there
@@ -2392,7 +2374,6 @@ public class TacConverter {
                             }
                         }
                     }
-
                 } else {
 
                     if (finalPass && reachable) {
@@ -2400,7 +2381,6 @@ public class TacConverter {
                         System.out.println("- name:    " + functionNamePlace);
                         System.out.println("- call:    " + prepNode.getLoc());
                     }
-
                 }
 
                 if (callee == null) {
@@ -2410,7 +2390,6 @@ public class TacConverter {
                         this.replaceUnknownCall(prepNode, functionNamePlace.toString(), true);
                     }
                     continue;
-
                 } else {
                     List actualParams = prepNode.getParamList();
                     List<TacFormalParam> formalParams = callee.getParams();
@@ -2490,7 +2469,6 @@ public class TacConverter {
                         // since we are now using a separate cfg node for calls to
                         // builtin functions, this case should not happen
                         if (true) throw new RuntimeException("SNH");
-
                     } else {
 
                         // not having information about a non-builtin function IS bad,
@@ -2509,7 +2487,6 @@ public class TacConverter {
 
                         continue;
                     }
-
                 } else {
 
                     List<TacActualParam> actualParams = prepNode.getParamList();
@@ -2592,7 +2569,6 @@ public class TacConverter {
         } else {
             throw new RuntimeException("SNH");
         }
-
     }
 
 // *********************************************************************************
@@ -2659,7 +2635,6 @@ public class TacConverter {
             TacFunction userFunction = (TacFunction) iter.next();
             this.transformGlobals(userFunction.getCfg());
         }
-
     }
 
 // top_statement_list **************************************************************
@@ -2782,7 +2757,6 @@ public class TacConverter {
                             throw new RuntimeException("SNH");
                         }
                     }
-
                 } else {
                     System.out.println("\nWarning: Duplicate class definition: " + className);
                     System.out.println("- found: " + node.getLoc());
@@ -2825,7 +2799,6 @@ public class TacConverter {
                             throw new RuntimeException("SNH");
                         }
                     }
-
                 } else {
                     System.out.println("\nWarning: Duplicate class definition: " + className);
                     System.out.println("- found: " + node.getLoc());
@@ -2837,7 +2810,6 @@ public class TacConverter {
                 CfgNode emptyNode = new CfgNodeEmpty();
                 myAtts.setCfg(new Cfg(emptyNode, emptyNode));
                 break;
-
             }
         }
 
@@ -2919,7 +2891,6 @@ public class TacConverter {
                 throw new RuntimeException("not yet");
                 //break;
             }
-
         }
 
         return myAtts;
@@ -2971,7 +2942,6 @@ public class TacConverter {
                 }
                 break;
             }
-
         }
 
         return myAtts;
@@ -3248,7 +3218,6 @@ public class TacConverter {
                 myAtts.setCfg(new Cfg(
                     attsList.getCfg().getHead(),
                     cfgNode));
-
             } else {
                 // -> non_empty_static_array_pair_list , static_scalar
 
@@ -3293,7 +3262,6 @@ public class TacConverter {
                 myAtts.setCfg(new Cfg(
                     attsScalar1.getCfg().getHead(),
                     cfgNode));
-
             } else {
                 // -> static_scalar
 
@@ -3431,7 +3399,6 @@ public class TacConverter {
                     myAtts.setCfg(new Cfg(
                         attsExpr.getCfg().getHead(),
                         endIfNode));
-
                 } else {
                     // -> T_IF ( expr ) : inner_statement_list new_elseif_list
                     //    new_else_single T_ENDIF ;
@@ -3625,7 +3592,6 @@ public class TacConverter {
                             this.breakTargetStack.size() - breakDepth);
                         connect(cfgNode, breakTarget);
                         myAtts.setCfg(new Cfg(cfgNode, cfgNode, CfgEdge.NO_EDGE));
-
                     } else {
                         // the expression is more complicated, we leave it unresolved;
                         // control could flow to any break target,
@@ -3678,7 +3644,6 @@ public class TacConverter {
                             this.continueTargetStack.size() - continueDepth);
                         connect(cfgNode, continueTarget);
                         myAtts.setCfg(new Cfg(cfgNode, cfgNode, CfgEdge.NO_EDGE));
-
                     } else {
                         // the expression is more complicated, we leave it unresolved;
                         // control could flow to any break target,
@@ -3687,7 +3652,6 @@ public class TacConverter {
                             this.file.getAbsolutePath() + ", line " + node.getLinenoLeft());
                         throw new RuntimeException();
                     }
-
                 }
                 break;
             }
@@ -3710,7 +3674,6 @@ public class TacConverter {
                     // this Cfg must not be connected with succeeding statements,
                     // so use "NO_EDGE"
                     myAtts.setCfg(new Cfg(emptyNode, emptyNode, CfgEdge.NO_EDGE));
-
                 } else if (secondSymbol == PhpSymbols.expr_without_variable) {
                     // T_RETURN expr_without_variable ;
 
@@ -3737,7 +3700,6 @@ public class TacConverter {
                         attsExpr.getCfg().getHead(),
                         cfgNode,
                         CfgEdge.NO_EDGE));
-
                 } else {
                     // T_RETURN cvar ;
 
@@ -3826,7 +3788,6 @@ public class TacConverter {
 
                     TacAttributes attsArray = this.w_cvar(node.getChild(2));
                     this.foreachHelper(node, attsArray, myAtts);
-
                 } else {
                     // -> T_FOREACH
                     //    ( expr_without_variable T_AS w_cvar foreach_optional_arg )
@@ -3921,7 +3882,6 @@ public class TacConverter {
                 myAtts.setCfg(new Cfg(
                     atts0.getCfg().getHead(),
                     cfgNode));
-
             } else {
                 // -> static_var_list , T_VARIABLE = static_scalar
 
@@ -3945,7 +3905,6 @@ public class TacConverter {
                 TacPlace varPlace = makePlace(firstChild.getLexeme());
                 CfgNode cfgNode = new CfgNodeStatic(varPlace, node);
                 myAtts.setCfg(new Cfg(cfgNode, cfgNode));
-
             } else {
                 // -> T_VARIABLE = static_scalar
 
@@ -3982,7 +3941,6 @@ public class TacConverter {
             myAtts.setCfg(new Cfg(
                 atts0.getCfg().getHead(),
                 atts2.getCfg().getTail()));
-
         } else {
             // -> global_var
             TacAttributes atts0 = this.global_var(firstChild);
@@ -4007,7 +3965,6 @@ public class TacConverter {
             makePlace(varLex, this.mainSymbolTable);
             CfgNode cfgNode = new CfgNodeGlobal(varPlace, node);
             myAtts.setCfg(new Cfg(cfgNode, cfgNode));
-
         } else if (node.getChild(1).getSymbol() == PhpSymbols.r_cvar) {
             // -> $ r_cvar
             // ex: global $$a
@@ -4021,7 +3978,6 @@ public class TacConverter {
             myAtts.setCfg(new Cfg(
                 attsCvar.getCfg().getHead(),
                 cfgNode));
-
         } else {
             // -> $ { expr }
             // ex: global ${$a} or something more complicated
@@ -4112,7 +4068,6 @@ public class TacConverter {
                                 cfgNode));
 
                             myAtts.setPlace(atts0.getPlace());
-
                         } else {
                             switch (node.getChild(3).getSymbol()) {
                                 // -> cvar = & w_cvar
@@ -4192,7 +4147,6 @@ public class TacConverter {
                                         myAtts.setCfg(new Cfg(
                                             attsCtor.getCfg().getHead(),
                                             callCfg.getTail()));
-
                                     } else {
                                         cfgNode = new CfgNodeAssignRef(
                                             (Variable) attsCvar.getPlace(),
@@ -4208,7 +4162,6 @@ public class TacConverter {
 
                                     break;
                                 }
-
                             }
                         }
 
@@ -4280,7 +4233,6 @@ public class TacConverter {
                         this.cvarOpExp(node, TacOperators.SR, myAtts);
                         break;
                     }
-
                 }
 
                 break;
@@ -4323,7 +4275,6 @@ public class TacConverter {
                     // be an object, but null ($x = new MyClass; => $x becomes null)
                     // myAtts.setPlace(tempPlace);
                     myAtts.setPlace(tempPlace);
-
                 } else {
                     // can't resolve the class name
                     myAtts.setCfg(attsCtor.getCfg());
@@ -4338,7 +4289,6 @@ public class TacConverter {
                 if (node.getChild(1).getSymbol() == PhpSymbols.T_INC) {
                     // -> rw_cvar T_INC
                     postIncDec(node, TacOperators.PLUS, myAtts);
-
                 } else {
                     // -> rw_cvar T_DEC
                     postIncDec(node, TacOperators.MINUS, myAtts);
@@ -4605,7 +4555,6 @@ public class TacConverter {
 
                         break;
                     }
-
                 }
 
                 break;
@@ -4977,7 +4926,6 @@ public class TacConverter {
                 attsCvar.getCfg().getHead(),
                 cfgNode));
             myAtts.setPlace(tempPlace);
-
         } else {
             // -> isset_variables , cvar
             TacAttributes attsVariables = this.isset_variables(firstChild);
@@ -5064,7 +5012,6 @@ public class TacConverter {
                     attsCvar.getCfg().getTail()));
 
                 myAtts.setPlace(attsCvar.getPlace());
-
             } else {
                 // variable function call
 
@@ -5111,7 +5058,6 @@ public class TacConverter {
                 callCfg.getTail()));
 
             myAtts.setPlace(tempVar);
-
         } else {
 
             // -> T_STRING T_PAAMAYIM_NEKUDOTAYIM static_or_variable_string ( function_call_parameter_list )
@@ -5140,7 +5086,6 @@ public class TacConverter {
                 CfgNodeCallUnknown callUnknown = new CfgNodeCallUnknown(
                     "<unknown>", attsList.getActualParamList(), tempVar, node, true);
                 callCfg = new Cfg(callUnknown, callUnknown);
-
             } else {
                 // try to backpatch
                 callCfg = this.functionCallHelper(
@@ -5175,7 +5120,6 @@ public class TacConverter {
             TacAttributes attsList = this.non_empty_function_call_parameter_list(firstChild);
             myAtts.setCfg(attsList.getCfg());
             myAtts.setActualParamList(attsList.getActualParamList());
-
         } else {
 
             // -> empty
@@ -5259,7 +5203,6 @@ public class TacConverter {
                     List<TacActualParam> paramList = attsList.getActualParamList();
                     paramList.add(new TacActualParam(attsExpr.getPlace(), false));
                     myAtts.setActualParamList(paramList);
-
                 } else if (thirdSymbol == PhpSymbols.cvar) {
 
                     // -> non_empty_function_call_parameter_list , cvar
@@ -5277,7 +5220,6 @@ public class TacConverter {
                     List<TacActualParam> paramList = attsList.getActualParamList();
                     paramList.add(new TacActualParam(attsCvar.getPlace(), false));
                     myAtts.setActualParamList(paramList);
-
                 } else {
                     // -> non_empty_function_call_parameter_list , & w_cvar
 
@@ -5366,7 +5308,6 @@ public class TacConverter {
                     myAtts.setCfg(new Cfg(
                         attsList.getCfg().getHead(),
                         cfgNode));
-
                 } else if (node.getChild(2).getSymbol() == PhpSymbols.T_BITWISE_AND) {
 
                     // -> non_empty_array_pair_list , & w_cvar
@@ -5385,7 +5326,6 @@ public class TacConverter {
                     myAtts.setCfg(new Cfg(
                         attsList.getCfg().getHead(),
                         cfgNode));
-
                 } else if (node.getChild(4).getSymbol() == PhpSymbols.expr) {
 
                     // -> non_empty_array_pair_list , expr T_DOUBLE_ARROW expr
@@ -5404,7 +5344,6 @@ public class TacConverter {
                     myAtts.setCfg(new Cfg(
                         attsList.getCfg().getHead(),
                         cfgNode));
-
                 } else {
 
                     // -> non_empty_array_pair_list , expr T_DOUBLE_ARROW & w_cvar
@@ -5446,7 +5385,6 @@ public class TacConverter {
                         cfgNode));
 
                     myAtts.setArrayIndex(0);
-
                 } else if (node.getChild(2).getSymbol() == PhpSymbols.expr) {
 
                     // -> expr T_DOUBLE_ARROW expr
@@ -5463,7 +5401,6 @@ public class TacConverter {
                     myAtts.setCfg(new Cfg(
                         attsExpr1.getCfg().getHead(),
                         cfgNode));
-
                 } else {
 
                     // -> expr T_DOUBLE_ARROW & w_cvar
@@ -5480,7 +5417,6 @@ public class TacConverter {
                     myAtts.setCfg(new Cfg(
                         attsExpr1.getCfg().getHead(),
                         cfgNode));
-
                 }
 
                 break;
@@ -5564,7 +5500,6 @@ public class TacConverter {
             myAtts.setCfg(atts0.getCfg());
             myAtts.setPlace(atts0.getPlace());
             myAtts.setIsKnownCall(atts0.isKnownCall());
-
         } else {
             // -> ref_list T_OBJECT_OPERATOR object_property
 
@@ -5596,7 +5531,6 @@ public class TacConverter {
                 myAtts.setCfg(new Cfg(atts0.getCfg().getHead(), atts2.getCfg().getTail()));
                 myAtts.setPlace(atts2.getPlace());
                 myAtts.setIsKnownCall(atts2.isKnownCall());
-
             } else {
 
                 leftPlace = this.memberPlace;
@@ -5608,7 +5542,6 @@ public class TacConverter {
                 myAtts.setPlace(atts2.getPlace());
                 myAtts.setIsKnownCall(atts2.isKnownCall());
             }
-
         }
 
         return myAtts;
@@ -5742,7 +5675,6 @@ public class TacConverter {
                     myAtts.setCfg(callCfg);
                     myAtts.setPlace(catchVar);
                     myAtts.setIsKnownCall(true);
-
                 } else {
                     // access to a member variable
                     CfgNode emptyNode = new CfgNodeEmpty();
@@ -5879,7 +5811,6 @@ public class TacConverter {
                     myAtts.setCfg(new Cfg(
                         atts0.getCfg().getHead(),
                         atts2.getCfg().getTail()));
-
                 } else {
                     // -> reference_variable { expr }
                     // seems to be identical to [dim_offset]
@@ -5892,7 +5823,6 @@ public class TacConverter {
                     myAtts.setCfg(new Cfg(
                         atts0.getCfg().getHead(),
                         atts2.getCfg().getTail()));
-
                 }
                 break;
             }
@@ -6043,7 +5973,6 @@ public class TacConverter {
 
                 break;
             }
-
         }
 
         return myAtts;
@@ -6500,7 +6429,6 @@ public class TacConverter {
                 myAtts.setCfg(atts1.getCfg());
                 break;
             }
-
         }
 
         return myAtts;
@@ -6634,7 +6562,6 @@ public class TacConverter {
                 listNode = node.getChild(1);
                 break;
             }
-
         }
 
         TacAttributes myAtts = this.case_list(listNode,
@@ -6659,7 +6586,6 @@ public class TacConverter {
             connect(emptyNode, nextTest);
             myAtts.setCfg(new Cfg(emptyNode, emptyNode));
             myAtts.setDefaultNode(null);
-
         } else if (node.getChild(1).getSymbol() == PhpSymbols.T_CASE) {
 
             // -> case_list T_CASE expr case_separator inner_statement_list
@@ -6686,7 +6612,6 @@ public class TacConverter {
                 attsCaseList.getCfg().getHead()));
 
             myAtts.setDefaultNode(attsCaseList.getDefaultNode());
-
         } else {
 
             // -> case_list T_DEFAULT case_separator inner_statement_list
@@ -6702,7 +6627,6 @@ public class TacConverter {
                 attsCaseList.getCfg().getHead()));
 
             myAtts.setDefaultNode(attsStatement.getCfg().getHead());
-
         }
 
         return myAtts;
@@ -6852,7 +6776,6 @@ public class TacConverter {
                 attsElement.getCfg().getTail()));
 
             myAtts.setArrayIndex(attsList.getArrayIndex() + 1);
-
         } else {
 
             // -> assignment_list_element

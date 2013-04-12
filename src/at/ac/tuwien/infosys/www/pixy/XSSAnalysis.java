@@ -229,7 +229,6 @@ public class XSSAnalysis
                     }
                 }
             }
-
         }
 
         retMe.setInitialGraphCount(graphcount);
@@ -238,7 +237,6 @@ public class XSSAnalysis
         retMe.setCustomSanitCount(hasCustomSanitCount);
         retMe.setCustomSanitThrownAwayCount(customSanitThrownAwayCount);
         return retMe;
-
     }
 
 //  ********************************************************************************
@@ -259,7 +257,6 @@ public class XSSAnalysis
 
             // add it to the list of sensitive sinks
             sinks.add(sink);
-
         } else if (cfgNodeX instanceof CfgNodeCallBuiltin) {
 
             // builtin function sinks
@@ -268,7 +265,6 @@ public class XSSAnalysis
             String functionName = cfgNode.getFunctionName();
 
             checkForSinkHelper(functionName, cfgNode, cfgNode.getParamList(), traversedFunction, sinks);
-
         } else if (cfgNodeX instanceof CfgNodeCallPrep) {
 
             CfgNodeCallPrep cfgNode = (CfgNodeCallPrep) cfgNodeX;
@@ -277,7 +273,6 @@ public class XSSAnalysis
             // user-defined custom sinks
 
             checkForSinkHelper(functionName, cfgNode, cfgNode.getParamList(), traversedFunction, sinks);
-
         } else {
             // not a sink
         }
