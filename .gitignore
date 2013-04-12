@@ -7,3 +7,7 @@
 
 # generated when running the unit tests
 graphs/
+
+# IDE files
+*.iml
+.idea
