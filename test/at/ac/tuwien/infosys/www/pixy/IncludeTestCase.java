@@ -54,15 +54,6 @@ extends TestCase {
 
         // collect sinks
         this.sinks = this.xssAnalysis.collectSinks();
-        /*
-        this.sinks = new LinkedList<Sink>();
-        for (TacFunction function : depAnalysis.getFunctions().values()) {
-            for (Iterator iter = function.getCfg().dfPreOrderIterator(); iter.hasNext(); ) {
-                CfgNode cfgNodeX = (CfgNode) iter.next();
-                XSSAnalysis.checkForSink(cfgNodeX, function, sinks);
-            }
-        }
-        */
         Collections.sort(sinks);
 
     }

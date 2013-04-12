@@ -27,7 +27,6 @@ extends MyAutomaton {
 
         // automaton to work on
         MyAcceptor my = aut;
-        //myAuto2Dot(my, "myauto.dot");
 
         my.mergeTransitions();
         my.toDot("aut1.dot");
@@ -89,12 +88,6 @@ extends MyAutomaton {
             my.removeState(state);
         }
 
-        // the resulting automaton
-        /*
-        Automaton result = my.toAutomaton();
-        new rationals.converters.DotCodec().output(result, new FileOutputStream("result.dot"));
-        */
-
         // the resulting, final regex
         Set<MyTransition> delta = my.getDelta();
         if (delta.size() != 1) {
@@ -102,12 +95,6 @@ extends MyAutomaton {
         }
         MyTransition trans = delta.iterator().next();
         String final_regex = (String) trans.getLabel();
-
-        /*
-        System.out.println("the final regex: " + final_regex);
-        Automaton aut = (new Parser(final_regex)).analyze();
-        new rationals.converters.DotCodec().output(aut, new FileOutputStream("result_final.dot"));
-        */
 
         return final_regex;
     }

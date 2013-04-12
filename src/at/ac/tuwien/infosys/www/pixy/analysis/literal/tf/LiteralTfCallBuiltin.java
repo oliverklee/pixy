@@ -110,11 +110,8 @@ extends TransferFunction {
         // finish
         command.append(")); ?>");
 
-        //System.out.println("command: " + command.toString());
-
         Literal resultLit = null;
         try {
-
             Process p = runtime.exec(MyOptions.phpBin);
             OutputStream outstream = p.getOutputStream();   // input for php
             InputStream instream = p.getInputStream();      // output of php

@@ -19,8 +19,6 @@ public class CallGraphNode {
 
     CallGraphNode(TacFunction function) {
         this.function = function;
-        //this.successors = new HashSet<CallGraphNode>();
-        //this.predecessors = new HashSet<CallGraphNode>();
         this.outEdges = new HashMap<CfgNodeCall,CallGraphNode>();
         this.inEdges = new HashMap<CfgNodeCall,CallGraphNode>();
     }

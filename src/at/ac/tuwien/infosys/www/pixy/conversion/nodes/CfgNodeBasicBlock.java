@@ -15,7 +15,6 @@ extends CfgNode {
         super(initialNode.getParseNode());
         this.containedNodes = new LinkedList<CfgNode>();
         this.containedNodes.add(initialNode);
-        //initialNode.setEnclosingBasicBlock(this);
     }
 
     // informs enclosed nodes that they are inside a basic block
@@ -27,7 +26,6 @@ extends CfgNode {
 
     public void addNode(CfgNode cfgNode) {
         this.containedNodes.add(cfgNode);
-        //cfgNode.setEnclosingBasicBlock(this);
     }
 
     public List<CfgNode> getContainedNodes() {

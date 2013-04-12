@@ -59,11 +59,6 @@ extends AnalysisType {
     public ConnectorComputation getConnectorComputation() {
         return this.connectorComp;
     }
-    /*
-    public CallGraph getCallGraph() {
-        return this.connectorComp.getCallGraph();
-    }
-    */
 
 //  *********************************************************************************
 //  OTHER ***************************************************************************

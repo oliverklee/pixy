@@ -459,7 +459,6 @@ public abstract class MyAutomaton {
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        //sb.append("A = ").append(this.alphabet().toString()).append("\n");
         sb.append("Q = ").append(this.states.toString()).append("\n");
         sb.append("I = ").append(this.initial.toString()).append("\n");
         sb.append("T = ").append(this.terminals.toString()).append("\n");

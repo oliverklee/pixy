@@ -133,9 +133,7 @@ public class TacConverter {
         this.functionStack = new LinkedList<TacFunction>();
         this.classStack = new LinkedList<TacClass>();
 
-        //this.functionCalls = new LinkedList<CfgNodeCallPrep>();
         this.functionCalls = new HashMap<TacFunction,List<CfgNodeCallPrep>>();
-        //this.methodCalls = new LinkedList<CfgNodeCallPrep>();
         this.methodCalls = new HashMap<TacFunction,List<CfgNodeCallPrep>>();
 
         this.voidPlace = new Literal("_void");
@@ -331,14 +329,6 @@ public class TacConverter {
                 if (succ.getPredecessors().size() > 1) {
                     // if the successor node has more than 1 predecessors,
                     // we must not continue with our basic block here
-
-                    /*
-                    System.out.println("has preds!!!");
-                    for (CfgNode xpre : succ.getPredecessors()) {
-                        System.out.println(xpre);
-                    }
-                    */
-
                     break;
 
                 }
@@ -348,12 +338,6 @@ public class TacConverter {
                 beforeSucc = succ;
                 succ = succ.getSuccessor(0);
             }
-            /*
-            System.out.println("succ != null: " + (succ != null));
-            System.out.println("allowed: " + allowedInBasicBlock(succ));
-            System.out.println("!visited: " + !visited.contains(succ));
-            */
-
 
             // if this is not a one-element basic block...
             // (i.e., does not create single-node basic blocks)
@@ -376,8 +360,6 @@ public class TacConverter {
                     CfgEdge blockToSucc = new CfgEdge(basicBlock, succ, CfgEdge.NORMAL_EDGE);
                     basicBlock.setOutEdge(0, blockToSucc);
                     succ.addInEdge(blockToSucc);
-                } else {
-                    // do nothing
                 }
             }
 
@@ -412,14 +394,10 @@ public class TacConverter {
         } else if (cfgNode instanceof CfgNodeAssignSimple ||
                 cfgNode instanceof CfgNodeAssignUnary ||
                 cfgNode instanceof CfgNodeAssignBinary ||
-                //cfgNode instanceof CfgNodeAssignArray ||
-                //cfgNode instanceof CfgNodeAssignRef ||
                 cfgNode instanceof CfgNodeDefine ||
                 cfgNode instanceof CfgNodeEmptyTest ||
-                //cfgNode instanceof CfgNodeGlobal ||
                 cfgNode instanceof CfgNodeIsset ||
                 cfgNode instanceof CfgNodeStatic
-                //|| cfgNode instanceof CfgNodeUnset
                 ) {
             return true;
         }
@@ -456,21 +434,8 @@ public class TacConverter {
         SymbolTable includedMainSymTab = includedMainFunc.getSymbolTable();
         SymbolTable includingSymTab = includingFunction.getSymbolTable();
 
-        /*
-        System.out.println("expanding symtab for function " + function.getName());
-        System.out.println("original including symtab:");
-        Dumper.dump(includingSymTab, function.getName());
-        System.out.println("expanding with the following contents:");
-        Dumper.dump(includedMainSymTab, "included main");
-        */
-
         includingSymTab.addAll(includedMainSymTab);
         includedMainSymTab = null;  // don't forget that you must trash it now
-
-        /*
-        System.out.println("resulting including symtab:");
-        Dumper.dump(includingSymTab, function.getName());
-        */
 
         // ADD FUNCTIONS ********************************************
 
@@ -495,7 +460,6 @@ public class TacConverter {
                 continue;
             }
 
-            // System.out.println("adding function " + includedFuncName);
             this.userFunctions.put(includedFuncName, includedFunc);
 
             // add method and function calls inside this function (for backpatching)
@@ -573,51 +537,16 @@ public class TacConverter {
 
         // no need to add anything for the special symbol table
 
-
-        // SUPERGLOBALS SYMBOLTABLE *********************
-        // also contains return variables
-
-        /*
-        System.out.println("original supersymtab:");
-        Dumper.dump(this.superSymbolTable, "supersymtab");
-        System.out.println("included supersymtab:");
-        Dumper.dump(includedTac.getSuperSymbolTable(), "supersymtab");
-        */
-
-        // no need to do this any longer, since the superSymbolTable is now kept
-        // in the program converter
-        //this.superSymbolTable.addAll(includedTac.getSuperSymbolTable());
-
-        /*
-        System.out.println("new supersymtab:");
-        Dumper.dump(this.superSymbolTable, "supersymtab");
-        */
-
         // CONSTANTS TABLE **********************
 
-        /*
-        System.out.println("original constants table:");
-        Dumper.dump(this.constantsTable);
-        System.out.println("included constants table:");
-        Dumper.dump(includedTac.getConstantsTable());
-        */
-
         this.constantsTable.addAll(includedTac.getConstantsTable());
-
-        /*
-        System.out.println("new constants table:");
-        Dumper.dump(this.constantsTable);
-        */
 
         // ADJUST INCLUDED INCLUDE NODES *********************
 
         List includedIncludeNodes = includedTac.getIncludeNodes();
         for (Iterator iter = includedIncludeNodes.iterator(); iter.hasNext();) {
             CfgNodeInclude includedIncludeNode = (CfgNodeInclude) iter.next();
-            // System.out.println("included include node: " + includedIncludeNode.getIncludeMe());
             if (includedIncludeNode.getIncludeFunction().isMain()) {
-                // System.out.println("lies inside the main function!");
-                // System.out.println("re-adjusting to " + function.getName());
                 includedIncludeNode.setIncludeFunction(includingFunction);
             }
         }
@@ -860,7 +789,6 @@ public class TacConverter {
             if (var.isTemp()) {
                 continue;
             }
-            // System.out.println(var.toString());
             varNum++;
         }
 
@@ -881,7 +809,6 @@ public class TacConverter {
             } else {
                 globalVarsReal++;
             }
-            //System.out.print(globalVar.getName() + ", ");
         }
 
         if (MyOptions.optionV) {
@@ -1009,11 +936,7 @@ public class TacConverter {
     public Variable getFuncVariable(String functionName, String varName) {
         TacFunction function = this.userFunctions.get(functionName);
         Variable retMe = function.getVariable(varName);
-        /*
-        if (retMe == null) {
-            throw new RuntimeException("Variable " + varName + " in function " +
-                    functionName + " does not exist");
-        }*/
+
         return retMe;
     }
 
@@ -1124,56 +1047,12 @@ public class TacConverter {
             }
             return succ;
         } else {
-
             // this node is a dead end: don't do anything;
             // why you should not remove it: might be the first
             // statement after a branch, would screw up the CFG
-            /*
-            for (Iterator iter = inEdges.iterator(); iter.hasNext(); ) {
-                iter.next();
-                iter.remove();
-            }
-            */
             return null;
         }
     }
-
-    // old version: recursive (stack overflow)
-
-    /*
-    private void optimize(Cfg cfg) {
-        CfgNode startHere;
-        Set<CfgNode> visited = new HashSet<CfgNode>();
-        // remove leading empty nodes
-        for (startHere = cfg.getHead(); startHere instanceof CfgNodeEmpty; ) {
-            startHere = removeCfgNode(startHere);
-        }
-        cfg.setHead(startHere);
-
-        this.optimize(startHere, visited);
-    }
-
-    private void optimize(CfgNode cfgNode, Set<CfgNode> visited) {
-
-        if (cfgNode instanceof CfgNodeEmpty) {
-            this.removeCfgNode(cfgNode);
-        }
-
-        // mark this node as visited
-        visited.add(cfgNode);
-
-        // handle successors
-        for (int i = 0; i < 2; i++) {
-            CfgEdge outEdge = cfgNode.getOutEdge(i);
-            if (outEdge != null) {
-                CfgNode succ = outEdge.getDest();
-                if (!visited.contains(succ)) {
-                    optimize(succ, visited);
-                }
-            }
-        }
-    }
-    */
 
 //  transformGlobals(Cfg) **********************************************************
 
@@ -1258,8 +1137,6 @@ public class TacConverter {
                 continue;
             }
 
-
-
             // info retrieval *******
 
             // retrieve a set of variables that have been declared as "global";
@@ -1289,9 +1166,6 @@ public class TacConverter {
                         // be an easier way to declare array elements as global;
 
                         // simply ignore for now
-
-                        //System.out.println(cfgNode.getLoc());
-                        //throw new RuntimeException("SNH: " + varName);
                     }
                 } else {
                     declaredAsGlobal.put(varName, correspondingGlobal);
@@ -1344,9 +1218,6 @@ public class TacConverter {
 // makePlace(String, SymbolTable) **************************************************
 
     private Variable makePlace(String varName, SymbolTable symbolTable) {
-
-        // System.out.println("called makePlace with: " + varName);
-
         // lookup variable in given symbol table
         Variable variable = symbolTable.getVariable(varName);
 
@@ -1481,12 +1352,6 @@ public class TacConverter {
     // className already exists, it returns the already existing method;
     // otherwise, it adds the method and returns null
     private TacFunction addMethod(String methodName, String className, TacFunction method) {
-        /*
-        System.out.println("adding method:");
-        System.out.println("- methodName: " + methodName);
-        System.out.println("- method: " + method);
-        System.out.println("- className: " + className);
-        */
         Map<String, TacFunction> class2Method = this.userMethods.get(methodName);
         if (class2Method == null) {
             class2Method = new HashMap<String,TacFunction>();
@@ -2024,17 +1889,12 @@ public class TacConverter {
         // update backpatching list (if necessary)
         if (backpatch) {
             if (isMethod) {
-                //this.methodCalls.add(prep);
                 this.addMethodCall(enclosingFunction, prep);
                 call.setCalleeClassName(className);
             } else {
-                //this.functionCalls.add(prep);
                 this.addFunctionCall(enclosingFunction, prep);
             }
         }
-
-        // inform the current function that it contains this call
-        //enclosingFunction.addCall(call);
 
         return new Cfg(prep, callRet);
     }
@@ -2441,8 +2301,6 @@ public class TacConverter {
 
                 TacPlace functionNamePlace = prepNode.getFunctionNamePlace();
 
-                //System.out.println("backpatching: " + callNode.getLoc());
-
                 // note: only methods with literal names have been added to the backpatching list
 
                 // note: if some called function or method can't be found, it could
@@ -2491,10 +2349,6 @@ public class TacConverter {
                                         resolved = true;
                                     } else {
                                         // type analysis has made a mistake
-                                        //System.out.println(callNode.getLoc());
-                                        //System.out.println("Inferred type: " + type.getClassName());
-                                        //System.out.println("Possible types: " + class2Method.keySet());
-                                        //throw new RuntimeException("Error during type inference");
                                     }
                                 }
                             }
@@ -2582,7 +2436,6 @@ public class TacConverter {
         for (List<CfgNodeCallPrep> callList : this.functionCalls.values()) {
             for (CfgNodeCallPrep prepNode : callList) {
 
-                //CfgNodeCallPrep prepNode = (CfgNodeCallPrep) iter.next();
                 CfgNodeCall callNode = prepNode.getCallNode();
                 CfgNodeCallRet retNode = (CfgNodeCallRet) callNode.getOutEdge(0).getDest();
 
@@ -2916,8 +2769,6 @@ public class TacConverter {
                     System.out.println("- using: " + existingClass.getLoc());
                 }
 
-                //System.out.println(c.dump());
-
                 // put an empty node in place of class declarations
                 // (we don't need the declaration in the resulting cfg)
                 CfgNode emptyNode = new CfgNodeEmpty();
@@ -2931,13 +2782,6 @@ public class TacConverter {
                 // collect information about the class and register
                 // the TacClass in userClasses
                 String className = node.getChild(1).getLexeme().toLowerCase();
-
-                /*
-                String superClassName = node.getChild(3).getLexeme().toLowerCase();
-                System.out.println("\nWarning: extends (not supported yet)");
-                System.out.println("- " + className + " extends " + superClassName);
-                System.out.println("- " + node.getLoc());
-                */
 
                 TacClass c = new TacClass(className, node);
                 TacClass existingClass = this.userClasses.get(className);
@@ -5078,22 +4922,6 @@ public class TacConverter {
 
                 myAtts.setPlace(tempPlace);
 
-                /*
-                List<TacActualParam> paramList = new LinkedList<TacActualParam>();
-                paramList.add(new TacActualParam(attsList.getPlace(), false));
-
-                Cfg execCallCfg = this.functionCallHelper(
-                    "shell_exec", false, null, paramList,
-                    tempPlace, true, node);
-
-                connect(attsList.getCfg(), execCallCfg.getHead());
-                myAtts.setCfg(new Cfg(
-                    attsList.getCfg().getHead(),
-                    execCallCfg.getTail()));
-
-                myAtts.setPlace(tempPlace);
-                */
-
                 break;
             }
 
@@ -5398,102 +5226,7 @@ public class TacConverter {
                 // LATER: if Literals Propagation succeeds in resolving the
                 // function's name, it has to adjust the following assignment
                 // node responsible for catching the function's return value
-
             }
-
-
-
-
-
-
-
-            /*
-
-            TacAttributes attsList = this.function_call_parameter_list(node.getChild(2));
-            TacAttributes attsCvar = this.cvar(node.getChild(0), true, attsList.getActualParamList());
-
-            TacPlace functionNamePlace = attsCvar.getPlace();
-
-            // the sub-cfg for this call
-            Cfg callCfg;
-            if (functionNamePlace.equals(this.memberPlace)) {
-                // this is a call to an object's method
-
-                // quick hack: find out if this is a call to $this->...
-                String className = null;
-                try {
-                    ParseNode t_variable_node = node.getChild(0).getChild(0).getChild(0).getChild(0).getChild(0);
-                    if (t_variable_node.getSymbol() == PhpSymbols.T_VARIABLE) {
-                        if (t_variable_node.getLexeme().equals("$this")) {
-                            className = this.classStack.getLast().getName();
-                        }
-                    }
-                } catch (NullPointerException e) {
-                    // do nothing
-                }
-
-                // quick hack: get the method's name
-                String methodName = null;
-                try {
-                    ParseNode nameNode = node.getChild(0).getChild(2).
-                        getChild(0).getChild(0).getChild(0).getChild(0);
-                    if (nameNode.getSymbol() == PhpSymbols.T_STRING) {
-                        methodName = nameNode.getLexeme().toLowerCase() + InternalStrings.methodSuffix;
-                    }
-                } catch (NullPointerException e) {
-                    // do nothing
-                }
-
-                if (methodName == null) {
-                    // create the usual dummy call to someMethod, without backpatching
-                    //callCfg = this.functionCallHelper(
-                    //        InternalStrings.unknownMethodName, true, this.someMethod,
-                    //        attsList.getActualParamList(), tempPlace, false, node);
-                    // simply use a cfgnodecallunknown
-                    CfgNodeCallUnknown callUnknown = new CfgNodeCallUnknown(
-                            functionNamePlace.toString(), attsList.getActualParamList(),
-                            tempPlace, node, true);
-                    callCfg = new Cfg(callUnknown, callUnknown);
-
-                } else {
-                    // try to backpatch
-                    callCfg = this.functionCallHelper(
-                            methodName, true, null, attsList.getActualParamList(),
-                            tempPlace, true, node, className, attsCvar.getPlace().getVariable());
-                }
-
-            } else {
-                // this is not a call to an object's method,
-                // but a normal variable function call
-
-                // DON'T add it to the global backpatching list:
-                // backpatching won't be able to resolve the name
-                 //callCfg = this.functionCallHelper(
-                 //functionNamePlace.toString(), false, this.unknownFunction, attsList.getActualParamList(),
-                 //tempPlace, false, node);
-
-                // simply use a cfgnodecallunknown
-                CfgNodeCallUnknown callUnknown = new CfgNodeCallUnknown(
-                        functionNamePlace.toString(), attsList.getActualParamList(),
-                        tempPlace, node, false);
-                callCfg = new Cfg(callUnknown, callUnknown);
-
-                // LATER: if Literals Propagation succeeds in resolving the
-                // function's name, it has to adjust the following assignment
-                // node responsible for catching the function's return value
-            }
-
-            connect(attsCvar.getCfg(), attsList.getCfg());
-            connect(attsList.getCfg(), callCfg.getHead());
-
-            myAtts.setCfg(new Cfg(
-                attsCvar.getCfg().getHead(),
-                callCfg.getTail()));
-
-            myAtts.setPlace(tempPlace);
-            */
-
-
         } else if (node.getChild(1).getSymbol() == PhpSymbols.T_OPEN_BRACES) {
 
             // -> T_STRING ( function_call_parameter_list )
@@ -5946,12 +5679,6 @@ public class TacConverter {
                 atts2.getCfg().getTail()));
             myAtts.setPlace(atts2.getPlace());
             myAtts.setIsKnownCall(atts2.isKnownCall());
-
-            /* OLD:
-            // optimistic approximation
-            CfgNode emptyNode = new CfgNodeEmpty();
-            myAtts.setCfg(new Cfg(emptyNode, emptyNode));
-            myAtts.setPlace(this.memberPlace);*/
         }
 
         return myAtts;
@@ -6447,8 +6174,6 @@ public class TacConverter {
             case PhpSymbols.T_DOUBLE_QUOTE:
             {
                 TacAttributes attsList = this.encaps_list(node.getChild(1));
-                //myAtts.setCfg(oldAttsList.getCfg());
-                //myAtts.setPlace(oldAttsList.getPlace());
 
                 EncapsList encapsList = attsList.getEncapsList();
                 TacAttributes deepList = encapsList.makeAtts(newTemp(), node);
@@ -6472,8 +6197,6 @@ public class TacConverter {
             case PhpSymbols.T_START_HEREDOC:
             {
                 TacAttributes attsList = this.encaps_list(node.getChild(1));
-                //myAtts.setCfg(attsList.getCfg());
-                //myAtts.setPlace(attsList.getPlace());
 
                 EncapsList encapsList = attsList.getEncapsList();
                 TacAttributes deepList = encapsList.makeAtts(newTemp(), node);
@@ -7153,17 +6876,6 @@ public class TacConverter {
             TacAttributes attsCaseList = this.case_list(node.getChild(0),
                     switchPlace, attsExpr.getCfg().getHead(), attsStatement.getCfg().getHead());
 
-            // buggy implementation: didn't provide valid right operand to CfgNodeIf
-            /*
-            CfgNode ifNode = new CfgNodeIf(
-                switchPlace, attsExpr.getPlace(), TacOperators.IS_EQUAL, node.getChild(2));
-
-            connect(attsExpr.getCfg(), ifNode);
-            connect(ifNode, attsStatement.getCfg(), CfgEdge.TRUE_EDGE);
-            connect(ifNode, nextTest, CfgEdge.FALSE_EDGE);
-            connect(attsStatement.getCfg(), nextStatement);
-            */
-
             Variable tempPlace = this.newTemp();
             CfgNode compareNode = new CfgNodeAssignBinary(
                 tempPlace, switchPlace, attsExpr.getPlace(), TacOperators.IS_EQUAL, node.getChild(2));
@@ -7433,23 +7145,4 @@ public class TacConverter {
 
         return myAtts;
     }
-
-// *********************************************************************************
-// (DE-)SERIALIZATION HELPER *******************************************************
-// *********************************************************************************
-// obsolete
-
-    /*
-    // call this method before serialization
-    public void beforeSerialization() {
-        // rescue static value (not stored by serialization)
-        this.maxNodeId = this.getMaxNodeId();
-    }
-
-    // call this method after deserialization
-    public void afterDeserialization() {
-        // restore static value
-        CfgNode.maxId = this.maxNodeId;
-    }
-    */
 }

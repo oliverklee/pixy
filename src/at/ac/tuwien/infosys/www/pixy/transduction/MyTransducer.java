@@ -52,66 +52,7 @@ extends MyAutomaton {
                     new MyTransducerRelation(origtr.getIn(), origtr.getOut()),
                     map.get(t.end())));
         }
-
     }
-
-    /* getPoint needs an update
-    public static MyTransducer type1Marker(String beta) {
-
-        // initialize alphabet (necessary for "." symbol)
-        MyAlphabet sigma = new MyAlphabet();
-
-        // construct an automaton for alpha = sigma*beta
-        String sigmaStarBeta = sigma.getPoint() + "*" + beta;
-        rationals.Automaton ralpha = null;
-        try {
-            ralpha = (new rationals.converters.analyzers.Parser(sigmaStarBeta)).analyze();
-        } catch (rationals.converters.ConverterException e) {
-            throw new RuntimeException("SNH");
-        }
-        MyAcceptor alpha = new MyAcceptor(ralpha);
-
-        // LATER: alpha has to be deterministic
-
-        // construct a transducer from this automaton: chi = Id(alpha)
-        MyTransducer chi = new MyTransducer(alpha);
-
-        // construct tau from chi: start with clone
-        MyTransducer tau = new MyTransducer(chi);
-
-        // memorize final states of tau
-        Set<MyState> oldTerminals = new HashSet<MyState>(tau.terminals);
-
-        // make all states of tau terminal
-        for (MyState state : tau.states) {
-            tau.setTerminal(state, true);
-        }
-
-        // perform the "copy-translation" for each previously terminal state of tau
-        for (MyState q : oldTerminals) {
-
-            // make state copy
-            MyState q2 = tau.addState(false, true);  // LATER: could the new state be initial?
-
-            // turn all transitions leaving from q into outgoing transitions of q2,
-            // and remove them
-            // LATER: what about loops in q?
-            Set<MyTransition> q_out = tau.getOutgoingNoLoop(q);
-            for (MyTransition t : q_out) {
-                tau.addTransition(new MyTransition(q2, t.getLabel(), t.getEnd()));
-                tau.removeTransition(t);
-            }
-
-            // connect q with q2
-            tau.addTransition(new MyTransition(q, new MyTransducerRelation(null, "#"),q2));
-
-            // make q non-terminal
-            tau.setTerminal(q, false);
-        }
-
-        return tau;
-    }
-    */
 
     // label2Int: input/output label -> Integer
     public void toFsmFile(String filename, Map<Object,Integer> label2Int)

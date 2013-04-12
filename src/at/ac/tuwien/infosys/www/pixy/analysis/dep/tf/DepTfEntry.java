@@ -61,6 +61,5 @@ extends TransferFunction {
         }
 
         return out;
-
     }
 }

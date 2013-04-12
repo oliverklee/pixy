@@ -90,11 +90,5 @@ extends TacPlace {
     // CAUTION: hashCode has to be set to 0 and recomputed if the element is changed
     public int hashCode() {
         return this.label.hashCode();
-        /*
-        if (this.hashCode == 0) {
-            this.hashCode = this.label.hashCode();
-        }
-        return this.hashCode;
-        */
     }
 }

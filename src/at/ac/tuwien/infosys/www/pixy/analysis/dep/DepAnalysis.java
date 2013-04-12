@@ -338,13 +338,6 @@ extends InterAnalysis {
 
         // trying to declare something global that doesn't occur in the main function?
         if (realGlobal == null) {
-
-            /*
-            System.out.println("Warning: accessing non-existent global with 'global' keyword: " + globalOp.getName());
-            System.out.println("File: " + cfgNodeX.getFileName());
-            System.out.println("Line: " + cfgNodeX.getOrigLineno());
-            */
-
             // we must not simply ignore this case, since the corresponding
             // local's taint/label would remain harmless/harmless (the default value for locals);
             // => approximate by assigning unknown/unknown to the operand
@@ -543,31 +536,7 @@ extends InterAnalysis {
                     System.out.println();
 
                 }
-
-                /*
-                // print call nodes
-                List callNodes = problem.getCallNodes();
-                if (!callNodes.isEmpty()) {
-                    System.out.println("called by: ");
-                    for (Iterator callsIter = callNodes.iterator(); callsIter.hasNext();) {
-                        CfgNodeCall callNode = (CfgNodeCall) callsIter.next();
-                        System.out.println(callNode.getFileName() + ", line " + callNode.getOrigLineno());
-                    }
-                }
-
-                  // print include chain
-                   List includeChain = IncDomAnalysis.computeChain(sink.getFunction(), sink.getNode());
-                   if (!includeChain.isEmpty()) {
-                   System.out.println("include chain:");
-                   for (Iterator iterator = includeChain.iterator(); iterator
-                   .hasNext();) {
-                   CfgNode includeNode = (CfgNode) iterator.next();
-                   System.out.println(includeNode.getFileName() + ", " + includeNode.getOrigLineno());
-                   }
-                   }
-                   */
             }
-            //System.out.println(i);
         }
 
         this.finishedDetection = true;
@@ -617,177 +586,6 @@ extends InterAnalysis {
 
         if (true)
         throw new RuntimeException("dummy method");
-
-        /*
-        // sort sinks by line;
-        // EFF: only sort sinks that have a reported vulnerability
-        Collections.sort(this.sinks);
-
-        // total vulnerability counter
-        int vulnCount = 0;
-
-        // graph shape counters
-        int treeCount = 0;
-        int dagCount = 0;
-        int cycleCount = 0;
-
-        // leaf stringness counters
-        // note: this is only counted for trees and dags
-        int stringLeafs = 0;
-        int nonStringLeafs = 0;
-
-        // map operation name -> number of occurrences
-        Map<String,Integer> opMap = new HashMap<String,Integer>();
-
-        // where to dump the taint graphs...
-        String graphPath = this.graphDirectory();
-
-        // taint graph will need this
-        Variable taintedVar = this.tac.getSuperGlobal("$_TAINTED");
-
-        // for each sink...
-        List<ExTaintSink> reportedSinks = new LinkedList<ExTaintSink>();
-        for (Iterator iter = this.sinks.iterator(); iter.hasNext(); ) {
-
-            ExTaintSink sink = (ExTaintSink) iter.next();
-
-            // get vulnerabilities for this sink
-            TacFunction mainFunc = (TacFunction) this.functions.get(InternalStrings.mainFunctionName);
-            SymbolTable mainSymTab = mainFunc.getSymbolTable();
-            List<ExTaintProblem> vulns;
-            vulns = sink.detectVulns(
-                    this.analysisInfo, mainSymTab, this.analysisType, taintedVar, this, this.type);
-
-            // if this sink has no vulnerabilities: continue with the next one
-            if (vulns.isEmpty()) {
-                continue;
-            }
-
-            reportedSinks.add(sink);
-
-            // report vulnerabilities for this sink
-            for (Iterator vulnsIter = vulns.iterator(); vulnsIter.hasNext(); ) {
-
-                // increase vuln counter
-                vulnCount++;
-
-                ExTaintProblem vuln = (ExTaintProblem) vulnsIter.next();
-                System.out.println();
-                System.out.println("Tainted variable " + vuln.getPlace() +
-                        " entering sensitive sink in " + sink.getFileName() +
-                        ", line " + sink.getLineNo());
-                List callNodes = vuln.getCallNodes();
-
-                // dump taint graph for this variable
-                vuln.dumpGraph("tg" + vulnCount, graphPath);
-
-                if (this.type.equals("string") || this.type.equals("stringfile")) {
-
-                    StringGraph stringGraph = vuln.getStringGraph();
-
-                    // shape statistics and leaf stringness
-                    if (stringGraph.isTree()) {
-                        System.out.println("is a tree");
-                        treeCount++;
-                        if (stringGraph.leafsAreStrings()) {
-                            System.out.println("leafs are strings");
-                            stringLeafs++;
-                        } else {
-                            System.out.println("leafs are not strings");
-                            nonStringLeafs++;
-                        }
-                    } else if (stringGraph.hasCycles()) {
-                        System.out.println("has cycles");
-                        cycleCount++;
-                    } else {
-                        System.out.println("is a dag");
-                        dagCount++;
-                        if (stringGraph.leafsAreStrings()) {
-                            System.out.println("leafs are strings");
-                            stringLeafs++;
-                        } else {
-                            System.out.println("leafs are not strings");
-                            nonStringLeafs++;
-                        }
-                    }
-
-                    // operation counters
-                    Map<String,Integer> singleOpMap = stringGraph.getOpMap();
-                    for (Map.Entry<String, Integer> entry : singleOpMap.entrySet()) {
-                        String opName = entry.getKey();
-                        Integer opCount = entry.getValue();
-                        System.out.println(opName + ": " + opCount);
-                        // update totals map
-                        Integer totalCount = opMap.get(opName);
-                        if (totalCount == null) {
-                            totalCount = new Integer(opCount);
-                        } else {
-                            totalCount = new Integer(totalCount.intValue() + opCount);
-                        }
-                        opMap.put(opName, totalCount);
-                    }
-
-                    // dump automaton; this also eliminates cycles!
-                    stringGraph.dumpDotAuto("auto" + vulnCount, graphPath);
-
-                }
-
-                // print call nodes
-                if (!callNodes.isEmpty()) {
-                    System.out.println("called by: ");
-                    for (Iterator callsIter = callNodes.iterator(); callsIter.hasNext();) {
-                        CfgNodeCall callNode = (CfgNodeCall) callsIter.next();
-                        System.out.println(callNode.getFileName() + ", line " + callNode.getOrigLineno());
-                    }
-                }
-
-                // print include chain
-                List includeChain = IncDomAnalysis.computeChain(sink.getFunction(), sink.getNode());
-                if (!includeChain.isEmpty()) {
-                    System.out.println("include chain:");
-                    for (Iterator iterator = includeChain.iterator(); iterator
-                            .hasNext();) {
-                        CfgNode includeNode = (CfgNode) iterator.next();
-                        System.out.println(includeNode.getFileName() + ", " + includeNode.getOrigLineno());
-                    }
-                }
-
-            }
-        }
-
-        this.finishedDetection = true;
-        if (false) {
-            System.out.println("cleaning taint analysis...");
-            this.clean();
-        } else {
-            System.out.println("skipping clean-up");
-        }
-
-        if (this.type.equals("string") || this.type.equals("stringfile")) {
-
-            // print graph shape statistics
-            System.out.println();
-            System.out.println("trees:        " + treeCount);
-            System.out.println("dags:         " + dagCount);
-            System.out.println("cycle graphs: " + cycleCount);
-
-            // leaf stringness
-            System.out.println();
-            System.out.println("with string leafs:     " + stringLeafs);
-            System.out.println("with non-string leafs: " + nonStringLeafs);
-
-            // print total operation counters
-            System.out.println();
-            for (Map.Entry<String, Integer> entry : opMap.entrySet()) {
-                String opName = entry.getKey();
-                Integer opCount = entry.getValue();
-                System.out.println(opName + ": " + opCount);
-            }
-        }
-
-        System.out.println("\nDetected " + vulnCount + " vulnerabilities");
-
-        */
     }
 
 //  recycle ************************************************************************
@@ -903,14 +701,6 @@ extends InterAnalysis {
             // there is not a single context for this node
             return false;
         }
-        // old, over-conservative check which could lead to an unnecessarily
-        // large number of warnings
-        /*
-        if (phi.size() != numContexts) {
-            // there are missing contexts in this phi map
-            return false;
-        }
-        */
         for (LatticeElement elem : phi.values()) {
             if (elem == null) {
                 // a null lattice element?

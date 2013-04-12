@@ -51,34 +51,6 @@ public class MustAliasGroup {
         return this.group.contains(var);
     }
 
-    // returns true if this group contains at least one local variable;
-    // false otherwise
-    /*
-    public boolean containsLocals() {
-        for (Iterator iter = this.group.iterator(); iter.hasNext();) {
-            Variable var = (Variable) iter.next();
-            if (var.isLocal()) {
-                return true;
-            }
-        }
-        return false;
-    }
-    */
-
-    // returns true if this group contains at least one global variable;
-    // false otherwise
-    /*
-    public boolean containsGlobals() {
-        for (Iterator iter = this.group.iterator(); iter.hasNext();) {
-            Variable var = (Variable) iter.next();
-            if (var.isGlobal()) {
-                return true;
-            }
-        }
-        return false;
-    }
-    */
-
     // returns an arbitrary global variable from this group, or null if there
     // are no global variables in this group
     public Variable getArbitraryGlobal() {
@@ -90,20 +62,6 @@ public class MustAliasGroup {
         }
         return null;
     }
-
-    // returns an arbitrary local variable from this group, or null if there
-    // are no local variables in this group
-    /*
-    public Variable getArbitraryLocal() {
-        for (Iterator iter = this.group.iterator(); iter.hasNext();) {
-            Variable var = (Variable) iter.next();
-            if (var.isLocal()) {
-                return var;
-            }
-        }
-        return null;
-    }
-    */
 
     // returns all local variables in this group
     public Set<Variable> getLocals() {

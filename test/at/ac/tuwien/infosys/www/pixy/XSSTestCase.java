@@ -43,8 +43,6 @@ extends TestCase {
         TacConverter tac = checker.initialize().getTac();
         checker.analyzeTaint(tac, functional);
         this.vulnList = checker.gta.detectVulns();
-        //this.depAnalysis = checker.gta.depAnalysis;
-
     }
 
     private void performTest(String testNum, List<Integer> exp) {

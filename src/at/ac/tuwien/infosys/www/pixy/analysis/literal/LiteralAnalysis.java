@@ -61,18 +61,6 @@ extends InterAnalysis {
         this.initialValue = this.lattice.getBottom();
     }
 
-//  traverseCfg ********************************************************************
-
-    /*protected void traverseCfg(Cfg cfg, TacFunction traversedFunction) {
-
-        for (Iterator iter = cfg.dfPreOrder().iterator(); iter.hasNext(); ) {
-
-            CfgNode cfgNodeX = (CfgNode) iter.next();
-            this.interAnalysisInfo.add(cfgNodeX, this.makeAnalysisNode(
-                    cfgNodeX, this.createTf(cfgNodeX, traversedFunction, cfgNodeX)));
-        }
-    }*/
-
 //  ********************************************************************************
 //  TRANSFER FUNCTION GENERATORS ***************************************************
 //  ********************************************************************************
@@ -149,8 +137,6 @@ extends InterAnalysis {
         CfgNodeCallPrep cfgNode = (CfgNodeCallPrep) cfgNodeX;
         TacFunction calledFunction = cfgNode.getCallee();
         TacFunction callingFunction = traversedFunction;
-
-        //System.out.println("fcall: " + callingFunction.getName() + " -> " + calledFunction.getName());
 
         // call to an unknown function;
         // should be prevented in practice (all functions should be
@@ -256,13 +242,6 @@ extends InterAnalysis {
 
         // trying to declare something global that doesn't occur in the main function?
         if (realGlobal == null) {
-
-            /*
-            System.out.println("Warning: accessing non-existent global with 'global' keyword: " + globalOp.getName());
-            System.out.println("File: " + cfgNodeX.getFileName());
-            System.out.println("Line: " + cfgNodeX.getOrigLineno());
-            */
-
             // we must not simply ignore this case, since the corresponding
             // local's literal would remain "NULL" (the default value for locals);
             // => approximate by assigning TOP to the operand
@@ -349,56 +328,7 @@ extends InterAnalysis {
     // the condition clearly evaluates to a known boolean; further iterations
     // might change this
     protected Boolean evalIf(CfgNodeIf ifNode, LatticeElement inValueX) {
-
         return null;
-
-        // the following code is quite dangerous; in some cases, it could
-        // take incorrect decisions (e.g, if object-oriented stuff is used
-        // in branching conditions)
-        /*
-        TacPlace left = ifNode.getLeftOperand();
-        TacPlace right = ifNode.getRightOperand();
-
-        LiteralLatticeElement inValue = (LiteralLatticeElement) inValueX;
-
-        // "if node" tests always have the form "place == <true or false>"
-        if (ifNode.getOperator() != TacOperators.IS_EQUAL) {
-            throw new RuntimeException("SNH");
-        }
-
-        // System.out.println("evaluating 'if' condition: " + left + " == " + right);
-
-        // left operand's literal
-        Literal leftLit = inValue.getLiteral(left);
-
-        if (leftLit.equals(Literal.TOP)) {
-            // the literal of the left operand is unknown, so the result of
-            // the evaluation is unknown
-            // System.out.println("left operand: unknown literal");
-            return null;
-        }
-
-        // right operand's literal:
-        // can only by true or false (that's what the TacConverter promised)
-        Literal rightLit = null;
-        if (right == Constant.TRUE) {
-            rightLit = Literal.TRUE;
-        } else if (right == Constant.FALSE) {
-            rightLit = Literal.FALSE;
-        } else {
-            throw new RuntimeException("SNH: " + right + " is neither true nor false");
-        }
-
-        Literal leftBool = leftLit.getBoolValueLiteral();
-        if (leftBool == Literal.TOP) {
-            // System.out.println("can't determine boolean value of left operand");
-            return null;
-        } else if (leftBool == rightLit) {
-            return Boolean.TRUE;
-        } else {
-            return Boolean.FALSE;
-        }
-        */
     }
 
     // evaluates the given if-condition using the folded incoming values

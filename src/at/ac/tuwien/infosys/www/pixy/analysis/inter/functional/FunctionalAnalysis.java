@@ -48,8 +48,6 @@ extends AnalysisType {
             // get call node
             CfgNodeCall callNode = (CfgNodeCall) iter.next();
 
-            //System.out.println("found call: " + callNode.getOrigLineno());
-
             // find out possible contexts of the callee;
             // example: caller has two contexts c1 and c2; under both contexts,
             // the incoming value at the call node is e1; for the callee,
@@ -59,12 +57,6 @@ extends AnalysisType {
             FunctionalAnalysisNode analysisNode = (FunctionalAnalysisNode)
                 this.enclosedAnalysis.getInterAnalysisInfo().getAnalysisNode(callNode);
             if (analysisNode == null) {
-                // LATER: might be useful debugging info
-                /*
-                System.out.println(
-                    "Warning: check for unreachable call to " + exitedFunction.getName());
-                System.out.println("File: " + callNode.getFileName() + ", line " + callNode.getOrigLineno());
-                */
                 continue;
             }
             Set<FunctionalContext> calleeContexts =

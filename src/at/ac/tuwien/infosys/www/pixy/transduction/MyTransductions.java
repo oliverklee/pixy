@@ -52,7 +52,6 @@ public class MyTransductions {
 
 
         // read result back into an Automaton
-        // Automaton result = fromFSM("result.txt");
         Automaton result = Automaton.fromFsmTools(tempDir + "result.txt");
 
         return result;

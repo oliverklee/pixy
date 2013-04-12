@@ -25,8 +25,6 @@ extends TransferFunction {
         // only has to be done if the output element is different,
         // since in that case changing the output element would also
         // affect the input element (would be wrong)
-
-        // System.out.println("TransferFunctionId");
         return in;
     }
 

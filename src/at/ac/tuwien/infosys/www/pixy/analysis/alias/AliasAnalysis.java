@@ -82,14 +82,6 @@ extends InterAnalysis {
 
         // trying to declare something global that doesn't occur in the main function?
         if (realGlobal == null) {
-
-            /*
-            Variable superGlobal = this.tac.getSuperGlobal(globalOp.getName());
-            if (superGlobal != null) {
-                // no need to issue warning in this case
-            }
-            */
-
             System.out.println("Warning: access to non-existent global " + globalOp.getName());
 
             // LATER: ignore this case for now
@@ -202,7 +194,6 @@ extends InterAnalysis {
             System.out.println(cfgNode);
             throw new RuntimeException("gotcha");
         }
-        // AliasLatticeElement value = (AliasLatticeElement) aNode.getFoldedValue();
         AliasLatticeElement value = this.getFoldedValue(aNode);
         if (value == null) {
             // if we enter this branch, it means that the must-aliases for variable var
@@ -220,7 +211,6 @@ extends InterAnalysis {
     // at the given node (folded over all contexts)
     public Set getMayAliases(Variable var, CfgNode cfgNode) {
         InterAnalysisNode aNode = (InterAnalysisNode) this.interAnalysisInfo.getAnalysisNode(cfgNode);
-        // AliasLatticeElement value = (AliasLatticeElement) aNode.getFoldedValue();
         AliasLatticeElement value = this.getFoldedValue(aNode);
         if (value == null) {
             // explanations see: getMustAliases
@@ -290,10 +280,6 @@ extends InterAnalysis {
         return retMe;
     }
 
-
-
-
-
     // says whether a reference assignment "left =& right" is supported by this
     // analysis; the verbose flag determines whether you want warning messages
     // in case of unsupported features (in this case, also supply the correct line
@@ -338,13 +324,6 @@ extends InterAnalysis {
             // stay silent
             supported = false;
         }
-
-        // disabled warnings
-        /*
-        if (verbose) {
-            System.out.println(message);
-        }
-        */
 
         return supported;
     }

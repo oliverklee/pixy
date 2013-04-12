@@ -18,15 +18,6 @@ extends CfgNode {
 
 //  CONSTRUCTORS *******************************************************************
 
-    /*
-    public CfgNodeIncludeEnd(File file, ParseNode parseNode) {
-        super(parseNode);
-        this.file = file;
-        this.peer = null;
-    }
-    */
-
-    // recommended:
     // - instantiate CfgNodeIncludeStart
     // - instantiate CfgNodeIncludeEnd with the following constructor
     // this way, you don't have to call setPeer yourself

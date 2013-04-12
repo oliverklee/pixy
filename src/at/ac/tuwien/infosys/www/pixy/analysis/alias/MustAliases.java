@@ -131,14 +131,6 @@ public class MustAliases {
             MustAliasGroup group = (MustAliasGroup) iter.next();
             group.removeLocals();
 
-            /* very strange: doesn't work
-            // if the group now has less than two members: remove it
-            if (group.size() < 2) {
-                System.out.println("removing group!");
-                iter.remove();
-            }
-            */
-            // alternative:
             if (group.size() > 1) {
                 keepUs.add(group);
             }
@@ -153,13 +145,6 @@ public class MustAliases {
             MustAliasGroup group = (MustAliasGroup) iter.next();
             group.removeGlobals();
 
-            /* very strange: doesn't work
-            // if the group now has less than two members: remove it
-            if (group.size() < 2) {
-                iter.remove();
-            }
-            */
-            // alternative:
             if (group.size() > 1) {
                 keepUs.add(group);
             }
@@ -256,13 +241,6 @@ public class MustAliases {
             for (Iterator iterator = compGroupSet.iterator(); iterator.hasNext();) {
                 MustAliasGroup compGroup = (MustAliasGroup) iterator.next();
                 if (compGroup.equals(group)) {
-                    /*
-                    System.out.println("found equal guy; hashCodes: ");
-                    System.out.println(compGroup.hashCode());
-                    System.out.println(group.hashCode());
-                    System.out.println("symmetry check: " + group.equals(compGroup));
-                    System.out.println(compGroupSet.contains(group));
-                    */
                     return true;
                 }
             }
@@ -270,38 +248,6 @@ public class MustAliases {
         }
 
         return true;    // we come here if both sizes are 0
-
-
-        // here is another implementation that doesn't work...
-        // the "contains" method is responsible for that
-        /*
-        Set compGroupSet = comp.getGroups();
-        if (this.groups.size() != compGroupSet.size()) {
-            System.out.println("Sizes don't match");
-            return false;
-        }
-        for (Iterator iter = this.groups.iterator(); iter.hasNext();) {
-            MustAliasGroup group = (MustAliasGroup) iter.next();
-
-            if (!compGroupSet.contains(group)) {
-                return false;
-            }
-        }
-        return true;
-        */
-
-
-        // for unknown reasons, the following implementation doesn't work
-        // properly; it sometimes returns false although it should
-        // return true; according to the API, it should do exactly the
-        // same thing as above
-        /*
-        if (this.groups.equals(comp.getGroups())) {
-            return true;
-        } else {
-            return false;
-        }
-        */
     }
 
     public int structureHashCode() {

@@ -37,8 +37,6 @@ public class InterWorkListOrder {
         int i = 0;
         while (iter.hasPrevious()) {
             InterWorkListElement iwle = (InterWorkListElement) iter.previous();
-            //CfgNode cfgNode = iwle.getCfgNode();
-            //System.out.println(cfgNode.toString());
             this.order.put(iwle, i);
             i++;
         }
@@ -178,95 +176,7 @@ public class InterWorkListOrder {
         }
 
         return postorder;
-
-
-
     }
-//  ********************************************************************************
-
-    // this was the old, recursive implementation: could make the stack too deep
-
-    /*
-    private LinkedList<InterWorkListElement> getPostorder(
-            InterWorkListElement start, ConnectorComputation cc) {
-        LinkedList<InterWorkListElement> postorder = new LinkedList<InterWorkListElement>();
-        Set<InterWorkListElement> visited = new HashSet<InterWorkListElement>();
-        dfIteratorHelper(postorder, start, visited, cc);
-        return postorder;
-    }
-
-//  ********************************************************************************
-
-    private void dfIteratorHelper(List<InterWorkListElement> postorder,
-            InterWorkListElement element, Set<InterWorkListElement> visited,
-            ConnectorComputation cc) {
-
-        // mark this node as visited
-        visited.add(element);
-
-        CfgNode cfgNode = element.getCfgNode();
-        CSContext context = (CSContext) element.getContext();
-
-        if (cfgNode instanceof CfgNodeCall) {
-
-            CfgNodeCall callNode = (CfgNodeCall) cfgNode;
-            TacFunction callee = callNode.getCallee();
-            if (callee == null) {
-                // simply move on to the callret node
-                CfgNode retNode = callNode.getSuccessor(0);
-                InterWorkListElement nextElement = new InterWorkListElement(retNode, context);
-                if (!visited.contains(nextElement)) {
-                    dfIteratorHelper(postorder, nextElement, visited, cc);
-                }
-            } else {
-                CfgNodeEntry entryNode = (CfgNodeEntry) callee.getCfg().getHead();
-                Context propagationContext = cc.getTargetContext(callNode, context.getPosition());
-                InterWorkListElement nextElement = new InterWorkListElement(entryNode, propagationContext);
-                if (!visited.contains(nextElement)) {
-                    dfIteratorHelper(postorder, nextElement, visited, cc);
-                }
-            }
-
-        } else if (cfgNode instanceof CfgNodeExit) {
-
-            CfgNodeExit exitNode = (CfgNodeExit) cfgNode;
-
-            TacFunction exitedFunction = exitNode.getEnclosingFunction();
-
-            // no need to proceed if this is the exit node of the
-            // main function
-            if (!exitedFunction.isMain()) {
-                for (ReverseTarget reverseTarget : cc.getReverseTargets(exitedFunction, context.getPosition())) {
-                    CfgNodeCall reverseCall = reverseTarget.getCallNode();
-                    CfgNode reverseRet = reverseCall.getSuccessor(0);
-                    Set<? extends Context> reverseContexts = reverseTarget.getContexts();
-                    for (Context reverseContext : reverseContexts) {
-                        InterWorkListElement nextElement = new InterWorkListElement(reverseRet, reverseContext);
-                        if (!visited.contains(nextElement)) {
-                            dfIteratorHelper(postorder, nextElement, visited, cc);
-                        }
-                    }
-                }
-            }
-
-        } else {
-            // handle successors
-            for (int i = 0; i < 2; i++) {
-                CfgEdge outEdge = cfgNode.getOutEdge(i);
-                if (outEdge != null) {
-                    CfgNode succNode = outEdge.getDest();
-                    InterWorkListElement nextElement = new InterWorkListElement(succNode, context);
-                    if (!visited.contains(nextElement)) {
-                        dfIteratorHelper(postorder, nextElement, visited, cc);
-                    }
-                }
-            }
-        }
-
-        // add it to the postorder list
-        postorder.add(element);
-    }
-    */
 
 //  ********************************************************************************
 

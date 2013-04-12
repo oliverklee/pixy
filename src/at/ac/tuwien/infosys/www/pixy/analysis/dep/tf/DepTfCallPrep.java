@@ -48,19 +48,6 @@ extends TransferFunction {
         DepLatticeElement in = (DepLatticeElement) inX;
         DepLatticeElement out = new DepLatticeElement(in);
 
-        // just for debugging...
-        /*
-        System.out.println("callprep: " + caller.getName() + " -> " + callee.getName() + " : " + cfgNode.getOrigLineno());
-        for (Map.Entry<TacPlace, DepSet> entry : in.getPlaceToDep().entrySet()) {
-            TacPlace place = entry.getKey();
-            DepSet depSet = entry.getValue();
-            if (place.toString().endsWith("$a")) {
-                System.out.println("found you: " + place);
-                System.out.println(depSet);
-            }
-        }
-        */
-
         // set formal params...
 
         // use a ListIterator for formals because we might need to step back (see below)
@@ -75,7 +62,7 @@ extends TransferFunction {
             if (actualIter.hasNext()) {
 
                 // there is a corresponding actual parameter; advance iterator
-                /*TacActualParam actualParam = (TacActualParam) */actualIter.next();
+                actualIter.next();
 
                 // set the formal
                 out.setFormal(formalParam, cfgNode);
@@ -89,7 +76,6 @@ extends TransferFunction {
                 formalIter.previous();
 
                 while (formalIter.hasNext()) {
-
                     formalParam = (TacFormalParam) formalIter.next();
 
                     if (formalParam.hasDefault()) {

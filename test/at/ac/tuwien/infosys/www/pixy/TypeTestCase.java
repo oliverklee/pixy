@@ -86,9 +86,6 @@ extends TestCase {
 
     private void performTest(String testNum, int sinkNum, int graphNum,
             boolean generate, boolean functional, int vulnNum) {
-
-        //generate = true;
-
         mySetUp("test" + testNum + ".php", functional);
 
         Assert.assertTrue("Sinks real: " + sinks.size() + ", expected: "

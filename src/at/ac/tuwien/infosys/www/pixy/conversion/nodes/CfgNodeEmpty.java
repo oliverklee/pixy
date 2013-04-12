@@ -19,7 +19,6 @@ extends CfgNode {
         // empty CFG nodes will be deleted from the CFG, so their ID's can be
         // recycled; TOO DANGEROUS TO DO IT HERE! better: additional pass over
         // all CFGs
-        // maxId--;
     }
 
     public CfgNodeEmpty(ParseNode parseNode) {

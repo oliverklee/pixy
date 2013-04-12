@@ -94,20 +94,6 @@ implements Recyclable {
 
 //  ********************************************************************************
 
-    /*
-    // returns true if this DepSet contains Dep.UNINIT
-    public boolean containsUninit() {
-        for (Dep contained : this.taintSet) {
-            if (contained == Dep.UNINIT) {
-                return true;
-            }
-        }
-        return false;
-    }
-    */
-
-//  ********************************************************************************
-
     public boolean structureEquals(Object compX) {
 
         if (compX == this) {

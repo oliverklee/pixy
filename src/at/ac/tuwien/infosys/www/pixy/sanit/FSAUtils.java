@@ -65,11 +65,6 @@ public class FSAUtils {
 
             // projection to the output side (turning a transducer into a recognizer)
             retMe = retMe.projectOut();
-
-//            System.out.println(retMe.getString());
-//            Utils.quickDot(retMe.toDot());
-//            Utils.e();
-
         }
 
 
@@ -108,36 +103,11 @@ public class FSAUtils {
         // projection to the output side (turning a transducer into a recognizer)
         retMe = retMe.projectOut();
 
-//        System.out.println(c);
-//        System.out.println(autoString);
-//        System.out.println(retMe.getString());
-//        if (true) throw new RuntimeException();
-
         return retMe;
 
     }
 
     public static FSAAutomaton addslashes(FSAAutomaton subjectAuto, CfgNode cfgNode) {
-
-        /*
-        FSAAutomaton searchAuto = FSAAutomaton.makeString("b");
-        FSAAutomaton replaceAuto = FSAAutomaton.makeString("bb");
-        subjectAuto = str_replace(searchAuto, replaceAuto, subjectAuto, cfgNode);
-
-        //System.out.println(searchAuto.getString());
-        //System.out.println(replaceAuto.getString());
-        //System.out.println(subjectAuto.getString());
-        if (true) throw new RuntimeException();
-        */
-
-        /*
-        // ' -> \'
-        searchAuto = FSAAutomaton.makeString("q");
-        replaceAuto = FSAAutomaton.makeString("bq");
-        subjectAuto = str_replace(searchAuto, replaceAuto, subjectAuto, cfgNode);
-        */
-
-
         // the easy way: addslashes is the same as applying str_replace
         // several times:
         // \ -> \\
@@ -154,20 +124,5 @@ public class FSAUtils {
         subjectAuto = str_replace(searchAuto, replaceAuto, subjectAuto, cfgNode);
 
         return subjectAuto;
-
-        /*
-        String subjectFile = subjectAuto.toFile("temp1.auto");
-        String transducerFile = FSAAutomaton.addslashes().toFile("temp2.auto");
-
-        String c = MyOptions.fsa_home + "/" +
-        "fsa -aux "+mohri+" -r compose(file('"+subjectFile+"'),file('"+transducerFile+"')) ";
-        String autoString = Utils.exec(c);
-        FSAAutomaton retMe = new FSAAutomaton(autoString);
-
-        // projection to the output side (turning a transducer into a recognizer)
-        retMe = retMe.projectOut();
-
-        return retMe;
-        */
     }
 }

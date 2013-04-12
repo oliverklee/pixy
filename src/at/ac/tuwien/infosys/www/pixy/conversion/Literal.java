@@ -216,7 +216,6 @@ extends TacPlace {
             String prefix = this.literal.substring(0, matcher.end());
             return Float.parseFloat(prefix);
         } else {
-            // System.out.println("no match for " + this.literal);
             return 0;
         }
     }
@@ -310,9 +309,6 @@ extends TacPlace {
         } else {
             // fuzzy explanations in the PHP manual and contradictions
             // to observed behavior
-            /*
-            throw new RuntimeException("Unspecified PHP semantics, line " +
-                    cfgNode.getOrigLineno());*/
             return Literal.TOP;
         }
     }
@@ -329,10 +325,6 @@ extends TacPlace {
                 return Literal.FALSE;
             }
         } else {
-            /*
-            System.out.println(left + " > " + right);
-            throw new RuntimeException(
-                "Unspecified PHP semantics, line " + cfgNode.getOrigLineno());*/
             return Literal.TOP;
 
         }
@@ -498,11 +490,5 @@ extends TacPlace {
     // CAUTION: hashCode has to be set to 0 and recomputed if the element is changed
     public int hashCode() {
         return this.literal.hashCode();
-        /*
-        if (this.hashCode == 0) {
-            this.hashCode = this.literal.hashCode();
-        }
-        return this.hashCode;
-        */
     }
 }

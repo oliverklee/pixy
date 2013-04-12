@@ -31,7 +31,6 @@ extends TransferFunction {
 
         this.operand = (Variable) operand;
         this.cfgNode = cfgNode;
-        //this.supported = AliasAnalysis.isSupported(this.operand);
         this.supported = true;
 
     }

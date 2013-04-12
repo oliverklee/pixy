@@ -81,7 +81,6 @@ extends Analysis {
         this.workList.add(mainHead, this.mainContext);
 
         // initialize analysis nodes
-        // this.analysisInfo = new AnalysisNode[maxNodeId + 1];
         this.interAnalysisInfo = new InterAnalysisInfo();
         this.genericAnalysisInfo = interAnalysisInfo;
         // assign transfer functions
@@ -226,8 +225,6 @@ extends Analysis {
             CfgNode node = element.getCfgNode();
             Context context = element.getContext();
 
-            //debug("  " + node.toString() + " (" + node.getOrigLineno() + ")");
-
             // get incoming value at node n (you need to understand the PHI table :)
             InterAnalysisNode analysisNode = (InterAnalysisNode) this.interAnalysisInfo.getAnalysisNode(node);
             LatticeElement inValue = analysisNode.getPhiValue(context);
@@ -241,9 +238,6 @@ extends Analysis {
             if (node instanceof CfgNodeCall) {
 
                 CfgNodeCall callNode = (CfgNodeCall) node;
-
-                //System.out.println("Call: " + callNode.getFunctionNamePlace());
-                //System.out.println("Line: " + node.getOrigLineno());
 
                 // get necessary function information (= called function)
                 TacFunction function = callNode.getCallee();
@@ -267,9 +261,6 @@ extends Analysis {
                 }
 
                 Cfg functionCfg = function.getCfg();
-
-                //System.out.println("CALLING: " + function.getName());
-                //System.out.println("NAME_IS: " + callNode.getFunctionNamePlace());
 
                 CfgNode exitNode = functionCfg.getTail();
                 // the tail of the function's CFG has to be an exit node
@@ -353,8 +344,6 @@ extends Analysis {
                     // extract target call node
                     CfgNodeCall callNode = reverseTarget.getCallNode();
 
-                    //debug("reverse target: " + callNode.getOrigLineno());
-
                     // determine successor node (unique) of the call node
                     CfgEdge[] outEdges = callNode.getOutEdges();
                     CfgNodeCallRet callRetNode = (CfgNodeCallRet) outEdges[0].getDest();
@@ -386,8 +375,6 @@ extends Analysis {
 
                 CfgNodeIf ifNode = (CfgNodeIf) node;
 
-                // System.out.println("If node");
-
                 LatticeElement outValue = this.interAnalysisInfo.getAnalysisNode(node).transfer(inValue);
                 CfgEdge[] outEdges = node.getOutEdges();
 
@@ -397,20 +384,15 @@ extends Analysis {
                 if (eval == null) {
                     // static evaluation of if condition failed, continue
                     // analysis along both outgoing edges
-                    // System.out.println("Can't evaluate 'if' statically");
 
                     propagate(context, outValue, outEdges[0].getDest());
                     propagate(context, outValue, outEdges[1].getDest());
 
                 } else if(eval == Boolean.TRUE) {
                     // continue analysis along true edge
-                    //System.out.println("evaluated 'if' to true! " + node.getFileName() + ", line " + node.getOrigLineno());
-                    //System.out.println(Dumper.makeCfgNodeName(ifNode));
                     propagate(context, outValue, outEdges[1].getDest());
                 } else {
                     // continue analysis along false edge
-                    //System.out.println("evaluated 'if' to false! line: " + node.getFileName() + ", line " + node.getOrigLineno());
-                    //System.out.println(Dumper.makeCfgNodeName(ifNode));
                     propagate(context, outValue, outEdges[0].getDest());
                 }
 
@@ -454,7 +436,6 @@ extends Analysis {
 
                         // propagate the result of applying the transfer function
                         // to the successor (under the current context)
-                        //System.out.println("propagating...: " + node + " -> " + succ);
                         propagate(context, outValue, succ);
                     }
                 }
@@ -477,10 +458,6 @@ extends Analysis {
     // helper method for analyze();
     // propagates a value under the given context to the target node
     void propagate(Context context, LatticeElement value, CfgNode target) {
-
-        //System.out.println("propagating to " + target);
-        //value.dump();
-
         // analysis information for the target node
         InterAnalysisNode analysisNode = (InterAnalysisNode) this.interAnalysisInfo.getAnalysisNode(target);
 
@@ -513,28 +490,11 @@ extends Analysis {
 
         // if the PHI value changed...
         if (!oldPhiValue.equals(newPhiValue)) {
-
-            /*System.out.println(target);
-            System.out.println("old phi value:");
-            oldPhiValue.dump();
-            System.out.println("new phi value:");
-            newPhiValue.dump();*/
-
             // update analysis information
             analysisNode.setPhiValue(context, newPhiValue);
 
             // add this node (under the current context) to the worklist
-            // System.out.println("adding " + target.getId() +  ") to worklist");
             this.workList.add(target, context);
-
-        } /*else {
-
-            System.out.println("EQUALS:");
-            System.out.println(target);
-            System.out.println("old phi value: " + oldPhiValue);
-            oldPhiValue.dump();
-            System.out.println("new phi value: " + newPhiValue);
-            newPhiValue.dump();
-        }*/
+        }
     }
 }

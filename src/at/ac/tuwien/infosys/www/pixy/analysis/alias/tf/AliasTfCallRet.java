@@ -248,58 +248,6 @@ extends TransferFunction {
         return outInfo;
     }
 
-
-
-    // returns a list consisting of two-element-lists consisting of
-    // (actual cbr-param Variable, formal cbr-param Variable);
-    // EFF: the same work is also done by AliasTfCallPrep
-    /*
-    private List cbrParams(List actualParams, List formalParams) {
-
-        List cbrParamList = new LinkedList();
-
-        Iterator actualIter = actualParams.iterator();
-        Iterator formalIter = formalParams.iterator();
-
-        while (actualIter.hasNext()) {
-
-            TacActualParam actualParam = (TacActualParam) actualIter.next();
-            TacFormalParam formalParam = (TacFormalParam) formalIter.next();
-
-            // if this is a cbr-param...
-            if (actualParam.isReference() || formalParam.isReference()) {
-
-                // the actual part of a cbr-param must always be a variable
-                if (!(actualParam.getPlace() instanceof Variable)) {
-                    throw new RuntimeException("Error in the PHP file!");
-                }
-
-                Variable actualVar = (Variable) actualParam.getPlace();
-                Variable formalVar = formalParam.getVariable();
-
-                // check for unsupported features;
-                // - none of the variables must be an array or an array element
-                if (actualVar.isArray()) {
-                    continue;
-                } else if (formalVar.isArray()) {
-                    continue;
-                } else if (actualVar.isArrayElement()) {
-                    continue;
-                } else if (formalVar.isArrayElement()) {
-                    continue;
-                }
-
-                List pairList = new LinkedList();
-                pairList.add(actualVar);
-                pairList.add(formalVar);
-                cbrParamList.add(pairList);
-            }
-        }
-
-        return cbrParamList;
-    }
-    */
-
     // just a dummy method in order to make me conform to the interface;
     // the Analysis uses the other transfer method instead
     public LatticeElement transfer(LatticeElement inX) {

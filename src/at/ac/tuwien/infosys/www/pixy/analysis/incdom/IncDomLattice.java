@@ -14,15 +14,6 @@ extends Lattice {
     public LatticeElement lub(
             LatticeElement incomingElementX,
             LatticeElement targetElementX) {
-
-        /*
-        // only the targetElement can be the bottom element: the bottom element
-        // is never propagated and therefore can't be the incomingElement
-        if (incomingElementX == this.bottom) {
-            throw new RuntimeException("SNH");
-        }
-        */
-
         // if the incoming element is the bottom element: return the other element
         if (incomingElementX == this.bottom) {
             // no need for cloning, since we work with a repository of alias

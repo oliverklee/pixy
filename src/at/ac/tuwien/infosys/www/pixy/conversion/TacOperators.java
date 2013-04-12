@@ -34,11 +34,7 @@ public class TacOperators {
     public static final int UNSET_CAST = 27;
     public static final int BOOLEAN_AND = 28;
 
-    private static String[] opToName; /*= {
-        "+", "<", "==", "!=", "-", "*", "/", "%", "<<", ">>", "===",    // [0-10]
-        "!==", "<=", ">", ">=", "!", "~", ".", "|", "&", "^",           // [11-20]
-        "(int)", "(double)", "(string)", "(array)", "(object)", "(bool)", "(unset)", "&&"   //[21-]
-    };*/
+    private static String[] opToName;
 
     private static Map<String,Integer> nameToOp;
 

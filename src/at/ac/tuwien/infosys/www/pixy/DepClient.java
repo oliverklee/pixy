@@ -129,12 +129,8 @@ public abstract class DepClient {
             Variable var = place.getVariable();
             String varName = var.getName();
 
-            //System.out.println("is a variable");
-
             // harmless superglobals?
             if (var.isSuperGlobal()) {
-
-                //System.out.println("is superglobal: " + var);
 
                 // return variables
                 if (var.isReturnVariable()) {
@@ -171,9 +167,7 @@ public abstract class DepClient {
             } else {
 
                 if (var.getSymbolTable().getName().equals("_special")) {
-                    //System.out.println("special symbol table!");
                     if (varName.equals(InternalStrings.memberName)) {
-                        //System.out.println("member variable!");
                         return DepClient.InitialTaint.NEVER;
                     }
 
@@ -278,29 +272,6 @@ public abstract class DepClient {
                 } else {
                     throw new RuntimeException("SNH");
                 }
-
-                /*
-                CfgNodeCallRet callRet = (CfgNodeCallRet) opNode.getCfgNode();
-                String functionName = callRet.getCallPrepNode().getCallee().getName();
-
-                if (functionName.equals(InternalStrings.unknownFunctionName)) {
-
-                    DepGraphNode uninitNode = new DepGraphUninitNode();
-                    relevant.addNode(uninitNode);
-                    relevant.addEdge(opNode, uninitNode);
-
-                } else if (functionName.equals(InternalStrings.unknownMethodName)) {
-
-                    DepGraphNode sanitNode = new DepGraphNormalNode(
-                            new Literal("<method-call>"), opNode.getCfgNode());
-                    relevant.addNode(sanitNode);
-                    relevant.addEdge(opNode, sanitNode);
-
-                } else {
-                    throw new RuntimeException("SNH");
-                }
-                */
-
                 // end of recursion
 
             // STRONG SANITIZATION FUNCTIONS ************************
@@ -475,35 +446,4 @@ public abstract class DepClient {
 
         return retMe;
     }
-
-    // receives a collection of dangerous uninitNodes, and returns
-    // their predecessors (but only if their predecessors are normal depgraph
-    // nodes; evil functions are simply ignored)
-    /*
-    protected List<DepGraphNormalNode> findDangerousSources(
-            Collection<DepGraphUninitNode> uninitNodes, DepGraph relevant) {
-
-        List<DepGraphNormalNode> sources = new LinkedList<DepGraphNormalNode>();
-
-        for (DepGraphUninitNode uninitNode : uninitNodes) {
-
-            Set<DepGraphNode> preds = relevant.getPredecessors(uninitNode);
-            if (preds.size() != 1) {
-                throw new RuntimeException("SNH");
-            }
-            DepGraphNode pre = preds.iterator().next();
-            if (pre instanceof DepGraphNormalNode) {
-                DepGraphNormalNode preNormal = (DepGraphNormalNode) pre;
-                sources.add(preNormal);
-            } else if (pre instanceof DepGraphOpNode) {
-                // evil function, ignore
-
-            } else {
-                throw new RuntimeException("SNH");
-            }
-        }
-
-        return sources;
-    }
-    */
 }

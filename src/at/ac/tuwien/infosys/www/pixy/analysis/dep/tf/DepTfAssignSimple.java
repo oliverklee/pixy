@@ -38,8 +38,6 @@ extends TransferFunction {
 
     public LatticeElement transfer(LatticeElement inX) {
 
-        //System.out.println("assignsimple: " + left + " = " + right);
-
         DepLatticeElement in = (DepLatticeElement) inX;
         DepLatticeElement out = new DepLatticeElement(in);
 

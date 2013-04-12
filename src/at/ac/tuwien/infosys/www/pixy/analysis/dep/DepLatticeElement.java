@@ -113,24 +113,6 @@ extends LatticeElement {
             }
         }
 
-        // here you can determine the attributes for the return variable
-        // of the unknown function
-        /*
-        Variable unknownFunctionRetVar = superSymbolTable.getVariable(
-                InternalStrings.returnPrefix + InternalStrings.unknownFunctionName);
-        this.placeToDep.put(unknownFunctionRetVar, DepSet.UNINIT);
-        this.arrayLabels.put(unknownFunctionRetVar, DepSet.UNINIT);
-        */
-
-        // here you can determine the attributes for the return variable
-        // of method calls [not effective any longer; see DepGraph instead]
-        /*
-        Variable methodRetVar = superSymbolTable.getVariable(
-                InternalStrings.returnPrefix + InternalStrings.unknownMethodName);
-        this.placeToDep.put(methodRetVar, DepSet.UNINIT);
-        this.arrayLabels.put(methodRetVar, DepSet.UNINIT);
-        */
-
         // special member variable
         this.placeToDep.put(memberPlace, DepSet.UNINIT);
         this.arrayLabels.put(memberPlace, DepSet.UNINIT);
@@ -151,23 +133,6 @@ extends LatticeElement {
             TacFunction function = (TacFunction) iter.next();
 
             if (function.isMain()) {
-
-                // small hack: untaint $PHP_SELF
-                // TODO: this is an artifact from an earlier version of Pixy;
-                // during dependence analysis, we cannot "untaint" anything,
-                // so this code is quite useless; check this whole function for
-                // such useless "untainting" operations, but make sure that
-                // you don't accidentally leave some variables unassociated
-                // UPDATE: don't do this, as PHP_SELF can also be controlled by an
-                // attacker! example: www.server.com/file.php/"xss
-                /*
-                Variable phpSelf = function.getSymbolTable().getVariable("$PHP_SELF");
-                if (phpSelf != null) {
-                    this.placeToDep.put(phpSelf, DepSet.UNINIT);
-                    this.arrayLabels.put(phpSelf, DepSet.UNINIT);
-                }
-                */
-
                 if (MyOptions.optionG) {
                     // if register_globals is active, we don't change the conservative
                     // base mapping (tainted/dirty) for the locals of the main function;
@@ -206,10 +171,8 @@ extends LatticeElement {
         // TacConverter.addSuperGlobalElements()
 
         // case-sensitive, and that's OK
-        //addHarmlessServerVar(harmlessSuperGlobals, superSymbolTable, "PHP_SELF"); // NOT HARMLESS!
         addHarmlessServerVar(harmlessSuperGlobals, superSymbolTable, "SERVER_NAME");
         addHarmlessServerVar(harmlessSuperGlobals, superSymbolTable, "HTTP_HOST");
-        //addHarmlessServerVar(harmlessSuperGlobals, superSymbolTable, "HTTP_REFERER");
         addHarmlessServerVar(harmlessSuperGlobals, superSymbolTable, "HTTP_ACCEPT_LANGUAGE");
         addHarmlessServerVar(harmlessSuperGlobals, superSymbolTable, "SERVER_SOFTWARE");
         addHarmlessServerVar(harmlessSuperGlobals, superSymbolTable, "PHP_AUTH_USER");
@@ -1255,59 +1218,6 @@ extends LatticeElement {
         DepSet depSet = DepSet.create(dep);
         this.setWholeTree(tempVar, depSet);
         this.setArrayLabel(tempVar, depSet);
-
-        // old technique:
-        // sets the temporary responsible for catching the return value
-        // to the given dep/label of the return variable and resets the return variable
-        /*
-        Variable tempVar = retNode.getTempVar();
-        DepSet dep = calleeIn.getDep(retNode.getRetVar());
-        DepSet arrayLabel = calleeIn.getArrayLabel(retNode.getRetVar());
-        Variable retVar = retNode.getRetVar();
-
-        // LATER: this quick hack was necessary for those cases where a function
-        // does not return anything; without these checks, the temporary
-        // would be assigned "uninit", which is bad (leads to false positives if
-        // the return value of this function is used)
-
-        CfgNode tail = retNode.getCallPrepNode().getCallee().getCfg().getTail();
-        if (!(tail instanceof CfgNodeExit)) {
-            System.out.println("SNH");
-            System.out.println(tail.getClass());
-            System.out.println(retNode.getFileName());
-            System.out.println(retNode.getOrigLineno());
-            throw new RuntimeException();
-        }
-
-        Set<Dep> depSet = new HashSet<Dep>();
-        for (Dep contained : dep.getDepSet()) {
-            if (contained == Dep.UNINIT) {
-                //taintSet.add(Dep.create(new CfgNodeEmpty(retNode.getParseNode())));
-                depSet.add(Dep.create(tail));
-            } else {
-                depSet.add(contained);
-            }
-        }
-        dep = DepSet.create(depSet);
-
-        depSet = new HashSet<Dep>();
-        for (Dep contained : arrayLabel.getDepSet()) {
-            if (contained == Dep.UNINIT) {
-                //taintSet.add(Dep.create(new CfgNodeEmpty(retNode.getParseNode())));
-                depSet.add(Dep.create(tail));
-            } else {
-                depSet.add(contained);
-            }
-        }
-        arrayLabel = DepSet.create(depSet);
-
-        // ****** end of quick hack
-
-        this.setWholeTree(tempVar, dep);
-        this.setArrayLabel(tempVar, arrayLabel);
-        this.placeToDep.remove(retVar);
-        this.arrayLabels.remove(retVar);
-        */
     }
 
 //  handleReturnValueUnknown *******************************************************

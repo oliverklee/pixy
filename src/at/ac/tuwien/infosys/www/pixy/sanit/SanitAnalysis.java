@@ -65,7 +65,6 @@ extends DepClient {
         int reported_by_basic = vulnDepGraphs.size();
         int have_sanit = 0;
         int no_sanit = 0;
-        //int have_vuln = 0;
         int sure_vuln_1 = 0;
         int sure_vuln_2 = 0;
         int possible_vuln = 0;
@@ -219,12 +218,10 @@ extends DepClient {
             Map<DepGraphNode,FSAAutomaton> deco) {
         depGraph.eliminateCycles();
         DepGraphNode root = depGraph.getRoot();
-        //Map<DepGraphNode,FSAAutomaton> deco = new HashMap<DepGraphNode,FSAAutomaton>();
         Set<DepGraphNode> visited = new HashSet<DepGraphNode>();
         this.decorateSanit(root, deco, visited, depGraph, origDepGraph, true);
         FSAAutomaton rootDeco = deco.get(root).clone();
-        // BEWARE: minimization can lead to an automaton that is *less* human-readable
-        //rootDeco.minimize();
+
         return rootDeco;
     }
 
@@ -645,10 +642,6 @@ extends DepClient {
 
         String dotFileName = baseFileName + ".dot";
         Utils.writeToFile(auto.toDot(), dotFileName);
-
-        // txt representation only required for debugging
-        //String txtFileName = baseFileName + ".txt";
-        //Utils.writeToFile(auto.getString(), txtFileName);
     }
 
 //  ********************************************************************************

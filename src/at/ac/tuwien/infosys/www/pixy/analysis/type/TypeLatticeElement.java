@@ -48,7 +48,6 @@ extends LatticeElement {
     public void setTypeString(Variable var, String className) {
         Set<Type> types = new HashSet<Type>();
         types.add(Type.getTypeForClass(className));
-        //System.out.println("doing settype: " + className + ", " + var + " = " + types);
         this.setType(var, types);
     }
 

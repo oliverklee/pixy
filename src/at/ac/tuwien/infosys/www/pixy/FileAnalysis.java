@@ -75,16 +75,6 @@ extends DepClient {
 
             Automaton auto = this.toAutomaton(stringGraph);
 
-            // if we wanted to, we could also report taint values here
-            /*
-            if (auto.hasDirectlyTaintedTransitions()) {
-                System.out.println("directly tainted!");
-                tainted = true;
-            } else {
-                System.out.println("not tainted");
-            }
-            */
-
             String fileName = cfgNode.getFileName();
             if (MyOptions.optionB) {
                 fileName = Utils.basename(fileName);
@@ -152,7 +142,6 @@ extends DepClient {
             System.out.println(auto.getCommonPrefix());
             System.out.println("Prefix END");
             System.out.println();
-            //System.out.println("as regex: " + auto.toRegExp().toString());
 
             System.out.println("Suffix BEGIN");
             System.out.println(auto.getCommonSuffix());
@@ -331,87 +320,6 @@ extends DepClient {
             String functionName = cfgNode.getFunctionName();
 
             checkForSinkHelper(functionName, cfgNode, cfgNode.getParamList(), traversedFunction, sinks);
-
-            /* these functions were retrieved from the PHP Manual;
-             * note: those file functions that work with an existing file
-             * handle are not of interest here; we are only interested in
-             * those that take a filename string
-             */
-
-            /*
-
-            if (functionName.equals("fopen")) {
-                Sink sink = new Sink(cfgNode, traversedFunction);
-                // the first argument is of interest
-                List<TacActualParam> paramList = cfgNode.getParamList();
-                sink.addSensitivePlace(paramList.get(0).getPlace());
-                // add this sink to the list of sensitive sinks
-                sinks.add(sink);
-            } else if (functionName.equals("file")) {
-                Sink sink = new Sink(cfgNode, traversedFunction);
-                // the first argument is of interest
-                List<TacActualParam> paramList = cfgNode.getParamList();
-                sink.addSensitivePlace(paramList.get(0).getPlace());
-                // add this sink to the list of sensitive sinks
-                sinks.add(sink);
-            } else if (functionName.equals("unlink")) {
-                Sink sink = new Sink(cfgNode, traversedFunction);
-                // the first argument is of interest
-                List<TacActualParam> paramList = cfgNode.getParamList();
-                sink.addSensitivePlace(paramList.get(0).getPlace());
-                // add this sink to the list of sensitive sinks
-                sinks.add(sink);
-            } else if (functionName.equals("file_get_contents")) {
-                Sink sink = new Sink(cfgNode, traversedFunction);
-                // the first argument is of interest
-                List<TacActualParam> paramList = cfgNode.getParamList();
-                sink.addSensitivePlace(paramList.get(0).getPlace());
-                // add this sink to the list of sensitive sinks
-                sinks.add(sink);
-            } else if (functionName.equals("readfile")) {
-                Sink sink = new Sink(cfgNode, traversedFunction);
-                // the first argument is of interest
-                List<TacActualParam> paramList = cfgNode.getParamList();
-                sink.addSensitivePlace(paramList.get(0).getPlace());
-                // add this sink to the list of sensitive sinks
-                sinks.add(sink);
-            } else if (functionName.equals("file_put_contents")) {
-                Sink sink = new Sink(cfgNode, traversedFunction);
-                // the first argument is of interest
-                List<TacActualParam> paramList = cfgNode.getParamList();
-                sink.addSensitivePlace(paramList.get(0).getPlace());
-                // add this sink to the list of sensitive sinks
-                sinks.add(sink);
-            } else if (functionName.equals("copy")) {
-                Sink sink = new Sink(cfgNode, traversedFunction);
-                // the first two arguments are of interest
-                List<TacActualParam> paramList = cfgNode.getParamList();
-                sink.addSensitivePlace(paramList.get(0).getPlace());
-                sink.addSensitivePlace(paramList.get(1).getPlace());
-                // add this sink to the list of sensitive sinks
-                sinks.add(sink);
-            } else if (functionName.equals("rename")) {
-                Sink sink = new Sink(cfgNode, traversedFunction);
-                // the first two arguments are of interest
-                List<TacActualParam> paramList = cfgNode.getParamList();
-                sink.addSensitivePlace(paramList.get(0).getPlace());
-                sink.addSensitivePlace(paramList.get(1).getPlace());
-                // add this sink to the list of sensitive sinks
-                sinks.add(sink);
-                */
-
-                /* what about this one?
-            } else if (functionName.equals("move_uploaded_file")) {
-                Sink sink = new Sink(cfgNode, traversedFunction);
-                // the first two arguments are of interest
-                List<TacActualParam> paramList = cfgNode.getParamList();
-                sink.addSensitivePlace(paramList.get(0).getPlace());
-                sink.addSensitivePlace(paramList.get(1).getPlace());
-                // add this sink to the list of sensitive sinks
-                sinks.add(sink);
-            }
-            */
-
         } else if (cfgNodeX instanceof CfgNodeCallPrep) {
 
             // user-defined custom sinks
@@ -420,9 +328,6 @@ extends DepClient {
             String functionName = cfgNode.getFunctionNamePlace().toString();
 
             checkForSinkHelper(functionName, cfgNode, cfgNode.getParamList(), traversedFunction, sinks);
-
-        } else {
-            // not a sink
         }
     }
 
@@ -440,31 +345,6 @@ extends DepClient {
                     sinks.add(sink);
                 }
             }
-        } else {
-            // not a sink
         }
-
     }
-
-    /*
-    protected boolean isStrongSanit(String opName) {
-        return false;
-    }
-
-    protected boolean isWeakSanit(String opName, List<Integer> indices) {
-        return false;
-    }
-
-    protected boolean isEvil(String opName) {
-        return false;
-    }
-
-    protected boolean isMulti(String opName, List<Integer> indices) {
-        return false;
-    }
-
-    protected boolean isInverseMulti(String opName, List<Integer> indices) {
-        return false;
-    }
-    */
 }

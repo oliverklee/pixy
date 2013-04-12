@@ -267,22 +267,6 @@ implements Serializable, Cloneable {
 
         // automaton to work on
         Automaton work = this.clone();
-        // BEWARE: minimization can lead to an automaton that is less human-readable
-        //work.minimize();
-
-        /*
-        // create an auxiliary map for incoming transitions: to -> fromSet
-        Map<State, Set<State>> reverse = new HashMap<State, Set<State>>();
-        Set<State> states = work.getStates();
-        for (State r : states) {
-            reverse.put(r, new HashSet<State>());
-        }
-        for (State r : states) {
-            for (Transition t : r.getTransitions()) {
-                reverse.get(t.to).add(r);
-            }
-        }
-        */
 
         // create an auxiliary map for incoming transitions: to -> fromSet
         Set<State> states = work.getStates();
@@ -331,7 +315,6 @@ implements Serializable, Cloneable {
                 continue;
             }
 
-
             // determine loop regex
             RegExp regexp_s = RegExp.makeEmpty();
             for (TransitionRegExp t : state2Tre.get(state_s)) {
@@ -352,8 +335,6 @@ implements Serializable, Cloneable {
                     throw new RuntimeException("SNH");
                 }
 
-                // find transition qi
-                //TransitionRegExp trans_qi = RegExp.makeEmpty();
                 RegExp regexp_qi = RegExp.makeEmpty();
                 for (TransitionRegExp t : state2Tre.get(state_qi)) {
                     if (t.to.equals(state_s)) {
@@ -365,15 +346,6 @@ implements Serializable, Cloneable {
                 for (TransitionRegExp trans_pj : state2Tre.get(state_s)) {
                     State state_pj = trans_pj.to;
 
-                    /*
-                    System.out.println("handling: ");
-                    System.out.println(state_qi);
-                    System.out.println(state_s);
-                    System.out.println(state_pj);
-                    */
-
-                    // find transition rij
-                    //TransitionRegExp trans_rij = null;
                     RegExp regexp_rij = RegExp.makeEmpty();
                     for (TransitionRegExp t : state2Tre.get(state_qi)) {
                         if (t.to.equals(state_pj)) {
@@ -381,9 +353,6 @@ implements Serializable, Cloneable {
                         }
                     }
 
-                    // assemble new transition from qi to pj:
-                    // rij + regexp_qi regexp_s* regexp_pj
-                    //RegExp regexp_rij = trans_rij.regExp;
                     RegExp regexp_pj = trans_pj.regExp;
 
                     RegExp regexp_total = RegExp.makeRepeat(regexp_s);
@@ -2890,7 +2859,6 @@ implements Serializable, Cloneable {
                 b.append(s.number).append(" ").append(t.to.number);
                 StringBuilder temp = new StringBuilder();
                 Transition.appendCharString(t.min, temp);
-                //b.append(" ").append(t.min).append("\n");
                 b.append(" ").append(temp.toString()).append("\n");
             }
         }

@@ -25,23 +25,16 @@ public class Regex2Prolog {
         if (preg) {
             // if the preg regex is not delimited...
             if (!phpRegex.get(0).equals(FSAAutomaton.slash) || !phpRegex.get(phpRegex.size()-1).equals(FSAAutomaton.slash)) {
-                //System.out.println("huhu: " + phpRegexOrig);
                 throw new UnsupportedRegexException();
             }
             // peel off delimiter
             phpRegex = phpRegex.subList(1, phpRegex.size()-1);
         }
 
-//        System.out.println("converting this regex:");
-//        System.out.println(phpRegex);
-
         StringBuilder prologRegex = new StringBuilder();
 
         // parse subsequence
         prologRegex.append(parseSub(phpRegex.listIterator()));
-
-//        System.out.println("resulting regex:");
-//        System.out.println(prologRegex);
 
         return prologRegex.toString();
     }
@@ -237,11 +230,6 @@ public class Regex2Prolog {
                 if (sym.equals(FSAAutomaton.csqbra)) {
                     // end of character class
                     break;
-
-//                } else if (sym.equals(minus)) {
-//                    // character range
-//                    // already handled by lookahead
-
                 } else if (sym.equals(FSAAutomaton.backslash)) {
                     // an escape
 

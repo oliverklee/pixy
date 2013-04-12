@@ -50,10 +50,8 @@ public final class Dumper {
 
         try {
             Writer outWriter = new FileWriter(path + '/' + filename);
-            // Writer outWriter = new PrintWriter(System.out);
             dumpDot(parseTree, outWriter);
             outWriter.close();
-            // outWriter.flush();
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return;
@@ -84,14 +82,6 @@ public final class Dumper {
         outWriter.write("  n" + parseNode.getId() + " [label=\"");
 
         // print symbol
-        /*
-        int symbol = parseNode.getSymbol();
-        if (parseNode instanceof PhpParseNode) {
-            symbolName = PhpSymbols.symToName(symbol);
-        } else {
-            symbolName = TacSymbols.symToName(symbol);
-        }
-        */
         String symbolName = parseNode.getName();
         outWriter.write(escapeDot(symbolName, 0));
 
@@ -160,16 +150,12 @@ public final class Dumper {
 
         try {
             Writer outWriter = new FileWriter(path + "/" + filename);
-            // Writer outWriter = new PrintWriter(System.out);
             dumpDot(cfg, graphName, outWriter);
             outWriter.close();
-            // outWriter.flush();
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return;
         }
-
-
     }
 
 // dumpDot(Cfg, String, Writer) ****************************************************
@@ -206,13 +192,7 @@ public final class Dumper {
 
         // print node
         String name = makeCfgNodeName(cfgNode);
-        /*
-        int reversePostOrder = cfgNode.getReversePostOrder();
-        if (reversePostOrder != -1) {
-            name += " [" + reversePostOrder + "]";
-        }*/
-        outWriter.write("  n" + nodeId + " [label=\"" +
-                /*nodeId + ": " +*/ name + "\"];\n");
+        outWriter.write("  n" + nodeId + " [label=\"" + name + "\"];\n");
 
         // handle successors
         int succId;
@@ -508,13 +488,9 @@ public final class Dumper {
             return (leftString + " = include " + rightString);
 
         } else if (cfgNodeX instanceof CfgNodeIncludeStart) {
-
-            //CfgNodeIncludeStart cfgNode = (CfgNodeIncludeStart) cfgNodeX;
             return("incStart");
 
         } else if (cfgNodeX instanceof CfgNodeIncludeEnd) {
-
-            // CfgNodeIncludeEnd cfgNode = (CfgNodeIncludeEnd) cfgNodeX;
             return("incEnd");
 
         } else {
@@ -576,10 +552,6 @@ public final class Dumper {
         }
         String spaces = buf.toString();
 
-        /*
-        System.out.print(spaces + "Sym: " + parseNode.getSymbol() + ", Name: " +
-                PhpSymbols.symToName(parseNode.getSymbol()));
-        */
         System.out.print(spaces + "Sym: " + parseNode.getSymbol() + ", Name: " +
                 parseNode.getName());
         if (parseNode.getLexeme() != null) {
@@ -852,47 +824,6 @@ public final class Dumper {
         writer.flush();
     }
 
-    // only prints
-    // - non-temporaries
-    // - non-shadows
-    // - variables of non-builtin functions
-    /*
-    static public void dump(ExTaintLatticeElement element, Writer writer)
-    throws IOException {
-
-        // dump non-default taint mappings
-        writer.write(linesep + "TAINT MAPPINGS" + linesep + linesep);
-        Map placeToTaint = element.getPlaceToTaint();
-        for (Iterator iterator = placeToTaint.entrySet().iterator(); iterator.hasNext();) {
-            Map.Entry entry = (Map.Entry) iterator.next();
-            TacPlace place = (TacPlace) entry.getKey();
-            if (place.isVariable()) {
-                Variable var = place.getVariable();
-                if (doNotDump(var)) {
-                    continue;
-                }
-            }
-            ExTaintSet taintSet = (ExTaintSet) entry.getValue();
-            writer.write(place + ":      " + taintSet + linesep);
-        }
-
-        // dump non-default array labels
-        writer.write(linesep + "ARRAY LABELS" + linesep + linesep);
-        Map arrayLabels = element.getArrayLabels();
-        for (Iterator iterator = arrayLabels.entrySet().iterator(); iterator.hasNext();) {
-            Map.Entry entry = (Map.Entry) iterator.next();
-            Variable var = (Variable) entry.getKey();
-            if (doNotDump(var)) {
-                continue;
-            }
-            ExTaintSet arrayLabel = (ExTaintSet) entry.getValue();
-            writer.write(var + ":      " + arrayLabel + linesep);
-        }
-
-
-    }
-    */
-
     // returns true if this variable should not be dumped, because it is a
     // - temporary
     // - shadow
@@ -1087,17 +1018,4 @@ public final class Dumper {
         System.out.println("total product: " + total);
         System.out.println();
     }
-
-
-    /*
-    static public void dumpCall2ConFunc(Map call2ConnectorFunction) {
-        for (Iterator iter = call2ConnectorFunction.entrySet().iterator(); iter.hasNext();) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            CfgNodeCall callNode = (CfgNodeCall) entry.getKey();
-            ConnectorFunction conFunc = (ConnectorFunction) entry.getValue();
-            System.out.println("Connectors for Call Node " + callNode.getId() + ": ");
-            System.out.println(conFunc);
-        }
-    }
-    */
 }

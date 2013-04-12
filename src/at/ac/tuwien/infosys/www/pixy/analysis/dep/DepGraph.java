@@ -199,11 +199,6 @@ public class DepGraph {
             List<DepGraphNode> origTos = origEntry.getValue();
 
             List<DepGraphNode> myTos = new LinkedList<DepGraphNode>(origTos);
-            /*
-            List<DepGraphNode> myTos = new LinkedList<DepGraphNode>();
-            for (DepGraphNode origTo : origTos) {
-                myTos.add(origTo);
-            }*/
 
             // we can reuse the nodes from the original graph, but we must
             // not reuse its lists
@@ -233,11 +228,6 @@ public class DepGraph {
 
         debug("  visiting: " + current.getClass() + ", " + current.getOrigLineno() + ", " + place);
         debug(current.toString());
-        /*
-        if (!indices.isEmpty()) {
-            System.out.println("indices: " + indices);
-        }
-        */
         debug("in function : " + function.getName());
         debug("under contexts: " + contexts);
 
@@ -530,20 +520,6 @@ public class DepGraph {
 
             if (prepNode.getCallee() == null) {
                 throw new RuntimeException("SNH");
-                /*
-                // a function / method for which no definition could be found
-                String functionName = prepNode.getFunctionNamePlace().toString().toLowerCase();
-                boolean builtin;
-                if (BuiltinFunctions.isBuiltinFunction(functionName)) {
-                    // since builtin function are now represented by their own
-                    // cfg node (see below), this case should not happen any longer
-                    throw new RuntimeException("SNH");
-                    // builtin = true;
-                } else {
-                    builtin = false;
-                }
-                return new DepGraphOpNode(targetNode, functionName, builtin);
-                */
             } else {
                 // a user-defined function; we don't want to clutter
                 // the depgraph with nodes for these calls
@@ -597,11 +573,7 @@ public class DepGraph {
             toList = new LinkedList<DepGraphNode>();
             this.edges.put(from, toList);
         }
-        // removed the if-guard to allow more than one edge between
-        // two nodes (was a bug)
-        //if (!toList.contains(to)) {
-            toList.add(to);
-        //}
+        toList.add(to);
     }
 
 //  *********************************************************************************
@@ -849,37 +821,14 @@ public class DepGraph {
     // exist, it returns $b[7] with additional indices [3][4]
     private Variable getCorresponding(Variable left, Variable victim, Variable right,
             List<TacPlace> oldIndices, List<TacPlace> newIndices) {
-
-        /*
-        System.out.println("left: " + left);
-        System.out.println("right: " + right);
-        System.out.println("victim: " + victim);
-        */
-
         if (!victim.isArrayElementOf(left)) {
             // can happen for "return" statements (assignments to a
             // superglobal return variable)
-            /*
-            if (!left.getName().startsWith(InternalStrings.returnPrefix)) {
-                throw new RuntimeException("SNH");
-            }
-            */
             victim = left;
         }
 
         List<TacPlace> leftIndices = left.getIndices();
         List<TacPlace> victimIndices = victim.getIndices();
-
-        /*
-        System.out.println();
-        System.out.println("giveMeAName:");
-        System.out.println("left: " + left);
-        System.out.println("victim: " + victim);
-        System.out.println("right: " + right);
-        System.out.println("left indices: " + leftIndices);
-        System.out.println("old indices: " + oldIndices);
-        System.out.println("victim indices: " + victimIndices);
-        */
 
         // add oldIndices to victimIndices
         for (Iterator oldIter = oldIndices.iterator(); oldIter.hasNext();) {
@@ -922,9 +871,6 @@ public class DepGraph {
             TacPlace victimIndex = (TacPlace) victimIter.next();
             newIndices.add(victimIndex);
         }
-
-        //System.out.println("computed target: " + retMe);
-        //System.out.println("new indices: " + newIndices);
 
         return retMe;
 
@@ -980,55 +926,6 @@ public class DepGraph {
                 retMe.add(param.getPlace());
             }
         }
-
-
-        /*
-        if (functionName.equals("each")) {
-
-            // TODO:
-            // this "quick fix" doesn't work because the param to each
-            // does not have to be a known array; here we have a problem with
-            // the limitation that we have only one "newIndices" list, but multiple
-            // elements in the returned list
-            Variable param = prepNode.getParamList().get(0).getPlace().getVariable();
-            if (param.isArray()) {
-                retMe.addAll(param.getElements());
-            } else {
-                retMe.add(param);
-            }
-            return retMe;
-
-
-            // the following does not do what it should
-
-            // creating an analogy between "each" and AssignSimple
-            Variable left = prepNode.getCallRetNode().getTempVar();     // the temporary catching the return value
-            TacPlace right = prepNode.getParamList().get(0).getPlace(); // the param of "each"
-
-            // if there are some old indices hanging around
-            if (!oldIndices.isEmpty() && right.isVariable()) {
-                retMe.add(getCorresponding(left,
-                        victim.getVariable(),
-                        right.getVariable(),
-                        oldIndices, newIndices));
-
-            // if the victim is an array element of left
-            } else if (victim.isVariable() && victim.getVariable().isArrayElement() &&
-                    victim.getVariable().isArrayElementOf(left)) {
-
-                retMe.add(getCorresponding(left,
-                        victim.getVariable(),
-                        right.getVariable(),
-                        oldIndices, newIndices));
-
-            // else: no need for array awareness
-            } else {
-                retMe.add(right);
-            }
-
-        } else {
-        */
-
 
         return retMe;
     }
@@ -1911,48 +1808,6 @@ public class DepGraph {
         return retme;
     }
 
-    /*
-    // removes the given node;
-    // only works for nodes that have exactly one predecessor
-    private void removeNode(DepGraphNode node) {
-
-        this.nodes.remove(node);
-
-        Set<DepGraphNode> preds = this.getPredecessors(node);
-        if (preds == null || preds.size() != 1) {
-            throw new RuntimeException("SNH");
-        }
-
-        List<DepGraphNode> succs = this.edges.get(node);
-
-        if (succs == null || succs.isEmpty()) {
-            // no successors, simply remove incoming edges
-            for (DepGraphNode pre : preds) {
-                List<DepGraphNode> outEdges = this.edges.get(pre);
-                if (outEdges.size() == 1) {
-                    // this predecessor has only this one outgoing edge
-                    this.edges.remove(pre);
-                } else {
-                    outEdges.remove(node);
-                }
-            }
-        } else {
-            // redirect incoming edges to successors
-            for (DepGraphNode pre : preds) {
-                List<DepGraphNode> outEdges = this.edges.get(pre);
-                int outIndex = outEdges.indexOf(node);
-                for () {
-                }
-            }
-
-
-            this.edges.remove(node);
-        }
-
-    }
-    */
-
-
 //  ********************************************************************************
 
     // reduces this depgraph to the ineffective sanitization stuff;
@@ -2173,237 +2028,4 @@ public class DepGraph {
         TacFunction targetFunction;
         Set<Context> targetContexts;
     }
-
-//  ********************************************************************************
-//  OLD STUFF **********************************************************************
-//  *********************************************************************************
-
-    /*
-    private List<TacPlace> getUsedPlacesForBuiltin(CfgNodeCallBuiltin cfgNode) {
-
-        List<TacPlace> retMe = new LinkedList<TacPlace>();
-        String functionName = cfgNode.getFunctionName();
-
-        List<Integer> multiList = new LinkedList<Integer>();
-        List<TacActualParam> paramList = cfgNode.getParamList();
-
-        if (isMulti(functionName, multiList)) {
-
-            for (Integer index : multiList) {
-                try {
-                    retMe.add(paramList.get(index).getPlace());
-                } catch (IndexOutOfBoundsException e) {
-                    // optional argument, do nothing
-                }
-            }
-
-        } else if (isInverseMulti(functionName, multiList)) {
-
-            int index = -1;
-            for (TacActualParam param : paramList) {
-                index++;
-                if (multiList.contains(index)) {
-                    continue;
-                }
-                retMe.add(param.getPlace());
-            }
-
-        } else {
-            // simply add all parameters, but tell the user about it;
-            // DCG == DepGraphConstruction
-            System.out.println("Unmodeled builtin function (DGC): " + functionName);
-            // this approximation might be incorrect if arrays are involved
-            for (TacActualParam param : paramList) {
-                retMe.add(param.getPlace());
-            }
-        }
-
-        return retMe;
-    }
-    */
-
-//  ********************************************************************************
-
-    /*
-    // if the given operation is a multi-dependency operation, it returns true
-    // and fills the given indices list with the appropriate index numbers
-    private boolean isMulti(String opName, List<Integer> indices) {
-        if (
-                opName.equals("microtime") ||
-                opName.equals("mt_rand") ||
-                opName.equals("mysql_error") ||
-                opName.equals("mysql_query") ||
-                opName.equals("ob_get_clean") ||
-                opName.equals("phpversion") ||
-                opName.equals("rand") ||
-                opName.equals("time")
-                ) {
-            // do nothing: there is no real flow between the parameters
-            // and the return value of these functions
-            return true;
-        } else if (
-                opName.equals("addslashes") ||
-                opName.equals("base64_decode") ||
-                opName.equals("basename") ||
-                opName.equals("chr") ||
-                opName.equals("count") ||
-                opName.equals("date") ||
-                opName.equals("dirname") ||
-                opName.equals("filesize") ||
-                opName.equals("floor") ||
-                opName.equals("getimagesize") ||
-                opName.equals("gmdate") ||
-                opName.equals("gzcompress") ||
-                opName.equals("htmlentities") ||
-                opName.equals("htmlspecialchars") ||
-                opName.equals("ini_get") ||
-                opName.equals("intval") ||
-                opName.equals("ltrim") ||
-                opName.equals("mysql_num_rows") ||
-                opName.equals("nl2br") ||
-                opName.equals("pathinfo") ||
-                opName.equals("rawurlencode") ||
-                opName.equals("realpath") ||
-                opName.equals("round") ||
-                opName.equals("rtrim") ||
-                opName.equals("serialize") ||
-                opName.equals("sizeof") ||
-                opName.equals("str_repeat") ||
-                opName.equals("strftime") ||
-                opName.equals("strip_tags") ||
-                opName.equals("stripcslashes") ||
-                opName.equals("stripslashes") ||
-                opName.equals("strlen") ||
-                opName.equals("strstr") ||
-                opName.equals("strtolower") ||
-                opName.equals("strtoupper") ||
-                opName.equals("substr") ||
-                opName.equals("trim") ||
-                opName.equals("ucfirst") ||
-                opName.equals("uniqid") ||
-                opName.equals("unserialize") ||
-                opName.equals("urlencode") ||
-                opName.equals("var_export") ||
-                opName.equals("~") ||
-                opName.equals("(array)") ||
-                opName.equals("(object)") ||
-                opName.equals("(string)")
-                ) {
-            indices.add(0);
-            return true;
-        } else if (
-                opName.equals("explode") ||
-                opName.equals("implode") ||
-                opName.equals("split")
-                ) {
-            indices.add(1);
-            return true;
-        } else if (
-                opName.equals(".") ||
-                opName.equals("|") ||
-                opName.equals("&") ||
-                opName.equals("^") ||
-                opName.equals("strrpos")
-                ) {
-            indices.add(0);
-            indices.add(1);
-            return true;
-        }else if (
-                opName.equals("ereg_replace") ||
-                opName.equals("eregi_replace") ||
-                opName.equals("preg_replace") ||
-                opName.equals("str_replace")
-                ) {
-            indices.add(1);
-            indices.add(2);
-            return true;
-        } else if (
-                opName.equals("number_format")
-                ) {
-            indices.add(0);
-            indices.add(2);
-            indices.add(3);
-            return true;
-        } else if (
-                // array stuff
-                opName.equals("array_keys") ||
-                opName.equals("array_values") ||
-                opName.equals("array_reverse") ||
-                opName.equals("each")
-                ) {
-            indices.add(0);
-            return true;
-        } else {
-            return false;
-        }
-    }
-    */
-
-//  ********************************************************************************
-
-    /*
-    // analogous to isMulti, but inverse: e.g., if some function is an inverse
-    // multi-dependency with a returned index "2", then all its parameters are
-    // relevant, except for parameter #2
-    private boolean isInverseMulti(String opName, List<Integer> indices) {
-        if (
-                opName.equals("sprintf") ||
-                opName.equals("max") ||
-                opName.equals("min") ||
-                opName.equals("pack")
-                ) {
-            // all params are relevant, so don't add anything to the list
-            return true;
-        } else {
-            return false;
-        }
-    }
-    */
-
-//  *********************************************************************************
-
-    /*
-    // determines the "folded" dep set of the given place by lubbing over all contexts
-    private DepSet oldFold(Map phi, TacPlace place) {
-
-        DepSet depSet = null;
-        for (Iterator iter = phi.entrySet().iterator(); iter.hasNext();) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            DepLatticeElement element = (DepLatticeElement) entry.getValue();
-            if (depSet == null) {
-                depSet = element.getDep(place);
-            } else {
-                // EFF: this might be a memory leak, since all intermediate
-                // results are automatically stored in the repository; maybe use
-                // weak references to fix this
-                depSet = DepSet.lub(depSet, element.getDep(place));
-            }
-        }
-        return depSet;
-    }
-    */
-//  *********************************************************************************
-
-    /*
-    // determines the "folded" lattice element by lubbing over all contexts
-    private DepLatticeElement oldFold(Map phi) {
-
-        DepLatticeElement retMe = null;
-        for (Iterator iter = phi.entrySet().iterator(); iter.hasNext();) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            DepLatticeElement element = (DepLatticeElement) entry.getValue();
-
-            if (retMe == null) {
-                // EFF: it should also be possible to say "retMe = element"
-                retMe = new DepLatticeElement(element);
-            } else {
-                // EFF: this might be a memory leak, since all intermediate
-                // results are automatically stored in the repository; maybe use
-                // weak references to fix this
-                retMe = (DepLatticeElement) this.depAnalysis.getLattice().lub(element, retMe);
-            }
-        }
-        return retMe;
-    }
-    */
 }

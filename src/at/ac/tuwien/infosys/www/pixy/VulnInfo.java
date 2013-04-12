@@ -20,9 +20,6 @@ public class VulnInfo {
     private int customSanitCount;
     private int customSanitThrownAwayCount;
 
-    // dangerous uninit nodes
-    //private List<Map<DepGraphUninitNode, InitialTaint>> dangerousUninit;
-
     VulnInfo() {
         this.depGraphs = new LinkedList<DepGraph>();
         this.depGraphsMin = new LinkedList<DepGraph>();
@@ -39,11 +36,9 @@ public class VulnInfo {
         return this.depGraphsMin;
     }
 
-    public void addDepGraph(DepGraph depGraph, DepGraph min
-            /*, Map<DepGraphUninitNode, InitialTaint> dangerousUninit*/) {
+    public void addDepGraph(DepGraph depGraph, DepGraph min) {
         this.depGraphs.add(depGraph);
         this.depGraphsMin.add(min);
-        //this.dangerousUninit.add(dangerousUninit);
     }
 
 //  **********************************************************
@@ -80,8 +75,6 @@ public class VulnInfo {
     public void setCustomSanitCount(int customSanitCount) {
         this.customSanitCount = customSanitCount;
     }
-
-
 
     public int getCustomSanitThrownAwayCount() {
         return customSanitThrownAwayCount;

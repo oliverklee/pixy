@@ -153,11 +153,9 @@ public class ProgramConverter {
         Set<CfgNodeInclude> topIncludes = new HashSet<CfgNodeInclude>();
         //
         // literal includes for which the target file could not be found
-        //Set<CfgNodeInclude> notFoundLiteralIncludes = new HashSet<CfgNodeInclude>();
         SortedMap<CfgNodeInclude,String> notFoundLiteralIncludes = new TreeMap<CfgNodeInclude,String>();
         //
         // dynamic includes for which the target file could not be found
-        //Set<CfgNodeInclude> notFoundDynamicIncludes = new HashSet<CfgNodeInclude>();
         SortedMap<CfgNodeInclude,String> notFoundDynamicIncludes = new TreeMap<CfgNodeInclude,String>();
         //
         // number of included literal includes
@@ -261,10 +259,6 @@ public class ProgramConverter {
 
             AliasAnalysis aliasAnalysis = new DummyAliasAnalysis();
 
-            // assign a reasonable (worklist) order to the nodes, speeds up analyses;
-            // not necessary here! this is only needed for functional analyses!
-            //baseTac.assignReversePostOrder();
-
             literalAnalysis = new LiteralAnalysis(
                     baseTac, aliasAnalysis, new CSAnalysis(connectorComp), workList);
             literalAnalysis.analyze();
@@ -277,11 +271,8 @@ public class ProgramConverter {
             for (CfgNodeInclude includeNode : processUs) {
 
                 if (this.skipUs.contains(includeNode)) {
-                    //System.out.println("skipping!");
                     continue;
                 }
-
-                //System.out.println("processing include node: " + includeNode.getOrigLineno());
 
                 Literal includedLit = literalAnalysis.getLiteral(includeNode.getIncludeMe(), includeNode);
                 String includedString = null;
@@ -298,7 +289,6 @@ public class ProgramConverter {
                         topIncludes.add(includeNode);
                         continue;
                     } else if (includeTargets.isEmpty()) {
-                        //notFoundDynamicIncludes.put(includeNode, null);
                         continue;
                     } else if (includeTargets.size() == 1) {
                         // heuristics were successful!
@@ -339,10 +329,6 @@ public class ProgramConverter {
 
             // assign functions to cfg nodes
             this.baseTac.assignFunctions();
-
-            // resolve again (maybe we've got some new calls and functions during this pass);
-            // this is unnecessary here...
-            //this.baseTac.backpatch();
 
             processUs = weComeAfterwards;
             processUs.addAll(topIncludes);  // maybe they will become resolvable in the next iteration
@@ -551,10 +537,8 @@ public class ProgramConverter {
             }
 
             findMe = new File(searchIn, fileName);
-            // System.out.println("probing file " + findMe.getAbsolutePath());
             if (findMe.isFile()) {
                 // found it!
-                // System.out.println("found it!");
                 return findMe;
             }
         }
@@ -577,10 +561,8 @@ public class ProgramConverter {
                             includingFile.getCanonicalFile().getParentFile(),
                             includePath.getPath());
                     findMe = new File(searchIn, fileName);
-                    // System.out.println("probing file " + findMe.getAbsolutePath());
                     if (findMe.isFile()) {
                         // found it!
-                        // System.out.println("found it!");
                         return findMe;
                     }
 
@@ -592,7 +574,6 @@ public class ProgramConverter {
 
         // file not found
         return null;
-        // throw new RuntimeException("file not found: " + fileName + ", included by " + includingFile.getAbsolutePath());
     }
 
 //  include ************************************************************************
@@ -616,7 +597,6 @@ public class ProgramConverter {
         // approximation for handling recursions:
         // if this is a recursive include (include graph would get cyclic), ignore it
         boolean acyclic = this.includeGraph.addAcyclicEdge(includeNode.getFile(), includedFile);
-        // System.out.println("acyclic? " + acyclic);
 
         // get canonical path of included file
         String includedFilePath = null;
@@ -627,8 +607,6 @@ public class ProgramConverter {
         }
 
         if (acyclic) {
-            //System.out.println("including " + includedFilePath);
-            // System.out.println("from: " + includeNode.getFileName() + ", line " + includeNode.getOrigLineno());
             if (!MyOptions.optionB) {
                 System.out.print(".");
             }
@@ -640,7 +618,6 @@ public class ProgramConverter {
             includeNodes.addAll(tac.getIncludeNodes());
             return IncStatus.INCLUDED;
         } else {
-            //this.skipUs.add(includeNode);   // don't try this node again
             return IncStatus.CYCLIC;
         }
 

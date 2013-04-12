@@ -174,7 +174,6 @@ public class Utils {
 
                 while ((line = inreader.readLine()) != null) {
                     outWriter.append(line + "\n");
-                    //System.err.println(line);
                 }
                 inreader.close();
             } catch (IOException e) {
@@ -184,8 +183,6 @@ public class Utils {
             if (p.exitValue() != 0) {
                 System.err.println("Exit value: " + p.exitValue());
                 System.err.println("- " + command);
-//                outWriter.append("Exit value: " + p.exitValue() + "\n");
-//                outWriter.append("- " + command + "\n");
                 new RuntimeException().printStackTrace();
             }
             outWriter.close();
@@ -248,7 +245,6 @@ public class Utils {
             in.close();
         } catch (IOException e) {
             e.printStackTrace();
-            //throw new RuntimeException();
         }
     }
 

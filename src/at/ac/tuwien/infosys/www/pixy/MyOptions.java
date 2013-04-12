@@ -429,25 +429,6 @@ public class MyOptions {
         // harmless server indices
         harmlessServerIndices = new HashSet<String>();
 
-        // this is now done in Checker.readConfig()
-        /*
-        harmlessServerIndices.add("HTTP_ACCEPT_LANGUAGE");
-        harmlessServerIndices.add("HTTP_HOST");
-        //harmlessServerIndices.add("HTTP_REFERER");
-        harmlessServerIndices.add("SERVER_NAME");
-        harmlessServerIndices.add("SERVER_SOFTWARE");
-        harmlessServerIndices.add("PHP_AUTH_PW");
-        harmlessServerIndices.add("PHP_AUTH_TYPE");
-        harmlessServerIndices.add("PHP_AUTH_USER");
-        //harmlessServerIndices.add("PHP_SELF");    // not harmless!
-        harmlessServerIndices.add("QUERY_STRING");
-        harmlessServerIndices.add("REQUEST_URI");
-        harmlessServerIndices.add("REMOTE_ADDR");
-        harmlessServerIndices.add("SCRIPT_FILENAME");
-        harmlessServerIndices.add("SCRIPT_NAME");
-        harmlessServerIndices.add("SCRIPT_URI");
-        */
-
         // name2depclient mapping
 
         name2Analysis = new HashMap<String,DepClientInfo>();

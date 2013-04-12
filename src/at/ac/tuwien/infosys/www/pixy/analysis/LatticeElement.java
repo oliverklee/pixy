@@ -19,9 +19,4 @@ implements Recyclable {
     public abstract int structureHashCode();
 
     public abstract void dump();
-
-    /*
-    public abstract boolean equals(Object obj);
-    public abstract int hashCode();
-    */
 }

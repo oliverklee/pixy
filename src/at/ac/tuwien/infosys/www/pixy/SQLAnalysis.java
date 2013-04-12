@@ -100,20 +100,15 @@ extends DepClient {
                     if (auto.hasDangerousIndirectTaint()) {
                         System.out.println("indirectly tainted and dangerous!");
                         tainted = true;
-                    } else {
-                        //System.out.println("indirectly tainted, but not dangerous");
                     }
                 }
-                if (!tainted) {
-                    //System.out.println("not tainted");
-                } else {
+                if (tainted) {
                     vulncount++;
                     retMe.add(cfgNode.getOrigLineno());
 
                     System.out.println("- " + cfgNode.getLoc());
                     System.out.println("- Graphs: sql" + graphcount);
                 }
-
 
                 // if we have detected a vulnerability, also dump a reduced
                 // SQL dependency graph
@@ -244,14 +239,12 @@ extends DepClient {
     // BEWARE: this also eliminates cycles!
     Automaton toAutomaton(DepGraph depGraph, DepGraph origDepGraph) {
         depGraph.eliminateCycles();
-        //depGraph.dumpDot("sqlnocycles", Checker.graphPath, depGraph.getUninitNodes());
         DepGraphNode root = depGraph.getRoot();
         Map<DepGraphNode,Automaton> deco = new HashMap<DepGraphNode,Automaton>();
         Set<DepGraphNode> visited = new HashSet<DepGraphNode>();
         this.decorate(root, deco, visited, depGraph, origDepGraph);
         Automaton rootDeco = deco.get(root).clone();
-        // BEWARE: minimization can lead to an automaton that is *less* human-readable
-        //rootDeco.minimize();
+
         return rootDeco;
     }
 
@@ -458,26 +451,7 @@ extends DepClient {
             } else {
                 throw new RuntimeException("SNH");
             }
-
-            /*
-            CfgNodeCallRet callRet = (CfgNodeCallRet) node.getCfgNode();
-            String functionName = callRet.getCallPrepNode().getCallee().getName();
-
-            if (functionName.equals(InternalStrings.unknownFunctionName)) {
-
-                retMe = Automaton.makeAnyString(Transition.Taint.Directly);
-
-            } else if (functionName.equals(InternalStrings.unknownMethodName)) {
-
-                retMe = Automaton.makeAnyString(Transition.Taint.Untainted);
-
-            } else {
-                throw new RuntimeException("SNH");
-            }
-            */
-
         } else if (opName.equals(".")) {
-
             // CONCAT
             for (DepGraphNode succ : successors) {
                 Automaton succAuto = deco.get(succ);
@@ -580,74 +554,14 @@ extends DepClient {
             String functionName = cfgNode.getFunctionName();
 
             checkForSinkHelper(functionName, cfgNode, cfgNode.getParamList(), traversedFunction, sinks);
-
-            /*
-            if (functionName.equals("mysql_query")) {
-                Sink sink = new Sink(cfgNode, traversedFunction);
-                // the first argument is of interest
-                List<TacActualParam> paramList = cfgNode.getParamList();
-                sink.addSensitivePlace(paramList.get(0).getPlace());
-                // add this sink to the list of sensitive sinks
-                sinks.add(sink);
-            }
-            */
-
         } else if (cfgNodeX instanceof CfgNodeCallPrep) {
 
             CfgNodeCallPrep cfgNode = (CfgNodeCallPrep) cfgNodeX;
             String functionName = cfgNode.getFunctionNamePlace().toString();
 
-
             // user-defined custom sinks
 
             checkForSinkHelper(functionName, cfgNode, cfgNode.getParamList(), traversedFunction, sinks);
-
-                /*
-            } else if (functionName.equals(InternalStrings.unknownMethodName)) {
-                // OLD STUFF
-
-                // this is a method call, manually add sinks here
-                String methodName = cfgNode.getMethodName();
-                if (methodName == null) {
-                    System.out.println("CHECK ME: method name could not be determined");
-                    System.out.println(cfgNode.getFileName());
-                    System.out.println(cfgNode.getOrigLineno());
-                    return;
-                }
-
-                if (methodName.equals("sql_query")) {
-                    Sink sink = new Sink(cfgNode, traversedFunction);
-                    // the first argument is of interest
-                    List<TacActualParam> paramList = cfgNode.getParamList();
-                    sink.addSensitivePlace(paramList.get(0).getPlace());
-                    // add this sink to the list of sensitive sinks
-                    sinks.add(sink);
-                }
-
-                if (methodName.equals("query")) {
-                    Sink sink = new Sink(cfgNode, traversedFunction);
-                    // the first argument is of interest
-                    List<TacActualParam> paramList = cfgNode.getParamList();
-                    sink.addSensitivePlace(paramList.get(0).getPlace());
-                    // add this sink to the list of sensitive sinks
-                    sinks.add(sink);
-                }
-                */
-
-
-                /*
-            } else if (functionName.equals("enter-name-here")) {
-                Sink sink = new Sink(cfgNode, traversedFunction);
-                // the first argument is of interest
-                List<TacActualParam> paramList = cfgNode.getParamList();
-                sink.addSensitivePlace(paramList.get(0).getPlace());
-                // add this sink to the list of sensitive sinks
-                sinks.add(sink);
-            }
-            */
-
-        } else {
-            // not a sink
         }
     }
 
@@ -665,10 +579,7 @@ extends DepClient {
                     sinks.add(sink);
                 }
             }
-        } else {
-            // not a sink
         }
-
     }
 
 //  ********************************************************************************
@@ -751,7 +662,6 @@ extends DepClient {
             System.out.println(auto.getCommonPrefix());
             System.out.println("Prefix END");
             System.out.println();
-            //System.out.println("as regex: " + auto.toRegExp().toString());
 
             System.out.println("Suffix BEGIN");
             System.out.println(auto.getCommonSuffix());
@@ -778,176 +688,4 @@ extends DepClient {
             return;
         }
     }
-
-
-//  ********************************************************************************
-
-    /*
-    protected boolean isStrongSanit(String opName) {
-
-        if (opName.equals("imagesx") ||
-                opName.equals("imagesy") ||
-                opName.equals("imagecreatefromjpeg") ||
-                opName.equals("intval") ||
-                opName.equals("floor") ||
-                opName.equals("count") ||
-                opName.equals("sizeof") ||
-                opName.equals("mt_rand") ||
-                opName.equals("rand") ||
-                opName.equals("strlen") ||
-                opName.equals("phpversion") ||
-                opName.equals("round") ||
-                opName.equals("microtime") ||
-                opName.equals("mktime") ||
-                opName.equals("time") ||
-                opName.equals("getimagesize") ||
-                opName.equals("filesize") ||
-                opName.equals("md5") ||
-                opName.equals("chr") ||
-                opName.equals("mysql_insert_id") ||
-                opName.equals("strrpos") ||
-                opName.equals("strpos") ||
-                opName.equals("imagecreatefrompng") ||
-                opName.equals("hexdec") ||
-                // LATER: depends on the params of the enclosing function
-                opName.equals("debug_backtrace") ||
-                // "clean database" policy
-                opName.equals("mysql_fetch_array") ||
-                opName.equals("mysql_fetch_row") ||
-                opName.equals("mysql_fetch_assoc") ||
-                opName.equals("mysql_query") ||
-                opName.equals("mysql_result") ||
-                // "clean files" policy
-                opName.equals("file") ||
-                opName.equals("readdir") ||
-                opName.equals("fread") ||
-                opName.equals("fgets") ||
-                opName.equals("opendir") ||
-                // "clean environment" policy
-                opName.equals("getenv") ||
-                // harmless operators
-                opName.equals("+") || // both binary and unary
-                opName.equals("-") || // both binary and unary
-                opName.equals("*") ||
-                opName.equals("/") ||
-                opName.equals("%") ||
-                opName.equals("&&") ||
-                opName.equals("==") ||
-                opName.equals("!=") ||
-                opName.equals("<") ||
-                opName.equals(">") ||
-                opName.equals("<=") ||
-                opName.equals(">=") ||
-                opName.equals("===") ||
-                opName.equals("!==") ||
-                opName.equals("<<") ||
-                opName.equals(">>") ||
-                opName.equals("!") ||
-                opName.equals("(int)") ||
-                opName.equals("(double)") ||
-                opName.equals("(bool)") ||
-                opName.equals("(unset)") ||
-                // method calls
-                //opName.equals(InternalStrings.unknownMethodName) ||
-                // Pixy's suppression function
-                opName.equals(InternalStrings.suppression)
-                ) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    */
-
-//  ********************************************************************************
-
-    /*
-    protected boolean isEvil(String opName) {
-        return false;
-    }
-    */
-
-//  ********************************************************************************
-
-    /*
-    protected boolean isMulti(String opName, List<Integer> indices) {
-
-        if (
-                opName.equals("explode") ||
-                opName.equals("split")
-                ) {
-            indices.add(1);
-            return true;
-        } else if (
-                opName.equals("date") ||
-                opName.equals("each") ||
-                opName.equals("strftime") ||
-                opName.equals("gmdate") ||
-                opName.equals("strtolower") ||
-                opName.equals("ucfirst") ||
-                opName.equals("stripslashes") ||
-                opName.equals("trim") ||
-                opName.equals("ltrim") ||
-                opName.equals("rtrim") ||
-                opName.equals("uniqid") ||
-                opName.equals("substr") ||
-                opName.equals("unserialize") ||
-                opName.equals("basename") ||
-                opName.equals("serialize") ||
-                opName.equals("html_entity_decode") ||
-                opName.equals("addcslashes") ||
-                opName.equals("strip_tags")) {
-            indices.add(0);
-            return true;
-        } else if (opName.equals("str_replace") ||
-                opName.equals("preg_replace")) {
-            indices.add(1);
-            indices.add(2);
-            return true;
-        } else if (
-                opName.equals("implode") ||
-                opName.equals(".")
-                ) {
-            indices.add(0);
-            indices.add(1);
-            return true;
-        } else {
-            return false;
-        }
-    }
-    */
-
-//  ********************************************************************************
-
-    /*
-    // analogous to isMulti, but inverse: e.g., if some function is an inverse
-    // multi-dependency with a returned index "2", then all its parameters are
-    // relevant, except for parameter #2
-    protected boolean isInverseMulti(String opName, List<Integer> indices) {
-        if (opName.equals("sprintf") ||
-                opName.equals("max") ||
-                opName.equals("min")) {
-            // all params are relevant, so don't add anything to the list
-            return true;
-        } else {
-            return false;
-        }
-    }
-    */
-
-//  ********************************************************************************
-
-    /*
-    protected boolean isWeakSanit(String opName, List<Integer> indices) {
-        if (opName.equals("mysql_real_escape_string") ||
-                opName.equals("mysql_escape_string") ||
-                opName.equals("addslashes") ||
-                opName.equals("htmlspecialchars")) {
-            indices.add(0);
-            return true;
-        } else {
-            return false;
-        }
-    }
-    */
 }

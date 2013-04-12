@@ -32,18 +32,4 @@ extends LatticeElement {
     public void dump() {
         System.out.println("<top>");
     }
-
-
-    /*
-    public boolean equals(Object obj) {
-        // since this is a singleton class, it can only be equal to itself
-        return (obj == LatticeElementTop.INSTANCE ? true : false);
-    }
-
-    public int hashCode() {
-        // use the object's "natural" hashcode:
-        // this doesn't work
-        return (((Object) this).hashCode());
-    }
-    */
 }

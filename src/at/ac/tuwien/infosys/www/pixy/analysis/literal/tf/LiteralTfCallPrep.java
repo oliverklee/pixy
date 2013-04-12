@@ -98,12 +98,6 @@ extends TransferFunction {
                     } else {
                         // we have already generated a warning for this during conversion;
                         // simply ignore it (=ok, is exactly what PHP does)
-                        /*
-                        System.out.println("PHP Syntax Error: calling function \"" +
-                                callee.getName() + "\" with missing parameter");
-                        System.out.println(cfgNode.getFileName() + ", line " + cfgNode.getOrigLineno());
-                        throw new RuntimeException();
-                        */
                     }
                 }
             }

@@ -229,12 +229,6 @@ implements Recyclable {
         for (Set<Variable> scc : sccs) {
             myNewMustAliases.add(new MustAliasGroup(scc));
         }
-        /*
-        for (Iterator iter = sccs.iterator(); iter.hasNext(); ) {
-            Set<Variable> scc = iter.next();
-            myNewMustAliases.add(new MustAliasGroup(scc));
-        }
-        */
         this.mustAliases = myNewMustAliases;
     }
 
@@ -289,23 +283,4 @@ implements Recyclable {
     public void dump() {
         System.out.println("<AliasLatticeElement.dump(): not yet>");
     }
-
-    // AliasLattice and transfer functions take care that equal lattice elements
-    // are represented by identical objects (==): don't override equals and
-    // hashCode
-    /*
-    public boolean equals(Object obj) {
-
-        if (obj == this) {
-            return true;
-        }
-
-        return false;
-    }
-
-    public int hashCode() {
-        // doesn't work this way:
-        return ((Object) this).hashCode();
-    }
-    */
 }

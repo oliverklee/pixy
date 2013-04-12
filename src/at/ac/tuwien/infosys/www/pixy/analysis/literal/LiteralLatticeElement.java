@@ -89,22 +89,6 @@ extends LatticeElement {
             }
         }
 
-        // here you can determine the literal for the return variable
-        // of the unknown function
-        /*
-        Variable unknownFunctionRetVar = superSymbolTable.getVariable(
-                InternalStrings.returnPrefix + InternalStrings.unknownFunctionName);
-        this.placeToLit.put(unknownFunctionRetVar, Literal.TOP);
-        */
-
-        // here you can determine the literal for the return variable
-        // of method calls
-        /*
-        Variable methodRetVar = superSymbolTable.getVariable(
-                InternalStrings.returnPrefix + InternalStrings.unknownMethodName);
-        this.placeToLit.put(methodRetVar, Literal.TOP);
-        */
-
         // initialize constants
         Map constants = constantsTable.getConstants();
         for (Iterator iter = constants.values().iterator(); iter.hasNext(); ) {
@@ -383,7 +367,6 @@ extends LatticeElement {
             TacPlace place = (TacPlace) entry.getKey();
             Literal lit = (Literal) entry.getValue();
             if (getDefaultLiteral(place).equals(lit)) {
-                // this.placeToLit.remove(place);
                 iter.remove();
             }
         }

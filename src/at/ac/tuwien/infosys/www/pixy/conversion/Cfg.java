@@ -47,40 +47,6 @@ public final class Cfg {
     // returns the function that contains the given CFG node;
     // throws an exception if it does not succeed
     public static TacFunction getFunction(CfgNode cfgNode) {
-
-        /*
-        // consider the case where cfgNode is enclosed in a basic block
-        CfgNode basicBlock = cfgNode.getEnclosingBasicBlock();
-        if (basicBlock != null) {
-            cfgNode = basicBlock;
-        }
-
-        // consider the case where cfgNode is inside a function's
-        // default cfg
-        CfgNodeEntry entry = cfgNode.getDefaultParamEntry();
-        if (entry != null) {
-            cfgNode = entry;
-        }
-
-        LinkedList<CfgNode> list = new LinkedList<CfgNode>();
-        Set<CfgNode> visited = new HashSet<CfgNode>();
-        dfIteratorHelper(list, new LinkedList<CfgNode>(), cfgNode, visited);
-        for (Iterator iter = list.iterator(); iter.hasNext();) {
-            CfgNode inspectMe = (CfgNode) iter.next();
-            if (inspectMe instanceof CfgNodeExit) {
-                //visited = null;
-                TacFunction retMe = ((CfgNodeExit) inspectMe).getFunction();
-                //System.out.println("computed: " + retMe.getName());
-                //System.out.println("stored:   " + retMe.getName());
-                return retMe;
-            }
-        }
-
-        System.out.println(cfgNode.getFileName());
-        System.out.println(cfgNode.toString() + ", " + cfgNode.getOrigLineno());
-        throw new RuntimeException("SNH");
-        */
-
         return cfgNode.getEnclosingFunction();
     }
 
@@ -127,26 +93,6 @@ public final class Cfg {
     }
 
 // OTHER ***************************************************************************
-
-    /*
-    // assigns functions to cfg nodes
-    public void assignFunction(TacFunction function) {
-
-        for (Iterator iter = this.dfPreOrderIterator(); iter.hasNext(); ) {
-
-            CfgNode node = (CfgNode) iter.next();
-            node.setEnclosingFunction(function);
-
-            // enter basic block
-            if (node instanceof CfgNodeBasicBlock) {
-                CfgNodeBasicBlock bb = (CfgNodeBasicBlock) node;
-                for (CfgNode contained : bb.getContainedNodes()) {
-                    contained.setEnclosingFunction(function);
-                }
-            }
-        }
-    }
-    */
 
     public void assignReversePostOrder() {
         LinkedList postorder = this.dfPostOrder();
@@ -205,7 +151,6 @@ public final class Cfg {
         visited.add(this.head);
 
         this.bfIteratorHelper(list, queue, visited);
-        //visited = null;
 
         return list.iterator();
     }
@@ -309,66 +254,4 @@ public final class Cfg {
             }
         }
     }
-
-
-    // old, recursive implementation of df-search; could lead to stack overflow
-    /*
-
-// dfIterators *********************************************************************
-
-    // depth first iterator (preorder)
-    public Iterator dfPreOrderIterator() {
-        LinkedList[] lists = this.dfIterator();
-        return lists[0].iterator();
-    }
-
-    // depth first iterator (postorder)
-    public Iterator dfPostOrderIterator() {
-        LinkedList[] lists = this.dfIterator();
-        return lists[1].iterator();
-    }
-
-    // returns an array containing two elements of type LinkedList<CfgNode>:
-    // 0: cfg node list in preorder
-    // 1: cfg node list in postorder
-    private LinkedList[] dfIterator() {
-        LinkedList<CfgNode> preorder = new LinkedList<CfgNode>();
-        LinkedList<CfgNode> postorder = new LinkedList<CfgNode>();
-        Set<CfgNode> visited = new HashSet<CfgNode>();
-        dfIteratorHelper(preorder, postorder, this.head, visited);
-        LinkedList[] retme = new LinkedList[2];
-        retme[0] = preorder;
-        retme[1] = postorder;
-        //this.visited = null;
-        return retme;
-    }
-
-
-// dfIteratorHelper ****************************************************************
-
-    private static void dfIteratorHelper(List<CfgNode> preorder, List<CfgNode> postorder,
-            CfgNode cfgNode, Set<CfgNode> visited) {
-
-        // mark this node as visited
-        visited.add(cfgNode);
-
-        // add it to the preorder list
-        preorder.add(cfgNode);
-
-        // handle successors
-        for (int i = 0; i < 2; i++) {
-            CfgEdge outEdge = cfgNode.getOutEdge(i);
-            if (outEdge != null) {
-                CfgNode succ = outEdge.getDest();
-                if (!visited.contains(succ)) {
-                    dfIteratorHelper(preorder, postorder, succ, visited);
-                }
-            }
-        }
-
-        // add it to the postorder list
-        postorder.add(cfgNode);
-    }
-
-    */
 }

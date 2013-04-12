@@ -82,12 +82,6 @@ public final class Checker {
         cliOptions.addOption("V", "verbosegraphs", false, "disable verbose depgraphs");
         cliOptions.addOption("y", "analysistype", true,
                 "type of taint analysis (" + MyOptions.getAnalysisNames() + ")");
-        /*
-        Option o = new Option("y", "analysistype", true,
-                "type of taint analysis (" + InternalStrings.getAnalyses() + ")");
-        o.setRequired(true);
-        cliOptions.addOption(o);
-        */
 
         CommandLineParser cliParser = new PosixParser();
         CommandLine cmd = null;
@@ -181,12 +175,6 @@ public final class Checker {
         ProgramConverter pcv = checker.initialize();
         TacConverter tac = pcv.getTac();
 
-
-        //tac.stats();
-
-        // System.out.println("Cfg nodes: " + tac.getSize());
-        //Checker.report();
-
         // params: tac, functional?, desired analyses
         checker.analyzeTaint(tac, !MyOptions.optionA);
 
@@ -197,29 +185,14 @@ public final class Checker {
             System.out.println("Time: " + analysisDiffTime + " seconds");
         }
 
-        //checker.taintAnalysis.stats();
-        // System.out.println("Taint Analysis Size: " + checker.taintAnalysis.size());
-
         // we don't need these any more:
         checker.literalAnalysis = null;
         checker.aliasAnalysis = null;
-
-        // we don't need these either;
-        // EFF: perhaps using weak references would be better;
-        // don't do the following, or you will get a NullPointerException in ExTaint.create()
-        /*
-        ExTaintSet.repos = null;
-        ExTaint.repos = null;
-        */
-
-        //checker.xssTaintAnalysis.info();
-        //provokeOutOfMemory();
 
         // detect vulnerabilities
         System.out.println("\n*** detecting vulnerabilities ***\n");
         checker.gta.detectVulns();
 
-        //System.out.println("done!");
         if (!MyOptions.optionB) {
             long endTime = System.currentTimeMillis();
             long diffTime = (endTime - startTime) / 1000;
@@ -227,15 +200,6 @@ public final class Checker {
             System.out.println();
             System.out.println();
         }
-
-        // QUERY
-        /*
-        if (checker.optionQ) {
-            QueryClient queryClient = new QueryClient(checker.taintAnalysis, pcv.getAllFiles(), tac);
-            queryClient.start();
-        }
-        */
-
     }
 
 //  ********************************************************************************
@@ -306,7 +270,6 @@ public final class Checker {
         // location of php binary
         String phpBin = props.getProperty(InternalStrings.phpBin);
         if (phpBin == null) {
-            //Utils.bail("Please set " + InternalStrings.phpBin + " in config");
             MyOptions.phpBin = null;
         } else {
             if (!(new File(phpBin)).canExecute()) {
@@ -358,18 +321,6 @@ public final class Checker {
         // *****************
         // PREPARATIONS
         // *****************
-
-        /*
-        MyOptions.graphPath = MyOptions.pixy_home + "/graphs";
-
-        // create / empty the graphs directory
-        System.out.println("Cleaning up graph directory...");
-        File graphPathFile = new File(MyOptions.graphPath);
-        graphPathFile.mkdir();
-        for (File file : graphPathFile.listFiles()) {
-            file.delete();
-        }
-        */
 
         // read config file
         readConfig();
@@ -460,18 +411,14 @@ public final class Checker {
             return this.aliasAnalysis;
         }
 
-        ////Checker.report();
         System.out.println("\n*** initializing alias analysis ***\n");
         this.aliasAnalysis = new AliasAnalysis(tac, new FunctionalAnalysis());
-        //Checker.report();
         System.out.println("\n*** performing alias analysis ***\n");
         this.aliasAnalysis.analyze();
-        //Checker.report();
         if (cleanup) {
             System.out.println("\n*** cleaning up ***\n");
             this.aliasAnalysis.clean();
         }
-        //Checker.report();
         System.out.println("\nFinished.");
 
         return this.aliasAnalysis;
@@ -501,22 +448,16 @@ public final class Checker {
                     tac.getAllFunctions(), tac.getMainFunction(), this.kSize);
             connectorComp.compute();
             this.workList = new InterWorkListBetter(new InterWorkListOrder(tac, this.connectorComp));
-            // Dumper.dumpFunction2ECS(connectorComp.getFunction2ECS());
-            // Dumper.dumpCall2ConFunc(connectorComp.getCall2ConnectorFunction());
         }
 
-        //Checker.report();
         System.out.println("\n*** initializing literal analysis ***\n");
         this.literalAnalysis =
             new LiteralAnalysis(tac, this.aliasAnalysis,
                     new CSAnalysis(this.connectorComp), this.workList);
-        //Checker.report();
         System.out.println("\n*** performing literal analysis ***\n");
         this.literalAnalysis.analyze();
-        //Checker.report();
         System.out.println("\n*** cleaning up ***\n");
         this.literalAnalysis.clean();
-        //Checker.report();
         System.out.println("\nFinished.");
 
         return this.literalAnalysis;
@@ -557,8 +498,6 @@ public final class Checker {
             if (MyOptions.optionV) {
                 System.out.println("call-string analysis!");
             }
-            //System.out.println("STATS:");
-            //this.connectorComp.stats();
             enclosingAnalysis = new CSAnalysis(this.connectorComp);
 
             // write called-by relations to file; can be quite useful
@@ -572,38 +511,15 @@ public final class Checker {
 
         }
 
-
-        //Checker.report();
         this.gta = GenericTaintAnalysis.createAnalysis(tac, enclosingAnalysis,
                 this, this.workList, modAnalysis);
         if (this.gta == null) {
             Utils.bail("Please specify a valid type of taint analysis.");
         }
-        //Checker.report();
         System.out.println("\n*** performing taint analysis ***\n");
         gta.analyze();
 
-        /*
-        Checker.report();
-        Checker.report();
-        Checker.report();
-        */
-
-        // DON'T do this here:
-        // TaintAnalysis.detectVulns() requires intact context information
-        /*
-        System.out.println("\n*** cleaning up ***\n");
-        this.taintAnalysis.clean();
-        */
-
         System.out.println("\nFinished.");
-
-        /*
-        Checker.report();
-        Checker.report();
-        Checker.report();
-        */
-
     }
 
 //  analyzeIncDom ******************************************************************
@@ -637,12 +553,4 @@ public final class Checker {
 
         System.out.println("Memory used: " + usedMem);
     }
-
-//  provokeOutOfMemory *************************************************************
-
-    /*
-    private static void provokeOutOfMemory() {
-        int[] big = new int[1000000000];
-    }
-    */
 }

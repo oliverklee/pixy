@@ -18,10 +18,6 @@ public class TacFunction {
     // a list of CFG nodes calling this function (CfgNodeCall)
     private List<CfgNodeCall> calledFrom;
 
-    // a list of function calls contained in this function (CfgNodeCall);
-    // does not cover calls to builtin or unknown functions
-    //private List<CfgNodeCall> containedCalls;
-
     // is this the main function?
     private boolean isMain;
 
@@ -58,9 +54,6 @@ public class TacFunction {
         this.params = Collections.emptyList();
         this.symbolTable = new SymbolTable(name);
         this.calledFrom = new LinkedList<CfgNodeCall>();
-        //this.containedCalls = new LinkedList<CfgNodeCall>();
-        //this.unknown = false;
-        //this.isMethod = false;
         this.isMain = false;
 
         // this is necessary, even though we use TacFunction's assignFunction()
@@ -116,7 +109,6 @@ public class TacFunction {
 
     public List<CfgNodeCall> getContainedCalls() {
         return this.cfg.getContainedCalls();
-        // return this.containedCalls;
     }
 
     public boolean isMain() {

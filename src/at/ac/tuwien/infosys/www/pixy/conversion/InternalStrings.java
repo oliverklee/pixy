@@ -15,12 +15,6 @@ public class InternalStrings {
     // name of the "main" function; don't use uppercase characters
     public static final String mainFunctionName = "_main";
 
-    // name of the unknown method; don't use uppercase characters
-    //public static final String unknownMethodName = "<somemethod>";
-
-    // name of the unknown function; don't use uppercase characters
-    //public static final String unknownFunctionName = "<unknownfunction>";
-
     // internal name for member variables
     public static final String memberName = "_member";
 

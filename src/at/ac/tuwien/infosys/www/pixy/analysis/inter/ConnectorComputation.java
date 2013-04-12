@@ -44,13 +44,6 @@ public class ConnectorComputation {
     int kSize;
 
     public ConnectorComputation(List functions, TacFunction mainFunction, int kSize) {
-
-        /*
-        // LATER: kSize == 0 is not correctly supported yet
-        if (kSize == 0) {
-            throw new RuntimeException("kSize == 0 is not supported yet");
-        }*/
-
         this.kSize = kSize;
         this.mainFunction = mainFunction;
 
@@ -212,7 +205,6 @@ public class ConnectorComputation {
 
             // for each call to this function...
             Set<CfgNodeCall> callNodes = this.callGraph.getCallsTo(exitedFunction);
-            //List callNodes = this.containedCalls.get(exitedFunction);
             for (CfgNodeCall callNode : callNodes) {
                 reverseTargets.add(new ReverseTarget(callNode, contextSet));
             }
@@ -293,5 +285,4 @@ public class ConnectorComputation {
         }
         return b.toString();
     }
-
 }

@@ -126,11 +126,6 @@ extends DepGraphNode {
         }
         DepGraphOpNode comp = (DepGraphOpNode) compX;
 
-        /*
-        if (!this.place.equals(comp.place)) {
-            return false;
-        }
-        */
         if (!this.cfgNode.equals(comp.cfgNode)) {
             return false;
         }

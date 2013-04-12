@@ -30,55 +30,6 @@ extends TransferFunction {
         // check for unsupported features
         this.supported =
             AliasAnalysis.isSupported(this.left, this.right, true, cfgNode.getOrigLineno());
-
-        /* moved to AliasAnalysis.isSupported()
-        this.supported = true;
-
-        // check for unsupported features;
-        // - none of the variables must be an array or an array element
-        // - none of the variables must be a variable variable
-        // - none of the variables must be a member variable
-        String description = this.left + " = & " + this.right;
-        if (this.left.isArray()) {
-            System.out.println("Warning: Rereferencing of arrays not supported: " +
-                description);
-            System.out.println("Line: " + cfgNode.getOrigLineno());
-            this.supported = false;
-        } else if (this.right.isArray()) {
-            System.out.println("Warning: Referencing to arrays not supported: " +
-                    description);
-            System.out.println("Line: " + cfgNode.getOrigLineno());
-            this.supported = false;
-        } else if (this.left.isArrayElement()) {
-            System.out.println("Warning: Rereferencing of array elements not supported: " +
-                    description);
-            System.out.println("Line: " + cfgNode.getOrigLineno());
-            this.supported = false;
-        } else if (this.right.isArrayElement()) {
-            System.out.println("Warning: Referencing to array elements not supported: " +
-                    description);
-            System.out.println("Line: " + cfgNode.getOrigLineno());
-            this.supported = false;
-        } else if (this.left.isVariableVariable()) {
-            System.out.println("Warning: Referencing of variable variables not supported: " +
-                    description);
-            System.out.println("Line: " + cfgNode.getOrigLineno());
-            this.supported = false;
-        } else if (this.right.isVariableVariable()) {
-            System.out.println("Warning: Referencing to variable variables not supported: " +
-                    description);
-            System.out.println("Line: " + cfgNode.getOrigLineno());
-            this.supported = false;
-        } else if (this.left.isMember()) {
-            // stay silent
-            this.supported = false;
-        } else if (this.right.isMember()) {
-            // stay silent
-            this.supported = false;
-        }
-        */
-
-
     }
 
 // *********************************************************************************

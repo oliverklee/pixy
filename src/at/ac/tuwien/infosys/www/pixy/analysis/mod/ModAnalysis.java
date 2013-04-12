@@ -144,25 +144,6 @@ public class ModAnalysis {
             if (modVar.isGlobal() || modVar.isSuperGlobal()) {
                 this.modify(modVar, modSet);
             }
-
-        // not yet;
-        // if you want to support constants as well, don't forget to
-        // adjust DepTfCallRet (copyGlobalLike)
-        /*
-        } else if (cfgNodeX instanceof CfgNodeDefine) {
-
-            CfgNodeDefine cfgNode = (CfgNodeDefine) cfgNodeX;
-            TacPlace setMe = cfgNode.getSetMe();
-            if (setMe instanceof Literal) {
-                // we can directly resolve the name of the constant
-                this.modifyConstant(((Literal) setMe).toString(), modSet);
-            } else {
-                // we need literals analysis to resolve the name of the constant
-                System.out.println("Warning: ModAnalysis encountered non-literal define");
-                System.out.println("- " + cfgNode.getLoc());
-            }
-        */
-
         } else if (cfgNodeX instanceof CfgNodeUnset) {
 
             CfgNodeUnset cfgNode = (CfgNodeUnset) cfgNodeX;
@@ -170,13 +151,9 @@ public class ModAnalysis {
             if (modVar.isGlobal() || modVar.isSuperGlobal()) {
                 this.modify(modVar, modSet);
             }
-
         } else {
             // no change to mod-info for the remaining cfg nodes
         }
-
-        //System.out.println(cfgNodeX);
-        //System.out.println("modset: " + modSet);
     }
 
 //  ********************************************************************************
@@ -193,13 +170,6 @@ public class ModAnalysis {
             modSet.add(modVar.getTopEnclosingArray());
         }
     }
-
-//  ********************************************************************************
-
-    /*
-    private void modifyConstant(String name, Set<TacPlace> modSet) {
-
-    }*/
 
 //  ********************************************************************************
 

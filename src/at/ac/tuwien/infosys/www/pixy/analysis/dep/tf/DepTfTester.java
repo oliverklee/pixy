@@ -77,28 +77,7 @@ extends TransferFunction {
             return out;
 
         } else if (whatToTest == CfgNodeTester.TEST_ARRAYLABEL) {
-
             throw new RuntimeException("not yet");
-
-            /*
-            // test array label
-
-            for (Iterator iter = this.testUs.iterator(); iter.hasNext();) {
-                Variable testMe = (Variable) iter.next();
-                if (in.getArrayLabel(testMe) == Taint.TAINTED) {
-                    // if there is a dirty one, set the return variable to
-                    // tainted/dirty and return
-                    out.setRetVar(this.retVar, Taint.TAINTED, Taint.TAINTED);
-                    return out;
-                }
-            }
-
-            // there are no dirty ones:
-            // set the return variable to untainted/clean and return
-            out.setRetVar(this.retVar, Taint.UNTAINTED, Taint.UNTAINTED);
-            return out;
-            */
-
         } else {
             throw new RuntimeException("SNH");
         }

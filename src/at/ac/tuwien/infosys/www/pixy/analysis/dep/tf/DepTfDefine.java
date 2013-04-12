@@ -32,7 +32,6 @@ extends TransferFunction {
             CfgNodeDefine cfgNode) {
 
         this.setMe = cfgNode.getSetMe();
-        //this.setTo = cfgNode.getSetTo();
         this.caseInsensitive = cfgNode.getCaseInsensitive();
         this.constantsTable = table;
         this.literalAnalysis = literalAnalysis;
@@ -65,8 +64,6 @@ extends TransferFunction {
         // case is rather seldom, we just issue a warning;
         if (constantLit == Literal.TOP) {
             // warning was already issued by literals analysis
-            //System.out.println("Warning: can't resolve constant to be defined");
-            //System.out.println("- " + cfgNode.getFileName() + ":" + cfgNode.getOrigLineno());
             return out;
         }
 
@@ -138,7 +135,6 @@ extends TransferFunction {
                 System.out.println("- name:    " + constantLit.toString());
                 System.out.println("- defined: " + this.cfgNode.getLoc());
             }
-
         }
 
         return out;

@@ -109,18 +109,9 @@ extends TestCase {
             String fileName = "test" + testNum + "_" + graphCount;
             if (generate) {
 
-                // we don't want to check the depgraph here,
-                // that is the task of another test class
-                //depGraph.dumpDotUnique(fileName + "dep", this.path);
-
                 this.sqlAnalysis.dumpDotAutoUnique(auto, fileName, this.path);
 
             } else {
-
-                //String encountered = depGraph.makeDotUnique(fileName);
-                //String expected = this.readFile(this.path + fileName + ".dot");
-                //Assert.assertEquals(expected, encountered);
-
                 String encountered = auto.toDotUnique();
                 String expected = this.readFile(this.path + fileName + ".dot");
                 Assert.assertEquals(expected, encountered);

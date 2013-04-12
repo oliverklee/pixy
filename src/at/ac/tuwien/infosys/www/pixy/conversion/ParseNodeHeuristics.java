@@ -85,75 +85,7 @@ public class ParseNodeHeuristics {
         }
         pattern.append("$");
 
-        // DELME
-        /*
-        // get a sequence of leaf parse nodes below this second child;
-        // this is too simple; e.g., if you have a function invocation
-        // in the concatenation, the name of the invoked function will also appear
-        LinkedList<ParseNode> leafList = ParseTree.getLeafList(secondChild);
-
-        // peel off T_OPEN/CLOSE_BRACES
-        if (leafList.get(0).getSymbol() == PhpSymbols.T_OPEN_BRACES &&
-                leafList.getLast().getSymbol() == PhpSymbols.T_CLOSE_BRACES) {
-            leafList.removeLast();
-            leafList.removeFirst();
-        }
-
-        // flag indicating whether there is something literal
-        boolean somethingLiteral = false;
-
-        // flag indicating whether we have put a ".*" in front of the
-        // current step; important for perfomance: if you have several
-        // dot-stars in a row, matching is VERY slow
-        boolean precedingDotStar = false;
-
-        StringBuilder pattern = new StringBuilder();
-        //pattern.append("^");
-        for (ParseNode leaf : leafList) {
-            // System.out.println(leaf.getName());
-
-            if (leaf.getSymbol() == PhpSymbols.T_CONSTANT_ENCAPSED_STRING) {
-                // use Literal() to peel off quotes,
-                // and quote special characters (most notably: the dot .)
-                String s = new Literal(leaf.getLexeme()).toString();
-                pattern.append(Pattern.quote(s));
-                somethingLiteral = true;
-                precedingDotStar = false;
-            } else if (leaf.getSymbol() == PhpSymbols.T_ENCAPSED_AND_WHITESPACE ||
-                    leaf.getSymbol() == PhpSymbols.T_STRING) {
-                String s = leaf.getLexeme();
-                pattern.append(Pattern.quote(s));
-                somethingLiteral = true;
-                precedingDotStar = false;
-            } else if (leaf.getSymbol() == PhpSymbols.T_POINT) {
-                // just a concat operator, ignore
-            } else if (leaf.getSymbol() == PhpSymbols.T_VARIABLE) {
-                // T_VARIABLE: try to resolve with literal analysis!
-                Literal lit = literalAnalysis.getLiteral(leaf.getLexeme(), includeNode);
-                if (lit == Literal.TOP) {
-                    if (!precedingDotStar) {
-                        pattern.append(".*");
-                        precedingDotStar = true;
-                    }
-                } else {
-                    somethingLiteral = true;
-                    pattern.append(lit.toString());
-                    precedingDotStar = false;
-                }
-            } else {
-                if (!precedingDotStar) {
-                    pattern.append(".*");
-                    precedingDotStar = true;
-                }
-            }
-
-        }
-        pattern.append("$");
-        */
-
         normalizePath(pattern);
-
-        //System.out.println("Pattern: " + pattern);
 
         // if there is nothing literal in there, we don't even have to try
         if (!somethingLiteral) {
@@ -161,7 +93,6 @@ public class ParseNodeHeuristics {
         }
 
         Pattern patternObj = Pattern.compile(pattern.toString());
-        //System.out.println("Pattern: " + patternObj.pattern());
 
         // here is what we do now:
         // - collect all files below the current working directory
@@ -210,9 +141,6 @@ public class ParseNodeHeuristics {
     private static List<String> matchCandidates(Pattern patternObj, Collection<File> candidates) {
         List<String> winners = new LinkedList<String>();
         for (File candidate : candidates) {
-
-            //System.out.println(candidate);
-
             // no need to go on if we already have ambiguity
             if (winners.size() > 1) {
                 return null;
@@ -221,10 +149,8 @@ public class ParseNodeHeuristics {
             String candidatePath = candidate.getPath();
 
             // EFF: the matching step is rather slow
-            //matcher.reset(candidate);
             Matcher matcher = patternObj.matcher(candidatePath);
             if (matcher.find()) {
-                //System.out.println("found a match: " + candidatePath);
                 winners.add(candidatePath);
             }
         }

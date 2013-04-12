@@ -170,10 +170,6 @@ public abstract class CfgNode {
     // for something else
     public abstract List<Variable> getVariables();
 
-    // returns a list of all USED (read) variables in this node;
-    // required by taint graph generation
-    //public abstract Set<TacPlace> getUsedPlaces(CfgNode cfgNodeX);
-
     public int getReversePostOrder() {
         return this.reversePostOrder;
     }

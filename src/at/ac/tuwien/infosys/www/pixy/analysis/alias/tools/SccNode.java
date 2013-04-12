@@ -27,27 +27,4 @@ public class SccNode {
     public void addDoubleEdge(SccEdge edge, SccNode target) {
         this.doubleEdges.put(target, edge);
     }
-
-/*
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof SccNode)) {
-            return false;
-        }
-        SccNode comp = (SccNode) obj;
-
-        if (this.label.equals(comp.getLabel())) {
-            return true;
-        } else {
-            return false;
-        }
-
-    }
-
-    public int hashCode() {
-        return this.label.hashCode();
-    }
-    */
 }
