@@ -1,9 +1,4 @@
-*.class
-
-# Package Files #
-*.jar
-*.war
-*.ear
+build/*.class
 
 # generated when running the unit tests
 graphs/
