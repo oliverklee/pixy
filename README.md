@@ -1,9 +1,9 @@
 # Pixy
 
 
-## Further documentation
+## Authors and maintainer
 
-Documentation on this program can be found at <http://pixybox.seclab.tuwien.ac.at/>.
+Jenad Jovanonic was the original author of Pixy. The current maintainer is Oliver Klee, pixy@oliverklee.de.
 
 
 ## Available Ant targets
@@ -213,11 +213,12 @@ have OPEN.
    since that makes the generation of explicit parse trees much easier
 
 ## Licenses
-* jFlex: GPL
+* Pixy: GPL V3
+* jFlex: GPL V2
 * Cup: custom license, derived from "Standard ML of New Jersey", GPL-compatible
 * CLI: Apache license
 * Cobertura: GPL V2
 * Log4J: Apache license
 * Jakarta: Apache license
 * ASM, ASM-Tree: BSD
-* rest: GPL
+* rest: GPL V2
