@@ -13,6 +13,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.CfgEdge;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public abstract class CfgNode {
 
     protected final ParseNode parseNode;

@@ -4,6 +4,9 @@ import at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring.CallString;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 
 // worklist element for connector computation
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public final class ConnectorWorkListElement {
 
     private final TacFunction function;

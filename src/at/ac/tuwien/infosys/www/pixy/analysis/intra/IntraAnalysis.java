@@ -12,6 +12,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 // base class for intraprocedural analyses
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public abstract class IntraAnalysis
     extends Analysis {
 

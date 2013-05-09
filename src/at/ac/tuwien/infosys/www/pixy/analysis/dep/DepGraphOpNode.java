@@ -7,6 +7,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacOperators;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 // for builtin functions
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class DepGraphOpNode
     extends DepGraphNode {
 

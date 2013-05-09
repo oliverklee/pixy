@@ -1,5 +1,8 @@
 package at.ac.tuwien.infosys.www.pixy.conversion;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public abstract class TacPlace {
 // *********************************************************************************
 // GET *****************************************************************************

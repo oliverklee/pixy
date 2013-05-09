@@ -15,6 +15,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
 // this is a fine-grained call graph
 // (i.e., it does not only contain edges between functions,
 // but also edges between call nodes and functions)
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class CallGraph {
 
     private Map<TacFunction, CallGraphNode> nodes;

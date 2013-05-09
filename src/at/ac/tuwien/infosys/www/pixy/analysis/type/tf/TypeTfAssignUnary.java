@@ -6,6 +6,9 @@ import at.ac.tuwien.infosys.www.pixy.analysis.type.TypeLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 // transfer function for unary assignment nodes
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class TypeTfAssignUnary
     extends TransferFunction {
 

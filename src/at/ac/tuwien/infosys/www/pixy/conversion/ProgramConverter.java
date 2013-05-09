@@ -36,6 +36,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeInclude;
 
 // EFF: you can save time and space by reusing parsetrees and TacConverters
 // when including the same file multiple times
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class ProgramConverter {
 
     // = the directory in which the given entry file is located

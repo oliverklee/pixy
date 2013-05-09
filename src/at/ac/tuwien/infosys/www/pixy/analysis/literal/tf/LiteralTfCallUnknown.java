@@ -5,6 +5,9 @@ import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallUnknown;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class LiteralTfCallUnknown
     extends TransferFunction {
 

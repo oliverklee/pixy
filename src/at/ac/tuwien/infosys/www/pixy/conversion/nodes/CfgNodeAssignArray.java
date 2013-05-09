@@ -10,6 +10,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 // CfgNodeAssignArray **************************************************************
 // *********************************************************************************
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class CfgNodeAssignArray
     extends CfgNode {
 

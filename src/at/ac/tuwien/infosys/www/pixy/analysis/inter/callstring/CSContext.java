@@ -2,6 +2,9 @@ package at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.Context;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class CSContext
     extends Context {
 

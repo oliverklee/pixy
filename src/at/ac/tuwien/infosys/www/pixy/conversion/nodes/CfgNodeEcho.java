@@ -12,6 +12,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 // CfgNodeEcho ********************************************************************
 // *********************************************************************************
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class CfgNodeEcho
     extends CfgNode {
 

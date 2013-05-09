@@ -14,6 +14,9 @@ import at.ac.tuwien.infosys.www.pixy.Utils;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralAnalysis;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeInclude;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class ParseNodeHeuristics {
 
     private static LiteralAnalysis literalAnalysis;

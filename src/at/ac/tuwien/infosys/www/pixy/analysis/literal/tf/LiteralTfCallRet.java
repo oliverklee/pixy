@@ -18,6 +18,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallPrep;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallRet;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class LiteralTfCallRet
     extends TransferFunction {
 

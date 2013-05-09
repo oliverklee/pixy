@@ -7,6 +7,9 @@ import at.ac.tuwien.infosys.www.pixy.analysis.GenericRepos;
 import at.ac.tuwien.infosys.www.pixy.analysis.Recyclable;
 
 // just a set of Dep's
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class DepSet
     implements Recyclable {
 

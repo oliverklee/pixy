@@ -11,6 +11,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 // *********************************************************************************
 
 // a special node for the builtin functions file
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class CfgNodeTester
     extends CfgNode {
 

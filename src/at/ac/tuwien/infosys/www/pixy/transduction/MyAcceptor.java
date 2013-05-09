@@ -7,6 +7,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class MyAcceptor
     extends MyAutomaton {
 

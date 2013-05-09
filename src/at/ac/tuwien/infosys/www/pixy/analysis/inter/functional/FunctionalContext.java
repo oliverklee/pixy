@@ -4,6 +4,9 @@ import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.Context;
 
 // context for Sharir & Pnueli's functional approach
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class FunctionalContext
     extends Context {
 

@@ -2,6 +2,9 @@ package at.ac.tuwien.infosys.www.pixy.analysis;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.Context;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class TransferFunctionId
     extends TransferFunction {
 

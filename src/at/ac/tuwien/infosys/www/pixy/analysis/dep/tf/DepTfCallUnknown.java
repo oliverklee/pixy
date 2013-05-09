@@ -10,6 +10,9 @@ import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepSet;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallUnknown;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class DepTfCallUnknown
     extends TransferFunction {
 

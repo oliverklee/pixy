@@ -21,6 +21,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
 // "Run / Run as... / JUnit Test"
 
 // testcase for TypeAnalysis
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class TypeTestCase
     extends TestCase {
 

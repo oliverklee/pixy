@@ -13,6 +13,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
 
 // an AnalysisNode holds analysis-specific information for a certain CFGNode
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class FunctionalAnalysisNode
     extends InterAnalysisNode {
 

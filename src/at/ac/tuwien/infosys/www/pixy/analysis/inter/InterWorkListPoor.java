@@ -13,6 +13,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
  * (queued, FIFO); if there are no nodes without order, the ordered
  * nodes are returned accordingly
  */
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public final class InterWorkListPoor
     implements InterWorkList {
 

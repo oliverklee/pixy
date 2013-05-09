@@ -12,6 +12,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 // *********************************************************************************
 
 // "left = right"
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class CfgNodeAssignSimple
     extends CfgNode {
 

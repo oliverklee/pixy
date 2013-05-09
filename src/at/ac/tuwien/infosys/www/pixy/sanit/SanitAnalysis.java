@@ -26,6 +26,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallBuiltin;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallUnknown;
 
 // superclass for sanitization analyses
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public abstract class SanitAnalysis
     extends DepClient {
 

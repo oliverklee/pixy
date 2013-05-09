@@ -64,6 +64,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeTester;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeUnset;
 
 // dependency analysis
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class DepAnalysis
     extends InterAnalysis {
 

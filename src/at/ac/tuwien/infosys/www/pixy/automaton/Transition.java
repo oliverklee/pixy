@@ -243,6 +243,9 @@ public class Transition implements Serializable, Cloneable {
     }
 }
 
+/**
+ * @author Anders M&oslash;ller &lt;<a href="mailto:amoeller@brics.dk">amoeller@brics.dk</a>&gt;
+ */
 class TransitionComparator implements Comparator<Transition> {
 
     boolean to_first;

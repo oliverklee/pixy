@@ -1,5 +1,8 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.alias.tools;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class SccEdge {
 
     // this edge is undirected, so the order of the nodes

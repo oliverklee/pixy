@@ -8,6 +8,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 // transfer function for simple assignment nodes
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class AliasTfUnset
     extends TransferFunction {
 

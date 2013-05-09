@@ -12,6 +12,9 @@ import at.ac.tuwien.infosys.www.pixy.analysis.alias.tools.SccGraph;
 import at.ac.tuwien.infosys.www.pixy.conversion.SymbolTable;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class AliasLatticeElement
     extends LatticeElement
     implements Recyclable {

@@ -4,6 +4,9 @@ package at.ac.tuwien.infosys.www.pixy.analysis;
 // which is needed for the worklist algorithm;
 // bad: if you do this, you can't access the natural (native) implementations
 // any longer
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public abstract class LatticeElement
     implements Recyclable {
 

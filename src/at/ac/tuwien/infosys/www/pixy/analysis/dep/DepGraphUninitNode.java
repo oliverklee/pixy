@@ -1,6 +1,9 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.dep;
 
 // special node representing uninitialized variables
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class DepGraphUninitNode
     extends DepGraphNode {
 

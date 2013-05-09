@@ -24,6 +24,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeEcho;
 import at.ac.tuwien.infosys.www.pixy.sanit.SanitAnalysis;
 
 // XSS detection
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class XSSAnalysis
     extends DepClient {
 

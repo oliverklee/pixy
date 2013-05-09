@@ -19,6 +19,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
 // output:
 // - for every function, the set ECS
 // - for every call node, a connector function
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class ConnectorComputation {
 
     // worklist

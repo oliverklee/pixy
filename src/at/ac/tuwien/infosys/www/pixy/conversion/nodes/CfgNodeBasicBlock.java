@@ -6,6 +6,9 @@ import java.util.List;
 
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class CfgNodeBasicBlock
     extends CfgNode {
 

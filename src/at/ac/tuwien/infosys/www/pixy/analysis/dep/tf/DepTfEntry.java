@@ -10,6 +10,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 // transfer function for function entries
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class DepTfEntry
     extends TransferFunction {
 

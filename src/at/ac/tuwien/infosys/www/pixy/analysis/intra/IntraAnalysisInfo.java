@@ -5,6 +5,9 @@ import at.ac.tuwien.infosys.www.pixy.analysis.AnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class IntraAnalysisInfo
     extends AnalysisInfo {
 

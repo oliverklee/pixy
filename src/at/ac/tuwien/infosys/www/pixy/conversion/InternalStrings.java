@@ -1,6 +1,9 @@
 package at.ac.tuwien.infosys.www.pixy.conversion;
 
 // contains a number of internal names, prefixes, and suffixes
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class InternalStrings {
 
     // suffix for g-shadows

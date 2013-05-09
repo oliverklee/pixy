@@ -14,6 +14,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeTester;
 
 // transfer function for special ~_test_ node
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class DepTfTester
     extends TransferFunction {
 

@@ -11,6 +11,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 // CfgNodeIsset ********************************************************************
 // *********************************************************************************
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class CfgNodeIsset
     extends CfgNode {
 

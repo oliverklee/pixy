@@ -9,6 +9,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 // transfer function for unary assignment nodes
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class LiteralTfAssignUnary
     extends TransferFunction {
 

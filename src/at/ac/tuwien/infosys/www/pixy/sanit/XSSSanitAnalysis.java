@@ -16,6 +16,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallPrep;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeEcho;
 
 // XSS detection
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class XSSSanitAnalysis
     extends SanitAnalysis {
 

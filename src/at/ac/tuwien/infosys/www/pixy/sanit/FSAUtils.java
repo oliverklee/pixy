@@ -8,6 +8,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 // helper class responsible for performing transductions
 // using FSA Utilities
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class FSAUtils {
 
     private static String mohri = MyOptions.fsa_home + "/Examples/MohriSproat96/ops.pl";

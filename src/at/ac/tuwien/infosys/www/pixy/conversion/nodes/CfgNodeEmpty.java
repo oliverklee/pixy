@@ -10,6 +10,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 // CfgNodeEmpty ********************************************************************
 // *********************************************************************************
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class CfgNodeEmpty
     extends CfgNode {
 

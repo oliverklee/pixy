@@ -5,6 +5,9 @@ import java.util.List;
 
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class SinkProblem {
 
     // a place for which we want to know something

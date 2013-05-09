@@ -3,6 +3,9 @@ package at.ac.tuwien.infosys.www.pixy.analysis.inter;
 import java.util.LinkedList;
 
 // worklist for connector computation
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public final class ConnectorWorkList {
 
     private LinkedList<ConnectorWorkListElement> workList;

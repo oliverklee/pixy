@@ -7,6 +7,9 @@ import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.ConstantsTable;
 import at.ac.tuwien.infosys.www.pixy.conversion.SymbolTable;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class LiteralLattice
     extends Lattice {
 

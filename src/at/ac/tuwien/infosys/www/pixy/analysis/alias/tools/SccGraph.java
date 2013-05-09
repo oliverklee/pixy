@@ -11,6 +11,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 // auxiliary graph for computing least upper bounds of alias lattice elements;
 // SCC stands for "strongly connected component";
 // NOTE: this term is not really correct here, it should be "complete graph"!
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class SccGraph {
 
     // Variable (label) -> SccNode

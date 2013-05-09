@@ -15,6 +15,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallBuiltin;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallPrep;
 
 // SQL Injection detection (with precise sanitization detection)
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class SQLSanitAnalysis
     extends SanitAnalysis {
 

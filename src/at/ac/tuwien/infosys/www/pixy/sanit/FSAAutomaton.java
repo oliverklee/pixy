@@ -11,6 +11,9 @@ import java.util.StringTokenizer;
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.Utils;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class FSAAutomaton {
 
     // the internal FSA-Utils representation (type "normal")

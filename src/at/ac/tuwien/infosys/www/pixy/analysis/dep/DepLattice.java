@@ -10,6 +10,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 // a lattice of source labels
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 class DepLattice
     extends Lattice {
 

@@ -43,6 +43,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeUnset;
 // quite rough analysis that tries to determine the type (class) of objects;
 // can be used for resolving ambiguous method calls (i.e., calls to methods
 // that are defined in more than one class)
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class TypeAnalysis
     extends InterAnalysis {
 

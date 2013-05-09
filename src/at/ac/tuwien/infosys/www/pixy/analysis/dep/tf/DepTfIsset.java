@@ -13,6 +13,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 // transfer function for "isset" tests
 // LATER: make it intelligent
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class DepTfIsset
     extends TransferFunction {
 

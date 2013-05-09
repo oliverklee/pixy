@@ -12,6 +12,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeEmpty;
 
 // with this class, we generate suitable (and small) cfg's for "encaps_lists"
 // (i.e, strings that are delimited by double quotes and that contain variables)
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class EncapsList {
 
     private List<Object> encapsList;

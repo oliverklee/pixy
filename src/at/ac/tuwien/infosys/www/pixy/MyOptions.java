@@ -17,6 +17,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.BuiltinFunctions;
 import at.ac.tuwien.infosys.www.pixy.conversion.InternalStrings;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacOperators;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class MyOptions {
 
     // various boolean options and their defaults;

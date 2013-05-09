@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.ListIterator;
 
 // responsible for converting a PHP regex into a prolog (FSA Utils) regex
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class Regex2Prolog {
 
 //  ********************************************************************************

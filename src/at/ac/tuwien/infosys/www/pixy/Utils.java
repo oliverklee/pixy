@@ -16,6 +16,9 @@ import java.io.Writer;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class Utils {
 
     // same as PHP's basename()

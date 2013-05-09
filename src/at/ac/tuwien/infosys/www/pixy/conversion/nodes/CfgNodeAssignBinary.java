@@ -17,6 +17,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 // PLUS, MINUS, MULT, DIV, MODULO,
 // SL, SR, IS_IDENTICAL, IS_NOT_IDENTICAL, IS_EQUAL, IS_NOT_EQUAL,
 // IS_SMALLER, IS_SMALLER_OR_EQUAL, IS_GREATER, IS_GREATER_OR_EQUAL
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class CfgNodeAssignBinary
     extends CfgNode {
 

@@ -157,6 +157,9 @@ CfgNodeCallPrep:
 
 */
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class DepGraph {
 
     // map from a node to *the same* node;

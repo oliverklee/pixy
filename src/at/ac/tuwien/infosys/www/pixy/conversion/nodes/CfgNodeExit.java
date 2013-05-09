@@ -11,6 +11,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 // *********************************************************************************
 
 // don't assign any transfer function other than ID to this node!
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class CfgNodeExit
     extends CfgNode {
 

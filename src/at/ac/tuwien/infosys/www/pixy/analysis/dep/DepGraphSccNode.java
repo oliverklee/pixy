@@ -1,6 +1,9 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.dep;
 
 // special node for approximating SCCs in the string graph
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class DepGraphSccNode
     extends DepGraphNode {
 

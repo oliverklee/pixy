@@ -10,6 +10,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 // *********************************************************************************
 
 // hotspots are only used for JUnit tests
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class CfgNodeHotspot
     extends CfgNode {
 

@@ -14,6 +14,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 // *********************************************************************************
 
 // "temp = include <place>" (can also be require or *_once)
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class CfgNodeInclude
     extends CfgNode
     implements Comparable<CfgNodeInclude> {

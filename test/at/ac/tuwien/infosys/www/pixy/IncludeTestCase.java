@@ -18,6 +18,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
 // all methods named "testXX" are executed automatically when choosing
 // "Run / Run as... / JUnit Test"
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class IncludeTestCase
     extends TestCase {
 

@@ -15,6 +15,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeHotspot;
 
 // these tests should work both with an enabled and a disabled builtin functions file
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class LiteralTestCase
     extends TestCase {
 

@@ -3,6 +3,9 @@ package at.ac.tuwien.infosys.www.pixy.conversion;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class BuiltinFunctions {
 
     // set containing the lower-case names of ALL builtin PHP functions,

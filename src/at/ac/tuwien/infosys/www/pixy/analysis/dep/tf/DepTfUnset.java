@@ -12,6 +12,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 // transfer function for unset nodes
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class DepTfUnset
     extends TransferFunction {
 

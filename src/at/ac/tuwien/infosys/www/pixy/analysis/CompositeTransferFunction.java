@@ -7,6 +7,9 @@ import java.util.List;
 // EFF: special treatment for ID transfer function:
 // don't add it to the list, handle case where the list is
 // empty (because it consists only of implicit ID transfer functions)
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class CompositeTransferFunction
     extends TransferFunction {
 

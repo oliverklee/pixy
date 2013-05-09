@@ -17,6 +17,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeIncludeEnd;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeIncludeStart;
 
 // inclusion dominator analysis
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class IncDomAnalysis
     extends IntraAnalysis {
 

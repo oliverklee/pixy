@@ -39,6 +39,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.ProgramConverter;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public final class Checker {
 
     // enable this switch to make the TacConverter recognize hotspots

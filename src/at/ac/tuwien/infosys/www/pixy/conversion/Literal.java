@@ -5,6 +5,9 @@ import java.util.regex.Pattern;
 
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class Literal
     extends TacPlace {
 

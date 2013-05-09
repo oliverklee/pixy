@@ -29,6 +29,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeTester;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeUnset;
 
 // base class for inter- and intraprocedural analyses
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public abstract class Analysis {
 
     // INPUT ***********************************************************************

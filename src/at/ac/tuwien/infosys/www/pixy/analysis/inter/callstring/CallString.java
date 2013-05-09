@@ -5,6 +5,9 @@ import java.util.List;
 
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class CallString {
 
     // a list of CfgNodeCall's; never longer than the k-size of the analysis

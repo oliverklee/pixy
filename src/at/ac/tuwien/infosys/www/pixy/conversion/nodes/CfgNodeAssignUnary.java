@@ -14,6 +14,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 // "left = op right"
 // "op" can be:
 // + - ! ~ (int) (double) (string) (array) (object) (bool) (unset)
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class CfgNodeAssignUnary
     extends CfgNode {
 

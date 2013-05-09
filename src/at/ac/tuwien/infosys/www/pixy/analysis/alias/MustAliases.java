@@ -12,6 +12,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 // a set of disjoint must-alias-groups
 // EFF: a number of things could be done faster with more effort
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class MustAliases {
 
     // contains MustAliasGroup's

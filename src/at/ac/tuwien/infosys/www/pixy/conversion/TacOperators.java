@@ -3,6 +3,9 @@ package at.ac.tuwien.infosys.www.pixy.conversion;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class TacOperators {
 
     public static final int PLUS = 0;

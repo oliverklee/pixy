@@ -28,6 +28,9 @@ import java.util.Map;
 //   and that these methods perform recycling by means of the repository
 // - do not override its default equals and hashCode
 //   (would destroy the advantages mentioned above)
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class GenericRepos<E extends Recyclable> {
 
     // structure hash code (Integer) -> List of Recyclable's

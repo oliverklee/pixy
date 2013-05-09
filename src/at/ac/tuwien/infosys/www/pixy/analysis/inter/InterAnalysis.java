@@ -36,6 +36,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeIf;
 //   transfer functions other than the ID transfer function
 // - call initGeneral()
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public abstract class InterAnalysis
     extends Analysis {
 

@@ -5,6 +5,9 @@ import java.util.List;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepGraph;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class VulnInfo {
 
     // number of graphs that were initially considered

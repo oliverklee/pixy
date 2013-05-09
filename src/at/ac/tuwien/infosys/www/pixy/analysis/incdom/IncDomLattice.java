@@ -3,6 +3,9 @@ package at.ac.tuwien.infosys.www.pixy.analysis.incdom;
 import at.ac.tuwien.infosys.www.pixy.analysis.Lattice;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class IncDomLattice
     extends Lattice {
 

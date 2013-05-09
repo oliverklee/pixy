@@ -28,6 +28,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeUnset;
 // does NOT consider aliases: this is particularly important for the use of
 // the "global" keyword; if you want reasonable results, don't use this ModAnalysis
 // together with a real alias analysis
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class ModAnalysis {
 
     // this is what we want to compute:

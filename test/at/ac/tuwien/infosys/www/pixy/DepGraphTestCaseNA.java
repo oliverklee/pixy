@@ -22,6 +22,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
 
 // resembles DepGraphTestCase, but does not perform alias analysis
 // (see mySetUp()) and tests object-oriented stuff
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class DepGraphTestCaseNA
     extends TestCase {
 

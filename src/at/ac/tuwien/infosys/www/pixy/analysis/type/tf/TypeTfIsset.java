@@ -5,6 +5,9 @@ import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.TypeLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class TypeTfIsset
     extends TransferFunction {
 

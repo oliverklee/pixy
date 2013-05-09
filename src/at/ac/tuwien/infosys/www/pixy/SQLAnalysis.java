@@ -34,6 +34,9 @@ import at.ac.tuwien.infosys.www.pixy.sanit.SanitAnalysis;
 import at.ac.tuwien.infosys.www.pixy.transduction.MyTransductions;
 
 // SQL Injection detection
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class SQLAnalysis
     extends DepClient {
 

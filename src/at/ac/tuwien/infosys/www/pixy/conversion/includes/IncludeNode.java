@@ -3,6 +3,9 @@ package at.ac.tuwien.infosys.www.pixy.conversion.includes;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 class IncludeNode {
 
     private File file;

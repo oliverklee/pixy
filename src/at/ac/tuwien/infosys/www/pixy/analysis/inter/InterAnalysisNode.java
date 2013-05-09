@@ -10,6 +10,9 @@ import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 
 // an AnalysisNode holds analysis-specific information for a certain CFGNode
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public abstract class InterAnalysisNode
     extends AnalysisNode {
 

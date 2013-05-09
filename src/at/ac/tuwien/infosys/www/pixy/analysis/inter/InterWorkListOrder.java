@@ -20,6 +20,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeExit;
 
 // computes a reverse postorder for the whole, interprocedural cfg;
 // currently only works for call-string analysis
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class InterWorkListOrder {
 
     // this is what we want to compute: a mapping of interprocedural

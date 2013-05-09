@@ -33,6 +33,8 @@ import java.io.IOException;
 
 /**
  * Automaton provider for <code>RegExp.</code>{@link RegExp#toAutomaton(AutomatonProvider)}
+ *
+ * @author Anders M&oslash;ller &lt;<a href="mailto:amoeller@brics.dk">amoeller@brics.dk</a>&gt;
  */
 public interface AutomatonProvider {
 

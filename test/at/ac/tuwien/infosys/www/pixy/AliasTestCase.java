@@ -27,6 +27,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeHotspot;
 // "Run / Run as... / JUnit Test"
 
 // doesn't use builtin functions file
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class AliasTestCase
     extends TestCase {
 

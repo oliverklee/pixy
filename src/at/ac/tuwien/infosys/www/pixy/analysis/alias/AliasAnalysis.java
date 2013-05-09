@@ -32,6 +32,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeGlobal;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeIf;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeUnset;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class AliasAnalysis
     extends InterAnalysis {
 

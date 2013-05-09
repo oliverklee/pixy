@@ -14,11 +14,13 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeDefine;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class DepTfDefine
     extends TransferFunction {
 
     private TacPlace setMe;
-    //private TacPlace setTo;
     private TacPlace caseInsensitive;
 
     private ConstantsTable constantsTable;

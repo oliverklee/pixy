@@ -5,6 +5,9 @@ import java.util.Set;
 
 import at.ac.tuwien.infosys.www.pixy.automaton.Transition;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class MyAlphabet {
 
     private Set<Object> alphabet;

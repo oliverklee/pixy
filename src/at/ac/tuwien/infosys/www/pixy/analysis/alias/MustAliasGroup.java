@@ -8,6 +8,9 @@ import java.util.Set;
 import at.ac.tuwien.infosys.www.pixy.conversion.SymbolTable;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class MustAliasGroup {
 
     // contains Variable's

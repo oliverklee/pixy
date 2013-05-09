@@ -5,6 +5,9 @@ import java.util.Map;
 import java.util.Set;
 
 // container class for builtin function models
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class FunctionModels {
 
     private Set<String> f_evil;

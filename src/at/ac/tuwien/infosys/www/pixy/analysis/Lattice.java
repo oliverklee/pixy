@@ -1,6 +1,9 @@
 package at.ac.tuwien.infosys.www.pixy.analysis;
 
 // this is, in fact, a semi-lattice
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public abstract class Lattice {
 
     // bottom element of this lattice

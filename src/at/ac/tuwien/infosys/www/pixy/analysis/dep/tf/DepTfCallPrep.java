@@ -14,6 +14,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacFormalParam;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class DepTfCallPrep
     extends TransferFunction {
 

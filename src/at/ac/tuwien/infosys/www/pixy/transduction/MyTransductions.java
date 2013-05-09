@@ -17,6 +17,9 @@ import rationals.transductions.TransducerRelation;
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.automaton.Automaton;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class MyTransductions {
 
     private MyAlphabet alphabet;

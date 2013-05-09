@@ -1,5 +1,8 @@
 package at.ac.tuwien.infosys.www.pixy.conversion;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class TacActualParam {
 
     private TacPlace place;

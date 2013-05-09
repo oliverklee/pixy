@@ -11,6 +11,9 @@ import java.util.Set;
 // and directed edges corresponding to include relationships;
 // it has exactly one root (the entry file) and must be acyclic;
 // LATER: faster implementation
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class IncludeGraph {
 
     private IncludeNode root;

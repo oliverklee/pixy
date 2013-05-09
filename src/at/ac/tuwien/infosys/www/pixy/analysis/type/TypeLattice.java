@@ -5,6 +5,9 @@ import java.util.Collection;
 import at.ac.tuwien.infosys.www.pixy.analysis.Lattice;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class TypeLattice
     extends Lattice {
 

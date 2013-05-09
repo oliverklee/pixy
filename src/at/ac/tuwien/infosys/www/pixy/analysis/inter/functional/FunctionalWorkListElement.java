@@ -3,6 +3,9 @@ package at.ac.tuwien.infosys.www.pixy.analysis.inter.functional;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public final class FunctionalWorkListElement {
 
     private final CfgNode cfgNode;

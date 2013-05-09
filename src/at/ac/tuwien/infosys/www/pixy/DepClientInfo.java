@@ -5,6 +5,9 @@ import java.util.Map;
 import java.util.Set;
 
 // contains meta-information about a DepClient
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class DepClientInfo {
 
     private String name;

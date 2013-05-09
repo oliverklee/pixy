@@ -8,6 +8,9 @@ import java.util.Set;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 // node in the SccGraph
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class SccNode {
 
     private Variable label;

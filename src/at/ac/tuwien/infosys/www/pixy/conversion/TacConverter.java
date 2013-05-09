@@ -56,6 +56,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeUnset;
 // CFG nodes; the final symbol table after inclusion contains only
 // one of these objects
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class TacConverter {
 
     // the file from which the parse tree was constructed

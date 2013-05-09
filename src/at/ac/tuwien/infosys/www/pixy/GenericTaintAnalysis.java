@@ -12,6 +12,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
 
 // helper class to prevent code redundancy and confusion, used by Checker;
 // perhaps there are more elegant ways to do this
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class GenericTaintAnalysis {
 
     private List<DepClient> depClients;

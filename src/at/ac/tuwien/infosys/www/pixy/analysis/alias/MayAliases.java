@@ -10,6 +10,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 // a set of may-alias-pairs
 // EFF: a number of things could be done faster with more effort
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class MayAliases {
 
     // contains MayAliasPair's

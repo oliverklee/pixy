@@ -9,6 +9,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 //located in cfg nodes that point to a container object (which
 //contains analysis information objects for different types of
 //analyses)
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public abstract class AnalysisInfo {
 
     // CfgNode -> AnalysisNode

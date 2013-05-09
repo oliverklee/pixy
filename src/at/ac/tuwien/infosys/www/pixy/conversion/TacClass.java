@@ -7,6 +7,9 @@ import at.ac.tuwien.infosys.www.phpparser.ParseNode;
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.Utils;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class TacClass {
 
     // node where the class definition starts

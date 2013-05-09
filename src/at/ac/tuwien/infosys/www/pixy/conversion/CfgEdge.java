@@ -2,6 +2,9 @@ package at.ac.tuwien.infosys.www.pixy.conversion;
 
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public final class CfgEdge {
 
     static final int FALSE_EDGE = 0;

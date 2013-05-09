@@ -18,6 +18,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParam;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallBuiltin;
 
+/**
+ * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
+ */
 public class LiteralTfCallBuiltin
     extends TransferFunction {
 
