@@ -1,8 +1,8 @@
-build/*.class
+build/**/*.class
 
 # generated when running the unit tests
-graphs/
-reports/
+graphs/*
+reports/*
 
 # IDE files
 *.iml
