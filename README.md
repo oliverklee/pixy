@@ -23,8 +23,9 @@ the "test-coverage", "instrument" and "build" targets will automatically be exec
 ## Settings for IntelliJ IDEA
 
 * Project > Project Language level: 7.0
-* Modules > Sources: src
+* Modules > Sources: src/ (as Source) and test/ (as Test)
 * Modules > Dependencies: lib
+* Modules > Dependencies: lib/junit.jar
 
 If you would like to include the PhpParser sources, you will also need the following settings (assuming that "phpparser" is the path to you PhpParser project):
 
