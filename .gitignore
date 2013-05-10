@@ -1,4 +1,4 @@
-build/**/*.class
+build/*
 
 # generated when running the unit tests
 graphs/*
