@@ -190,7 +190,7 @@ have OPEN.
 
 ## Pixy and PhpParser
 
-Pixy makes use of the sub project PhpParser. It already brings the compiled classes from that project. PhpParser resides [at Github](https://github.com/oliverklee/phpparser "PhpParser at Github").
+Pixy makes use of the sub-project PhpParser. It already brings the compiled classes from that project. PhpParser resides [on Github](https://github.com/oliverklee/phpparser "PhpParser at Github").
 
 
 ## Modifications to JFlex 1.4.1
