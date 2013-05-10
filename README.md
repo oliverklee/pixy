@@ -188,6 +188,11 @@ the file you have HIGHLIGHTED, which is not necessarily the one you
 have OPEN.
 
 
+## Pixy and PhpParser
+
+Pixy makes use of the sub project PhpParser. It already brings the compiled classes from that project. PhpParser resides [at Github](https://github.com/oliverklee/phpparser "PhpParser at Github").
+
+
 ## Modifications to JFlex 1.4.1
 - marked with "NJ"
 - modified files:
