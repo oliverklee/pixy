@@ -1,9 +1,9 @@
 package at.ac.tuwien.infosys.www.pixy.transduction;
 
+import at.ac.tuwien.infosys.www.pixy.automaton.Transition;
+
 import java.util.HashSet;
 import java.util.Set;
-
-import at.ac.tuwien.infosys.www.pixy.automaton.Transition;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>

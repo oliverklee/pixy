@@ -1,11 +1,11 @@
 package at.ac.tuwien.infosys.www.pixy.conversion;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeHotspot;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeTester;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>

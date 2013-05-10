@@ -1,67 +1,16 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.dep;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import at.ac.tuwien.infosys.www.pixy.analysis.CompositeTransferFunction;
-import at.ac.tuwien.infosys.www.pixy.analysis.GenericRepos;
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
-import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunctionId;
+import at.ac.tuwien.infosys.www.pixy.analysis.*;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.tf.DepTfAssignArray;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.tf.DepTfAssignBinary;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.tf.DepTfAssignRef;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.tf.DepTfAssignSimple;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.tf.DepTfAssignUnary;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.tf.DepTfCallBuiltin;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.tf.DepTfCallPrep;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.tf.DepTfCallRet;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.tf.DepTfCallUnknown;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.tf.DepTfDefine;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.tf.DepTfEntry;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.tf.DepTfIsset;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.tf.DepTfTester;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.tf.DepTfUnset;
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.AnalysisType;
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.CallGraph;
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.ConnectorComputation;
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.Context;
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterWorkList;
+import at.ac.tuwien.infosys.www.pixy.analysis.dep.tf.*;
+import at.ac.tuwien.infosys.www.pixy.analysis.inter.*;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring.CSAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.mod.ModAnalysis;
-import at.ac.tuwien.infosys.www.pixy.conversion.CfgEdge;
-import at.ac.tuwien.infosys.www.pixy.conversion.ConstantsTable;
-import at.ac.tuwien.infosys.www.pixy.conversion.SymbolTable;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
-import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignArray;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignBinary;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignRef;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignSimple;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignUnary;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeBasicBlock;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallBuiltin;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallPrep;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallRet;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallUnknown;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeDefine;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeGlobal;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeIf;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeIsset;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeTester;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeUnset;
+import at.ac.tuwien.infosys.www.pixy.conversion.*;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.*;
+
+import java.util.*;
 
 // dependency analysis
 /**

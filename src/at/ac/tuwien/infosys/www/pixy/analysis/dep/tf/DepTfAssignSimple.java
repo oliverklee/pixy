@@ -1,13 +1,13 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.dep.tf;
 
-import java.util.Set;
-
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
+
+import java.util.Set;
 
 // transfer function for simple assignment nodes
 /**

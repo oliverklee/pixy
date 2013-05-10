@@ -1,16 +1,9 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.inter;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
+
+import java.util.*;
 
 // this is a fine-grained call graph
 // (i.e., it does not only contain edges between functions,

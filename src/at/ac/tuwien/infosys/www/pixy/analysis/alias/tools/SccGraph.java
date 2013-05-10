@@ -1,12 +1,8 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.alias.tools;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
+
+import java.util.*;
 
 // auxiliary graph for computing least upper bounds of alias lattice elements;
 // SCC stands for "strongly connected component";

@@ -1,20 +1,16 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.inter.functional;
 
+import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
+import at.ac.tuwien.infosys.www.pixy.analysis.inter.*;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
+
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.AnalysisType;
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.Context;
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysisNode;
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.ReverseTarget;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
 
 // base class for analysis using the functional approach of Sharir and
 // Pnueli; use this if your lattice is finite

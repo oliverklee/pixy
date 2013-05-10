@@ -1,9 +1,5 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.literal.tf;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
@@ -11,6 +7,10 @@ import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.Literal;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 // transfer function for unset nodes
 /**

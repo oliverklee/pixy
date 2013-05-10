@@ -1,7 +1,5 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.intra;
 
-import java.util.LinkedList;
-
 import at.ac.tuwien.infosys.www.pixy.Dumper;
 import at.ac.tuwien.infosys.www.pixy.analysis.Analysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.AnalysisNode;
@@ -10,6 +8,8 @@ import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.CfgEdge;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
+
+import java.util.LinkedList;
 
 // base class for intraprocedural analyses
 /**

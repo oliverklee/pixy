@@ -1,7 +1,5 @@
 package at.ac.tuwien.infosys.www.pixy.sanit;
 
-import java.util.List;
-
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.SQLAnalysis;
 import at.ac.tuwien.infosys.www.pixy.Utils;
@@ -13,6 +11,8 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallBuiltin;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallPrep;
+
+import java.util.List;
 
 // SQL Injection detection (with precise sanitization detection)
 /**

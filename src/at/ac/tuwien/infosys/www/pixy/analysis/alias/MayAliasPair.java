@@ -1,12 +1,12 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.alias;
 
+import at.ac.tuwien.infosys.www.pixy.conversion.SymbolTable;
+import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
-import at.ac.tuwien.infosys.www.pixy.conversion.SymbolTable;
-import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>

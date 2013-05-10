@@ -1,9 +1,9 @@
 package at.ac.tuwien.infosys.www.pixy.conversion;
 
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>

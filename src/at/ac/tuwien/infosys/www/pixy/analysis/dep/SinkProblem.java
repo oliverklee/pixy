@@ -1,9 +1,9 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.dep;
 
+import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
+
 import java.util.LinkedList;
 import java.util.List;
-
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>

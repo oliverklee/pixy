@@ -1,9 +1,5 @@
 package at.ac.tuwien.infosys.www.pixy.sanit;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 import at.ac.tuwien.infosys.www.pixy.VulnInfo;
 import at.ac.tuwien.infosys.www.pixy.XSSAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepAnalysis;
@@ -14,6 +10,10 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallBuiltin;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallPrep;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeEcho;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 // XSS detection
 /**

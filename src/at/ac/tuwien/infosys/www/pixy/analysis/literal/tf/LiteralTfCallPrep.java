@@ -1,20 +1,15 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.literal.tf;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.conversion.Cfg;
-import at.ac.tuwien.infosys.www.pixy.conversion.SymbolTable;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParam;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacFormalParam;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
+import at.ac.tuwien.infosys.www.pixy.conversion.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>

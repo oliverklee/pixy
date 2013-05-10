@@ -1,34 +1,10 @@
 package at.ac.tuwien.infosys.www.pixy;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Properties;
-import java.util.StringTokenizer;
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.MissingOptionException;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-import org.apache.commons.cli.PosixParser;
-
 import at.ac.tuwien.infosys.www.phpparser.ParseTree;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.DummyAliasAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.incdom.IncDomAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.AnalysisType;
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.CallGraph;
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.ConnectorComputation;
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterWorkList;
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterWorkListBetter;
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterWorkListOrder;
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterWorkListPoor;
+import at.ac.tuwien.infosys.www.pixy.analysis.inter.*;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring.CSAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.functional.FunctionalAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.DummyLiteralAnalysis;
@@ -38,6 +14,13 @@ import at.ac.tuwien.infosys.www.pixy.conversion.InternalStrings;
 import at.ac.tuwien.infosys.www.pixy.conversion.ProgramConverter;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
+import org.apache.commons.cli.*;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>

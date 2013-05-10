@@ -1,29 +1,17 @@
 package at.ac.tuwien.infosys.www.pixy.sanit;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import at.ac.tuwien.infosys.www.pixy.DepClient;
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.Utils;
 import at.ac.tuwien.infosys.www.pixy.VulnInfo;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepGraph;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepGraphNode;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepGraphNormalNode;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepGraphOpNode;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepGraphSccNode;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepGraphUninitNode;
+import at.ac.tuwien.infosys.www.pixy.analysis.dep.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallBuiltin;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallUnknown;
+
+import java.io.File;
+import java.util.*;
 
 // superclass for sanitization analyses
 /**

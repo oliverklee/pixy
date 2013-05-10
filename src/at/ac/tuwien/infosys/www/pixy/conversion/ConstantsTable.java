@@ -1,11 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.conversion;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>

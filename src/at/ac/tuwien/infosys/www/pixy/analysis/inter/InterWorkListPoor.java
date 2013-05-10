@@ -1,10 +1,10 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.inter;
 
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
+
 import java.util.LinkedList;
 import java.util.SortedMap;
 import java.util.TreeMap;
-
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 /*
  * this work list contains two lists: one for cfg nodes that have been

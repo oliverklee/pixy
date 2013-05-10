@@ -1,9 +1,5 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.inter;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 import at.ac.tuwien.infosys.www.pixy.Dumper;
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.analysis.Analysis;
@@ -15,12 +11,11 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Cfg;
 import at.ac.tuwien.infosys.www.pixy.conversion.CfgEdge;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFormalParam;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallPrep;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallRet;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeExit;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeIf;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.*;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 // base class for interprocedural analyses (Sharir and Pnueli);
 // can be used for the functional and the call-string approach;

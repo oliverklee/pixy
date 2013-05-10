@@ -1,26 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepGraph;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepGraphNode;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepGraphNormalNode;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepGraphOpNode;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepGraphSccNode;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepGraphUninitNode;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.Sink;
+import at.ac.tuwien.infosys.www.pixy.analysis.dep.*;
 import at.ac.tuwien.infosys.www.pixy.automaton.Automaton;
 import at.ac.tuwien.infosys.www.pixy.automaton.Transition;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParam;
@@ -32,6 +12,12 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallPrep;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallUnknown;
 import at.ac.tuwien.infosys.www.pixy.sanit.SanitAnalysis;
 import at.ac.tuwien.infosys.www.pixy.transduction.MyTransductions;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.*;
 
 // SQL Injection detection
 /**

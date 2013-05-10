@@ -1,14 +1,14 @@
 package at.ac.tuwien.infosys.www.pixy;
 
-import java.lang.reflect.Constructor;
-import java.util.LinkedList;
-import java.util.List;
-
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.AnalysisType;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterWorkList;
 import at.ac.tuwien.infosys.www.pixy.analysis.mod.ModAnalysis;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
+
+import java.lang.reflect.Constructor;
+import java.util.LinkedList;
+import java.util.List;
 
 // helper class to prevent code redundancy and confusion, used by Checker;
 // perhaps there are more elegant ways to do this

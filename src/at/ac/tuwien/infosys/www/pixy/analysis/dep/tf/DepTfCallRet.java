@@ -1,11 +1,5 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.dep.tf;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
@@ -18,6 +12,8 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallPrep;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallRet;
+
+import java.util.*;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>

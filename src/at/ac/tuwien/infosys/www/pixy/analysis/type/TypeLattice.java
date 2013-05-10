@@ -1,9 +1,9 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.type;
 
-import java.util.Collection;
-
 import at.ac.tuwien.infosys.www.pixy.analysis.Lattice;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
+
+import java.util.Collection;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>

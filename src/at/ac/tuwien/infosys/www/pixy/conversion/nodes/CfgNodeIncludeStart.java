@@ -1,11 +1,11 @@
 package at.ac.tuwien.infosys.www.pixy.conversion.nodes;
 
+import at.ac.tuwien.infosys.www.phpparser.ParseNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
+
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
-
-import at.ac.tuwien.infosys.www.phpparser.ParseNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 // *********************************************************************************
 // CfgNodeIncludeStart *************************************************************

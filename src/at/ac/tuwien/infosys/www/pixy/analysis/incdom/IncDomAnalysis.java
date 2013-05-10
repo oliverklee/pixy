@@ -1,9 +1,5 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.incdom;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
 import at.ac.tuwien.infosys.www.pixy.analysis.GenericRepos;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
@@ -15,6 +11,10 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeBasicBlock;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeIncludeEnd;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeIncludeStart;
+
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 // inclusion dominator analysis
 /**

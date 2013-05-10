@@ -1,9 +1,12 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.inter;
 
-import java.util.*;
-
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>

@@ -1,11 +1,11 @@
 package at.ac.tuwien.infosys.www.pixy.conversion;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import at.ac.tuwien.infosys.www.phpparser.ParseNode;
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.Utils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>

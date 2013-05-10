@@ -1,14 +1,9 @@
 package at.ac.tuwien.infosys.www.pixy.conversion;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Set;
-
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
+
+import java.util.*;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>

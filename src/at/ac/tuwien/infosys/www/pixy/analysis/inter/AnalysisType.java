@@ -1,11 +1,11 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.inter;
 
-import java.util.List;
-
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
+
+import java.util.List;
 
 // functional or call-string analysis
 /**

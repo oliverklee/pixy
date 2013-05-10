@@ -1,10 +1,10 @@
 package at.ac.tuwien.infosys.www.pixy.conversion.nodes;
 
+import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
+
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
-import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>

@@ -1,16 +1,16 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.inter.functional;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.Context;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 // an AnalysisNode holds analysis-specific information for a certain CFGNode
 /**

@@ -1,11 +1,11 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.literal;
 
-import java.util.List;
-
 import at.ac.tuwien.infosys.www.pixy.analysis.Lattice;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.ConstantsTable;
 import at.ac.tuwien.infosys.www.pixy.conversion.SymbolTable;
+
+import java.util.List;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>

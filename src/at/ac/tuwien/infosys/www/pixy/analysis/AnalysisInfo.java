@@ -1,8 +1,8 @@
 package at.ac.tuwien.infosys.www.pixy.analysis;
 
-import java.util.HashMap;
-
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
+
+import java.util.HashMap;
 
 //at the moment, this is just a wrapper class around a hashtable;
 //EFF: more efficient implementation, e.g. by using references

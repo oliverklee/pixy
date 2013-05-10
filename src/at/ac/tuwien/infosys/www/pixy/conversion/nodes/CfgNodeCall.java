@@ -1,16 +1,12 @@
 package at.ac.tuwien.infosys.www.pixy.conversion.nodes;
 
+import at.ac.tuwien.infosys.www.phpparser.ParseNode;
+import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
+import at.ac.tuwien.infosys.www.pixy.conversion.*;
+
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
-import at.ac.tuwien.infosys.www.phpparser.ParseNode;
-import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParam;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacFormalParam;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
-import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 // *********************************************************************************
 // CfgNodeCall *********************************************************************

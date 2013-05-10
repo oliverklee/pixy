@@ -1,17 +1,12 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring;
 
-import java.util.List;
-
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.AnalysisType;
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.ConnectorComputation;
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.Context;
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysisNode;
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.ReverseTarget;
+import at.ac.tuwien.infosys.www.pixy.analysis.inter.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
+
+import java.util.List;
 
 // base class for analysis using the call string approach of Sharir and
 // Pnueli; use this if your lattice has infinite breadth

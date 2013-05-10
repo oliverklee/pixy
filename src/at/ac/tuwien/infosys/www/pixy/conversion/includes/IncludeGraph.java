@@ -1,11 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.conversion.includes;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 // an include graph consists of vertices corresponding to files
 // and directed edges corresponding to include relationships;

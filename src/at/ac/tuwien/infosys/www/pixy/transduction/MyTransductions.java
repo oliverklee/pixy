@@ -1,21 +1,17 @@
 package at.ac.tuwien.infosys.www.pixy.transduction;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
+import at.ac.tuwien.infosys.www.pixy.MyOptions;
+import at.ac.tuwien.infosys.www.pixy.automaton.Automaton;
 import rationals.State;
 import rationals.Transition;
 import rationals.transductions.TransducerNivat;
 import rationals.transductions.TransducerRelation;
-import at.ac.tuwien.infosys.www.pixy.MyOptions;
-import at.ac.tuwien.infosys.www.pixy.automaton.Automaton;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.*;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>

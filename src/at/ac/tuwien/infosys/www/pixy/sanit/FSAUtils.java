@@ -1,10 +1,10 @@
 package at.ac.tuwien.infosys.www.pixy.sanit;
 
-import java.util.List;
-
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.Utils;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
+
+import java.util.List;
 
 // helper class responsible for performing transductions
 // using FSA Utilities

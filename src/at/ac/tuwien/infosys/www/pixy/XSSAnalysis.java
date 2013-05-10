@@ -1,20 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepGraph;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepGraphNode;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepGraphNormalNode;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepGraphOpNode;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepGraphUninitNode;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.Sink;
+import at.ac.tuwien.infosys.www.pixy.analysis.dep.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParam;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
@@ -22,6 +8,8 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallBuiltin;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallPrep;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeEcho;
 import at.ac.tuwien.infosys.www.pixy.sanit.SanitAnalysis;
+
+import java.util.*;
 
 // XSS detection
 /**

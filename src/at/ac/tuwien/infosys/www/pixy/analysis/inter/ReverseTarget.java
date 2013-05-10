@@ -1,8 +1,8 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.inter;
 
-import java.util.Set;
-
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
+
+import java.util.Set;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>

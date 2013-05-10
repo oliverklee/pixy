@@ -1,20 +1,5 @@
 package at.ac.tuwien.infosys.www.pixy.conversion;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
-
 import at.ac.tuwien.infosys.www.phpparser.ParseNode;
 import at.ac.tuwien.infosys.www.phpparser.ParseTree;
 import at.ac.tuwien.infosys.www.phpparser.PhpLexer;
@@ -23,16 +8,15 @@ import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.Utils;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.DummyAliasAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.ConnectorComputation;
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysisNode;
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterWorkList;
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterWorkListBetter;
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterWorkListOrder;
+import at.ac.tuwien.infosys.www.pixy.analysis.inter.*;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring.CSAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.TypeAnalysis;
 import at.ac.tuwien.infosys.www.pixy.conversion.includes.IncludeGraph;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeInclude;
+
+import java.io.*;
+import java.util.*;
 
 // EFF: you can save time and space by reusing parsetrees and TacConverters
 // when including the same file multiple times

@@ -1,10 +1,10 @@
 package at.ac.tuwien.infosys.www.pixy.conversion.nodes;
 
+import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-
-import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 // *********************************************************************************
 // CfgNodeTester *******************************************************************

@@ -1,28 +1,11 @@
 package at.ac.tuwien.infosys.www.pixy;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepGraph;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepGraphNode;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepGraphNormalNode;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepGraphOpNode;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepGraphUninitNode;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.Sink;
-import at.ac.tuwien.infosys.www.pixy.conversion.Constant;
-import at.ac.tuwien.infosys.www.pixy.conversion.InternalStrings;
-import at.ac.tuwien.infosys.www.pixy.conversion.Literal;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
-import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
+import at.ac.tuwien.infosys.www.pixy.analysis.dep.*;
+import at.ac.tuwien.infosys.www.pixy.conversion.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallUnknown;
+
+import java.util.*;
 
 // if you want to create a new depclient:
 // - inherit from this class (see existing examples)

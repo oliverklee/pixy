@@ -1,8 +1,8 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.intra;
 
-import java.util.LinkedList;
-
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
+
+import java.util.LinkedList;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>

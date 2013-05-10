@@ -1,32 +1,11 @@
 package at.ac.tuwien.infosys.www.pixy.analysis;
 
-import java.util.Iterator;
-import java.util.List;
-
 import at.ac.tuwien.infosys.www.pixy.conversion.Cfg;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignArray;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignBinary;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignRef;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignSimple;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignUnary;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeBasicBlock;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallBuiltin;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallPrep;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallRet;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallUnknown;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeDefine;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeEcho;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeEntry;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeGlobal;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeInclude;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeIncludeEnd;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeIncludeStart;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeIsset;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeStatic;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeTester;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeUnset;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.*;
+
+import java.util.Iterator;
+import java.util.List;
 
 // base class for inter- and intraprocedural analyses
 /**

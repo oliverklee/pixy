@@ -1,69 +1,18 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.dep;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Set;
-
 import at.ac.tuwien.infosys.www.pixy.DepClientInfo;
 import at.ac.tuwien.infosys.www.pixy.Dumper;
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.Context;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysisInfo;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.ReverseTarget;
-import at.ac.tuwien.infosys.www.pixy.conversion.Cfg;
-import at.ac.tuwien.infosys.www.pixy.conversion.Literal;
-import at.ac.tuwien.infosys.www.pixy.conversion.SymbolTable;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParam;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacFormalParam;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacOperators;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
-import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignArray;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignBinary;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignRef;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignSimple;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignUnary;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeBasicBlock;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallBuiltin;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallPrep;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallRet;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallUnknown;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeDefine;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeEcho;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeEmpty;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeEmptyTest;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeEntry;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeEval;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeExit;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeGlobal;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeHotspot;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeIf;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeInclude;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeIncludeEnd;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeIncludeStart;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeIsset;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeStatic;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeTester;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeUnset;
+import at.ac.tuwien.infosys.www.pixy.conversion.*;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.*;
 import at.ac.tuwien.infosys.www.pixy.sanit.FSAAutomaton;
 import at.ac.tuwien.infosys.www.pixy.sanit.SanitAnalysis;
+
+import java.io.*;
+import java.util.*;
 
 // graph that displays the data dependencies for a variable at some
 // point in the program; very useful for better understanding vulnerability

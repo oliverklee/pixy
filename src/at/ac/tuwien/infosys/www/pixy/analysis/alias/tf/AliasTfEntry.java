@@ -1,14 +1,14 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.alias.tf;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
+
+import java.util.Iterator;
+import java.util.Map;
 
 // transfer function for function entries
 /**

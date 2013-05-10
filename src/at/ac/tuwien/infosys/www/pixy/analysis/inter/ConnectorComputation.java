@@ -1,19 +1,13 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.inter;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring.CSContext;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring.CallString;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring.ECS;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
+
+import java.util.*;
 
 // based on Florian Martin's PhD thesis;
 // output:

@@ -1,14 +1,5 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.literal.tf;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.List;
-
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
@@ -17,6 +8,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Literal;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParam;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallBuiltin;
+
+import java.io.*;
+import java.util.List;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>

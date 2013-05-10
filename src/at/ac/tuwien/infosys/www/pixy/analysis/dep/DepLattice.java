@@ -1,13 +1,13 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.dep;
 
-import java.util.List;
-
 import at.ac.tuwien.infosys.www.pixy.analysis.Lattice;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.ConstantsTable;
 import at.ac.tuwien.infosys.www.pixy.conversion.SymbolTable;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
+
+import java.util.List;
 
 // a lattice of source labels
 /**

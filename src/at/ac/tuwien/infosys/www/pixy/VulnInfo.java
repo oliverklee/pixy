@@ -1,9 +1,9 @@
 package at.ac.tuwien.infosys.www.pixy;
 
+import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepGraph;
+
 import java.util.LinkedList;
 import java.util.List;
-
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepGraph;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>

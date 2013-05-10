@@ -1,25 +1,12 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.literal;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.Recyclable;
-import at.ac.tuwien.infosys.www.pixy.conversion.Constant;
-import at.ac.tuwien.infosys.www.pixy.conversion.ConstantsTable;
-import at.ac.tuwien.infosys.www.pixy.conversion.Literal;
-import at.ac.tuwien.infosys.www.pixy.conversion.SymbolTable;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacFormalParam;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacOperators;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
-import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
+import at.ac.tuwien.infosys.www.pixy.conversion.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
+
+import java.util.*;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>

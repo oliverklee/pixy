@@ -1,12 +1,12 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.alias;
 
+import at.ac.tuwien.infosys.www.pixy.conversion.SymbolTable;
+import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
-import at.ac.tuwien.infosys.www.pixy.conversion.SymbolTable;
-import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 // a set of may-alias-pairs
 // EFF: a number of things could be done faster with more effort
