@@ -1,26 +1,17 @@
 package at.ac.tuwien.infosys.www.pixy;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.alias.MayAliasPair;
-import at.ac.tuwien.infosys.www.pixy.analysis.alias.MayAliases;
-import at.ac.tuwien.infosys.www.pixy.analysis.alias.MustAliasGroup;
-import at.ac.tuwien.infosys.www.pixy.analysis.alias.MustAliases;
+import at.ac.tuwien.infosys.www.pixy.analysis.alias.*;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.Context;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.functional.FunctionalAnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.InternalStrings;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeHotspot;
+import junit.framework.Assert;
+import junit.framework.TestCase;
+
+import java.util.*;
 
 // Eclipse hint:
 // all methods named "testXX" are executed automatically when choosing

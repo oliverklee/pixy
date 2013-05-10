@@ -1,11 +1,11 @@
 package at.ac.tuwien.infosys.www.pixy;
 
-import java.util.LinkedList;
-import java.util.List;
-
+import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
 import junit.framework.Assert;
 import junit.framework.TestCase;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
+
+import java.util.LinkedList;
+import java.util.List;
 
 // Eclipse hint:
 // all methods named "testXX" are executed automatically when choosing
