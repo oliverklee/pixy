@@ -41,6 +41,7 @@ public class TypeTestCase
     // called automatically
     protected void setUp() {
         this.path = MyOptions.pixy_home + "/testfiles/type/";
+        MyOptions.graphPath = MyOptions.pixy_home + "/graphs";
     }
 
     // call this at the beginning of each test; optionally uses

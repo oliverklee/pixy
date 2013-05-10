@@ -33,6 +33,7 @@ public class LiteralTestCase
 
     protected void setUp() {
         this.path = MyOptions.pixy_home + "/testfiles/literal/";
+        MyOptions.graphPath = MyOptions.pixy_home + "/graphs";
     }
 
     // call this at the beginning of each test

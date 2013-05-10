@@ -35,6 +35,7 @@ public class AliasTestCase
 
     protected void setUp() {
         this.path = MyOptions.pixy_home + "/testfiles/alias/";
+        MyOptions.graphPath = MyOptions.pixy_home + "/graphs";
     }
 
     // call this at the beginning of each test

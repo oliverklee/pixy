@@ -40,6 +40,7 @@ public class DepGraphTestCase
     // called automatically
     protected void setUp() {
         this.path = MyOptions.pixy_home + "/testfiles/depgraph/";
+        MyOptions.graphPath = MyOptions.pixy_home + "/graphs";
     }
 
     // call this at the beginning of each test; optionally uses

@@ -38,6 +38,7 @@ public class IncludeTestCase
     // called automatically
     protected void setUp() {
         this.path = MyOptions.pixy_home + "/testfiles/includes/";
+        MyOptions.graphPath = MyOptions.pixy_home + "/graphs";
     }
 
     // call this at the beginning of each test; optionally uses
