@@ -20,6 +20,19 @@ The ant targets are marked with the corresponding dependencies, e.g., if you exe
 the "test-coverage", "instrument" and "build" targets will automatically be executed first.
 
 
+## Settings for IntelliJ IDEA
+
+* Project > Project Language level: 7.0
+* Modules > Sources: src
+* Modules > Dependencies: lib
+
+If you would like to include the PhpParser sources, you will also need the following settings (assuming that "phpparser" is the path to you PhpParser project):
+
+* Modules > Sources: phpparser/src/JFlex
+* Modules > Sources: phpparser/src/java_cup
+* Modules > Sources: phpparser/src/project
+
+
 ## Developing Pixy in Eclipse
 
 The most recent version of Eclipse can be obtained from <http://www.eclipse.org/>.
