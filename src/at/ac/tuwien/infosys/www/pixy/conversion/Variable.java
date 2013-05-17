@@ -249,7 +249,7 @@ public class Variable
     }
 
     void setIsArray(boolean isArray) {
-        if (isArray == true && this.isArray == false) {
+        if (isArray && !this.isArray) {
             this.isArray = isArray;
             this.elements = new LinkedHashMap<TacPlace, Variable>();
             this.literalElements = new LinkedList<Variable>();

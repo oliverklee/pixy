@@ -391,7 +391,7 @@ public class ProgramConverter {
         }
 
         // statistics output
-        if (true && !MyOptions.optionW) {
+        if (!MyOptions.optionW) {
             System.out.println();
             System.out.println("inclusion iterations:            " + iteration);
             System.out.println("resolved literal includes:       " + resolvedLit);

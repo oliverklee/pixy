@@ -488,7 +488,7 @@ public class SQLAnalysis
             } else {
                 supported = false;
             }
-            if (supported == false) {
+            if (!supported) {
                 throw new RuntimeException("not supported yet");
             }
 

@@ -140,7 +140,7 @@ public final class Checker {
         MyOptions.option_V = !cmd.hasOption("V");
 
         // inform MyOptions about the analyses that are to be performed
-        if (MyOptions.setAnalyses(cmd.getOptionValue("y")) == false) {
+        if (!MyOptions.setAnalyses(cmd.getOptionValue("y"))) {
             Utils.bail("Invalid 'y' argument");
         }
 

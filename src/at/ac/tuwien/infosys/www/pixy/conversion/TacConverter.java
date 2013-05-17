@@ -2004,7 +2004,7 @@ public class TacConverter {
         // the enclosing array
         Variable arrayVar = arrayPlace.getVariable();
         // mark it as array
-        if (arrayVar.isArray() == false) {
+        if (!arrayVar.isArray()) {
             arrayVar.setIsArray(true);
         }
         String offsetString = offsetPlace.toString();
