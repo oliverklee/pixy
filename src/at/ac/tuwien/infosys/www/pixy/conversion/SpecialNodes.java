@@ -41,12 +41,15 @@ class SpecialNodes {
 
             // find out what to test...
             int whatToTestInt;
-            if (whatToTest.equals("taint")) {
-                whatToTestInt = CfgNodeTester.TEST_TAINT;
-            } else if (whatToTest.equals("arrayLabel")) {
-                whatToTestInt = CfgNodeTester.TEST_ARRAYLABEL;
-            } else {
-                throw new RuntimeException("Error: Invalid '~_test_' marker in builtin functions file");
+            switch (whatToTest) {
+                case "taint":
+                    whatToTestInt = CfgNodeTester.TEST_TAINT;
+                    break;
+                case "arrayLabel":
+                    whatToTestInt = CfgNodeTester.TEST_ARRAYLABEL;
+                    break;
+                default:
+                    throw new RuntimeException("Error: Invalid '~_test_' marker in builtin functions file");
             }
 
             Set numSet;
