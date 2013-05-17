@@ -207,7 +207,7 @@ public final class Dumper {
                 if (succIdInt == null) {
                     succId = dumpDot(succNode, outWriter);
                 } else {
-                    succId = succIdInt.intValue();
+                    succId = succIdInt;
                 }
 
                 // print edge to successor
@@ -898,7 +898,7 @@ public final class Dumper {
             int insertAtIndex = 0;
             for (List anOutput : output) {
                 List nextList = anOutput;
-                int compProduct = ((Integer) nextList.get(3)).intValue();
+                int compProduct = (Integer) nextList.get(3);
                 if (product > compProduct) {
                     break;
                 }
@@ -917,9 +917,9 @@ public final class Dumper {
         for (List<Object> anOutput : output) {
             List outputList = (List) anOutput;
             TacFunction function = (TacFunction) outputList.get(0);
-            int ecsLength = ((Integer) outputList.get(1)).intValue();
-            int cfgSize = ((Integer) outputList.get(2)).intValue();
-            int product = ((Integer) outputList.get(3)).intValue();
+            int ecsLength = (Integer) outputList.get(1);
+            int cfgSize = (Integer) outputList.get(2);
+            int product = (Integer) outputList.get(3);
             System.out.println(function.getName() + ": " + ecsLength + ", " + cfgSize + ": " + product);
             total += product;
         }

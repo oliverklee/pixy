@@ -2653,7 +2653,7 @@ public class Automaton
                         if (fromTrans.min == fromTrans.max && !visited.contains(from)) {
                             if (c == null) {
                                 c = new Character(fromTrans.min);
-                            } else if (fromTrans.min == c.charValue()) {
+                            } else if (fromTrans.min == c) {
                                 // match, do nothing
                             } else {
                                 // mismatch
@@ -2679,7 +2679,7 @@ public class Automaton
                             if (fromTrans.min == fromTrans.max && !visited.contains(from)) {
                                 if (c == null) {
                                     c = new Character(fromTrans.min);
-                                } else if (fromTrans.min == c.charValue()) {
+                                } else if (fromTrans.min == c) {
                                     // match, do nothing
                                 } else {
                                     // mismatch

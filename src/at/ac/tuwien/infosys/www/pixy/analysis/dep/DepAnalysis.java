@@ -519,7 +519,7 @@ public class DepAnalysis
                         if (totalCount == null) {
                             totalCount = opCount;
                         } else {
-                            totalCount = new Integer(totalCount.intValue() + opCount);
+                            totalCount = new Integer(totalCount + opCount);
                         }
                         opMap.put(opName, totalCount);
                     }

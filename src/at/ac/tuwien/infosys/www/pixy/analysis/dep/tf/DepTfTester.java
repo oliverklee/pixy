@@ -44,7 +44,7 @@ public class DepTfTester
 
         // extract formals that are to be tested
         for (Integer paramNumber : cfgNode.getParamNumbers()) {
-            int param_int = paramNumber.intValue();
+            int param_int = paramNumber;
             TacFormalParam formalParam = function.getParam(param_int);
             if (formalParam == null) {
                 throw new RuntimeException("Error: Function " + function.getName() +

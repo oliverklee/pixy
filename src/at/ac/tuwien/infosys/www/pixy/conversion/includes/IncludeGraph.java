@@ -143,14 +143,14 @@ public class IncludeGraph {
 
     private void increaseInDegree(IncludeNode node) {
         Integer inDegree = this.inDegrees.get(node);
-        this.inDegrees.put(node, new Integer(inDegree.intValue() + 1));
+        this.inDegrees.put(node, new Integer(inDegree + 1));
     }
 
 //  decreaseInDegree ***************************************************************
 
     private void decreaseInDegree(IncludeNode node) {
         Integer inDegree = this.inDegrees.get(node);
-        this.inDegrees.put(node, new Integer(inDegree.intValue() - 1));
+        this.inDegrees.put(node, new Integer(inDegree - 1));
     }
 
 //  addNode ************************************************************************
@@ -214,7 +214,7 @@ public class IncludeGraph {
 
         // EFF: this is a linear search
         for (Map.Entry<IncludeNode, Integer> entry : this.inDegrees.entrySet()) {
-            int inDegree = entry.getValue().intValue();
+            int inDegree = entry.getValue();
             if (inDegree == 0) {
                 retMe.add(entry.getKey());
             }
@@ -251,7 +251,7 @@ public class IncludeGraph {
     private void clean(IncludeNode node) {
 
         boolean hasNoSucc = ((Set) this.adjSets.get(node)).isEmpty();
-        boolean hasNoPred = this.inDegrees.get(node).intValue() == 0;
+        boolean hasNoPred = this.inDegrees.get(node) == 0;
         if (hasNoSucc && hasNoPred && !node.equals(this.root)) {
             this.nodes.remove(node);
             this.adjSets.remove(node);
