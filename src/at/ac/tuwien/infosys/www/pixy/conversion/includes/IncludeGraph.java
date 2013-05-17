@@ -36,7 +36,7 @@ public class IncludeGraph {
         this.adjSets.put(root, new HashSet<IncludeNode>());
 
         this.inDegrees = new HashMap<IncludeNode, Integer>();
-        this.inDegrees.put(root, new Integer(0));
+        this.inDegrees.put(root, 0);
     }
 
     private IncludeGraph(IncludeGraph cloneMe) {
@@ -143,14 +143,14 @@ public class IncludeGraph {
 
     private void increaseInDegree(IncludeNode node) {
         Integer inDegree = this.inDegrees.get(node);
-        this.inDegrees.put(node, new Integer(inDegree + 1));
+        this.inDegrees.put(node, inDegree + 1);
     }
 
 //  decreaseInDegree ***************************************************************
 
     private void decreaseInDegree(IncludeNode node) {
         Integer inDegree = this.inDegrees.get(node);
-        this.inDegrees.put(node, new Integer(inDegree - 1));
+        this.inDegrees.put(node, inDegree - 1);
     }
 
 //  addNode ************************************************************************
@@ -165,7 +165,7 @@ public class IncludeGraph {
 
         Integer inDegree = this.inDegrees.get(node);
         if (inDegree == null) {
-            this.inDegrees.put(node, new Integer(0));
+            this.inDegrees.put(node, 0);
         }
     }
 

@@ -186,7 +186,7 @@ public final class Dumper {
 
         // mark node as visited and store ID
         int nodeId = Dumper.idCounter;
-        Dumper.node2Int.put(cfgNode, new Integer(Dumper.idCounter++));
+        Dumper.node2Int.put(cfgNode, Dumper.idCounter++);
 
         // print node
         String name = makeCfgNodeName(cfgNode);
@@ -907,9 +907,9 @@ public final class Dumper {
 
             List insertMe = new LinkedList();
             insertMe.add(function);
-            insertMe.add(new Integer(ecsLength));
-            insertMe.add(new Integer(cfgSize));
-            insertMe.add(new Integer(product));
+            insertMe.add(ecsLength);
+            insertMe.add(cfgSize);
+            insertMe.add(product);
             output.add(insertAtIndex, insertMe);
         }
 

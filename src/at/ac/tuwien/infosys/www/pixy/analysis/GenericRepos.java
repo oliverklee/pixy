@@ -48,7 +48,7 @@ public class GenericRepos<E extends Recyclable> {
             return recycleMe;
         }
 
-        Integer structureHashCode = new Integer(recycleMe.structureHashCode());
+        Integer structureHashCode = recycleMe.structureHashCode();
         List<E> candidates = this.repos.get(structureHashCode);
         if (candidates == null) {
             // no candidates list: add recycleMe to the repos and return it

@@ -1074,9 +1074,9 @@ public class DepGraph {
             String opName = opNode.getName();
             Integer opCount = retMe.get(opName);
             if (opCount == null) {
-                opCount = new Integer(1);
+                opCount = 1;
             } else {
-                opCount = new Integer(opCount + 1);
+                opCount = opCount + 1;
             }
             retMe.put(opName, opCount);
         }

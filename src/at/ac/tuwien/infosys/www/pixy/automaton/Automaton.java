@@ -635,10 +635,10 @@ public class Automaton
             Transition n1 = (Transition) o1;
             Transition n2 = (Transition) o2;
             if (n1.min != n2.min) {
-                return (new Character(n1.min).compareTo(new Character(n2.min)));
+                return (new Character(n1.min).compareTo(n2.min));
             } else {
                 if (n1.max != n2.max) {
-                    return (new Character(n1.max).compareTo(new Character(n2.max)));
+                    return (new Character(n1.max).compareTo(n2.max));
                 }
                 // they have the same labels; try taint status...
                 if (n1.taint != n2.taint) {
@@ -2652,7 +2652,7 @@ public class Automaton
                     if (fromTrans.to.equals(s)) {
                         if (fromTrans.min == fromTrans.max && !visited.contains(from)) {
                             if (c == null) {
-                                c = new Character(fromTrans.min);
+                                c = fromTrans.min;
                             } else if (fromTrans.min == c) {
                                 // match, do nothing
                             } else {
@@ -2678,7 +2678,7 @@ public class Automaton
                         if (fromTrans.to.equals(s)) {
                             if (fromTrans.min == fromTrans.max && !visited.contains(from)) {
                                 if (c == null) {
-                                    c = new Character(fromTrans.min);
+                                    c = fromTrans.min;
                                 } else if (fromTrans.min == c) {
                                     // match, do nothing
                                 } else {

@@ -866,7 +866,7 @@ public class TacConverter {
 
     // returns null if the given hotspot doesn't exist
     public CfgNodeHotspot getHotspot(int hotspotId) {
-        return this.hotspots.get(new Integer(hotspotId));
+        return this.hotspots.get(hotspotId);
     }
 
 //  addHotspot *********************************************************************
