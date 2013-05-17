@@ -517,7 +517,7 @@ public class DepAnalysis
                         // update totals map
                         Integer totalCount = opMap.get(opName);
                         if (totalCount == null) {
-                            totalCount = new Integer(opCount);
+                            totalCount = opCount;
                         } else {
                             totalCount = new Integer(totalCount.intValue() + opCount);
                         }
