@@ -26,6 +26,7 @@ the "test-coverage", "instrument" and "build" targets will automatically be exec
 * Modules > Sources: src/ (as Source) and test/ (as Test)
 * Modules > Dependencies: lib
 * Modules > Dependencies: lib/junit.jar
+* Modules > Dependencies: transducers/jauto-classes
 
 If you would like to include the PhpParser sources, you will also need the following settings (assuming that "phpparser" is the path to you PhpParser project):
 
