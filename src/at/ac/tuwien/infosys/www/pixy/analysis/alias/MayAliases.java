@@ -184,7 +184,7 @@ public class MayAliases {
 
                 // create the adjusted copy and add it to the new set of pairs
                 MayAliasPair newPair =
-                    new MayAliasPair(replacer, (Variable) pairSet.iterator().next());
+                    new MayAliasPair(replacer, pairSet.iterator().next());
                 newPairs.add(newPair);
             }
         }

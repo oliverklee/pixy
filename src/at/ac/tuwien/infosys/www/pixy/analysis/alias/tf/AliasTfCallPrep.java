@@ -73,7 +73,7 @@ public class AliasTfCallPrep
                 replacements.put(formalPlaceHolder, formalVar);
 
                 // add the formal's placeholder to the actual's must-alias-group
-                out.addToGroup(formalPlaceHolder, (Variable) actualVar);
+                out.addToGroup(formalPlaceHolder, actualVar);
 
                 // see the function in MayAliases.java for an explanation
                 out.createAdjustedPairCopies(actualVar, formalPlaceHolder);

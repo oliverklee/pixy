@@ -98,7 +98,7 @@ public class TypeAnalysis
     protected TransferFunction assignSimple(CfgNode cfgNodeX, CfgNode aliasInNode) {
 
         CfgNodeAssignSimple cfgNode = (CfgNodeAssignSimple) cfgNodeX;
-        Variable left = (Variable) cfgNode.getLeft();
+        Variable left = cfgNode.getLeft();
 
         return new TypeTfAssignSimple(left, cfgNode.getRight());
     }
@@ -106,7 +106,7 @@ public class TypeAnalysis
     protected TransferFunction assignUnary(CfgNode cfgNodeX, CfgNode aliasInNode) {
 
         CfgNodeAssignUnary cfgNode = (CfgNodeAssignUnary) cfgNodeX;
-        Variable left = (Variable) cfgNode.getLeft();
+        Variable left = cfgNode.getLeft();
 
         return new TypeTfAssignUnary(left);
     }
@@ -114,7 +114,7 @@ public class TypeAnalysis
     protected TransferFunction assignBinary(CfgNode cfgNodeX, CfgNode aliasInNode) {
 
         CfgNodeAssignBinary cfgNode = (CfgNodeAssignBinary) cfgNodeX;
-        Variable left = (Variable) cfgNode.getLeft();
+        Variable left = cfgNode.getLeft();
 
         return new TypeTfAssignBinary(left);
     }
@@ -122,7 +122,7 @@ public class TypeAnalysis
     protected TransferFunction assignRef(CfgNode cfgNodeX) {
 
         CfgNodeAssignRef cfgNode = (CfgNodeAssignRef) cfgNodeX;
-        Variable left = (Variable) cfgNode.getLeft();
+        Variable left = cfgNode.getLeft();
 
         return new TypeTfAssignRef(left, cfgNode.getRight());
     }

@@ -80,7 +80,7 @@ public class LiteralAnalysis
     protected TransferFunction assignSimple(CfgNode cfgNodeX, CfgNode aliasInNode) {
 
         CfgNodeAssignSimple cfgNode = (CfgNodeAssignSimple) cfgNodeX;
-        Variable left = (Variable) cfgNode.getLeft();
+        Variable left = cfgNode.getLeft();
         Set mustAliases = this.aliasAnalysis.getMustAliases(left, aliasInNode);
         Set mayAliases = this.aliasAnalysis.getMayAliases(left, aliasInNode);
 
@@ -94,7 +94,7 @@ public class LiteralAnalysis
     protected TransferFunction assignUnary(CfgNode cfgNodeX, CfgNode aliasInNode) {
 
         CfgNodeAssignUnary cfgNode = (CfgNodeAssignUnary) cfgNodeX;
-        Variable left = (Variable) cfgNode.getLeft();
+        Variable left = cfgNode.getLeft();
         Set mustAliases = this.aliasAnalysis.getMustAliases(left, aliasInNode);
         Set mayAliases = this.aliasAnalysis.getMayAliases(left, aliasInNode);
 
@@ -109,7 +109,7 @@ public class LiteralAnalysis
     protected TransferFunction assignBinary(CfgNode cfgNodeX, CfgNode aliasInNode) {
 
         CfgNodeAssignBinary cfgNode = (CfgNodeAssignBinary) cfgNodeX;
-        Variable left = (Variable) cfgNode.getLeft();
+        Variable left = cfgNode.getLeft();
         Set mustAliases = this.aliasAnalysis.getMustAliases(left, aliasInNode);
         Set mayAliases = this.aliasAnalysis.getMayAliases(left, aliasInNode);
 
@@ -210,7 +210,7 @@ public class LiteralAnalysis
 
             // quite powerful transfer function, does many things
             tf = new LiteralTfCallRet(
-                (InterAnalysisNode) this.interAnalysisInfo.getAnalysisNode(cfgNodePrep),
+                this.interAnalysisInfo.getAnalysisNode(cfgNodePrep),
                 callingFunction,
                 calledFunction,
                 cfgNodePrep,
@@ -299,7 +299,7 @@ public class LiteralAnalysis
     public Literal getLiteral(TacPlace place, CfgNode cfgNode) {
 
         LiteralLatticeElement element =
-            (LiteralLatticeElement) ((InterAnalysisNode) this.interAnalysisInfo.getAnalysisNode(cfgNode)).getUnrecycledFoldedValue();
+            (LiteralLatticeElement) this.interAnalysisInfo.getAnalysisNode(cfgNode).getUnrecycledFoldedValue();
 
         if (element == null) {
             return Literal.TOP;

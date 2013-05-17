@@ -31,7 +31,7 @@ public class CfgNodeUnset
     public List<Variable> getVariables() {
         List<Variable> retMe = new LinkedList<Variable>();
         if (this.operand instanceof Variable) {
-            retMe.add((Variable) this.operand);
+            retMe.add(this.operand);
         } else {
             retMe.add(null);
         }

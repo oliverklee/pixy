@@ -43,7 +43,7 @@ public class ECS {
         if (position >= this.callStrings.size()) {
             return null;
         }
-        return (CallString) this.callStrings.get(position);
+        return this.callStrings.get(position);
     }
 
     public List getCallStrings() {

@@ -95,8 +95,7 @@ public abstract class InterAnalysis
         this.initTransferFunctions();
 
         // initialize PHI map for start node
-        InterAnalysisNode startAnalysisNode =
-            (InterAnalysisNode) this.interAnalysisInfo.getAnalysisNode(mainHead);
+        InterAnalysisNode startAnalysisNode = this.interAnalysisInfo.getAnalysisNode(mainHead);
         startAnalysisNode.setPhiValue(this.mainContext, this.startValue);
     }
 
@@ -173,7 +172,7 @@ public abstract class InterAnalysis
 //  getAnalysisNode ****************************************************************
 
     public InterAnalysisNode getAnalysisNode(CfgNode cfgNode) {
-        return (InterAnalysisNode) this.interAnalysisInfo.getAnalysisNode(cfgNode);
+        return this.interAnalysisInfo.getAnalysisNode(cfgNode);
     }
 
 // *********************************************************************************
@@ -230,7 +229,7 @@ public abstract class InterAnalysis
             Context context = element.getContext();
 
             // get incoming value at node n (you need to understand the PHI table :)
-            InterAnalysisNode analysisNode = (InterAnalysisNode) this.interAnalysisInfo.getAnalysisNode(node);
+            InterAnalysisNode analysisNode = this.interAnalysisInfo.getAnalysisNode(node);
             LatticeElement inValue = analysisNode.getPhiValue(context);
             if (inValue == null) {
                 throw new RuntimeException("SNH");
@@ -276,7 +275,7 @@ public abstract class InterAnalysis
 
                     // look if the exit node's PHI map has an entry under the context
                     // resulting from this call
-                    InterAnalysisNode exitAnalysisNode = (InterAnalysisNode) this.interAnalysisInfo.getAnalysisNode(exitNode);
+                    InterAnalysisNode exitAnalysisNode = this.interAnalysisInfo.getAnalysisNode(exitNode);
                     if (exitAnalysisNode == null) {
                         // this can only mean that there is no way to reach the
                         // function's natural exit node, i.e. there is something like
@@ -364,7 +363,7 @@ public abstract class InterAnalysis
                             // (can happen for call-string analysis);
                             // => don't propagate
                             //if (this.analysisInfo[callPrepNode.getId()].getPhiValue(targetContext) == null) {
-                            InterAnalysisNode callPrepANode = (InterAnalysisNode) this.interAnalysisInfo.getAnalysisNode(callPrepNode);
+                            InterAnalysisNode callPrepANode = this.interAnalysisInfo.getAnalysisNode(callPrepNode);
                             if (callPrepANode.getPhiValue(targetContext) == null) {
                                 // don't propagate
                             } else {
@@ -403,7 +402,7 @@ public abstract class InterAnalysis
                     // current context
 
                     // apply transfer function to incoming value
-                    InterAnalysisNode aNode = (InterAnalysisNode) this.interAnalysisInfo.getAnalysisNode(node);
+                    InterAnalysisNode aNode = this.interAnalysisInfo.getAnalysisNode(node);
                     LatticeElement outValue = aNode.transfer(inValue, context);
 
                     // for each outgoing edge...
@@ -457,7 +456,7 @@ public abstract class InterAnalysis
     // propagates a value under the given context to the target node
     void propagate(Context context, LatticeElement value, CfgNode target) {
         // analysis information for the target node
-        InterAnalysisNode analysisNode = (InterAnalysisNode) this.interAnalysisInfo.getAnalysisNode(target);
+        InterAnalysisNode analysisNode = this.interAnalysisInfo.getAnalysisNode(target);
 
         if (analysisNode == null) {
             System.out.println(Dumper.makeCfgNodeName(target));

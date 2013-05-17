@@ -50,7 +50,7 @@ public abstract class InterAnalysisNode
     // returns the lattice element currently stored in the PHI map under the
     // given context; can be null
     public LatticeElement getPhiValue(Context context) {
-        return ((LatticeElement) this.phi.get(context));
+        return this.phi.get(context);
     }
 
     // like getUnrecycledFoldedValue, but does not perform caching
@@ -142,6 +142,6 @@ public abstract class InterAnalysisNode
 // *********************************************************************************
 
     LatticeElement transfer(LatticeElement value, Context context) {
-        return ((LatticeElement) tf.transfer(value, context));
+        return tf.transfer(value, context);
     }
 }

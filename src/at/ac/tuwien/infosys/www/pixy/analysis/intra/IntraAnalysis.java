@@ -65,8 +65,7 @@ public abstract class IntraAnalysis
         // this.asfsafsaf: initTransferFunctions
 
         // initialize inValue for start node
-        IntraAnalysisNode startAnalysisNode =
-            (IntraAnalysisNode) this.analysisInfo.getAnalysisNode(function.getCfg().getHead());
+        IntraAnalysisNode startAnalysisNode = this.analysisInfo.getAnalysisNode(function.getCfg().getHead());
         startAnalysisNode.setInValue(this.startValue);
     }
 
@@ -89,7 +88,7 @@ public abstract class IntraAnalysis
 //  getAnalysisNode ****************************************************************
 
     public IntraAnalysisNode getAnalysisNode(CfgNode cfgNode) {
-        return (IntraAnalysisNode) this.analysisInfo.getAnalysisNode(cfgNode);
+        return this.analysisInfo.getAnalysisNode(cfgNode);
     }
 
 // *********************************************************************************
@@ -119,7 +118,7 @@ public abstract class IntraAnalysis
             CfgNode node = this.workList.removeNext();
 
             // get incoming value at node n
-            IntraAnalysisNode analysisNode = (IntraAnalysisNode) this.analysisInfo.getAnalysisNode(node);
+            IntraAnalysisNode analysisNode = this.analysisInfo.getAnalysisNode(node);
             LatticeElement inValue = analysisNode.getInValue();
             if (inValue == null) {
                 throw new RuntimeException("SNH");
@@ -160,7 +159,7 @@ public abstract class IntraAnalysis
     void propagate(LatticeElement value, CfgNode target) {
 
         // analysis information for the target node
-        IntraAnalysisNode analysisNode = (IntraAnalysisNode) this.analysisInfo.getAnalysisNode(target);
+        IntraAnalysisNode analysisNode = this.analysisInfo.getAnalysisNode(target);
 
         if (analysisNode == null) {
             System.out.println(Dumper.makeCfgNodeName(target));

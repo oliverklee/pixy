@@ -164,7 +164,7 @@ public final class Cfg {
     private void bfIteratorHelper(List<CfgNode> list, LinkedList<CfgNode> queue,
                                   Set<CfgNode> visited) {
 
-        CfgNode cfgNode = (CfgNode) queue.removeFirst();
+        CfgNode cfgNode = queue.removeFirst();
         list.add(cfgNode);
 
         // handle successors

@@ -36,7 +36,7 @@ public final class FunctionalWorkList {
     // EFF: it would be more efficient to analyze all conditional branches first
     // before going on to the code behind the branches
     FunctionalWorkListElement removeNext() {
-        return (FunctionalWorkListElement) this.workList.removeFirst();
+        return this.workList.removeFirst();
     }
 
     boolean hasNext() {

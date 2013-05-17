@@ -38,7 +38,7 @@ public class MyAlphabet {
         for (Object o : this.alphabet) {
             StringBuilder temp = new StringBuilder();
             Transition.appendCharString((Character) o, temp);
-            b.append(temp.toString()).append(" ").append((int) (Character) o).append("\n");
+            b.append(temp.toString()).append(" ").append((int) o).append("\n");
         }
         return b.toString();
     }

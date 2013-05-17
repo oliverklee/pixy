@@ -24,7 +24,7 @@ public class LiteralTfTester
 // *********************************************************************************
 
     public LiteralTfTester(CfgNodeTester cfgNode) {
-        this.retVar = (Variable) cfgNode.getEnclosingFunction().getRetVar();
+        this.retVar = cfgNode.getEnclosingFunction().getRetVar();
     }
 
 // *********************************************************************************

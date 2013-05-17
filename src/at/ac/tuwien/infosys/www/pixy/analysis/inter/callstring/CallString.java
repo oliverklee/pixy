@@ -34,7 +34,7 @@ public class CallString {
 
     // returns the last (rightmost) call node
     public CfgNodeCall getLast() {
-        return (CfgNodeCall) this.callNodeList.getLast();
+        return this.callNodeList.getLast();
     }
 
     public List getCallNodeList() {

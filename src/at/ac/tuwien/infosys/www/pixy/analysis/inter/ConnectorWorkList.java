@@ -29,7 +29,7 @@ public final class ConnectorWorkList {
 
     // actually implemented as FIFO
     ConnectorWorkListElement removeNext() {
-        return (ConnectorWorkListElement) this.workList.removeFirst();
+        return this.workList.removeFirst();
     }
 
     boolean hasNext() {

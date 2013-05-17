@@ -63,7 +63,7 @@ public class CfgNodeBasicBlock
 
     public String getFileName() {
         if (!this.containedNodes.isEmpty()) {
-            return ((CfgNode) this.containedNodes.get(0)).getFileName();
+            return this.containedNodes.get(0).getFileName();
         } else {
             return super.getFileName();
         }
@@ -71,7 +71,7 @@ public class CfgNodeBasicBlock
 
     public int getOrigLineno() {
         if (!this.containedNodes.isEmpty()) {
-            return ((CfgNode) this.containedNodes.get(0)).getOrigLineno();
+            return this.containedNodes.get(0).getOrigLineno();
         } else {
             return super.getOrigLineno();
         }

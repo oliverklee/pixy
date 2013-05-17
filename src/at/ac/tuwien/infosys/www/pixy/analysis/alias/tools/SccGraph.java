@@ -40,7 +40,7 @@ public class SccGraph {
     }
 
     public SccNode getNode(Variable label) {
-        return (SccNode) this.label2nodes.get(label);
+        return this.label2nodes.get(label);
     }
 
     public void drawFirstScc(Set<Variable> varSet) {
@@ -55,10 +55,10 @@ public class SccGraph {
     }
 
     private void drawFirstEdge(Variable fromVar, Set toVarSet) {
-        SccNode fromNode = (SccNode) this.label2nodes.get(fromVar);
+        SccNode fromNode = this.label2nodes.get(fromVar);
         for (Iterator iter = toVarSet.iterator(); iter.hasNext(); ) {
             Variable var = (Variable) iter.next();
-            SccNode toNode = (SccNode) this.label2nodes.get(var);
+            SccNode toNode = this.label2nodes.get(var);
             SccEdge edge = new SccEdge(fromNode, toNode);
             this.singleEdges.add(edge);
         }
@@ -76,10 +76,10 @@ public class SccGraph {
     }
 
     private void drawSecondEdge(Variable fromVar, Set toVarSet) {
-        SccNode fromNode = (SccNode) this.label2nodes.get(fromVar);
+        SccNode fromNode = this.label2nodes.get(fromVar);
         for (Iterator iter = toVarSet.iterator(); iter.hasNext(); ) {
             Variable var = (Variable) iter.next();
-            SccNode toNode = (SccNode) this.label2nodes.get(var);
+            SccNode toNode = this.label2nodes.get(var);
             SccEdge edge = new SccEdge(fromNode, toNode);
             // check if such an edge already exists
             if (this.singleEdges.contains(edge)) {
@@ -111,7 +111,7 @@ public class SccGraph {
         while (!nodesWorkSet.isEmpty()) {
 
             // pick an arbitrary node from the workset
-            SccNode node = (SccNode) nodesWorkSet.iterator().next();
+            SccNode node = nodesWorkSet.iterator().next();
 
             // ask the node about its double targets
             Set doubleTargets = node.getDoubleTargets();

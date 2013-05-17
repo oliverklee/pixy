@@ -142,7 +142,7 @@ public class Variable
         if (this.elements == null) {
             return null;
         }
-        return (Variable) this.elements.get(index);
+        return this.elements.get(index);
     }
 
     public List<Variable> getLiteralElements() {

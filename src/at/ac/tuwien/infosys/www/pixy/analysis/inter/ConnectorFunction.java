@@ -49,7 +49,7 @@ public class ConnectorFunction {
 
     // applies this connector function to the given input value
     public CSContext apply(int input) {
-        CSContext output = (CSContext) this.pos2pos.get(new CSContext(input));
+        CSContext output = this.pos2pos.get(new CSContext(input));
         return output;
     }
 

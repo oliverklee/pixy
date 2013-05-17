@@ -302,7 +302,7 @@ public class DepLatticeElement
         if (place instanceof Literal) {
             throw new RuntimeException("SNH");
         }
-        return (DepSet) DepLatticeElement.DEFAULT.getPlaceToDep().get(place);
+        return DepLatticeElement.DEFAULT.getPlaceToDep().get(place);
     }
 
 //  ********************************************************************************
@@ -765,7 +765,7 @@ public class DepLatticeElement
             return;
         }
 
-        TacPlace index = (TacPlace) indices.remove(0);
+        TacPlace index = indices.remove(0);
         if (index instanceof Literal) {
 
             Variable target = root.getElement(index);

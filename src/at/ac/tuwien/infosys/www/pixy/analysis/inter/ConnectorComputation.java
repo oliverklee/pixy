@@ -136,7 +136,7 @@ public class ConnectorComputation {
             CallString gamma = element.getCallString();
 
             // get position of the current call string  in the current procedure
-            ECS ecs_p = (ECS) this.function2ECS.get(p);
+            ECS ecs_p = this.function2ECS.get(p);
             int pos = ecs_p.getPosition(gamma);
             if (pos == -1) {
                 throw new RuntimeException("SNH");
@@ -150,7 +150,7 @@ public class ConnectorComputation {
                     continue;
                 }
                 CallString gamma_2 = gamma.append(callNode, this.kSize);
-                ECS ecs_q = (ECS) this.function2ECS.get(q);
+                ECS ecs_q = this.function2ECS.get(q);
                 int pos_2 = ecs_q.getPosition(gamma_2);
                 if (pos_2 == -1) {
 
@@ -216,8 +216,7 @@ public class ConnectorComputation {
 
             // get the call node at the end of the call string (given by
             // exit node and source position)
-
-            ECS exitedECS = (ECS) this.function2ECS.get(exitedFunction);
+            ECS exitedECS = this.function2ECS.get(exitedFunction);
             CallString exitedCallString = exitedECS.getCallString(sourcePosition);
             CfgNodeCall returnToMe = exitedCallString.getLast();
             ConnectorFunction returnToMeCF = this.getConFunc(returnToMe);

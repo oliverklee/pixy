@@ -18,7 +18,7 @@ public abstract class AnalysisNode {
 
     // applies the transfer function to the given input value
     public LatticeElement transfer(LatticeElement value) {
-        return ((LatticeElement) tf.transfer(value));
+        return tf.transfer(value);
     }
 
     public void setTransferFunction(TransferFunction tf) {

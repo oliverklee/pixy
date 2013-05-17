@@ -189,7 +189,7 @@ public class LiteralLatticeElement
         if (place instanceof Literal) {
             throw new RuntimeException("SNH");
         }
-        return (Literal) LiteralLatticeElement.DEFAULT.getPlaceToLit().get(place);
+        return LiteralLatticeElement.DEFAULT.getPlaceToLit().get(place);
     }
 
 // getNonDefaultLiteral ************************************************************
@@ -808,7 +808,7 @@ public class LiteralLatticeElement
             return;
         }
 
-        TacPlace index = (TacPlace) indices.remove(0);
+        TacPlace index = indices.remove(0);
         if (index instanceof Literal) {
 
             Variable target = root.getElement(index);

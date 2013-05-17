@@ -50,11 +50,11 @@ public class SymbolTable {
 // *********************************************************************************
 
     Variable getVariable(Variable variable) {
-        return ((Variable) this.variables.get(variable));
+        return this.variables.get(variable);
     }
 
     public Variable getVariable(String varName) {
-        return ((Variable) this.variables.get(new Variable(varName, this)));
+        return this.variables.get(new Variable(varName, this));
     }
 
     public Map<Variable, Variable> getVariables() {

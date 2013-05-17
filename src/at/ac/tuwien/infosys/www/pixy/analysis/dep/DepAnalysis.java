@@ -90,7 +90,7 @@ public class DepAnalysis
     public DepLatticeElement applyInsideBasicBlock(
         CfgNodeBasicBlock basicBlock, CfgNode untilHere, DepLatticeElement invalue) {
 
-        DepLatticeElement outValue = new DepLatticeElement((DepLatticeElement) invalue);
+        DepLatticeElement outValue = new DepLatticeElement(invalue);
         List containedNodes = basicBlock.getContainedNodes();
         CompositeTransferFunction ctf = (CompositeTransferFunction) this.getTransferFunction(basicBlock);
 
@@ -117,8 +117,7 @@ public class DepAnalysis
     // only required by DepGraph
     public DepLatticeElement applyInsideDefaultCfg(CfgNode defaultNode,
                                                    CfgNode untilHere, DepLatticeElement invalue) {
-
-        DepLatticeElement out = new DepLatticeElement((DepLatticeElement) invalue);
+        DepLatticeElement out = new DepLatticeElement(invalue);
 
         while (defaultNode != untilHere) {
             TransferFunction tf = this.getTransferFunction(defaultNode);
@@ -140,7 +139,7 @@ public class DepAnalysis
     protected TransferFunction assignSimple(CfgNode cfgNodeX, CfgNode aliasInNode) {
 
         CfgNodeAssignSimple cfgNode = (CfgNodeAssignSimple) cfgNodeX;
-        Variable left = (Variable) cfgNode.getLeft();
+        Variable left = cfgNode.getLeft();
         Set mustAliases = this.aliasAnalysis.getMustAliases(left, aliasInNode);
         Set mayAliases = this.aliasAnalysis.getMayAliases(left, aliasInNode);
 
@@ -155,7 +154,7 @@ public class DepAnalysis
     protected TransferFunction assignUnary(CfgNode cfgNodeX, CfgNode aliasInNode) {
 
         CfgNodeAssignUnary cfgNode = (CfgNodeAssignUnary) cfgNodeX;
-        Variable left = (Variable) cfgNode.getLeft();
+        Variable left = cfgNode.getLeft();
         Set mustAliases = this.aliasAnalysis.getMustAliases(left, aliasInNode);
         Set mayAliases = this.aliasAnalysis.getMayAliases(left, aliasInNode);
 
@@ -171,7 +170,7 @@ public class DepAnalysis
     protected TransferFunction assignBinary(CfgNode cfgNodeX, CfgNode aliasInNode) {
 
         CfgNodeAssignBinary cfgNode = (CfgNodeAssignBinary) cfgNodeX;
-        Variable left = (Variable) cfgNode.getLeft();
+        Variable left = cfgNode.getLeft();
         Set mustAliases = this.aliasAnalysis.getMustAliases(left, aliasInNode);
         Set mayAliases = this.aliasAnalysis.getMayAliases(left, aliasInNode);
 

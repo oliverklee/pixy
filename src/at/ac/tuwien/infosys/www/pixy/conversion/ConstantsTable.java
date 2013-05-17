@@ -29,7 +29,7 @@ public class ConstantsTable {
 // *********************************************************************************
 
     public Constant getConstant(String label) {
-        return ((Constant) this.constants.get(label));
+        return this.constants.get(label);
     }
 
     List getInsensitiveGroup(String label) {

@@ -148,7 +148,7 @@ public class TacConverter {
         this.emptyOffsetPlace = new Variable("_emptyOffset", this.specialSymbolTable);
         this.specialSymbolTable.add((Variable) this.emptyOffsetPlace);
         this.objectPlace = new Variable("_object", this.specialSymbolTable);
-        this.specialSymbolTable.add((Variable) this.objectPlace);
+        this.specialSymbolTable.add(this.objectPlace);
         this.memberPlace = new Variable(InternalStrings.memberName, this.specialSymbolTable);
         this.memberPlace.setIsMember(true);
         this.specialSymbolTable.add(this.memberPlace);
@@ -672,7 +672,7 @@ public class TacConverter {
 // newTemp *************************************************************************
 
     private Variable newTemp() {
-        return this.newTemp((TacFunction) this.functionStack.getLast());
+        return this.newTemp(this.functionStack.getLast());
     }
 
 // getAllFunctions *****************************************************************
@@ -875,7 +875,7 @@ public class TacConverter {
 
     // returns null if the given hotspot doesn't exist
     public CfgNodeHotspot getHotspot(int hotspotId) {
-        return (CfgNodeHotspot) this.hotspots.get(new Integer(hotspotId));
+        return this.hotspots.get(new Integer(hotspotId));
     }
 
 //  addHotspot *********************************************************************
@@ -1099,7 +1099,7 @@ public class TacConverter {
                 String varName = varNameBuffer.toString();
 
                 // retrieve/create the corresponding variable and use it as replacement
-                Variable transformedVar = (Variable) this.makePlace(varName, this.mainSymbolTable);
+                Variable transformedVar = this.makePlace(varName, this.mainSymbolTable);
                 cfgNode.replaceVariable(varCount, transformedVar);
             }
         }
@@ -1230,8 +1230,7 @@ public class TacConverter {
 
     // convenience wrapper around makePlace(String, SymbolTable)
     private Variable makePlace(String varName) {
-        return this.makePlace(varName,
-            (SymbolTable) ((TacFunction) this.functionStack.getLast()).getSymbolTable());
+        return this.makePlace(varName, (SymbolTable) (this.functionStack.getLast()).getSymbolTable());
     }
 
 // makeReturnPlace(String) *********************************************************
@@ -1241,7 +1240,7 @@ public class TacConverter {
     // "InternalStrings.returnPrefix<function name>"
     private Variable makeReturnPlace(String functionName) {
         Variable returnPlace = this.makePlace(InternalStrings.returnPrefix + functionName, this.superSymbolTable);
-        ((Variable) returnPlace).setIsReturnVariable(true);
+        returnPlace.setIsReturnVariable(true);
         return returnPlace;
     }
 
@@ -1820,7 +1819,7 @@ public class TacConverter {
             TacPlace setTo = paramIter.next().getPlace();
             TacPlace caseInsensitive;
             if (paramIter.hasNext()) {
-                caseInsensitive = ((TacActualParam) paramIter.next()).getPlace();
+                caseInsensitive = paramIter.next().getPlace();
             } else {
                 // default value for the third parameter
                 caseInsensitive = Constant.FALSE;
@@ -1846,9 +1845,9 @@ public class TacConverter {
         }
 
         Literal funcNameLit = new Literal(calledFuncName);
-        Variable returnVariable = (Variable) this.makeReturnPlace(calledFuncName);
+        Variable returnVariable = this.makeReturnPlace(calledFuncName);
 
-        TacFunction enclosingFunction = (TacFunction) this.functionStack.getLast();
+        TacFunction enclosingFunction = this.functionStack.getLast();
 
         // create nodes
         CfgNodeCallPrep prep = new CfgNodeCallPrep(parseNode);
@@ -1961,7 +1960,7 @@ public class TacConverter {
         // LATER: not so elegant...
         Variable argv = this.superSymbolTable.getVariable(superName + "[argv]");
         if (argv == null) {
-            argv = (Variable) this.makeArrayElementPlace(superVar, new Literal("argv"));
+            argv = this.makeArrayElementPlace(superVar, new Literal("argv"));
         }
         var = this.superSymbolTable.getVariable(superName + "[argv][0]");
         if (var == null) {
@@ -1983,7 +1982,7 @@ public class TacConverter {
 
         argv = this.superSymbolTable.getVariable(superName + "[argv]");
         if (argv == null) {
-            argv = (Variable) this.makeArrayElementPlace(superVar, new Literal("argv"));
+            argv = this.makeArrayElementPlace(superVar, new Literal("argv"));
         }
         var = this.superSymbolTable.getVariable(superName + "[argv][0]");
         if (var == null) {
@@ -2015,8 +2014,7 @@ public class TacConverter {
             symbolTable = this.superSymbolTable;
             superGlobal = true;
         } else {
-            symbolTable =
-                (SymbolTable) ((TacFunction) this.functionStack.getLast()).getSymbolTable();
+            symbolTable = this.functionStack.getLast().getSymbolTable();
             superGlobal = false;
         }
 
@@ -2393,7 +2391,7 @@ public class TacConverter {
                 }
 
                 callNode.setCallee(callee);
-                retNode.setRetVar((Variable) callee.getRetVar());
+                retNode.setRetVar(callee.getRetVar());
             }
         }
 
@@ -2418,8 +2416,8 @@ public class TacConverter {
 
                 // only functions with literal names have been added to the backpatching list;
                 // the others should be linked with their corresponding function objects
-                // (or the special _unkownFunction) by the CP
-                TacFunction callee = (TacFunction) this.userFunctions.get(functionNamePlace.toString());
+                // (or the special _unknownFunction) by the CP
+                TacFunction callee = this.userFunctions.get(functionNamePlace.toString());
                 if (callee == null) {
 
                     if (BuiltinFunctions.isBuiltinFunction(functionNamePlace.toString())) {
@@ -2487,7 +2485,7 @@ public class TacConverter {
                 }
 
                 callNode.setCallee(callee);
-                retNode.setRetVar((Variable) callee.getRetVar());
+                retNode.setRetVar(callee.getRetVar());
             }
         }
     }
@@ -3514,7 +3512,7 @@ public class TacConverter {
                     CfgNode cfgNode = new CfgNodeEmpty();
                     CfgNode breakTarget = null;
                     try {
-                        breakTarget = (CfgNode) this.breakTargetStack.getLast();
+                        breakTarget = this.breakTargetStack.getLast();
                     } catch (NoSuchElementException e) {
                         System.out.println("Invalid break statement:");
                         System.out.println(node.getLoc());
@@ -3543,7 +3541,7 @@ public class TacConverter {
                         int breakDepth = Integer.parseInt(maybeNumber.getLexeme());
 
                         CfgNode cfgNode = new CfgNodeEmpty();
-                        CfgNode breakTarget = (CfgNode) this.breakTargetStack.get(
+                        CfgNode breakTarget = this.breakTargetStack.get(
                             this.breakTargetStack.size() - breakDepth);
                         connect(cfgNode, breakTarget);
                         myAtts.setCfg(new Cfg(cfgNode, cfgNode, CfgEdge.NO_EDGE));
@@ -3566,7 +3564,7 @@ public class TacConverter {
                     // -> T_CONTINUE ;
                     CfgNode cfgNode = new CfgNodeEmpty();
                     try {
-                        CfgNode continueTarget = (CfgNode) this.continueTargetStack.getLast();
+                        CfgNode continueTarget = this.continueTargetStack.getLast();
                         connect(cfgNode, continueTarget);
                         myAtts.setCfg(new Cfg(cfgNode, cfgNode, CfgEdge.NO_EDGE));
                     } catch (NoSuchElementException e) {
@@ -3595,7 +3593,7 @@ public class TacConverter {
                         int continueDepth = Integer.parseInt(maybeNumber.getLexeme());
 
                         CfgNode cfgNode = new CfgNodeEmpty();
-                        CfgNode continueTarget = (CfgNode) this.continueTargetStack.get(
+                        CfgNode continueTarget = this.continueTargetStack.get(
                             this.continueTargetStack.size() - continueDepth);
                         connect(cfgNode, continueTarget);
                         myAtts.setCfg(new Cfg(cfgNode, cfgNode, CfgEdge.NO_EDGE));
@@ -3622,9 +3620,7 @@ public class TacConverter {
                     // can be ignored, but control flow has to lead directly to
                     // the function's exit node
                     CfgNode emptyNode = new CfgNodeEmpty();
-                    connect(
-                        emptyNode,
-                        ((TacFunction) this.functionStack.getLast()).getCfg().getTail());
+                    connect(emptyNode, this.functionStack.getLast().getCfg().getTail());
 
                     // this Cfg must not be connected with succeeding statements,
                     // so use "NO_EDGE"
@@ -3635,7 +3631,7 @@ public class TacConverter {
                     TacAttributes attsExpr = this.expr_without_variable(secondChild);
 
                     // get necessary function stuff
-                    TacFunction function = (TacFunction) this.functionStack.getLast();
+                    TacFunction function = this.functionStack.getLast();
                     Variable retVarPlace = function.getRetVar();
                     CfgNode exitNode = function.getCfg().getTail();
 
@@ -3661,7 +3657,7 @@ public class TacConverter {
                     TacAttributes attsCvar = this.cvar(secondChild);
 
                     // get necessary function stuff
-                    TacFunction function = (TacFunction) this.functionStack.getLast();
+                    TacFunction function = this.functionStack.getLast();
                     Variable retVarPlace = function.getRetVar();
                     CfgNode exitNode = function.getCfg().getTail();
 
@@ -4557,10 +4553,7 @@ public class TacConverter {
                     this.opExp(node, TacOperators.BITWISE_NOT, myAtts);
                 } else {
                     // insert appropriate special node for marker
-                    CfgNode cfgNode = SpecialNodes.get(
-                        marker,
-                        (TacFunction) this.functionStack.getLast(),
-                        this);
+                    CfgNode cfgNode = SpecialNodes.get(marker, this.functionStack.getLast(), this);
                     myAtts.setCfg(new Cfg(cfgNode, cfgNode));
                 }
 
@@ -4787,7 +4780,7 @@ public class TacConverter {
                 TacPlace tempPlace = this.newTemp();
                 TacAttributes attsExpr = this.expr(node.getChild(1));
                 CfgNodeInclude cfgNode = new CfgNodeInclude(tempPlace, attsExpr.getPlace(),
-                    this.file, (TacFunction) this.functionStack.getLast(), node);
+                    this.file, this.functionStack.getLast(), node);
                 this.includeNodes.add(cfgNode);
                 connect(attsExpr.getCfg(), cfgNode);
                 myAtts.setCfg(new Cfg(
@@ -4802,7 +4795,7 @@ public class TacConverter {
                 TacPlace tempPlace = this.newTemp();
                 TacAttributes attsExpr = this.expr(node.getChild(1));
                 CfgNodeInclude cfgNode = new CfgNodeInclude(tempPlace, attsExpr.getPlace(),
-                    this.file, (TacFunction) this.functionStack.getLast(), node);
+                    this.file, this.functionStack.getLast(), node);
                 this.includeNodes.add(cfgNode);
                 connect(attsExpr.getCfg(), cfgNode);
                 myAtts.setCfg(new Cfg(
@@ -4831,7 +4824,7 @@ public class TacConverter {
                 TacPlace tempPlace = this.newTemp();
                 TacAttributes attsExpr = this.expr(node.getChild(1));
                 CfgNodeInclude cfgNode = new CfgNodeInclude(tempPlace, attsExpr.getPlace(),
-                    this.file, (TacFunction) this.functionStack.getLast(), node);
+                    this.file, this.functionStack.getLast(), node);
                 this.includeNodes.add(cfgNode);
                 connect(attsExpr.getCfg(), cfgNode);
                 myAtts.setCfg(new Cfg(
@@ -4846,7 +4839,7 @@ public class TacConverter {
                 TacPlace tempPlace = this.newTemp();
                 TacAttributes attsExpr = this.expr(node.getChild(1));
                 CfgNodeInclude cfgNode = new CfgNodeInclude(tempPlace, attsExpr.getPlace(),
-                    this.file, (TacFunction) this.functionStack.getLast(), node);
+                    this.file, this.functionStack.getLast(), node);
                 this.includeNodes.add(cfgNode);
                 connect(attsExpr.getCfg(), cfgNode);
                 myAtts.setCfg(new Cfg(
@@ -5622,7 +5615,7 @@ public class TacConverter {
                     // make a cfg for this method call
                     Cfg callCfg = this.functionCallHelper(
                         methodName, true, null, paramList,
-                        catchVar, true, node, className, (Variable) leftPlace);
+                        catchVar, true, node, className, leftPlace);
                     myAtts.setCfg(callCfg);
                     myAtts.setPlace(catchVar);
                     myAtts.setIsKnownCall(true);

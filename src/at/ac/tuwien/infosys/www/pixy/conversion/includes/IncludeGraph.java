@@ -142,14 +142,14 @@ public class IncludeGraph {
 //  increaseInDegree ***************************************************************
 
     private void increaseInDegree(IncludeNode node) {
-        Integer inDegree = (Integer) this.inDegrees.get(node);
+        Integer inDegree = this.inDegrees.get(node);
         this.inDegrees.put(node, new Integer(inDegree.intValue() + 1));
     }
 
 //  decreaseInDegree ***************************************************************
 
     private void decreaseInDegree(IncludeNode node) {
-        Integer inDegree = (Integer) this.inDegrees.get(node);
+        Integer inDegree = this.inDegrees.get(node);
         this.inDegrees.put(node, new Integer(inDegree.intValue() - 1));
     }
 
@@ -163,7 +163,7 @@ public class IncludeGraph {
             this.adjSets.put(node, new HashSet<IncludeNode>());
         }
 
-        Integer inDegree = (Integer) this.inDegrees.get(node);
+        Integer inDegree = this.inDegrees.get(node);
         if (inDegree == null) {
             this.inDegrees.put(node, new Integer(0));
         }
@@ -252,7 +252,7 @@ public class IncludeGraph {
     private void clean(IncludeNode node) {
 
         boolean hasNoSucc = ((Set) this.adjSets.get(node)).isEmpty();
-        boolean hasNoPred = ((Integer) this.inDegrees.get(node)).intValue() == 0;
+        boolean hasNoPred = this.inDegrees.get(node).intValue() == 0;
         if (hasNoSucc && hasNoPred && !node.equals(this.root)) {
             this.nodes.remove(node);
             this.adjSets.remove(node);

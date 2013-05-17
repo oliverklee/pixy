@@ -89,7 +89,7 @@ public class IncDomAnalysis
                 chain.add(dom);
             } else if (dom instanceof CfgNodeIncludeEnd) {
                 CfgNodeIncludeEnd incEnd = (CfgNodeIncludeEnd) dom;
-                if (incEnd.isPeer((CfgNode) chain.getLast())) {
+                if (incEnd.isPeer(chain.getLast())) {
                     chain.removeLast();
                 } else {
                     throw new RuntimeException("SNH");

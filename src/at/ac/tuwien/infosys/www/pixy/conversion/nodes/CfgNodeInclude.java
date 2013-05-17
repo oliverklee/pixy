@@ -93,7 +93,7 @@ public class CfgNodeInclude
         if (o == this) {
             return 0;
         }
-        CfgNodeInclude comp = (CfgNodeInclude) o;
+        CfgNodeInclude comp = o;
         int fileComp = this.file.compareTo(comp.file);
         if (fileComp != 0) {
             return fileComp;

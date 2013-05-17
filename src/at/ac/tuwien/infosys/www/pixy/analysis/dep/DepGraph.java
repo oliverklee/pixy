@@ -629,7 +629,7 @@ public class DepGraph {
         } else if (cfgNodeX instanceof CfgNodeAssignSimple) {
 
             CfgNodeAssignSimple cfgNode = (CfgNodeAssignSimple) cfgNodeX;
-            Variable left = (Variable) cfgNode.getLeft();
+            Variable left = cfgNode.getLeft();
             TacPlace right = cfgNode.getRight();
 
             // this is a bit more complicated because we are array-aware;
@@ -1576,7 +1576,7 @@ public class DepGraph {
                                   LinkedList<DepGraphNode> queue, Set<DepGraphNode> visited,
                                   Comparator<DepGraphNode> comp) {
 
-        DepGraphNode node = (DepGraphNode) queue.removeFirst();
+        DepGraphNode node = queue.removeFirst();
         list.add(node);
 
         // handle successors

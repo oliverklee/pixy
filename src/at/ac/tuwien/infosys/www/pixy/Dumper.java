@@ -205,7 +205,7 @@ public final class Dumper {
                 CfgNode succNode = outEdge.getDest();
 
                 // print successor
-                Integer succIdInt = ((Integer) Dumper.node2Int.get(succNode));
+                Integer succIdInt = Dumper.node2Int.get(succNode);
                 if (succIdInt == null) {
                     succId = dumpDot(succNode, outWriter);
                 } else {
@@ -660,7 +660,7 @@ public final class Dumper {
             CfgNode cfgNode = (CfgNode) entry.getKey();
             IntraAnalysisNode analysisNode = (IntraAnalysisNode) entry.getValue();
             System.out.println("dominators for cfg node " + cfgNode.toString() + ", " + cfgNode.getOrigLineno());
-            Dumper.dump((IncDomLatticeElement) analysisNode.getInValue());
+            Dumper.dump(analysisNode.getInValue());
         }
     }
 
@@ -920,7 +920,7 @@ public final class Dumper {
         throws IOException {
         Set pair = mayAliasPair.getPair();
         Object[] pairArray = pair.toArray();
-        writer.write("(" + (Variable) pairArray[0] + " " + (Variable) pairArray[1] + ")" + linesep);
+        writer.write("(" + pairArray[0] + " " + pairArray[1] + ")" + linesep);
     }
 
     static public void dumpFunction2ECS(Map function2ECS) {

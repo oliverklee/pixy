@@ -38,7 +38,7 @@ public class DepTfTester
     public DepTfTester(CfgNodeTester cfgNode) {
 
         TacFunction function = cfgNode.getEnclosingFunction();
-        this.retVar = (Variable) function.getRetVar();
+        this.retVar = function.getRetVar();
         this.whatToTest = cfgNode.getWhatToTest();
         this.testUs = new LinkedList<Variable>();
 

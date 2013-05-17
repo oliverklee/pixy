@@ -76,7 +76,7 @@ public class CfgNodeCallUnknown
 // SET *****************************************************************************
 
     public void replaceVariable(int index, Variable replacement) {
-        TacActualParam param = (TacActualParam) this.paramList.get(index);
+        TacActualParam param = this.paramList.get(index);
         param.setPlace(replacement);
     }
 }

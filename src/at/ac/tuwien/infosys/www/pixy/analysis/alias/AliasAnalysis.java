@@ -180,7 +180,7 @@ public class AliasAnalysis
 
         // quite powerful transfer function, does many things
         TransferFunction tf = new AliasTfCallRet(
-            (InterAnalysisNode) this.interAnalysisInfo.getAnalysisNode(cfgNodePrep),
+            this.interAnalysisInfo.getAnalysisNode(cfgNodePrep),
             calledFunction,
             this,
             cfgNodePrep);
@@ -195,7 +195,7 @@ public class AliasAnalysis
     // returns the set of must-aliases (Variable's) for the given variable
     // at the given node (folded over all contexts)
     public Set getMustAliases(Variable var, CfgNode cfgNode) {
-        InterAnalysisNode aNode = (InterAnalysisNode) this.interAnalysisInfo.getAnalysisNode(cfgNode);
+        InterAnalysisNode aNode = this.interAnalysisInfo.getAnalysisNode(cfgNode);
         if (aNode == null) {
             System.out.println(cfgNode);
             throw new RuntimeException("gotcha");
@@ -216,7 +216,7 @@ public class AliasAnalysis
     // returns the set of may-aliases (Variable's) for the given variable
     // at the given node (folded over all contexts)
     public Set getMayAliases(Variable var, CfgNode cfgNode) {
-        InterAnalysisNode aNode = (InterAnalysisNode) this.interAnalysisInfo.getAnalysisNode(cfgNode);
+        InterAnalysisNode aNode = this.interAnalysisInfo.getAnalysisNode(cfgNode);
         AliasLatticeElement value = this.getFoldedValue(aNode);
         if (value == null) {
             // explanations see: getMustAliases
@@ -397,6 +397,6 @@ public class AliasAnalysis
 
     // performs post-analysis cleanup operations to save memory
     public void clean() {
-        ((InterAnalysisInfo) this.interAnalysisInfo).foldRecycledAndClean(this);
+        this.interAnalysisInfo.foldRecycledAndClean(this);
     }
 }
