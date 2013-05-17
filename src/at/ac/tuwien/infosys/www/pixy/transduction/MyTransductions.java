@@ -47,10 +47,7 @@ public class MyTransductions {
         try {
             Process p = Runtime.getRuntime().exec(MyOptions.pixy_home + "/scripts/transduce.sh");
             p.waitFor();
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("");
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             throw new RuntimeException("");
         }

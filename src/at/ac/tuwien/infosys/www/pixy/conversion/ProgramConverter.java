@@ -615,8 +615,6 @@ public class ProgramConverter {
             while (reader.readLine() != null) {
                 lines++;
             }
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e.getMessage());
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage());
         }

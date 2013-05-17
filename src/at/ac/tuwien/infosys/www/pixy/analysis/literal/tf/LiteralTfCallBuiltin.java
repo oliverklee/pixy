@@ -120,9 +120,7 @@ public class LiteralTfCallBuiltin
             p.waitFor();
 
             resultLit = this.parseOutput(instream);
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage());
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e.getMessage());
         }
 

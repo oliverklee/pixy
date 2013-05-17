@@ -60,8 +60,6 @@ public class Utils {
                 retme.append("\n");
             }
             inreader.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -186,10 +184,7 @@ public class Utils {
                 new RuntimeException().printStackTrace();
             }
             outWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException();
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             throw new RuntimeException();
         }
@@ -217,10 +212,7 @@ public class Utils {
             p.waitFor();
 
             p.waitFor();
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException();
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             throw new RuntimeException();
         }
