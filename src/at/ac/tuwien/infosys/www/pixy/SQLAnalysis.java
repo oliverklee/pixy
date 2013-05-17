@@ -650,7 +650,6 @@ public class SQLAnalysis
 //  ********************************************************************************
 
     void dumpDotAutoUnique(Automaton auto, String graphName, String path) {
-
         String filename = graphName + ".dot";
         (new File(path)).mkdir();
 
@@ -661,7 +660,6 @@ public class SQLAnalysis
             outWriter.close();
         } catch (IOException e) {
             System.out.println(e.getMessage());
-            return;
         }
     }
 }

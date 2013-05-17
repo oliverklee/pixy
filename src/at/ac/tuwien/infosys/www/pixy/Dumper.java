@@ -61,7 +61,6 @@ public final class Dumper {
             outWriter.close();
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return;
         }
     }
 
@@ -75,7 +74,6 @@ public final class Dumper {
             outWriter.write("}\n");
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return;
         }
     }
 
@@ -159,7 +157,6 @@ public final class Dumper {
             outWriter.close();
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return;
         }
     }
 
@@ -179,7 +176,6 @@ public final class Dumper {
             outWriter.write("}\n");
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return;
         }
     }
 
@@ -712,7 +708,6 @@ public final class Dumper {
             writer.close();
         } catch (IOException e) {
             System.out.println(e.getMessage());
-            return;
         }
     }
 
