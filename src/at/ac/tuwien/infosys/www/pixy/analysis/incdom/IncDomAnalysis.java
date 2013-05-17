@@ -16,8 +16,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-// inclusion dominator analysis
 /**
+ * Inclusion dominator analysis.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class IncDomAnalysis

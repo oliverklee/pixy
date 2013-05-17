@@ -14,8 +14,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallPrep;
 
 import java.util.List;
 
-// SQL Injection detection (with precise sanitization detection)
 /**
+ * SQL Injection detection (with precise sanitation detection).
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class SQLSanitAnalysis

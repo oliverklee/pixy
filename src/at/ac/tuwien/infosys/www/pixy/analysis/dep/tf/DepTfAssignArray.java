@@ -7,8 +7,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
-// transfer function for array assignment nodes ("left = array()")
 /**
+ * Transfer function for array assignment nodes ("left = array()").
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class DepTfAssignArray

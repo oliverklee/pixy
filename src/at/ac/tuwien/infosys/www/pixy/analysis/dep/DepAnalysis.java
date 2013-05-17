@@ -12,8 +12,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.*;
 
 import java.util.*;
 
-// dependency analysis
 /**
+ * Dependency analysis.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class DepAnalysis

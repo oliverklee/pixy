@@ -5,8 +5,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-// this interprocedural worklist uses a better order (interprocedural reverse postorder)
 /**
+ * This interprocedural worklist uses a better order (interprocedural reverse post-order).
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public final class InterWorkListBetter

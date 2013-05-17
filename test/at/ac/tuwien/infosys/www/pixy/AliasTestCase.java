@@ -13,12 +13,9 @@ import junit.framework.TestCase;
 
 import java.util.*;
 
-// Eclipse hint:
-// all methods named "testXX" are executed automatically when choosing
-// "Run / Run as... / JUnit Test"
-
-// doesn't use builtin functions file
 /**
+ * Doesn't use builtin functions file.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class AliasTestCase

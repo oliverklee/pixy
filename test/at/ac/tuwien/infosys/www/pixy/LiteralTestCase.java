@@ -14,8 +14,9 @@ import junit.framework.TestCase;
 import java.util.HashSet;
 import java.util.Set;
 
-// these tests should work both with an enabled and a disabled builtin functions file
 /**
+ * These tests should work both with an enabled and a disabled builtin functions file.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class LiteralTestCase

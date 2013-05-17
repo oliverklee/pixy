@@ -9,8 +9,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 import java.util.List;
 
-// a lattice of source labels
 /**
+ * A lattice of source labels.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 class DepLattice

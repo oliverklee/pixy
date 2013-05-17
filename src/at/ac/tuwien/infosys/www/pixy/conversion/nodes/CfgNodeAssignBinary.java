@@ -7,17 +7,15 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import java.util.LinkedList;
 import java.util.List;
 
-// *********************************************************************************
-// CfgNodeAssignBinary *************************************************************
-// *********************************************************************************
-
-// "left = leftOperand op rightOperand"
-// "op" can be: TacOperators.<...>
-// CONCAT, BOOLEAN_AND, BITWISE_OR, BITWISE_AND, BITWISE_XOR,
-// PLUS, MINUS, MULT, DIV, MODULO,
-// SL, SR, IS_IDENTICAL, IS_NOT_IDENTICAL, IS_EQUAL, IS_NOT_EQUAL,
-// IS_SMALLER, IS_SMALLER_OR_EQUAL, IS_GREATER, IS_GREATER_OR_EQUAL
 /**
+ * "left = leftOperand op rightOperand"
+ *
+ * "op" can be: TacOperators.<...>
+ * CONCAT, BOOLEAN_AND, BITWISE_OR, BITWISE_AND, BITWISE_XOR,
+ * PLUS, MINUS, MULT, DIV, MODULO,
+ * SL, SR, IS_IDENTICAL, IS_NOT_IDENTICAL, IS_EQUAL, IS_NOT_EQUAL,
+ * IS_SMALLER, IS_SMALLER_OR_EQUAL, IS_GREATER, IS_GREATER_OR_EQUAL
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class CfgNodeAssignBinary

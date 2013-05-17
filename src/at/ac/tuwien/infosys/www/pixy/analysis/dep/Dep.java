@@ -4,9 +4,10 @@ import at.ac.tuwien.infosys.www.pixy.analysis.GenericRepos;
 import at.ac.tuwien.infosys.www.pixy.analysis.Recyclable;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
-// corresponds to one dependency label, consisting of
-// <source descriptor (e.g., variable or function name)>, <location (cfg node)>
 /**
+ * Corresponds to one dependency label, consisting of
+ * <source descriptor (e.g., variable or function name)>, <location (cfg node)>.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class Dep

@@ -6,12 +6,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-// *********************************************************************************
-// CfgNodeTester *******************************************************************
-// *********************************************************************************
-
-// a special node for the builtin functions file
 /**
+ * A special node for the builtin functions file.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class CfgNodeTester

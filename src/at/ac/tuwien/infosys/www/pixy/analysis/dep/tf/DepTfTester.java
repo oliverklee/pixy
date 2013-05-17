@@ -13,8 +13,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-// transfer function for special ~_test_ node
 /**
+ * Transfer function for special ~_test_ node.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class DepTfTester

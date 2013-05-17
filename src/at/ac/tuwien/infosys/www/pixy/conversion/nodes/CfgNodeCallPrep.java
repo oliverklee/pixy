@@ -9,14 +9,11 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import java.util.Collections;
 import java.util.List;
 
-// *********************************************************************************
-// CfgNodeCallPrep *****************************************************************
-// *********************************************************************************
-
-// almost identical to CfgNodeCall
-// doesn't do 'function.addCall(this)' in the constructor and in
-// setFunction; and has cbrPairs
 /**
+ * Almost identical to CfgNodeCall.
+ *
+ * Doesn't do 'function.addCall(this)' in the constructor and in setFunction, and has cbrPairs.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class CfgNodeCallPrep

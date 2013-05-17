@@ -7,14 +7,12 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import java.util.LinkedList;
 import java.util.List;
 
-// *********************************************************************************
-// CfgNodeAssignUnary *************************************************************
-// *********************************************************************************
-
-// "left = op right"
-// "op" can be:
-// + - ! ~ (int) (double) (string) (array) (object) (bool) (unset)
 /**
+ * "left = op right"
+ *
+ * "op" can be:
+ * + - ! ~ (int) (double) (string) (array) (object) (bool) (unset)
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class CfgNodeAssignUnary

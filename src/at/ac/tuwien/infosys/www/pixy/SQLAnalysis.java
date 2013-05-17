@@ -19,8 +19,9 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.*;
 
-// SQL Injection detection
 /**
+ * SQL Injection detection.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class SQLAnalysis

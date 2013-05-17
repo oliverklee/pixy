@@ -6,8 +6,9 @@ import at.ac.tuwien.infosys.www.pixy.analysis.Recyclable;
 import java.util.HashSet;
 import java.util.Set;
 
-// just a set of Dep's
 /**
+ * Just a set of Deps.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class DepSet

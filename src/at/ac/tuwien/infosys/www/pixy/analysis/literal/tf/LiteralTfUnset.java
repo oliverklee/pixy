@@ -12,8 +12,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-// transfer function for unset nodes
 /**
+ * Transfer function for unset nodes.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class LiteralTfUnset

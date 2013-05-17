@@ -6,10 +6,6 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import java.util.Collections;
 import java.util.List;
 
-// *********************************************************************************
-// CfgNodeEntry ********************************************************************
-// *********************************************************************************
-
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */

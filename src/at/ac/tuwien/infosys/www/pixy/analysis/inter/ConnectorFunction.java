@@ -4,8 +4,9 @@ import at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring.CSContext;
 
 import java.util.*;
 
-// maps from position to position for a certain call node
 /**
+ * Maps from position to position for a certain call node.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class ConnectorFunction {

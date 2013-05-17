@@ -11,9 +11,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-// transfer function for "isset" tests
-// LATER: make it intelligent
 /**
+ * Transfer function for "isset" tests,
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class DepTfIsset

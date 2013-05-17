@@ -4,10 +4,13 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 import java.util.*;
 
-// auxiliary graph for computing least upper bounds of alias lattice elements;
-// SCC stands for "strongly connected component";
-// NOTE: this term is not really correct here, it should be "complete graph"!
 /**
+ * Auxiliary graph for computing least upper bounds of alias lattice elements.
+ *
+ * SCC stands for "strongly connected component".
+ *
+ * Note: This term is not really correct here, it should be "complete graph" instead.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class SccGraph {

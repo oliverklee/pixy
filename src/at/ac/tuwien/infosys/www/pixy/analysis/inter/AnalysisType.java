@@ -7,8 +7,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
 
 import java.util.List;
 
-// functional or call-string analysis
 /**
+ * Functional or call-string analysis.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public abstract class AnalysisType {

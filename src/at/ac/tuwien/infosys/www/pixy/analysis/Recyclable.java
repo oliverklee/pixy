@@ -1,8 +1,10 @@
 package at.ac.tuwien.infosys.www.pixy.analysis;
 
-// interface for recyclable objects;
-// for an explanation, see GenericRepos
 /**
+ * Interface for recyclable objects.
+ *
+ * For an explanation, see GenericRepos.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public interface Recyclable {

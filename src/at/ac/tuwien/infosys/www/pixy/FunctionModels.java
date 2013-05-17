@@ -4,12 +4,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-// container class for builtin function models
 /**
+ * This is a container class for builtin function models.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class FunctionModels {
-
     private Set<String> f_evil;
     private Map<String, Set<Integer>> f_multi;
     private Map<String, Set<Integer>> f_invMulti;

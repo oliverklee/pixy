@@ -6,9 +6,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 import java.util.List;
 
-// helper class responsible for performing transductions
-// using FSA Utilities
 /**
+ * Helper class responsible for performing transductions using FSA Utilities.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class FSAUtils {

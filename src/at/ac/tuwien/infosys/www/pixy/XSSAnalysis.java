@@ -11,8 +11,9 @@ import at.ac.tuwien.infosys.www.pixy.sanit.SanitAnalysis;
 
 import java.util.*;
 
-// XSS detection
 /**
+ * XSS detection.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class XSSAnalysis

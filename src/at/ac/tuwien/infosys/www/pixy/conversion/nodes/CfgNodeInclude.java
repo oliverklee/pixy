@@ -9,12 +9,9 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
-// *********************************************************************************
-// CfgNodeInclude *************************************************************
-// *********************************************************************************
-
-// "temp = include <place>" (can also be require or *_once)
 /**
+ * "temp = include <place>" (can also be require or *_once).
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class CfgNodeInclude

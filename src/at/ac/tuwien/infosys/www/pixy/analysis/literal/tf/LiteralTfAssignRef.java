@@ -11,8 +11,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-// transfer function for reference assignment nodes
 /**
+ * Transfer function for reference assignment nodes.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class LiteralTfAssignRef

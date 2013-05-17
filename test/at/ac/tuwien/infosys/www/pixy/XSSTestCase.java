@@ -7,13 +7,9 @@ import junit.framework.TestCase;
 import java.util.LinkedList;
 import java.util.List;
 
-// Eclipse hint:
-// all methods named "testXX" are executed automatically when choosing
-// "Run / Run as... / JUnit Test"
-
-// resembles DepGraphTestCase, but does not perform alias analysis
-// (see mySetUp()) and tests object-oriented stuff
 /**
+ * Resembles DepGraphTestCase, but does not perform alias analysis (see mySetUp()) and tests object-oriented stuff.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class XSSTestCase

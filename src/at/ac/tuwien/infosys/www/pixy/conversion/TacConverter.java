@@ -13,14 +13,16 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.*;
 import java.io.File;
 import java.util.*;
 
-// IMPORTANT NOTE:
-// always compare places with "equals", never use the == operator!
-// reason: due to file inclusions, one and the same variable can
-// be represented by two different variable objects in the corresponding
-// CFG nodes; the final symbol table after inclusion contains only
-// one of these objects
-
 /**
+ * IMPORTANT NOTE:
+ *
+ * Always compare places with "equals", never use the == operator!
+ *
+ * Reason: Due to file inclusions, one and the same variable can
+ * be represented by two different variable objects in the corresponding
+ * CFG nodes. The final symbol table after inclusion contains only
+ * one of these objects.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class TacConverter {

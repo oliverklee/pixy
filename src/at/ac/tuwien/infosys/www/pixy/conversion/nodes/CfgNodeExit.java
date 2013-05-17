@@ -6,12 +6,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import java.util.Collections;
 import java.util.List;
 
-// *********************************************************************************
-// CfgNodeExit *********************************************************************
-// *********************************************************************************
-
-// don't assign any transfer function other than ID to this node!
 /**
+ * Don't assign any transfer function other than ID to this node!
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class CfgNodeExit

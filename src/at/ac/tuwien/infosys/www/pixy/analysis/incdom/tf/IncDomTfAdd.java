@@ -6,8 +6,9 @@ import at.ac.tuwien.infosys.www.pixy.analysis.incdom.IncDomAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.incdom.IncDomLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
-// transfer function for adding include dominators
 /**
+ * Transfer function for adding include dominators.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class IncDomTfAdd

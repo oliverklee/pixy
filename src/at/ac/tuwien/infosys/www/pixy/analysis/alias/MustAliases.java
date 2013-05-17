@@ -5,9 +5,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 import java.util.*;
 
-// a set of disjoint must-alias-groups
-// EFF: a number of things could be done faster with more effort
 /**
+ * A set of disjoint must-alias-groups.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class MustAliases {

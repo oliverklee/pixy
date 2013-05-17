@@ -1,10 +1,11 @@
 package at.ac.tuwien.infosys.www.pixy.analysis;
 
-// force lattice element implementations to think about their equality condition,
-// which is needed for the worklist algorithm;
-// bad: if you do this, you can't access the natural (native) implementations
-// any longer
 /**
+ * Forces lattice element implementations to think about their equality condition,
+ * which is needed for the worklist algorithm.
+ *
+ * Bad: If you do this, you can't access the natural (native) implementations any longer.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public abstract class LatticeElement

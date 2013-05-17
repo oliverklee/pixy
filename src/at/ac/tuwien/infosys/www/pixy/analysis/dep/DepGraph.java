@@ -14,99 +14,18 @@ import at.ac.tuwien.infosys.www.pixy.sanit.SanitAnalysis;
 import java.io.*;
 import java.util.*;
 
-// graph that displays the data dependencies for a variable at some
-// point in the program; very useful for better understanding vulnerability
-// reports
-
-/*  OVERVIEW FOR BETTER UNDERSTANDING
-
-- if you want a dependency graph to be created, call create(),
-  passing the TacPlace and the CfgNode that will form the root of
-  the dependency graph; create() then calls makeDepGraph() with these
-  parameters (will return the root of the created DepGraph)
-
-makeDepGraph():
-- creates a dependency graph node "dgn" for the given place and cfg node
-- if there already is such a node in the graph: reuse the already existing
-  node by returning it (ends recursion)
-- add dgn to the graph
-- if the given place is a literal: return dgn (a literal has no further
-  dependencies), ends recursion
-- get the dependency value of the given place at the given cfg node;
-  the dependency value is basically a set of cfg nodes at which the
-  value of the place was modified
-- for each of these dependencies:
-  - if it is an uninit dependency:
-    create a new uninit node and connect it with dgn
-  - else:
-    - determine the places that were USED at the cfg node represented
-      by this dependency (see "getUsedPlaces()" below)
-    - for each of these places:
-      recursively call makeDepGraph() and connect dgn with the returned node
-
-getUsedPlaces():
-* this function is quite straightforward in most cases, but the handling
-  of arrays might be a bit confusing; for this reason, here is an
-  explanation of what is going on when the inspected cfg node is either
-  AssignSimple or CfgNodeCallPrep
-
-AssignSimple:
-* left = right;
-  ...
-  ...victim...
-- in the easiest case, victim equals left:
-    $left = $right
-    echo($left);
-  => we simply return right
-- alternatively, victim could also be an array element of left, e.g.:
-    $left = $right;
-    echo($left[0]);
-  here, we must not return $right, but $right[0]
-- in the previous case, it might happen that $right[0] does not
-  explicitly appear in the source code (=> a "hidden" array element),
-  so there is no Variable for $right[0] that we can return;
-  we overcome this problem by returning $right, and writing the
-  missing indices (in this case, only "0") into the list "newIndices"
-  for later use
-  => this list will correspond to "oldIndices" for the next call of
-  getUsedPlaces(); if you look at the code of getUsedPlaces()
-  (case AssignSimple) below, you will see that the first check is
-  whether oldIndices is empty or not; if it is not empty, it means
-  that we must take such hidden indices into account, e.g., look at
-  this example from bottom to top:
-    $c[0] = "harmless";
-    $b = $c;        // here, we have an old index "0" hanging around, so we have to get $c[0]
-    $a = $b;        // there is no $b[0], so we return $b (one line up) and memorize index 0
-    echo($a[0]);    // the dependency for $a[0] leads us one line up
-  the method responsible for correctly resolving old indices is called "getCorresponding()";
-  look at its description below to get a better feeling for what is going on
-
-CfgNodeCallPrep:
-* "victim" is a formal param here;
-  we want to return the corresponding actual parameter
-- for each formal parameter:
-  * let us assume that there are no old indices hanging around, then we
-    have the following cases:
-    - victim equals this formal
-      => return the corresponding actual
-    - victim is an array element of this formal
-      => return the corresponding array element of the corresponding actual
-    - none of the above:
-      continue with the next formal
-  * now, let us assume that there ARE old indices hanging around; note that
-    * of course, additional indices can only make victim "deeper"
-    * a formal param is never indexed in a function's head
-    - victim (without additional indexes) equals this formal
-      => victim (with additional indexes) is an array element of the formal
-    - victim (without a.i.) is an array element of this formal
-      => victim (with a.i.) is an array element of this formal
-    - none of the above:
-      continue with the next formal
-
-
-*/
 
 /**
+ * Graph that displays the data dependencies for a variable at some point in the program.
+ * Very useful for better understanding vulnerability reports.
+ *
+ * OVERVIEW FOR BETTER UNDERSTANDING
+ *
+ * If you want a dependency graph to be created, call create(),
+ *
+ * Passing the TacPlace and the CfgNode that will form the root of the dependency graph.
+ * create() then calls makeDepGraph() with these parameters (will return the root of the created DepGraph).
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class DepGraph {
@@ -161,6 +80,21 @@ public class DepGraph {
     // analysisInfo: we need the results of data flow analysis before we can
     //          draw a data dependency graph
     // returns null if the start node is not reachable
+
+    /**
+     * Creates a dependency graph.
+     *
+     * Passing the TacPlace and the CfgNode that will form the root of the dependency graph.
+     * This function then calls makeDepGraph() with these parameters (will return the root of the created DepGraph).
+     *
+     * @param place
+     * @param start
+     * @param analysisInfo
+     * @param mainSymTab
+     * @param depAnalysis
+     *
+     * @return
+     */
     public static DepGraph create(TacPlace place, CfgNode start, InterAnalysisInfo analysisInfo,
                                   SymbolTable mainSymTab, DepAnalysis depAnalysis) {
 
@@ -226,6 +160,34 @@ public class DepGraph {
     // draws a dependency graph for the given input
     // and returns the root of the graph;
     // - funcName: name the function that contains "current"
+
+    /**
+     * Creates a dependency graph node "dgn" for the given place and cfg node.
+     *
+     * If there already is such a node in the graph, this function reuses the already existing node by returning it,
+     * ending recursion.
+     *
+     * Adds dgn to the graph.
+     *
+     * Iff the given place is a literal: Returns dgn (a literal has no further dependencies), ends recursion.
+     *
+     * Gets the dependency value of the given place at the given cfg node. The dependency value is basically a set of
+     * cfg nodes at which the value of the place was modified.
+     *
+     * For each of these dependencies:
+     * - If it is an uninit dependency: Creates a new uninit node and connect it with dgn.
+     * - Else: Determines the places that were USED at the cfg node represented by this dependency
+     *   (see "getUsedPlaces()" below).
+     * - For each of these places: Recursively calls makeDepGraph() and connect dgn with the returned node.
+     *
+     * @param place
+     * @param current
+     * @param function
+     * @param indices
+     * @param contexts
+     * @return
+     * @throws NotReachableException
+     */
     private DepGraphNode makeDepGraph(TacPlace place, CfgNode current, TacFunction function,
                                       List<TacPlace> indices, Set<Context> contexts) throws NotReachableException {
 
@@ -580,6 +542,72 @@ public class DepGraph {
     // set containing an appropriate dummy placeholder literal (necessary for the
     // graph construction algorithm to work properly);
     // for concat nodes: returns the places in the right order
+
+    /**
+     * This function is quite straightforward in most cases, but the handling of arrays might be a bit confusing. For
+     * this reason, here is an explanation of what is going on when the inspected cfg node is either AssignSimple or
+     * CfgNodeCallPrep.
+     *
+     * AssignSimple:
+     * left = right;
+     * ...
+     * ...victim...
+     * - in the easiest case, victim equals left:
+     * $left = $right
+     * echo($left);
+     * => we simply return right
+     * - alternatively, victim could also be an array element of left, e.g.:
+     * $left = $right;
+     * echo($left[0]);
+     * here, we must not return $right, but $right[0]
+     * - in the previous case, it might happen that $right[0] does not
+     * explicitly appear in the source code (=> a "hidden" array element),
+     * so there is no Variable for $right[0] that we can return;
+     * we overcome this problem by returning $right, and writing the
+     * missing indices (in this case, only "0") into the list "newIndices"
+     * for later use
+     * => this list will correspond to "oldIndices" for the next call of
+     * getUsedPlaces(); if you look at the code of getUsedPlaces()
+     * (case AssignSimple) below, you will see that the first check is
+     * whether oldIndices is empty or not; if it is not empty, it means
+     * that we must take such hidden indices into account, e.g., look at
+     * this example from bottom to top:
+     * $c[0] = "harmless";
+     * $b = $c;        // here, we have an old index "0" hanging around, so we have to get $c[0]
+     * $a = $b;        // there is no $b[0], so we return $b (one line up) and memorize index 0
+     * echo($a[0]);    // the dependency for $a[0] leads us one line up
+     * the method responsible for correctly resolving old indices is called "getCorresponding()";
+     * look at its description below to get a better feeling for what is going on
+     *
+     * CfgNodeCallPrep:
+     * * "victim" is a formal param here;
+     * we want to return the corresponding actual parameter
+     * - for each formal parameter:
+     * * let us assume that there are no old indices hanging around, then we
+     * have the following cases:
+     * - victim equals this formal
+     * => return the corresponding actual
+     * - victim is an array element of this formal
+     * => return the corresponding array element of the corresponding actual
+     * - none of the above:
+     * continue with the next formal
+     * now, let us assume that there ARE old indices hanging around; note that
+     * of course, additional indices can only make victim "deeper"
+     * a formal param is never indexed in a function's head
+     * - victim (without additional indexes) equals this formal
+     * => victim (with additional indexes) is an array element of the formal
+     * - victim (without a.i.) is an array element of this formal
+     * => victim (with a.i.) is an array element of this formal
+     * - none of the above:
+     * continue with the next formal
+     *
+     * @param cfgNodeX
+     * @param victim
+     * @param oldIndices
+     * @param newIndices
+     *
+     * @return
+     */
     private List<TacPlace> getUsedPlaces(CfgNode cfgNodeX, TacPlace victim,
                                          List<TacPlace> oldIndices, List<TacPlace> newIndices) {
 

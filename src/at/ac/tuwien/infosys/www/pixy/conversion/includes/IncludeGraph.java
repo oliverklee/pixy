@@ -3,11 +3,11 @@ package at.ac.tuwien.infosys.www.pixy.conversion.includes;
 import java.io.File;
 import java.util.*;
 
-// an include graph consists of vertices corresponding to files
-// and directed edges corresponding to include relationships;
-// it has exactly one root (the entry file) and must be acyclic;
-// LATER: faster implementation
 /**
+ * An include graph consists of vertices corresponding to files and directed edges corresponding to include relationships.
+ *
+ * It has exactly one root (the entry file) and must be acyclic.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class IncludeGraph {

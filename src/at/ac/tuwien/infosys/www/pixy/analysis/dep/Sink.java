@@ -8,8 +8,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-// note: this class has a natural ordering that is inconsistent with equals()
 /**
+ * Note: This class has a natural ordering that is inconsistent with equals().
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class Sink

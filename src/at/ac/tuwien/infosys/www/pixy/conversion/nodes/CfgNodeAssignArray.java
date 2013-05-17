@@ -6,10 +6,6 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import java.util.LinkedList;
 import java.util.List;
 
-// *********************************************************************************
-// CfgNodeAssignArray **************************************************************
-// *********************************************************************************
-
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */

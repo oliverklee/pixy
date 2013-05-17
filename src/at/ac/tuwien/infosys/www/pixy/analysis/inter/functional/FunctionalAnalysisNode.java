@@ -12,8 +12,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-// an AnalysisNode holds analysis-specific information for a certain CFGNode
 /**
+ * An AnalysisNode holds analysis-specific information for a certain CFGNode.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class FunctionalAnalysisNode

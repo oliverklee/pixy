@@ -15,8 +15,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-// XSS detection
 /**
+ * XSS detection.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class XSSSanitAnalysis

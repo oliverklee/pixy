@@ -6,14 +6,14 @@ import java.util.LinkedList;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-/*
- * this work list contains two lists: one for cfg nodes that have been
- * assigned a reverse preorder, and one for nodes without such an order;
- * if it contains nodes without order, these nodes are returned first
- * (queued, FIFO); if there are no nodes without order, the ordered
- * nodes are returned accordingly
- */
 /**
+ * This work list contains two lists: one for cfg nodes that have been
+ * assigned a reverse pre-order, and one for nodes without such an order.
+ *
+ * If it contains nodes without order, these nodes are returned first
+ * (queued, FIFO). If there are no nodes without order, the ordered
+ * nodes are returned accordingly.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public final class InterWorkListPoor

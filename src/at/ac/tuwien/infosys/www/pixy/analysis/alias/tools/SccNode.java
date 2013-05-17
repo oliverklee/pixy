@@ -7,8 +7,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-// node in the SccGraph
 /**
+ * Node in the SccGraph.
+ *
+ * SCC stands for "strongly connected component".
+ *
+ * Note: This term is not really correct here, it should be "complete graph" instead.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class SccNode {

@@ -8,8 +8,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 import java.util.Set;
 
-// transfer function for simple assignment nodes
 /**
+ * Transfer function for simple assignment nodes.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class LiteralTfAssignSimple

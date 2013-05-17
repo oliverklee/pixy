@@ -9,12 +9,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-// *********************************************************************************
-// CfgNodeCall *********************************************************************
-// *********************************************************************************
-
-// a function call
 /**
+ * A function call.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class CfgNodeCallBuiltin

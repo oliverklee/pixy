@@ -18,10 +18,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-// quite rough analysis that tries to determine the type (class) of objects;
-// can be used for resolving ambiguous method calls (i.e., calls to methods
-// that are defined in more than one class)
 /**
+ * Quite rough analysis that tries to determine the type (class) of objects.
+ *
+ * Can be used for resolving ambiguous method calls (i.e., calls to methods that are defined in more than one class).
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class TypeAnalysis

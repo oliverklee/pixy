@@ -17,21 +17,20 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-// base class for interprocedural analyses (Sharir and Pnueli);
-// can be used for the functional and the call-string approach;
-// the different approaches have to implement the following abstract
-// methods:
-// - getPropagationContext
-// - getReverseTargets
-// the concrete analyses derived from these approaches have to
-// - implement the remaining abstract methods:
-//   - initLattice
-//   - evalIf
-// - override those transfer function generators that shall return
-//   transfer functions other than the ID transfer function
-// - call initGeneral()
-
 /**
+ * Vase class for interprocedural analyses (Sharir and Pnueli). Can be used for the functional and the call-string
+ * approach.
+ *
+ * The different approaches have to implement the following abstract methods:
+ * - getPropagationContext
+ * - getReverseTargets
+ *
+ * The concrete analyses derived from these approaches have to implement the remaining abstract methods:
+ * - initLattice
+ * - evalIf
+ * - override those transfer function generators that shall return transfer functions other than the ID transfer function
+ * - call initGeneral()
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public abstract class InterAnalysis

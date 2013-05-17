@@ -5,30 +5,29 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-// a generic repository of recyclable objects;
-// EFF: it might be useful to work with weak references here
-
-// example usage: you have some *immutable* class that contains
-// its own static repository of objects that have been instantiated
-// from it so far; when a new object is requested from this class,
-// it first checks its repository to see if there already is such
-// an object; in this case, a reference to the already existing
-// object is returned; otherwise, a new object is created, added to
-// the repository, and returned;
-// advantages: saves memory (no redundant objects) and allows
-// users of this class to perform quick comparisons with "=="
-
-// guide for how to design such a class:
-// - implement the Recyclable interface
-// - insert a private static GenericRepos<that class>
-// - make the constructor private
-// - use a static factory method instead
-// - make sure that the private constructor is ONLY called by
-//   factory methods (and perhaps by static field initializers),
-//   and that these methods perform recycling by means of the repository
-// - do not override its default equals and hashCode
-//   (would destroy the advantages mentioned above)
 /**
+ * A generic repository of recyclable objects.
+ *
+ * Example usage: You have some *immutable* class that contains
+ * its own static repository of objects that have been instantiated
+ * from it so far. When a new object is requested from this class,
+ * it first checks its repository to see if there already is such
+ * an object. In this case, a reference to the already existing
+ * object is returned. Otherwise, a new object is created, added to
+ * the repository, and returned.
+ *
+ * Advantages: This saves memory (no redundant objects) and allows
+ * users of this class to perform quick comparisons with "==".
+ *
+ * Guide for how to design such a class:
+ * - implement the Recyclable interface
+ * - insert a private static GenericRepos<that class>
+ * - make the constructor private
+ * - use a static factory method instead
+ * - make sure that the private constructor is ONLY called by factory methods (and perhaps by static field initializers),
+ * and that these methods perform recycling by means of the repository
+ * - do not override its default equals and hashCode (would destroy the advantages mentioned above)
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class GenericRepos<E extends Recyclable> {

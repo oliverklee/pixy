@@ -12,9 +12,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-// base class for analysis using the functional approach of Sharir and
-// Pnueli; use this if your lattice is finite
 /**
+ * Base class for analysis using the functional approach of Sharir and Pnueli.
+ * Use this if your lattice is finite.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class FunctionalAnalysis

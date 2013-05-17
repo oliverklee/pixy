@@ -9,12 +9,13 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.*;
 
 import java.util.*;
 
-// computes, for every function, the set of global variables that
-// this function (and its callees) may modify;
-// does NOT consider aliases: this is particularly important for the use of
-// the "global" keyword; if you want reasonable results, don't use this ModAnalysis
-// together with a real alias analysis
 /**
+ * Computes for every function the set of global variables that this function (and its callees) may modify.
+ *
+ * It  does NOT consider aliases: This is particularly important for the use of the "global" keyword.
+ *
+ * If you want reasonable results, don't use this ModAnalysis together with a real alias analysis.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class ModAnalysis {

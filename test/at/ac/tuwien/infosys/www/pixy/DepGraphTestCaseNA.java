@@ -16,13 +16,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-// Eclipse hint:
-// all methods named "testXX" are executed automatically when choosing
-// "Run / Run as... / JUnit Test"
-
-// resembles DepGraphTestCase, but does not perform alias analysis
-// (see mySetUp()) and tests object-oriented stuff
 /**
+ * Resembles DepGraphTestCase, but does not perform alias analysis (see mySetUp()) and tests object-oriented stuff.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class DepGraphTestCaseNA

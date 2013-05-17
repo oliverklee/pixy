@@ -14,10 +14,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-// Eclipse hint:
-// all methods named "testXX" are executed automatically when choosing
-// "Run / Run as... / JUnit Test"
-
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */

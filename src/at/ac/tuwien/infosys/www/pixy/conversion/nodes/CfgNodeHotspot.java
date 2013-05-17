@@ -5,12 +5,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import java.util.Collections;
 import java.util.List;
 
-// *********************************************************************************
-// CfgNodeHotspot ******************************************************************
-// *********************************************************************************
-
-// hotspots are only used for JUnit tests
 /**
+ * Hotspots are only used for JUnit tests.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class CfgNodeHotspot

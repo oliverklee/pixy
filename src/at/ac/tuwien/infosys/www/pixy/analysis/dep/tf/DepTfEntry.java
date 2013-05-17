@@ -9,8 +9,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import java.util.Iterator;
 import java.util.Map;
 
-// transfer function for function entries
 /**
+ * Transfer function for function entries.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class DepTfEntry

@@ -8,9 +8,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-// a set of may-alias-pairs
-// EFF: a number of things could be done faster with more effort
 /**
+ * A set of may-alias-pairs.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class MayAliases {

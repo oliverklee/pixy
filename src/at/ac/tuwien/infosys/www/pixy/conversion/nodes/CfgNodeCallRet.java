@@ -6,12 +6,10 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import java.util.Collections;
 import java.util.List;
 
-// *********************************************************************************
-// CfgNodeCallRet ******************************************************************
-// *********************************************************************************
 
-// return from called function; "2nd half" of a function call node
 /**
+ * Return from called function. "2nd half" of a function call node.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class CfgNodeCallRet

@@ -7,12 +7,9 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
-// *********************************************************************************
-// CfgNodeIncludeStart *************************************************************
-// *********************************************************************************
-
-// indicates the start of an included section (inserted during include resolution)
 /**
+ * Indicates the start of an included section (inserted during include resolution).
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class CfgNodeIncludeStart

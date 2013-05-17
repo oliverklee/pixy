@@ -7,8 +7,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.*;
 import java.util.Iterator;
 import java.util.List;
 
-// base class for inter- and intraprocedural analyses
 /**
+ * Vase class for inter- and intraprocedural analysis.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public abstract class Analysis {

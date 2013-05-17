@@ -5,10 +5,10 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
 
 import java.util.*;
 
-// this is a fine-grained call graph
-// (i.e., it does not only contain edges between functions,
-// but also edges between call nodes and functions)
 /**
+ * This is a fine-grained call graph (i.e., it does not only contain edges between functions, but also edges between
+ * call nodes and functions).
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class CallGraph {

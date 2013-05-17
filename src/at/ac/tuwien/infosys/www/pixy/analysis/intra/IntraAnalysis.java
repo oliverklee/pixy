@@ -11,8 +11,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 import java.util.LinkedList;
 
-// base class for intraprocedural analyses
 /**
+ * Base class for intraprocedural analyses.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public abstract class IntraAnalysis

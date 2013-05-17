@@ -10,9 +10,11 @@ import java.lang.reflect.Constructor;
 import java.util.LinkedList;
 import java.util.List;
 
-// helper class to prevent code redundancy and confusion, used by Checker;
-// perhaps there are more elegant ways to do this
 /**
+ * This is a helper class to prevent code redundancy and confusion.
+ *
+ * It is used in the Checker class.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class GenericTaintAnalysis {

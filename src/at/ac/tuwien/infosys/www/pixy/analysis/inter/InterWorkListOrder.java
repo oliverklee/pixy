@@ -12,9 +12,11 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeExit;
 
 import java.util.*;
 
-// computes a reverse postorder for the whole, interprocedural cfg;
-// currently only works for call-string analysis
 /**
+ * Computes a reverse post-order for the whole, interprocedural cfg.
+ *
+ * Currently only works for call-string analysis.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class InterWorkListOrder {

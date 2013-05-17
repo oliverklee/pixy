@@ -6,12 +6,9 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
-// *********************************************************************************
-// CfgNodeIncludeEnd ***************************************************************
-// *********************************************************************************
-
-// indicates the end of an included section (inserted during include resolution)
 /**
+ * Indicates the end of an included section (inserted during include resolution).
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class CfgNodeIncludeEnd

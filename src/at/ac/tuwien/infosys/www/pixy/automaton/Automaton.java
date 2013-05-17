@@ -33,24 +33,23 @@ import java.io.*;
 import java.net.URL;
 import java.util.*;
 
-/* Class invariants:
- *
- * - An automaton is either represented explicitly (with State and Transition objects)
- *   or with a singleton string in case the automaton accepts exactly one string.
- * - Automata are always reduced (see reduce())
- *   and have no transitions to dead states (see removeDeadTransitions()).
- * - If an automaton is nondeterministic, then isDeterministic() returns false (but
- *   the converse is not required).
- */
-
 /**
  * Finite-state automaton with regular expression operations.
  * <p/>
- * Automata are represented using {@link State} and {@link Transition} objects.
+ * Automatons are represented using {@link State} and {@link Transition} objects.
  * Implicitly, all states and transitions of an automaton are reachable from its initial state.
  * If the states or transitions are manipulated manually, the {@link #restoreInvariant()}
  * and {@link #setDeterministic(boolean)} methods should be used afterwards to restore
- * certain representation invariants that are assumed by the built-in automata operations.
+ * certain representation invariants that are assumed by the built-in automaton operations.
+ *
+ * Class invariants:
+ *
+ * - An automaton is either represented explicitly (with State and Transition objects)
+ *   or with a singleton string in case the automaton accepts exactly one string.
+ * - Automatons are always reduced (see reduce())
+ *   and have no transitions to dead states (see removeDeadTransitions()).
+ * - If an automaton is nondeterministic, then isDeterministic() returns false (but
+ *   the converse is not required).
  *
  * @author Anders M&oslash;ller &lt;<a href="mailto:amoeller@brics.dk">amoeller@brics.dk</a>&gt;
  */

@@ -7,11 +7,12 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallUnknown;
 
 import java.util.*;
 
-// if you want to create a new depclient:
-// - inherit from this class (see existing examples)
-// - add info to MyOptions.analyses
-// - add model and sink config files
 /**
+ * If you want to create a new depclient:
+ * 1. inherit from this class (see existing examples)
+ * 2. add info to MyOptions.analyses
+ * 3. add model and sink config files
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public abstract class DepClient {

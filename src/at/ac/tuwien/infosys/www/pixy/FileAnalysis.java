@@ -16,12 +16,12 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.*;
 
-// extracts strings used in file access functions
 /**
+ * This class extracts strings used in file access functions.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class FileAnalysis
-    extends DepClient {
+public class FileAnalysis extends DepClient {
 
 //  ********************************************************************************
 

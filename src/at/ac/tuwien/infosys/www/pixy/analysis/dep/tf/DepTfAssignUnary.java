@@ -9,8 +9,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 import java.util.Set;
 
-// transfer function for unary assignment nodes
 /**
+ * Transfer function for unary assignment nodes.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class DepTfAssignUnary

@@ -13,8 +13,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallUnknown;
 import java.io.File;
 import java.util.*;
 
-// superclass for sanitization analyses
 /**
+ * Superclass for sanitation analyses.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public abstract class SanitAnalysis

@@ -9,8 +9,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 import java.util.Set;
 
-// transfer function for binary assignment nodes
 /**
+ * Transfer function for binary assignment nodes.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class LiteralTfAssignBinary

@@ -16,12 +16,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-// Eclipse hint:
-// all methods named "testXX" are executed automatically when choosing
-// "Run / Run as... / JUnit Test"
-
-// testcase for TypeAnalysis
 /**
+ * Test case for TypeAnalysis.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class TypeTestCase
