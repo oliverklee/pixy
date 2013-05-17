@@ -217,7 +217,7 @@ public abstract class SanitAnalysis
 //  ********************************************************************************
 
     // decorates the given node (and all its successors) with an automaton
-    private final void decorateSanit(DepGraphNode node, Map<DepGraphNode, FSAAutomaton> deco,
+    private void decorateSanit(DepGraphNode node, Map<DepGraphNode, FSAAutomaton> deco,
                                      Set<DepGraphNode> visited, DepGraph depGraph, DepGraph origDepGraph,
                                      boolean trimAllowed) {
 
@@ -406,7 +406,7 @@ public abstract class SanitAnalysis
 //  ********************************************************************************
 
     // returns an automaton for the given operation node
-    private final FSAAutomaton makeAutoForOp(DepGraphOpNode node, Map<DepGraphNode, FSAAutomaton> deco,
+    private FSAAutomaton makeAutoForOp(DepGraphOpNode node, Map<DepGraphNode, FSAAutomaton> deco,
                                              DepGraph depGraph, boolean trimAllowed) {
 
         List<DepGraphNode> successors = depGraph.getSuccessors(node);
