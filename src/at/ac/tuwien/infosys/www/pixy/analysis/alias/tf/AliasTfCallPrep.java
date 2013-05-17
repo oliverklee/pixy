@@ -21,7 +21,7 @@ import java.util.Map;
 public class AliasTfCallPrep
     extends TransferFunction {
 
-    private List cbrParams;
+    private List<List<Variable>> cbrParams;
     private TacFunction caller;
     private AliasAnalysis aliasAnalysis;
     private CfgNode cfgNode;
@@ -61,15 +61,12 @@ public class AliasTfCallPrep
             Map<Variable, Variable> replacements = new HashMap<Variable, Variable>();
 
             // for all cbr-params...
-            for (Iterator iter = this.cbrParams.iterator(); iter.hasNext(); ) {
+            for (List<Variable> pairList : this.cbrParams) {
+                Iterator<Variable> pairListIterator = pairList.iterator();
+                Variable actualVar = pairListIterator.next();
+                Variable formalVar = pairListIterator.next();
 
-                List pairList = (List) iter.next();
-                Iterator pairListIter = pairList.iterator();
-                Variable actualVar = (Variable) pairListIter.next();
-                Variable formalVar = (Variable) pairListIter.next();
-
-                Variable formalPlaceHolder =
-                    new Variable(formalVar.getName(), placeHolderSymTab);
+                Variable formalPlaceHolder = new Variable(formalVar.getName(), placeHolderSymTab);
                 replacements.put(formalPlaceHolder, formalVar);
 
                 // add the formal's placeholder to the actual's must-alias-group

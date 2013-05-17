@@ -2,6 +2,7 @@ package at.ac.tuwien.infosys.www.pixy;
 
 import at.ac.tuwien.infosys.www.phpparser.ParseNode;
 import at.ac.tuwien.infosys.www.phpparser.ParseTree;
+import at.ac.tuwien.infosys.www.pixy.analysis.AnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElementBottom;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.*;
@@ -117,18 +118,15 @@ public final class Dumper {
 
     // dumps the function's Cfg in dot syntax
     public static void dumpDot(TacFunction function, String graphPath, boolean dumpParams) {
-
         dumpDot(function.getCfg(), function.getName(), graphPath);
 
         if (dumpParams) {
-            List params = function.getParams();
-            for (int i = 0; i < params.size(); i++) {
-                TacFormalParam param = (TacFormalParam) params.get(i);
-                String paramString = param.getVariable().getName();
+            for (TacFormalParam parameter : function.getParams()) {
+                String paramString = parameter.getVariable().getName();
                 paramString = paramString.substring(1); // remove "$"
-                if (param.hasDefault()) {
+                if (parameter.hasDefault()) {
                     dumpDot(
-                        param.getDefaultCfg(),
+                        parameter.getDefaultCfg(),
                         function.getName() + "_" + paramString,
                         graphPath);
                 }
@@ -239,9 +237,7 @@ public final class Dumper {
         if (function.isReference()) {
             System.out.println("isReference");
         }
-        List params = function.getParams();
-        for (int i = 0; i < params.size(); i++) {
-            TacFormalParam param = (TacFormalParam) params.get(i);
+        for (TacFormalParam param : function.getParams()) {
             String paramString = param.getVariable().getName();
             System.out.print("Param: " + paramString);
             if (param.isReference()) {
@@ -263,8 +259,7 @@ public final class Dumper {
 
             CfgNodeBasicBlock cfgNode = (CfgNodeBasicBlock) cfgNodeX;
             StringBuilder label = new StringBuilder("basic block\\n");
-            for (Iterator iter = cfgNode.getContainedNodes().iterator(); iter.hasNext(); ) {
-                CfgNode containedNode = (CfgNode) iter.next();
+            for (CfgNode containedNode : cfgNode.getContainedNodes()) {
                 label.append(makeCfgNodeName(containedNode));
                 label.append("\\n");
             }
@@ -543,8 +538,8 @@ public final class Dumper {
     // dumps the subtree starting at the current parse node
     static public void recursiveDump(ParseNode parseNode, int level) {
         dump(parseNode, level);
-        for (Iterator iter = parseNode.getChildren().iterator(); iter.hasNext(); ) {
-            recursiveDump((ParseNode) iter.next(), level + 1);
+        for (ParseNode child : parseNode.getChildren()) {
+            recursiveDump(child, level + 1);
         }
     }
 
@@ -555,9 +550,8 @@ public final class Dumper {
         System.out.println("Symbol Table: " + name);
         System.out.println("***************************************");
         System.out.println();
-        Map variables = symbolTable.getVariables();
-        for (Iterator iter = variables.values().iterator(); iter.hasNext(); ) {
-            dump((Variable) iter.next());
+        for (Variable variable : symbolTable.getVariables().values()) {
+            dump(variable);
             System.out.println();
         }
     }
@@ -565,18 +559,16 @@ public final class Dumper {
 // dump(Variable) ******************************************************************
 
     static public void dump(Variable variable) {
-
         System.out.println(variable);
 
         // if it is an array
         if (variable.isArray()) {
             System.out.println("isArray:            true");
 
-            List elements = variable.getElements();
+            List<Variable> elements = variable.getElements();
             if (!elements.isEmpty()) {
                 System.out.print("elements:           ");
-                for (Iterator iter = elements.iterator(); iter.hasNext(); ) {
-                    Variable element = (Variable) iter.next();
+                for (Variable element : elements) {
                     System.out.print(element.getName() + " ");
                 }
                 System.out.println();
@@ -602,8 +594,7 @@ public final class Dumper {
                 System.out.println("UNKNOWN!");
             }
             System.out.print("indices:            ");
-            for (Iterator iter = variable.getIndices().iterator(); iter.hasNext(); ) {
-                TacPlace index = (TacPlace) iter.next();
+            for (TacPlace index : variable.getIndices()) {
                 System.out.print(index + " ");
             }
             System.out.println();
@@ -616,11 +607,10 @@ public final class Dumper {
         }
 
         // print array elements indexed by this variable
-        List indexFor = variable.getIndexFor();
+        List<Variable> indexFor = variable.getIndexFor();
         if (!indexFor.isEmpty()) {
             System.out.print("indexFor:           ");
-            for (Iterator iter = indexFor.iterator(); iter.hasNext(); ) {
-                Variable indexed = (Variable) iter.next();
+            for (Variable indexed : indexFor) {
                 System.out.print(indexed + " ");
             }
             System.out.println();
@@ -634,19 +624,16 @@ public final class Dumper {
         System.out.println("Constants Table ");
         System.out.println("***************************************");
         System.out.println();
-        Map constants = constantsTable.getConstants();
-        for (Iterator iter = constants.values().iterator(); iter.hasNext(); ) {
-            System.out.println(((Constant) iter.next()).getLabel());
+        for (Constant constant : constantsTable.getConstants().values()) {
+            System.out.println(constant.getLabel());
         }
         System.out.println();
         System.out.println("Insensitive Groups:");
         System.out.println();
-        Map insensitiveGroups = constantsTable.getInsensitiveGroups();
-        for (Iterator iter = insensitiveGroups.values().iterator(); iter.hasNext(); ) {
-            List insensitiveGroup = (List) iter.next();
+        for (List<Constant> insensitiveGroup : constantsTable.getInsensitiveGroups().values()) {
             System.out.print("* ");
-            for (Iterator iter2 = insensitiveGroup.iterator(); iter2.hasNext(); ) {
-                System.out.print(((Constant) iter2.next()).getLabel() + " ");
+            for (Constant anInsensitiveGroup : insensitiveGroup) {
+                System.out.print(anInsensitiveGroup.getLabel() + " ");
             }
             System.out.println();
         }
@@ -654,10 +641,8 @@ public final class Dumper {
     }
 
     static public void dump(IncDomAnalysis analysis) {
-        IntraAnalysisInfo analysisInfo = analysis.getAnalysisInfo();
-        for (Iterator iter = analysisInfo.getMap().entrySet().iterator(); iter.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            CfgNode cfgNode = (CfgNode) entry.getKey();
+        for (Map.Entry<CfgNode, AnalysisNode> entry : analysis.getAnalysisInfo().getMap().entrySet()) {
+            CfgNode cfgNode = entry.getKey();
             IntraAnalysisNode analysisNode = (IntraAnalysisNode) entry.getValue();
             System.out.println("dominators for cfg node " + cfgNode.toString() + ", " + cfgNode.getOrigLineno());
             Dumper.dump(analysisNode.getInValue());
@@ -679,7 +664,7 @@ public final class Dumper {
                 return;
             }
 
-            List functions = analysis.getFunctions();
+            List<TacFunction> functions = analysis.getFunctions();
             InterAnalysisInfo analysisInfoNew = analysis.getInterAnalysisInfo();
 
             if (analysis instanceof LiteralAnalysis) {
@@ -688,8 +673,7 @@ public final class Dumper {
             }
 
             // for each function...
-            for (Iterator iter = functions.iterator(); iter.hasNext(); ) {
-                TacFunction function = (TacFunction) iter.next();
+            for (TacFunction function : functions) {
                 Cfg cfg = function.getCfg();
                 writer.write(linesep + "****************************************************" + linesep);
                 writer.write(function.getName() + linesep);
@@ -720,11 +704,9 @@ public final class Dumper {
         } catch (NullPointerException e) {
             System.out.println("<<null>>");
         }
-        Map phi = node.getPhi();
         // dump the lattice element for each context
-        for (Iterator iter = phi.values().iterator(); iter.hasNext(); ) {
+        for (LatticeElement element : node.getPhi().values()) {
             System.out.println("~~~~~~~~~~~~~~~");
-            LatticeElement element = (LatticeElement) iter.next();
             dump(element);
         }
     }
@@ -742,46 +724,35 @@ public final class Dumper {
 
 //  dump(LatticeElement) ************************************************************
 
-    static public void dump(LatticeElement elementX, Writer writer)
-        throws IOException {
-
+    static public void dump(LatticeElement elementX, Writer writer) throws IOException {
         if (elementX instanceof AliasLatticeElement) {
-
             AliasLatticeElement element = (AliasLatticeElement) elementX;
             dump(element.getMustAliases(), writer);
             dump(element.getMayAliases(), writer);
         } else if (elementX instanceof LiteralLatticeElement) {
-
             LiteralLatticeElement element = (LiteralLatticeElement) elementX;
 
             // dump non-default literal mappings
-            Map placeToLit = element.getPlaceToLit();
-            for (Iterator iterator = placeToLit.entrySet().iterator(); iterator.hasNext(); ) {
-                Map.Entry entry = (Map.Entry) iterator.next();
-                TacPlace place = (TacPlace) entry.getKey();
-                Literal lit = (Literal) entry.getValue();
+            for (Map.Entry<TacPlace, Literal> entry : element.getPlaceToLit().entrySet()) {
+                TacPlace place = entry.getKey();
+                Literal lit = entry.getValue();
                 writer.write(place + ":      " + lit + linesep);
             }
         } else if (elementX instanceof DepLatticeElement) {
-
             dumpComplete((DepLatticeElement) elementX, writer);
         } else if (elementX instanceof IncDomLatticeElement) {
-
             IncDomLatticeElement element = (IncDomLatticeElement) elementX;
-            List dominators = element.getDominators();
+            List<CfgNode> dominators = element.getDominators();
             if (dominators.isEmpty()) {
                 System.out.println("<<empty>>");
             } else {
-                for (Iterator iter = dominators.iterator(); iter.hasNext(); ) {
-                    CfgNode dominator = (CfgNode) iter.next();
+                for (CfgNode dominator : dominators) {
                     System.out.println(dominator.toString() + ", " + dominator.getOrigLineno());
                 }
             }
         } else if (elementX instanceof LatticeElementBottom) {
-
             writer.write(linesep + "Bottom Element" + linesep + linesep);
         } else if (elementX == null) {
-
             writer.write(linesep + "<<null>>" + linesep + linesep);
         } else {
             throw new RuntimeException("SNH: " + elementX.getClass());
@@ -815,21 +786,17 @@ public final class Dumper {
 
         // dump non-default dep mappings
         writer.write(linesep + "DEP MAPPINGS" + linesep + linesep);
-        Map placeToDep = element.getPlaceToDep();
-        for (Iterator iterator = placeToDep.entrySet().iterator(); iterator.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) iterator.next();
-            TacPlace place = (TacPlace) entry.getKey();
-            DepSet depSet = (DepSet) entry.getValue();
+        for (Map.Entry<TacPlace, DepSet> entry : element.getPlaceToDep().entrySet()) {
+            TacPlace place = entry.getKey();
+            DepSet depSet = entry.getValue();
             writer.write(place + ":      " + depSet + linesep);
         }
 
         // dump non-default array labels
         writer.write(linesep + "ARRAY LABELS" + linesep + linesep);
-        Map arrayLabels = element.getArrayLabels();
-        for (Iterator iterator = arrayLabels.entrySet().iterator(); iterator.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) iterator.next();
-            Variable var = (Variable) entry.getKey();
-            DepSet arrayLabel = (DepSet) entry.getValue();
+        for (Map.Entry<Variable, DepSet> entry : element.getArrayLabels().entrySet()) {
+            Variable var = entry.getKey();
+            DepSet arrayLabel = entry.getValue();
             writer.write(var + ":      " + arrayLabel + linesep);
         }
     }
@@ -848,86 +815,67 @@ public final class Dumper {
     // - non-temporaries
     // - non-shadows
     // - variables of non-builtin functions
-    static public void dump(DepLatticeElement element, Writer writer)
-        throws IOException {
-
+    static public void dump(DepLatticeElement element, Writer writer) throws IOException {
         // dump non-default taint mappings
         writer.write(linesep + "TAINT MAPPINGS" + linesep + linesep);
-        Map placeToDep = element.getPlaceToDep();
-        for (Iterator iterator = placeToDep.entrySet().iterator(); iterator.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) iterator.next();
-            TacPlace place = (TacPlace) entry.getKey();
+        for (Map.Entry<TacPlace, DepSet> entry : element.getPlaceToDep().entrySet()) {
+            TacPlace place = entry.getKey();
             if (place.isVariable()) {
                 Variable var = place.getVariable();
                 if (doNotDump(var)) {
                     continue;
                 }
             }
-            DepSet depSet = (DepSet) entry.getValue();
-            writer.write(place + ":      " + depSet + linesep);
+            writer.write(place + ":      " + entry.getValue() + linesep);
         }
 
         // dump non-default array labels
         writer.write(linesep + "ARRAY LABELS" + linesep + linesep);
-        Map arrayLabels = element.getArrayLabels();
-        for (Iterator iterator = arrayLabels.entrySet().iterator(); iterator.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) iterator.next();
-            Variable var = (Variable) entry.getKey();
-            if (doNotDump(var)) {
+        for (Map.Entry<Variable, DepSet> entry : element.getArrayLabels().entrySet()) {
+            Variable variable = entry.getKey();
+            if (doNotDump(variable)) {
                 continue;
             }
-            DepSet arrayLabel = (DepSet) entry.getValue();
-            writer.write(var + ":      " + arrayLabel + linesep);
+            writer.write(variable + ":      " + entry.getValue() + linesep);
         }
     }
 
-    static public void dump(MustAliases mustAliases, Writer writer)
-        throws IOException {
-        Set mustAliasGroups = mustAliases.getGroups();
+    static public void dump(MustAliases mustAliases, Writer writer) throws IOException {
         writer.write("u{ ");
-        for (Iterator iter = mustAliasGroups.iterator(); iter.hasNext(); ) {
-            MustAliasGroup group = (MustAliasGroup) iter.next();
+        for (MustAliasGroup group : mustAliases.getGroups()) {
             dump(group, writer);
             writer.write(" ");
         }
         writer.write("}" + linesep);
     }
 
-    static public void dump(MustAliasGroup mustAliasGroup, Writer writer)
-        throws IOException {
-        Set group = mustAliasGroup.getVariables();
+    static public void dump(MustAliasGroup mustAliasGroup, Writer writer) throws IOException {
         writer.write("( ");
-        for (Iterator iter = group.iterator(); iter.hasNext(); ) {
-            Variable var = (Variable) iter.next();
-            writer.write(var + " ");
+        for (Variable variable : mustAliasGroup.getVariables()) {
+            writer.write(variable + " ");
         }
         writer.write(")");
     }
 
-    static public void dump(MayAliases mayAliases, Writer writer)
-        throws IOException {
-        Set mayAliasPairs = mayAliases.getPairs();
+    static public void dump(MayAliases mayAliases, Writer writer) throws IOException {
         writer.write("a{ ");
-        for (Iterator iter = mayAliasPairs.iterator(); iter.hasNext(); ) {
-            MayAliasPair pair = (MayAliasPair) iter.next();
+        for (MayAliasPair pair : mayAliases.getPairs()) {
             dump(pair, writer);
             writer.write(" ");
         }
         writer.write("}" + linesep);
     }
 
-    static public void dump(MayAliasPair mayAliasPair, Writer writer)
-        throws IOException {
+    static public void dump(MayAliasPair mayAliasPair, Writer writer) throws IOException {
         Set pair = mayAliasPair.getPair();
         Object[] pairArray = pair.toArray();
         writer.write("(" + pairArray[0] + " " + pairArray[1] + ")" + linesep);
     }
 
-    static public void dumpFunction2ECS(Map function2ECS) {
-        for (Iterator iter = function2ECS.entrySet().iterator(); iter.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            TacFunction function = (TacFunction) entry.getKey();
-            ECS ecs = (ECS) entry.getValue();
+    static public void dumpFunction2ECS(Map<TacFunction, ECS> function2ECS) {
+        for (Map.Entry<TacFunction, ECS> entry : function2ECS.entrySet()) {
+            TacFunction function = entry.getKey();
+            ECS ecs = entry.getValue();
             System.out.println("ECS for Function " + function.getName() + ": ");
             System.out.println(ecs);
             System.out.println();
@@ -937,22 +885,19 @@ public final class Dumper {
     // output format:
     // function name: # of ecs (i.e., how many contexts), # of cfg nodes: product;
     // ordered by product
-    static public void dumpECSStats(Map function2ECS) {
-
+    static public void dumpECSStats(Map<TacFunction, ECS> function2ECS) {
         // TacFunction, # of ecs, # of cfg nodes, #ecs * #nodes
-        List<List<Object>> output = new LinkedList<List<Object>>();
-        for (Iterator iter = function2ECS.entrySet().iterator(); iter.hasNext(); ) {
-
-            Map.Entry entry = (Map.Entry) iter.next();
-            TacFunction function = (TacFunction) entry.getKey();
-            ECS ecs = (ECS) entry.getValue();
+        List<List> output = new LinkedList<List>();
+        for (Map.Entry<TacFunction, ECS> entry : function2ECS.entrySet()) {
+            TacFunction function = entry.getKey();
+            ECS ecs = entry.getValue();
             int ecsLength = ecs.getCallStrings().size();
             int cfgSize = function.getCfg().size();
             int product = ecsLength * cfgSize;
 
             int insertAtIndex = 0;
-            for (Iterator iterator = output.iterator(); iterator.hasNext(); ) {
-                List nextList = (List) iterator.next();
+            for (List anOutput : output) {
+                List nextList = anOutput;
                 int compProduct = ((Integer) nextList.get(3)).intValue();
                 if (product > compProduct) {
                     break;
@@ -960,7 +905,7 @@ public final class Dumper {
                 insertAtIndex++;
             }
 
-            List<Object> insertMe = new LinkedList<Object>();
+            List insertMe = new LinkedList();
             insertMe.add(function);
             insertMe.add(new Integer(ecsLength));
             insertMe.add(new Integer(cfgSize));
@@ -969,8 +914,8 @@ public final class Dumper {
         }
 
         int total = 0;
-        for (Iterator iter = output.iterator(); iter.hasNext(); ) {
-            List outputList = (List) iter.next();
+        for (List<Object> anOutput : output) {
+            List outputList = (List) anOutput;
             TacFunction function = (TacFunction) outputList.get(0);
             int ecsLength = ((Integer) outputList.get(1)).intValue();
             int cfgSize = ((Integer) outputList.get(2)).intValue();

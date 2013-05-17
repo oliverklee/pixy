@@ -128,9 +128,8 @@ public abstract class Analysis {
 
     protected void traverseCfg(Cfg cfg, TacFunction traversedFunction) {
 
-        for (Iterator iter = cfg.dfPreOrder().iterator(); iter.hasNext(); ) {
+        for (CfgNode cfgNodeX : cfg.dfPreOrder()) {
 
-            CfgNode cfgNodeX = (CfgNode) iter.next();
             TransferFunction tf = this.createTf(cfgNodeX, traversedFunction, cfgNodeX);
             if (tf == null) {
                 System.out.println(cfgNodeX.getLoc());
@@ -181,8 +180,7 @@ public abstract class Analysis {
 
         CompositeTransferFunction ctf = new CompositeTransferFunction();
 
-        for (Iterator iter = basicBlock.getContainedNodes().iterator(); iter.hasNext(); ) {
-            CfgNode cfgNodeX = (CfgNode) iter.next();
+        for (CfgNode cfgNodeX : basicBlock.getContainedNodes()) {
             ctf.add(this.createTf(cfgNodeX, traversedFunction, basicBlock));
         }
         return ctf;

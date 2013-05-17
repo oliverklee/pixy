@@ -77,7 +77,7 @@ public class AliasLatticeElement
     }
 
     // returns a set of may-aliases of variable x; might be empty (but never null)
-    public Set getMayAliases(Variable x) {
+    public Set<Variable> getMayAliases(Variable x) {
         return this.mayAliases.getAliases(x);
     }
 
@@ -89,25 +89,25 @@ public class AliasLatticeElement
 
     // returns the global variables that are may-aliases of the given variable
     // (a set of Variables)
-    public Set getGlobalMayAliases(Variable var) {
+    public Set<Variable> getGlobalMayAliases(Variable var) {
         return this.mayAliases.getGlobalAliases(var);
     }
 
     // returns the global variables that are must-aliases of the given variable
     // (a set of Variables)
-    public Set getGlobalMustAliases(Variable var) {
+    public Set<Variable> getGlobalMustAliases(Variable var) {
         return this.mustAliases.getGlobalAliases(var);
     }
 
     // returns the local variables that are may-aliases of the given variable
     // (a set of Variables)
-    public Set getLocalMayAliases(Variable var) {
+    public Set<Variable> getLocalMayAliases(Variable var) {
         return this.mayAliases.getLocalAliases(var);
     }
 
     // returns the global variables that are aliases (must / may) of the
     // given variable (a set of Variables)
-    public Set getGlobalAliases(Variable var) {
+    public Set<Variable> getGlobalAliases(Variable var) {
         Set<Variable> retMe = new HashSet<Variable>();
         retMe.addAll(this.mustAliases.getGlobalAliases(var));
         retMe.addAll(this.mayAliases.getGlobalAliases(var));
@@ -124,8 +124,7 @@ public class AliasLatticeElement
         // we will create a new MayAlias object as replacement for our current one
         MayAliases newMayAliases = new MayAliases();
 
-        for (Iterator iter = this.mayAliases.getPairs().iterator(); iter.hasNext(); ) {
-            MayAliasPair pair = (MayAliasPair) iter.next();
+        for (MayAliasPair pair : this.mayAliases.getPairs()) {
             Iterator pairIter = pair.getPair().iterator();
             Variable firstElement = (Variable) pairIter.next();
             Variable secondElement = (Variable) pairIter.next();
@@ -153,10 +152,9 @@ public class AliasLatticeElement
     }
 
     // adds all pairs (variable from varSet, var) to the may-aliases
-    public void addMayAliasPairs(Set varSet, Variable var) {
-        for (Iterator iter = varSet.iterator(); iter.hasNext(); ) {
-            Variable varFromSet = (Variable) iter.next();
-            this.add(new MayAliasPair(varFromSet, var));
+    public void addMayAliasPairs(Set<Variable> variables, Variable variable) {
+        for (Variable variableFromSet : variables) {
+            this.add(new MayAliasPair(variableFromSet, variable));
         }
     }
 
@@ -209,25 +207,18 @@ public class AliasLatticeElement
         SccGraph sccGraph = new SccGraph(variablesInMust);
 
         // for each of my own must-alias-groups: draw SCC
-        for (Iterator iter = this.mustAliases.getGroups().iterator(); iter.hasNext(); ) {
-            MustAliasGroup group = (MustAliasGroup) iter.next();
+        for (MustAliasGroup group : this.mustAliases.getGroups()) {
             sccGraph.drawFirstScc(group.getVariables());
         }
 
         // for each of the foreign must-alias-groups: draw SCC
-        for (Iterator iter = foreignMustAliases.getGroups().iterator(); iter.hasNext(); ) {
-            MustAliasGroup group = (MustAliasGroup) iter.next();
+        for (MustAliasGroup group : foreignMustAliases.getGroups()) {
             sccGraph.drawSecondScc(group.getVariables());
         }
 
         // single edges in the resulting graph correspond to may-alias pairs
-        Set singleEdges = sccGraph.getSingleEdges();
-        for (Iterator iter = singleEdges.iterator(); iter.hasNext(); ) {
-            SccEdge singleEdge = (SccEdge) iter.next();
-            this.mayAliases.add(
-                new MayAliasPair(
-                    singleEdge.getN1().getLabel(),
-                    singleEdge.getN2().getLabel()));
+        for (SccEdge singleEdge : sccGraph.getSingleEdges()) {
+            this.mayAliases.add(new MayAliasPair(singleEdge.getN1().getLabel(), singleEdge.getN2().getLabel()));
         }
 
         // SCC's formed by double edges in the resulting graph correspond

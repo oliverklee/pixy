@@ -27,8 +27,7 @@ public class CompositeTransferFunction
     }
 
     public LatticeElement transfer(LatticeElement in) {
-        for (Iterator iter = this.tfs.iterator(); iter.hasNext(); ) {
-            TransferFunction tf = (TransferFunction) iter.next();
+        for (TransferFunction tf : this.tfs) {
             in = tf.transfer(in);
         }
         return in;

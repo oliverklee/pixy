@@ -53,8 +53,7 @@ public class CfgNodeCallBuiltin
 
     public List<Variable> getVariables() {
         List<Variable> retMe = new LinkedList<Variable>();
-        for (Iterator iter = this.paramList.iterator(); iter.hasNext(); ) {
-            TacActualParam param = (TacActualParam) iter.next();
+        for (TacActualParam param : this.paramList) {
             TacPlace paramPlace = param.getPlace();
             if (paramPlace instanceof Variable) {
                 retMe.add((Variable) paramPlace);

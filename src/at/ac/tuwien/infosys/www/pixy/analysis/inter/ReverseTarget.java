@@ -12,13 +12,13 @@ public class ReverseTarget {
     private CfgNodeCall callNode;
 
     // a set of Contexts
-    private Set<? extends Context> contexts;
+    private Set<Context> contexts;
 
 //  *********************************************************************************
 //  CONSTRUCTORS ********************************************************************
 //  *********************************************************************************
 
-    public ReverseTarget(CfgNodeCall callNode, Set<? extends Context> contexts) {
+    public ReverseTarget(CfgNodeCall callNode, Set<Context> contexts) {
         this.callNode = callNode;
         this.contexts = contexts;
     }
@@ -31,7 +31,7 @@ public class ReverseTarget {
         return this.callNode;
     }
 
-    public Set<? extends Context> getContexts() {
+    public Set<Context> getContexts() {
         return this.contexts;
     }
 }

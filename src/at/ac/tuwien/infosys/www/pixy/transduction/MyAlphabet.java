@@ -9,8 +9,7 @@ import java.util.Set;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class MyAlphabet {
-
-    private Set<Object> alphabet;
+    private Set<Character> alphabet;
 
     public MyAlphabet() {
         // LATER: do we need a complete alphabet here...?
@@ -21,24 +20,29 @@ public class MyAlphabet {
             'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
             ' ', '*', '"', '\'', '='};
 
-        this.alphabet = new HashSet<Object>();
+        this.alphabet = new HashSet<Character>();
         for (char c : alphabet) {
             this.alphabet.add(c);
         }
     }
 
-    public Set<Object> getAlphabet() {
-        return new HashSet<Object>(this.alphabet);
+    /**
+     * Gets a copy of the alphabet.
+     *
+     * @return a copy of the alphabet
+     */
+    public Set<Character> getAlphabet() {
+        return new HashSet<Character>(this.alphabet);
     }
 
     // returns the contents for an fsmtools symbols file
     public String getFSMSymbols() {
         StringBuilder b = new StringBuilder();
         b.append("EPS 0\n");
-        for (Object o : this.alphabet) {
+        for (Character characterFromAlphabet : this.alphabet) {
             StringBuilder temp = new StringBuilder();
-            Transition.appendCharString((Character) o, temp);
-            b.append(temp.toString()).append(" ").append((int) o).append("\n");
+            Transition.appendCharString(characterFromAlphabet, temp);
+            b.append(temp.toString()).append(" ").append((int) characterFromAlphabet).append("\n");
         }
         return b.toString();
     }

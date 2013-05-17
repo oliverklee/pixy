@@ -43,9 +43,8 @@ public class DepTfTester
         this.testUs = new LinkedList<Variable>();
 
         // extract formals that are to be tested
-        for (Iterator iter = cfgNode.getParamNumbers().iterator(); iter.hasNext(); ) {
-            Integer paramNum = (Integer) iter.next();
-            int param_int = paramNum.intValue();
+        for (Integer paramNumber : cfgNode.getParamNumbers()) {
+            int param_int = paramNumber.intValue();
             TacFormalParam formalParam = function.getParam(param_int);
             if (formalParam == null) {
                 throw new RuntimeException("Error: Function " + function.getName() +

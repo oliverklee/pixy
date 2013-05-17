@@ -284,8 +284,7 @@ public class XSSAnalysis
                 // special treatment is necessary here
                 if (functionName.equals("printf")) {
                     // none of the arguments to printf must be tainted
-                    for (Iterator iter = paramList.iterator(); iter.hasNext(); ) {
-                        TacActualParam param = (TacActualParam) iter.next();
+                    for (TacActualParam param : paramList) {
                         sink.addSensitivePlace(param.getPlace());
                     }
                     sinks.add(sink);

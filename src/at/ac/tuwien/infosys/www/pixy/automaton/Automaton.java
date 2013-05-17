@@ -1471,12 +1471,12 @@ public class Automaton
                     Transition[] at = lt.toArray(new Transition[lt.size()]);
                     Arrays.sort(at, new TransitionComparator(false));
                     char min = t1.min;
-                    for (int k = 0; k < at.length; k++) {
-                        if (at[k].min > min)
+                    for (Transition anAt : at) {
+                        if (anAt.min > min)
                             break;
-                        if (at[k].max >= t1.max)
+                        if (anAt.max >= t1.max)
                             continue loop;
-                        min = (char) (at[k].max + 1);
+                        min = (char) (anAt.max + 1);
                     }
                     ShuffleConfiguration nc = new ShuffleConfiguration(c, i1, t1.to, min);
                     StringBuilder sb = new StringBuilder();
@@ -1757,7 +1757,7 @@ public class Automaton
         State[] states = ss.toArray(new State[0]);
         boolean[][] mark = new boolean[states.length][states.length];
         ArrayList<ArrayList<HashSet<IntPair>>> triggers = new ArrayList<ArrayList<HashSet<IntPair>>>();
-        for (int n1 = 0; n1 < states.length; n1++) {
+        for (State state : states) {
             ArrayList<HashSet<IntPair>> v = new ArrayList<HashSet<IntPair>>();
             initialize(v, states.length);
             triggers.add(v);
@@ -1781,8 +1781,7 @@ public class Automaton
                 }
         // assign equivalence class numbers to states
         int numclasses = 0;
-        for (int n = 0; n < states.length; n++)
-            states[n].number = -1;
+        for (State state : states) state.number = -1;
         for (int n1 = 0; n1 < states.length; n1++)
             if (states[n1].number == -1) {
                 states[n1].number = numclasses;
@@ -1845,7 +1844,7 @@ public class Automaton
         char[] sigma = getStartPoints();
         // initialize data structures
         ArrayList<ArrayList<LinkedList<State>>> reverse = new ArrayList<ArrayList<LinkedList<State>>>();
-        for (int q = 0; q < states.length; q++) {
+        for (State state : states) {
             ArrayList<LinkedList<State>> v = new ArrayList<LinkedList<State>>();
             initialize(v, sigma.length);
             reverse.add(v);
@@ -1873,8 +1872,7 @@ public class Automaton
             }
         }
         // find initial partition and reverse edges
-        for (int q = 0; q < states.length; q++) {
-            State qq = states[q];
+        for (State qq : states) {
             int j;
             if (qq.accept)
                 j = 0;
@@ -1980,8 +1978,7 @@ public class Automaton
             }
         }
         // build transitions and set acceptance
-        for (int n = 0; n < newstates.length; n++) {
-            State s = newstates[n];
+        for (State s : newstates) {
             s.accept = states[s.number].accept;
             for (Transition t : states[s.number].transitions)
                 s.transitions.add(new Transition(t.min, t.max, newstates[t.to.number]));
@@ -2766,8 +2763,8 @@ public class Automaton
             p = worklist.removeFirst();
             p.s.accept = p.s1.accept && p.s2.accept;
             Transition[] t1 = transitions1[p.s1.number];
-            for (int n1 = 0; n1 < t1.length; n1++) {
-                StatePair q = new StatePair(t1[n1].to, p.s2);
+            for (Transition aT1 : t1) {
+                StatePair q = new StatePair(aT1.to, p.s2);
                 StatePair r = newstates.get(q);
                 if (r == null) {
                     q.s = new State();
@@ -2775,11 +2772,11 @@ public class Automaton
                     newstates.put(q, q);
                     r = q;
                 }
-                p.s.transitions.add(new Transition(t1[n1].min, t1[n1].max, r.s));
+                p.s.transitions.add(new Transition(aT1.min, aT1.max, r.s));
             }
             Transition[] t2 = transitions2[p.s2.number];
-            for (int n2 = 0; n2 < t2.length; n2++) {
-                StatePair q = new StatePair(p.s1, t2[n2].to);
+            for (Transition aT2 : t2) {
+                StatePair q = new StatePair(p.s1, aT2.to);
                 StatePair r = newstates.get(q);
                 if (r == null) {
                     q.s = new State();
@@ -2787,7 +2784,7 @@ public class Automaton
                     newstates.put(q, q);
                     r = q;
                 }
-                p.s.transitions.add(new Transition(t2[n2].min, t2[n2].max, r.s));
+                p.s.transitions.add(new Transition(aT2.min, aT2.max, r.s));
             }
         }
         c.deterministic = false;
@@ -3178,8 +3175,7 @@ class ShuffleConfiguration {
 
     private void computeHash() {
         int hash = 0;
-        for (int i = 0; i < ca_states.length; i++)
-            hash ^= ca_states[i].hashCode();
+        for (State ca_state : ca_states) hash ^= ca_state.hashCode();
         hash ^= a_state.hashCode() * 100;
         if (shuffle_suspended || surrogate)
             hash += suspended1;

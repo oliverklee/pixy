@@ -40,13 +40,9 @@ public class AliasTfEntry
         AliasLatticeElement out = new AliasLatticeElement(in);
 
         // initialize g-shadows
-
-        Map globals2GShadows = this.function.getSymbolTable().getGlobals2GShadows();
-
-        for (Iterator iter = globals2GShadows.entrySet().iterator(); iter.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            Variable global = (Variable) entry.getKey();
-            Variable gShadow = (Variable) entry.getValue();
+        for (Map.Entry<Variable, Variable> entry : this.function.getSymbolTable().getGlobals2GShadows().entrySet()) {
+            Variable global = entry.getKey();
+            Variable gShadow = entry.getValue();
 
             // note: the TacConverter already took care that arrays and array elements
             // don't get shadow variables, so you don't have to check this here again
@@ -56,13 +52,9 @@ public class AliasTfEntry
         }
 
         // initialize f-shadows
-
-        Map formals2FShadows = this.function.getSymbolTable().getFormals2FShadows();
-
-        for (Iterator iter = formals2FShadows.entrySet().iterator(); iter.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            Variable formal = (Variable) entry.getKey();
-            Variable fShadow = (Variable) entry.getValue();
+        for (Map.Entry<Variable, Variable> entry : this.function.getSymbolTable().getFormals2FShadows().entrySet()) {
+            Variable formal = entry.getKey();
+            Variable fShadow = entry.getValue();
 
             // note: the TacConverter already took care that arrays and array elements
             // don't get shadow variables, so you don't have to check this here again

@@ -27,8 +27,7 @@ public class ECS {
     // it's not in here
     public int getPosition(CallString findMe) {
         int index = 0;
-        for (Iterator iter = this.callStrings.iterator(); iter.hasNext(); ) {
-            CallString callString = (CallString) iter.next();
+        for (CallString callString : this.callStrings) {
             if (callString.equals(findMe)) {
                 return index;
             }
@@ -63,8 +62,7 @@ public class ECS {
         }
 
         StringBuilder myString = new StringBuilder();
-        for (Iterator iter = this.callStrings.iterator(); iter.hasNext(); ) {
-            CallString callString = (CallString) iter.next();
+        for (CallString callString : this.callStrings) {
             myString.append(callString);
             myString.append(", ");
         }
@@ -77,8 +75,7 @@ public class ECS {
         }
 
         StringBuilder b = new StringBuilder();
-        for (Iterator iter = this.callStrings.iterator(); iter.hasNext(); ) {
-            CallString callString = (CallString) iter.next();
+        for (CallString callString : this.callStrings) {
             b.append(callString.dump());
         }
         return b.toString();

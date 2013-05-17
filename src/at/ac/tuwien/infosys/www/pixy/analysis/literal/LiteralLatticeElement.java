@@ -59,15 +59,14 @@ public class LiteralLatticeElement
     // - special constant _UNTAINTED: top
     // - and a few other special constants (see below)
     private LiteralLatticeElement(
-        List places,
+        List<TacPlace> places,
         ConstantsTable constantsTable,
-        List functions,
+        List<TacFunction> functions,
         SymbolTable superSymbolTable) {
 
         // initialize conservative base mapping for variables & constants: TOP
         this.placeToLit = new HashMap<TacPlace, Literal>();
-        for (Iterator iter = places.iterator(); iter.hasNext(); ) {
-            TacPlace place = (TacPlace) iter.next();
+        for (TacPlace place : places) {
             this.placeToLit.put(place, Literal.TOP);
         }
 
@@ -77,17 +76,15 @@ public class LiteralLatticeElement
         // for return variables has to have the same properties as the default
         // mapping for NULL;
         // but skip the return variable of the special unknown function! (see below)
-        for (Iterator iter = places.iterator(); iter.hasNext(); ) {
-            TacPlace place = (TacPlace) iter.next();
+        for (TacPlace place : places) {
             if ((place instanceof Variable) && (place.getVariable().isReturnVariable())) {
                 this.placeToLit.put(place, Literal.NULL);
             }
         }
 
         // initialize constants
-        Map constants = constantsTable.getConstants();
-        for (Iterator iter = constants.values().iterator(); iter.hasNext(); ) {
-            Constant constant = (Constant) iter.next();
+        Map<String, Constant> constants = constantsTable.getConstants();
+        for (Constant constant : constants.values()) {
             if (constant.isSpecial()) {
                 // retrieve stored values for special constants
                 this.placeToLit.put(constant, constant.getSpecialLiteral());
@@ -102,15 +99,13 @@ public class LiteralLatticeElement
         // their initialization depends on the register_globals setting:
         // true: top
         // false: like other locals (i.e., null)
-        for (Iterator iter = functions.iterator(); iter.hasNext(); ) {
-            TacFunction function = (TacFunction) iter.next();
+        for (TacFunction function : functions) {
             if (function.isMain() && MyOptions.optionG) {
                 continue;
             }
-            SymbolTable symtab = function.getSymbolTable();
-            Map variables = symtab.getVariables();
-            for (Iterator varIter = variables.values().iterator(); varIter.hasNext(); ) {
-                Variable variable = (Variable) varIter.next();
+            SymbolTable symbolTable = function.getSymbolTable();
+            Map<Variable, Variable> variables = symbolTable.getVariables();
+            for (Variable variable : variables.values()) {
                 // array elements are handled along with their root
                 if (variable.isArrayElement()) {
                     continue;
@@ -262,8 +257,7 @@ public class LiteralLatticeElement
         if (!root.isArray()) {
             return;
         }
-        for (Iterator iter = root.getLiteralElements().iterator(); iter.hasNext(); ) {
-            Variable element = (Variable) iter.next();
+        for (Variable element : root.getLiteralElements()) {
             this.setWholeTree(element, lit);
         }
     }
@@ -278,8 +272,7 @@ public class LiteralLatticeElement
         if (!root.isArray()) {
             return;
         }
-        for (Iterator iter = root.getLiteralElements().iterator(); iter.hasNext(); ) {
-            Variable element = (Variable) iter.next();
+        for (Variable element : root.getLiteralElements()) {
             this.setWholeTree(element, lit);
         }
     }
@@ -291,8 +284,7 @@ public class LiteralLatticeElement
         if (!root.isArray()) {
             return;
         }
-        for (Iterator iter = root.getLiteralElements().iterator(); iter.hasNext(); ) {
-            Variable element = (Variable) iter.next();
+        for (Variable element : root.getLiteralElements()) {
             this.lubWholeTree(element, lit);
         }
     }
@@ -306,8 +298,7 @@ public class LiteralLatticeElement
         if (!root.isArray()) {
             return;
         }
-        for (Iterator iter = root.getLiteralElements().iterator(); iter.hasNext(); ) {
-            Variable element = (Variable) iter.next();
+        for (Variable element : root.getLiteralElements()) {
             this.lubWholeTree(element, lit);
         }
     }
@@ -322,8 +313,8 @@ public class LiteralLatticeElement
         LiteralLatticeElement foreign = (LiteralLatticeElement) foreignX;
 
         // lub over my non-default mappings
-        for (Iterator iter = this.placeToLit.entrySet().iterator(); iter.hasNext(); ) {
-            Map.Entry myEntry = (Map.Entry) iter.next();
+        for (Map.Entry<TacPlace, Literal> tacPlaceLiteralEntry : this.placeToLit.entrySet()) {
+            Map.Entry myEntry = (Map.Entry) tacPlaceLiteralEntry;
             TacPlace myPlace = (TacPlace) myEntry.getKey();
             Literal myLiteral = (Literal) myEntry.getValue();
 
@@ -335,11 +326,10 @@ public class LiteralLatticeElement
 
         // lub the remaining non-default mappings of "foreign" over my
         // default mappings
-        Map foreignPlaceToLit = foreign.getPlaceToLit();
-        for (Iterator iter = foreignPlaceToLit.entrySet().iterator(); iter.hasNext(); ) {
-            Map.Entry foreignEntry = (Map.Entry) iter.next();
-            TacPlace foreignPlace = (TacPlace) foreignEntry.getKey();
-            Literal foreignLiteral = (Literal) foreignEntry.getValue();
+        Map<TacPlace, Literal> foreignPlaceToLit = foreign.getPlaceToLit();
+        for (Map.Entry<TacPlace, Literal> foreignEntry : foreignPlaceToLit.entrySet()) {
+            TacPlace foreignPlace = foreignEntry.getKey();
+            Literal foreignLiteral = foreignEntry.getValue();
 
             Literal myLiteral = this.getNonDefaultLiteral(foreignPlace);
             if (myLiteral == null) {
@@ -386,8 +376,7 @@ public class LiteralLatticeElement
         if (!root.isArray()) {
             return;
         }
-        for (Iterator iter = root.getLiteralElements().iterator(); iter.hasNext(); ) {
-            Variable element = (Variable) iter.next();
+        for (Variable element : root.getLiteralElements()) {
             this.initTree(element, lit);
         }
     }
@@ -396,7 +385,7 @@ public class LiteralLatticeElement
 
     // mustAliases and mayAliases: of left; mustAliases always have to
     // include left itself
-    public void assignSimple(Variable left, TacPlace right, Set mustAliases, Set mayAliases) {
+    public void assignSimple(Variable left, TacPlace right, Set<Variable> mustAliases, Set<Variable> mayAliases) {
 
         // initialize state copy (required by strongOverlap)
         this.origPlaceToLit = new HashMap<TacPlace, Literal>(this.placeToLit);
@@ -434,14 +423,12 @@ public class LiteralLatticeElement
                 Literal rightLit = this.getLiteral(right);
 
                 // strong update for must-aliases (including left itself)
-                for (Iterator iter = mustAliases.iterator(); iter.hasNext(); ) {
-                    Variable mustAlias = (Variable) iter.next();
+                for (Variable mustAlias : mustAliases) {
                     this.setLiteral(mustAlias, rightLit);
                 }
 
                 // weak update for may-aliases
-                for (Iterator iter = mayAliases.iterator(); iter.hasNext(); ) {
-                    Variable mayAlias = (Variable) iter.next();
+                for (Variable mayAlias : mayAliases) {
                     this.lubLiteral(mayAlias, rightLit);
                 }
 
@@ -465,8 +452,7 @@ public class LiteralLatticeElement
             case 4:
 
                 // weak overlap for all MI variables of left
-                for (Iterator iter = this.getMiList(left).iterator(); iter.hasNext(); ) {
-                    Variable miVar = (Variable) iter.next();
+                for (Variable miVar : this.getMiList(left)) {
                     this.weakOverlap(miVar, right);
                 }
                 break;
@@ -825,8 +811,7 @@ public class LiteralLatticeElement
             if (indices.isEmpty()) {
                 miList.addAll(literalElements);
             } else {
-                for (Iterator iter = literalElements.iterator(); iter.hasNext(); ) {
-                    Variable target = (Variable) iter.next();
+                for (Variable target : literalElements) {
                     this.miRecurse(miList, target, new LinkedList<TacPlace>(indices));
                 }
             }
@@ -849,17 +834,15 @@ public class LiteralLatticeElement
                 // target known as array
 
                 // for all literal direct elements of target...
-                List targetElements = target.getLiteralElements();
-                for (Iterator iter = targetElements.iterator(); iter.hasNext(); ) {
-                    Variable targetElem = (Variable) iter.next();
-
+                List<Variable> targetElements = target.getLiteralElements();
+                for (Variable targetElement : targetElements) {
                     // if there is a direct element of source with the same
                     // direct index...
-                    Variable sourceElem = sourceArray.getElement(targetElem.getIndex());
-                    if (sourceElem != null) {
-                        this.strongOverlap(targetElem, sourceElem);
+                    Variable sourceElement = sourceArray.getElement(targetElement.getIndex());
+                    if (sourceElement != null) {
+                        this.strongOverlap(targetElement, sourceElement);
                     } else {
-                        this.setWholeTree(targetElem, Literal.TOP);
+                        this.setWholeTree(targetElement, Literal.TOP);
                     }
                 }
             }
@@ -889,17 +872,15 @@ public class LiteralLatticeElement
                 // target known as array
 
                 // for all literal direct elements of target...
-                List targetElements = target.getLiteralElements();
-                for (Iterator iter = targetElements.iterator(); iter.hasNext(); ) {
-                    Variable targetElem = (Variable) iter.next();
-
+                List<Variable> targetElements = target.getLiteralElements();
+                for (Variable targetElement : targetElements) {
                     // if there is a direct element of source with the same
                     // direct index...
-                    Variable sourceElem = sourceArray.getElement(targetElem.getIndex());
-                    if (sourceElem != null) {
-                        this.weakOverlap(targetElem, sourceElem);
+                    Variable sourceElement = sourceArray.getElement(targetElement.getIndex());
+                    if (sourceElement != null) {
+                        this.weakOverlap(targetElement, sourceElement);
                     } else {
-                        this.lubWholeTree(targetElem, Literal.TOP);
+                        this.lubWholeTree(targetElement, Literal.TOP);
                     }
                 }
             }
@@ -964,12 +945,10 @@ public class LiteralLatticeElement
     // constants)
     public void copyGlobalLike(LiteralLatticeElement origElement) {
 
-        Map origMap = origElement.getPlaceToLit();
-        for (Iterator iter = origMap.entrySet().iterator(); iter.hasNext(); ) {
-
-            Map.Entry entry = (Map.Entry) iter.next();
-            TacPlace origPlace = (TacPlace) entry.getKey();
-            Literal origLit = (Literal) entry.getValue();
+        Map<TacPlace, Literal> origMap = origElement.getPlaceToLit();
+        for (Map.Entry<TacPlace, Literal> entry : origMap.entrySet()) {
+            TacPlace origPlace = entry.getKey();
+            Literal origLit = entry.getValue();
 
             // decide whether to copy this place
             boolean copyMe = false;
@@ -995,12 +974,10 @@ public class LiteralLatticeElement
     // copies the non-default literal mappings for global variables from origElement
     public void copyLocals(LiteralLatticeElement origElement) {
 
-        Map origMap = origElement.getPlaceToLit();
-        for (Iterator iter = origMap.entrySet().iterator(); iter.hasNext(); ) {
-
-            Map.Entry entry = (Map.Entry) iter.next();
-            TacPlace origPlace = (TacPlace) entry.getKey();
-            Literal origLit = (Literal) entry.getValue();
+        Map<TacPlace, Literal> origMap = origElement.getPlaceToLit();
+        for (Map.Entry<TacPlace, Literal> entry : origMap.entrySet()) {
+            TacPlace origPlace = entry.getKey();
+            Literal origLit = entry.getValue();
 
             // nothing to do for non-variables and non-locals
             if (!(origPlace instanceof Variable)) {

@@ -132,11 +132,11 @@ public abstract class IntraAnalysis
 
                 // for each outgoing edge...
                 CfgEdge[] outEdges = node.getOutEdges();
-                for (int i = 0; i < outEdges.length; i++) {
-                    if (outEdges[i] != null) {
+                for (CfgEdge outEdge : outEdges) {
+                    if (outEdge != null) {
 
                         // determine the successor
-                        CfgNode succ = outEdges[i].getDest();
+                        CfgNode succ = outEdge.getDest();
 
                         // propagate the result of applying the transfer function
                         // to the successor

@@ -39,8 +39,7 @@ public class MyAcceptor
         my.toDot("aut1.dot");
 
         // for all states except the initial/terminal state...
-        for (Iterator iter = my.getStates().iterator(); iter.hasNext(); ) {
-            MyState state = (MyState) iter.next();
+        for (MyState state : my.getStates()) {
             if (state.isTerminal() || state.isInitial()) {
                 continue;
             }

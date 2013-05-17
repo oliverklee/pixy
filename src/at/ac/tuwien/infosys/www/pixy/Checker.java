@@ -370,8 +370,7 @@ public final class Checker {
         // print symbol tables
         if (MyOptions.optionT) {
             Dumper.dump(tac.getSuperSymbolTable(), "Superglobals");
-            for (Iterator iter = tac.getUserFunctions().values().iterator(); iter.hasNext(); ) {
-                TacFunction function = (TacFunction) iter.next();
+            for (TacFunction function : tac.getUserFunctions().values()) {
                 Dumper.dump(function.getSymbolTable(), function.getName());
             }
             Dumper.dump(tac.getConstantsTable());
@@ -379,16 +378,14 @@ public final class Checker {
 
         // print function information
         if (MyOptions.optionF) {
-            for (Iterator iter = tac.getUserFunctions().values().iterator(); iter.hasNext(); ) {
-                TacFunction function = (TacFunction) iter.next();
+            for (TacFunction function : tac.getUserFunctions().values()) {
                 Dumper.dump(function);
             }
         }
 
         // print control flow graphs
         if (MyOptions.optionC || MyOptions.optionD) {
-            for (Iterator iter = tac.getUserFunctions().values().iterator(); iter.hasNext(); ) {
-                TacFunction function = (TacFunction) iter.next();
+            for (TacFunction function : tac.getUserFunctions().values()) {
                 Dumper.dumpDot(function, MyOptions.graphPath, MyOptions.optionD);
             }
             System.exit(0);

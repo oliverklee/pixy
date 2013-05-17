@@ -45,8 +45,7 @@ public class MayAliases {
     // (a set of Variables)
     public Set<Variable> getGlobalAliases(Variable var) {
         Set<Variable> retMe = new HashSet<Variable>();
-        for (Iterator iter = this.pairs.iterator(); iter.hasNext(); ) {
-            MayAliasPair pair = (MayAliasPair) iter.next();
+        for (MayAliasPair pair : this.pairs) {
             Variable globalMayAlias = pair.getGlobalMayAlias(var);
             if (globalMayAlias != null) {
                 retMe.add(globalMayAlias);
@@ -59,8 +58,7 @@ public class MayAliases {
     // (a set of Variables)
     public Set<Variable> getLocalAliases(Variable var) {
         Set<Variable> retMe = new HashSet<Variable>();
-        for (Iterator iter = this.pairs.iterator(); iter.hasNext(); ) {
-            MayAliasPair pair = (MayAliasPair) iter.next();
+        for (MayAliasPair pair : this.pairs) {
             Variable localMayAlias = pair.getLocalMayAlias(var);
             if (localMayAlias != null) {
                 retMe.add(localMayAlias);
@@ -72,8 +70,7 @@ public class MayAliases {
     // returns a set of variables that are may-aliases of the given variable
     public Set<Variable> getAliases(Variable var) {
         Set<Variable> retMe = new HashSet<Variable>();
-        for (Iterator iter = this.pairs.iterator(); iter.hasNext(); ) {
-            MayAliasPair pair = (MayAliasPair) iter.next();
+        for (MayAliasPair pair : this.pairs) {
             Variable mayAlias = pair.getMayAlias(var);
             if (mayAlias != null) {
                 retMe.add(mayAlias);
@@ -100,8 +97,7 @@ public class MayAliases {
     // through "left" in these copies
     public void addAliasFor(Variable left, Variable right) {
         HashSet<MayAliasPair> newPairs = new HashSet<MayAliasPair>();
-        for (Iterator iter = this.pairs.iterator(); iter.hasNext(); ) {
-            MayAliasPair pair = (MayAliasPair) iter.next();
+        for (MayAliasPair pair : this.pairs) {
             if (pair.contains(right)) {
                 MayAliasPair newPair = new MayAliasPair(pair);
                 newPair.replaceBy(right, left);
@@ -167,9 +163,7 @@ public class MayAliases {
         Set<MayAliasPair> newPairs = new HashSet<MayAliasPair>(this.pairs);
 
         // for each pair...
-        for (Iterator iter = this.pairs.iterator(); iter.hasNext(); ) {
-            MayAliasPair pair = (MayAliasPair) iter.next();
-
+        for (MayAliasPair pair : this.pairs) {
             // if it contains the searched variable...
             if (pair.contains(findMe)) {
 
@@ -193,8 +187,7 @@ public class MayAliases {
     }
 
     public void replace(Map replacements) {
-        for (Iterator iter = this.pairs.iterator(); iter.hasNext(); ) {
-            MayAliasPair pair = (MayAliasPair) iter.next();
+        for (MayAliasPair pair : this.pairs) {
             pair.replace(replacements);
         }
     }

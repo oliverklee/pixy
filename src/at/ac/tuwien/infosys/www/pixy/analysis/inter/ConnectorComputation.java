@@ -50,7 +50,7 @@ public class ConnectorComputation {
     // call-string length
     int kSize;
 
-    public ConnectorComputation(List functions, TacFunction mainFunction, int kSize) {
+    public ConnectorComputation(List<TacFunction> functions, TacFunction mainFunction, int kSize) {
         this.kSize = kSize;
         this.mainFunction = mainFunction;
 
@@ -62,9 +62,7 @@ public class ConnectorComputation {
         this.function2ECS = new HashMap<TacFunction, ECS>();
         this.containedCalls = new HashMap<TacFunction, List<CfgNodeCall>>();
 
-        for (Iterator iter = functions.iterator(); iter.hasNext(); ) {
-            TacFunction function = (TacFunction) iter.next();
-
+        for (TacFunction function : functions) {
             this.function2ECS.put(function, new ECS());
 
             List<CfgNodeCall> calls = function.getContainedCalls();
@@ -83,8 +81,7 @@ public class ConnectorComputation {
 
         // initialize connector functions
         this.call2ConnectorFunction = new HashMap<CfgNodeCall, ConnectorFunction>();
-        for (Iterator iter = callNodes.iterator(); iter.hasNext(); ) {
-            CfgNodeCall callNode = (CfgNodeCall) iter.next();
+        for (CfgNodeCall callNode : callNodes) {
             this.call2ConnectorFunction.put(callNode, new ConnectorFunction());
         }
     }
@@ -204,7 +201,7 @@ public class ConnectorComputation {
             // i.e., |ECS| = 1 for each function
 
             // prepare one-element context set
-            Set<CSContext> contextSet = new HashSet<CSContext>();
+            Set<Context> contextSet = new HashSet<Context>();
             contextSet.add(new CSContext(0));
 
             // for each call to this function...
@@ -220,7 +217,7 @@ public class ConnectorComputation {
             CallString exitedCallString = exitedECS.getCallString(sourcePosition);
             CfgNodeCall returnToMe = exitedCallString.getLast();
             ConnectorFunction returnToMeCF = this.getConFunc(returnToMe);
-            Set<CSContext> returnToMePositions = returnToMeCF.reverseApply(sourcePosition);
+            Set<Context> returnToMePositions = returnToMeCF.reverseApply(sourcePosition);
 
             reverseTargets.add(new ReverseTarget(returnToMe, returnToMePositions));
         }

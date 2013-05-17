@@ -38,19 +38,14 @@ public class FunctionalAnalysis
 
     public List<ReverseTarget> getReverseTargets(TacFunction exitedFunction, Context contextX) {
 
-        //System.out.println("call to getReverseTartet!");
+        //System.out.println("call to getReverseTarget!");
 
         List<ReverseTarget> retMe = new LinkedList<ReverseTarget>();
 
         FunctionalContext context = (FunctionalContext) contextX;
 
         // for each call to this function...
-        List calls = exitedFunction.getCalledFrom();
-        for (Iterator iter = calls.iterator(); iter.hasNext(); ) {
-
-            // get call node
-            CfgNodeCall callNode = (CfgNodeCall) iter.next();
-
+        for (CfgNodeCall callNode : exitedFunction.getCalledFrom()) {
             // find out possible contexts of the callee;
             // example: caller has two contexts c1 and c2; under both contexts,
             // the incoming value at the call node is e1; for the callee,
@@ -62,7 +57,7 @@ public class FunctionalAnalysis
             if (analysisNode == null) {
                 continue;
             }
-            Set<FunctionalContext> calleeContexts =
+            Set calleeContexts =
                 analysisNode.getReversePhiContexts(context.getLatticeElement());
 
             // during this for loop, there is always at least one non-null set, i.e.

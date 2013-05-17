@@ -21,8 +21,8 @@ public class InterAnalysisInfo
     // folds all analysis nodes (using recycling) and clears the phi maps
     // (=> saves memory)
     public void foldRecycledAndClean(InterAnalysis analysis) {
-        for (Iterator iter = this.map.values().iterator(); iter.hasNext(); ) {
-            InterAnalysisNode analysisNode = (InterAnalysisNode) iter.next();
+        for (AnalysisNode analysisNode1 : this.map.values()) {
+            InterAnalysisNode analysisNode = (InterAnalysisNode) analysisNode1;
             LatticeElement foldedValue = analysisNode.computeFoldedValue();
             foldedValue = analysis.recycle(foldedValue);
             analysisNode.setFoldedValue(foldedValue);

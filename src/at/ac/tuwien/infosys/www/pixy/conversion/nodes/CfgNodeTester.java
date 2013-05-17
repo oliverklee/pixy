@@ -16,7 +16,7 @@ public class CfgNodeTester
 
     // Set of Integer's indicating the positions of the parameters that
     // are to be tested
-    private Set paramNumbers;
+    private Set<Integer> paramNumbers;
 
     static public final int TEST_TAINT = 0;
     static public final int TEST_ARRAYLABEL = 1;
@@ -42,7 +42,7 @@ public class CfgNodeTester
         return this.whatToTest;
     }
 
-    public Set getParamNumbers() {
+    public Set<Integer> getParamNumbers() {
         return this.paramNumbers;
     }
 

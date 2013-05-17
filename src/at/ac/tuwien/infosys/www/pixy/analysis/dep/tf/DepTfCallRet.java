@@ -32,10 +32,10 @@ public class DepTfCallRet
     private Set<TacPlace> calleeMod;
 
     // call-by-reference parameter pairs
-    private List cbrParams;
+    private List<List<Variable>> cbrParams;
 
     // local variables of the calling function
-    private Collection localCallerVars;
+    private Collection<Variable> localCallerVars;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
@@ -118,9 +118,7 @@ public class DepTfCallRet
         // MUST WITH GLOBALS
 
         // for all local variables of the calling function
-        for (Iterator iter = localCallerVars.iterator(); iter.hasNext(); ) {
-            Variable localCallerVar = (Variable) iter.next();
-
+        for (Variable localCallerVar : localCallerVars) {
             // an arbitrary global must-alias of this local
             Variable globalMustAlias = this.aliasAnalysis.getGlobalMustAlias(localCallerVar, this.prepNode);
             if (globalMustAlias == null) {
@@ -145,20 +143,14 @@ public class DepTfCallRet
         // MUST WITH FORMALS
 
         // for each call-by-reference parameter pair
-        for (Iterator iter = this.cbrParams.iterator(); iter.hasNext(); ) {
-
-            List paramPair = (List) iter.next();
-            Iterator paramPairIter = paramPair.iterator();
-            Variable actualVar = (Variable) paramPairIter.next();
-            Variable formalVar = (Variable) paramPairIter.next();
+        for (List<Variable> paramPair : this.cbrParams) {
+            Iterator<Variable> paramPairIterator = paramPair.iterator();
+            Variable actualVar = paramPairIterator.next();
+            Variable formalVar = paramPairIterator.next();
 
             // local must-aliases of the actual parameter (including trivial ones,
             // so this set contains at least one element)
-            Set localMustAliases = this.aliasAnalysis.getLocalMustAliases(actualVar, this.prepNode);
-
-            for (Iterator lmaIter = localMustAliases.iterator(); lmaIter.hasNext(); ) {
-                Variable localMustAlias = (Variable) lmaIter.next();
-
+            for (Variable localMustAlias : this.aliasAnalysis.getLocalMustAliases(actualVar, this.prepNode)) {
                 // no need to handle visited variables again
                 if (visitedVars.contains(localMustAlias)) {
                     continue;
@@ -179,15 +171,13 @@ public class DepTfCallRet
         // MAY WITH GLOBALS
 
         // for each local variable that was not visited yet
-        for (Iterator iter = localCallerVars.iterator(); iter.hasNext(); ) {
-            Variable localCallerVar = (Variable) iter.next();
-
+        for (Variable localCallerVar : localCallerVars) {
             if (visitedVars.contains(localCallerVar)) {
                 continue;
             }
 
             // global may-aliases of this variable (at the time of call)
-            Set globalMayAliases = this.aliasAnalysis.getGlobalMayAliases(localCallerVar, this.prepNode);
+            Set<Variable> globalMayAliases = this.aliasAnalysis.getGlobalMayAliases(localCallerVar, this.prepNode);
 
             // if there are no such aliases: nothing to do
             if (globalMayAliases.isEmpty()) {
@@ -199,10 +189,8 @@ public class DepTfCallRet
             DepSet computedArrayLabel = origInfo.getArrayLabel(localCallerVar);
 
             // for all these global may-aliases...
-            for (Iterator gmaIter = globalMayAliases.iterator(); gmaIter.hasNext(); ) {
-                Variable globalMayAlias = (Variable) gmaIter.next();
-
-                // its g-shadow
+            for (Variable globalMayAlias : globalMayAliases) {
+                 // its g-shadow
                 Variable globalMayAliasShadow = this.callee.getSymbolTable().getGShadow(globalMayAlias);
 
                 // the shadow's taint/label (from flowback-info)
@@ -223,20 +211,14 @@ public class DepTfCallRet
         // MAY WITH FORMALS
 
         // for each call-by-reference parameter pair
-        for (Iterator iter = this.cbrParams.iterator(); iter.hasNext(); ) {
-
-            List paramPair = (List) iter.next();
-            Iterator paramPairIter = paramPair.iterator();
-            Variable actualVar = (Variable) paramPairIter.next();
-            Variable formalVar = (Variable) paramPairIter.next();
+        for (List<Variable> paramPair : this.cbrParams) {
+            Iterator<Variable> paramPairIterator = paramPair.iterator();
+            Variable actualVar = paramPairIterator.next();
+            Variable formalVar = paramPairIterator.next();
 
             // local may-aliases of the actual parameter (at call-time)
-            Set localMayAliases = this.aliasAnalysis.getLocalMayAliases(actualVar, this.prepNode);
-
             // for each such may-alias that was not visited yet
-            for (Iterator lmaIter = localMayAliases.iterator(); lmaIter.hasNext(); ) {
-                Variable localMayAlias = (Variable) lmaIter.next();
-
+            for (Variable localMayAlias : this.aliasAnalysis.getLocalMayAliases(actualVar, this.prepNode)) {
                 if (visitedVars.contains(localMayAlias)) {
                     continue;
                 }

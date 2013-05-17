@@ -90,15 +90,12 @@ public class AliasTestCase
 
     // checks if the context table at the given hotspot ID contains exactly the
     // lattice elements contained in expectedElements
-    private void checkContext(List expectedElements, int hotspotId) {
-
+    private void checkContext(List<AliasLatticeElement> expectedElements, int hotspotId) {
         Map<Context, LatticeElement> hotspotPhi =
             new HashMap<Context, LatticeElement>(this.getHotspotInfo(hotspotId).getPhi());
 
         // for each expected element...
-        for (Iterator expectedIter = expectedElements.iterator(); expectedIter.hasNext(); ) {
-            AliasLatticeElement expected = (AliasLatticeElement) expectedIter.next();
-
+        for (AliasLatticeElement expected : expectedElements) {
             // if you find it in the real context map: OK and remove it from there
             boolean foundIt = false;
             for (Iterator elementIter = hotspotPhi.entrySet().iterator(); elementIter.hasNext(); ) {

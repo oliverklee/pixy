@@ -55,7 +55,7 @@ public class ConnectorFunction {
 
     // reverse application: returns a set of inputs (CSContext's) for the given output
     // (might be null if there is no such output)
-    public Set<CSContext> reverseApply(int output) {
+    public Set reverseApply(int output) {
         return this.reverse.get(new CSContext(output));
     }
 
@@ -64,8 +64,8 @@ public class ConnectorFunction {
             return "<empty>";
         }
         StringBuilder myString = new StringBuilder();
-        for (Iterator iter = this.pos2pos.entrySet().iterator(); iter.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) iter.next();
+        for (Map.Entry<CSContext, CSContext> csContextCSContextEntry : this.pos2pos.entrySet()) {
+            Map.Entry entry = (Map.Entry) csContextCSContextEntry;
             CSContext from = (CSContext) entry.getKey();
             CSContext to = (CSContext) entry.getValue();
             myString.append(from);

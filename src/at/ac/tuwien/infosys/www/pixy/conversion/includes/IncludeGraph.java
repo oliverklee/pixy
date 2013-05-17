@@ -188,14 +188,13 @@ public class IncludeGraph {
         while (goOn) {
 
             // nodes with in-degree == 0
-            Set inDegreeZeros = clone.getInDegreeZeros();
+            Set<IncludeNode> inDegreeZeros = clone.getInDegreeZeros();
 
             if (inDegreeZeros.isEmpty()) {
                 goOn = false;
             } else {
                 // remove these nodes (together with their outgoing edges)
-                for (Iterator iter = inDegreeZeros.iterator(); iter.hasNext(); ) {
-                    IncludeNode node = (IncludeNode) iter.next();
+                for (IncludeNode node : inDegreeZeros) {
                     clone.removeZero(node);
                 }
             }
@@ -229,9 +228,9 @@ public class IncludeGraph {
     // removes the given node from the graph (and hence, decreases the in-degree
     // for all its successors); assumes that the given node has no incoming edges
     private void removeZero(IncludeNode node) {
-        Set adjSet = (Set) this.adjSets.get(node);
-        for (Iterator iter = adjSet.iterator(); iter.hasNext(); ) {
-            IncludeNode successor = (IncludeNode) iter.next();
+        Set<IncludeNode> adjSet = this.adjSets.get(node);
+        for (IncludeNode successor : adjSet) {
+//            IncludeNode successor = (IncludeNode) anAdjSet;
             this.decreaseInDegree(successor);
         }
         this.adjSets.remove(node);

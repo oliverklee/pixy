@@ -78,10 +78,9 @@ public class DepTfDefine
             // define insensitive constant
 
             // all constants in setMe's insensitivity group have to be set
-            List insensGroup = this.constantsTable.getInsensitiveGroup(constantLit);
-            if (insensGroup != null) {
-                for (Iterator iter = insensGroup.iterator(); iter.hasNext(); ) {
-                    Constant constant = (Constant) iter.next();
+            List<Constant> insensitiveGroup = this.constantsTable.getInsensitiveGroup(constantLit);
+            if (insensitiveGroup != null) {
+                for (Constant constant : insensitiveGroup) {
                     out.defineConstant(constant, this.cfgNode);
                 }
             } else {
@@ -121,10 +120,9 @@ public class DepTfDefine
 
             // all constants in setMe's insensitivity group have to undergo a weak update
             // (except setMe itself)
-            List insensGroup = this.constantsTable.getInsensitiveGroup(constantLit);
-            if (insensGroup != null) {
-                for (Iterator iter = insensGroup.iterator(); iter.hasNext(); ) {
-                    Constant weakConstant = (Constant) iter.next();
+            List<Constant> insensitiveGroup = this.constantsTable.getInsensitiveGroup(constantLit);
+            if (insensitiveGroup != null) {
+                for (Constant weakConstant : insensitiveGroup) {
                     if (!weakConstant.equals(constant)) {
                         out.defineConstantWeak(weakConstant, this.cfgNode);
                     }

@@ -147,7 +147,6 @@ public class MyTransductions {
         int i = 0;
         State previous = from;
         for (Object compositeElement : composite) {
-
             Object inLabel;
             if (i == 0) {
                 inLabel = firstInLabel;
@@ -170,23 +169,21 @@ public class MyTransductions {
     }
 
     public static void addPrefixedRemainingTransitions(
-        TransducerNivat t, MyAlphabet alphabet, List<Object> prefix, State from, State to)
-        throws Exception {
-
-        Set fromTrans = t.delta(from);
+        TransducerNivat t, MyAlphabet alphabet, List<Object> prefix, State from, State to
+    ) throws Exception {
+        Set<Transition> fromTrans = t.delta(from);
         Set<Object> existingInLabels = new HashSet<Object>();
 
         // collect existing in-labels from all transitions leaving "from"
-        for (Iterator iter = fromTrans.iterator(); iter.hasNext(); ) {
-            Transition trans = (Transition) iter.next();
-            TransducerRelation rel = (TransducerRelation) trans.label();
-            Object inLabel = rel.getIn();
+        for (Transition transition : fromTrans) {
+            TransducerRelation relation = (TransducerRelation) transition.label();
+            Object inLabel = relation.getIn();
             existingInLabels.add(inLabel);
         }
 
         // for each label in the alphabet:
         // add transition if this label was not found in the previous loop;
-        for (Object c : alphabet.getAlphabet()) {
+        for (Character c : alphabet.getAlphabet()) {
             if (!existingInLabels.contains(c)) {
                 List<Object> composite = new LinkedList<Object>(prefix);
                 composite.add(c);
@@ -198,15 +195,14 @@ public class MyTransductions {
     // adds id-transducer-transitions for all labels for which there is no
     // transition yet
     public static void addRemainingTransitions(
-        TransducerNivat t, MyAlphabet alphabet, State from, State to)
-        throws Exception {
+        TransducerNivat t, MyAlphabet alphabet, State from, State to
+    ) throws Exception {
 
-        Set fromTrans = t.delta(from);
+        Set<Transition> fromTrans = t.delta(from);
         Set<Object> existingInLabels = new HashSet<Object>();
 
         // collect existing in-labels from all transitions leaving "from"
-        for (Iterator iter = fromTrans.iterator(); iter.hasNext(); ) {
-            Transition trans = (Transition) iter.next();
+        for (Transition trans : fromTrans) {
             TransducerRelation rel = (TransducerRelation) trans.label();
             Object inLabel = rel.getIn();
             existingInLabels.add(inLabel);
@@ -215,7 +211,7 @@ public class MyTransductions {
         // for each label in the alphabet:
         // add transition if this label was not found in the previous loop;
         // use the same label as out-label
-        for (Object c : alphabet.getAlphabet()) {
+        for (Character c : alphabet.getAlphabet()) {
             if (!existingInLabels.contains(c)) {
                 t.addTransition(new Transition(from, new TransducerRelation(c, c), to));
             }

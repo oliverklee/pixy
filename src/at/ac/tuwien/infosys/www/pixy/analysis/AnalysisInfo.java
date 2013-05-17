@@ -26,7 +26,7 @@ public abstract class AnalysisInfo {
         return this.map.size();
     }
 
-    public HashMap getMap() {
+    public HashMap<CfgNode, AnalysisNode> getMap() {
         return this.map;
     }
 }

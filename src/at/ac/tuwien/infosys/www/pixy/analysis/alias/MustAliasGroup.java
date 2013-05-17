@@ -61,8 +61,7 @@ public class MustAliasGroup {
     // returns an arbitrary global variable from this group, or null if there
     // are no global variables in this group
     public Variable getArbitraryGlobal() {
-        for (Iterator iter = this.group.iterator(); iter.hasNext(); ) {
-            Variable var = (Variable) iter.next();
+        for (Variable var : this.group) {
             if (var.isGlobal()) {
                 return var;
             }
@@ -73,8 +72,7 @@ public class MustAliasGroup {
     // returns all local variables in this group
     public Set<Variable> getLocals() {
         Set<Variable> retMe = new HashSet<Variable>();
-        for (Iterator iter = this.group.iterator(); iter.hasNext(); ) {
-            Variable var = (Variable) iter.next();
+        for (Variable var : this.group) {
             if (var.isLocal()) {
                 retMe.add(var);
             }
@@ -85,8 +83,7 @@ public class MustAliasGroup {
     // returns all global variables in this group
     public Set<Variable> getGlobals() {
         Set<Variable> retMe = new HashSet<Variable>();
-        for (Iterator iter = this.group.iterator(); iter.hasNext(); ) {
-            Variable var = (Variable) iter.next();
+        for (Variable var : this.group) {
             if (var.isGlobal()) {
                 retMe.add(var);
             }
@@ -145,12 +142,10 @@ public class MustAliasGroup {
     }
 
     // expects a map Variable -> Variable (replaceMe -> replaceBy)
-    public void replace(Map replacements) {
-
-        for (Iterator iter = replacements.entrySet().iterator(); iter.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            Variable replaceMe = (Variable) entry.getKey();
-            Variable replaceBy = (Variable) entry.getValue();
+    public void replace(Map<Variable, Variable> replacements) {
+        for (Map.Entry<Variable, Variable> entry : replacements.entrySet()) {
+            Variable replaceMe = entry.getKey();
+            Variable replaceBy = entry.getValue();
             if (this.group.contains(replaceMe)) {
                 this.group.remove(replaceMe);
                 this.group.add(replaceBy);

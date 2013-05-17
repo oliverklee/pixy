@@ -25,7 +25,7 @@ public abstract class CfgNode {
     // index 1: for true edge
     protected CfgEdge[] outEdges;
 
-    // number of this cfg node in reverse postorder (speeds up the analysis
+    // number of this cfg node in reverse post-order (speeds up the analysis
     // if used by the worklist); -1 if uninitialized
     private int reversePostOrder;
 
@@ -126,8 +126,7 @@ public abstract class CfgNode {
 
     public List<CfgNode> getPredecessors() {
         List<CfgNode> predecessors = new LinkedList<CfgNode>();
-        for (Iterator iter = this.inEdges.iterator(); iter.hasNext(); ) {
-            CfgEdge inEdge = (CfgEdge) iter.next();
+        for (CfgEdge inEdge : this.inEdges) {
             predecessors.add(inEdge.getSource());
         }
         return predecessors;

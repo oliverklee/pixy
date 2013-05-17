@@ -31,10 +31,8 @@ public class MayAliasPair {
     // clones the given pair
     public MayAliasPair(MayAliasPair orig) {
         this.pair = new HashSet<Variable>();
-        Set origPair = orig.getPair();
-        for (Iterator iter = origPair.iterator(); iter.hasNext(); ) {
-            Variable var = (Variable) iter.next();
-            this.pair.add(var);
+        for (Variable variable : orig.getPair()) {
+            this.pair.add(variable);
         }
     }
 
@@ -174,8 +172,7 @@ public class MayAliasPair {
     // returns true if at least one of the contained variables is a local
     // variable, and false otherwise
     public boolean containsLocals() {
-        for (Iterator iter = this.pair.iterator(); iter.hasNext(); ) {
-            Variable var = (Variable) iter.next();
+        for (Variable var : this.pair) {
             if (var.isLocal()) {
                 return true;
             }
@@ -186,8 +183,7 @@ public class MayAliasPair {
     // returns true if at least one of the contained variables is a local
     // variable, and false otherwise
     public boolean containsGlobals() {
-        for (Iterator iter = this.pair.iterator(); iter.hasNext(); ) {
-            Variable var = (Variable) iter.next();
+        for (Variable var : this.pair) {
             if (var.isGlobal()) {
                 return true;
             }
@@ -198,8 +194,7 @@ public class MayAliasPair {
     // returns true if at least one of the contained variables belongs to
     // the given symbol table, and false otherwise
     public boolean containsVariables(SymbolTable symTab) {
-        for (Iterator iter = this.pair.iterator(); iter.hasNext(); ) {
-            Variable var = (Variable) iter.next();
+        for (Variable var : this.pair) {
             if (var.belongsTo(symTab)) {
                 return true;
             }
@@ -219,8 +214,7 @@ public class MayAliasPair {
     // expects a map Variable -> Variable (replaceMe -> replaceBy)
     public void replace(Map replacements) {
         Set<Variable> newPair = new HashSet<Variable>(this.pair);
-        for (Iterator iter = this.pair.iterator(); iter.hasNext(); ) {
-            Variable var = (Variable) iter.next();
+        for (Variable var : this.pair) {
             Variable replaceBy = (Variable) replacements.get(var);
             if (replaceBy != null) {
                 newPair.remove(var);

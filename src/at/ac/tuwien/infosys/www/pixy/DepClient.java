@@ -58,8 +58,7 @@ public abstract class DepClient {
     public List<Sink> collectSinks() {
         List<Sink> sinks = new LinkedList<Sink>();
         for (TacFunction function : this.depAnalysis.getFunctions()) {
-            for (Iterator iter = function.getCfg().dfPreOrder().iterator(); iter.hasNext(); ) {
-                CfgNode cfgNodeX = (CfgNode) iter.next();
+            for (CfgNode cfgNodeX : function.getCfg().dfPreOrder()) {
                 checkForSink(cfgNodeX, function, sinks);
             }
         }
@@ -367,8 +366,7 @@ public abstract class DepClient {
 
         Map<DepGraphUninitNode, InitialTaint> retMe = new HashMap<DepGraphUninitNode, InitialTaint>();
 
-        for (Iterator iter = uninitNodes.iterator(); iter.hasNext(); ) {
-            DepGraphUninitNode uninitNode = (DepGraphUninitNode) iter.next();
+        for (DepGraphUninitNode uninitNode : uninitNodes) {
             Set<DepGraphNode> preds = relevant.getPredecessors(uninitNode);
             if (preds.size() != 1) {
                 throw new RuntimeException("SNH");

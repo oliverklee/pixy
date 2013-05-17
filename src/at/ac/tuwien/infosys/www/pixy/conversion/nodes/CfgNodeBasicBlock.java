@@ -39,16 +39,14 @@ public class CfgNodeBasicBlock
 
     public List<Variable> getVariables() {
         List<Variable> variables = new LinkedList<Variable>();
-        for (Iterator iter = this.containedNodes.iterator(); iter.hasNext(); ) {
-            CfgNode node = (CfgNode) iter.next();
+        for (CfgNode node : this.containedNodes) {
             variables.addAll(node.getVariables());
         }
         return variables;
     }
 
     public void replaceVariable(int index, Variable replacement) {
-        for (Iterator iter = this.containedNodes.iterator(); iter.hasNext(); ) {
-            CfgNode node = (CfgNode) iter.next();
+        for (CfgNode node : this.containedNodes) {
             List gotVariables = node.getVariables();
             if (gotVariables.size() > index) {
                 node.replaceVariable(index, replacement);

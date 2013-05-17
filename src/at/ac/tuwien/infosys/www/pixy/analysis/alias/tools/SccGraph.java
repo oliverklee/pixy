@@ -23,12 +23,11 @@ public class SccGraph {
     private Set<SccEdge> doubleEdges;
 
     // expects a set of variables for which to create nodes
-    public SccGraph(Set variables) {
+    public SccGraph(Set<Variable> variables) {
         this.label2nodes = new HashMap<Variable, SccNode>();
         this.singleEdges = new HashSet<SccEdge>();
         this.doubleEdges = new HashSet<SccEdge>();
-        for (Iterator iter = variables.iterator(); iter.hasNext(); ) {
-            Variable variable = (Variable) iter.next();
+        for (Variable variable : variables) {
             this.createNode(variable);
         }
     }
@@ -47,18 +46,16 @@ public class SccGraph {
         Set<Variable> fromVarSet = varSet;
         Set<Variable> toVarSet = new HashSet<Variable>(fromVarSet);
 
-        for (Iterator iter = fromVarSet.iterator(); iter.hasNext(); ) {
-            Variable fromVar = (Variable) iter.next();
+        for (Variable fromVar : fromVarSet) {
             toVarSet.remove(fromVar);
             this.drawFirstEdge(fromVar, toVarSet);
         }
     }
 
-    private void drawFirstEdge(Variable fromVar, Set toVarSet) {
+    private void drawFirstEdge(Variable fromVar, Set<Variable> toVarSet) {
         SccNode fromNode = this.label2nodes.get(fromVar);
-        for (Iterator iter = toVarSet.iterator(); iter.hasNext(); ) {
-            Variable var = (Variable) iter.next();
-            SccNode toNode = this.label2nodes.get(var);
+        for (Variable variable : toVarSet) {
+            SccNode toNode = this.label2nodes.get(variable);
             SccEdge edge = new SccEdge(fromNode, toNode);
             this.singleEdges.add(edge);
         }
@@ -68,18 +65,16 @@ public class SccGraph {
         Set<Variable> fromVarSet = varSet;
         Set<Variable> toVarSet = new HashSet<Variable>(fromVarSet);
 
-        for (Iterator iter = fromVarSet.iterator(); iter.hasNext(); ) {
-            Variable fromVar = (Variable) iter.next();
+        for (Variable fromVar : fromVarSet) {
             toVarSet.remove(fromVar);
             this.drawSecondEdge(fromVar, toVarSet);
         }
     }
 
-    private void drawSecondEdge(Variable fromVar, Set toVarSet) {
+    private void drawSecondEdge(Variable fromVar, Set<Variable> toVarSet) {
         SccNode fromNode = this.label2nodes.get(fromVar);
-        for (Iterator iter = toVarSet.iterator(); iter.hasNext(); ) {
-            Variable var = (Variable) iter.next();
-            SccNode toNode = this.label2nodes.get(var);
+        for (Variable variable : toVarSet) {
+            SccNode toNode = this.label2nodes.get(variable);
             SccEdge edge = new SccEdge(fromNode, toNode);
             // check if such an edge already exists
             if (this.singleEdges.contains(edge)) {
@@ -114,15 +109,14 @@ public class SccGraph {
             SccNode node = nodesWorkSet.iterator().next();
 
             // ask the node about its double targets
-            Set doubleTargets = node.getDoubleTargets();
+            Set<SccNode> doubleTargets = node.getDoubleTargets();
 
             // if there are such double targets
             if (!doubleTargets.isEmpty()) {
 
                 // transform this set of SccNodes into a set of Variables
                 Set<Variable> scc = new HashSet<Variable>();
-                for (Iterator iter = doubleTargets.iterator(); iter.hasNext(); ) {
-                    SccNode sccNode = (SccNode) iter.next();
+                for (SccNode sccNode : doubleTargets) {
                     scc.add(sccNode.getLabel());
                 }
                 // add the variable of the node itself to the scc set

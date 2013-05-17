@@ -58,9 +58,7 @@ public final class Cfg {
     // this is what currently happens in ConnectorComputation
     public List<CfgNodeCall> getContainedCalls() {
         List<CfgNodeCall> retMe = new LinkedList<CfgNodeCall>();
-        Iterator iter = this.dfPreOrder().iterator();
-        while (iter.hasNext()) {
-            CfgNode cfgNode = (CfgNode) iter.next();
+        for (CfgNode cfgNode : this.dfPreOrder()) {
             if (cfgNode instanceof CfgNodeCall) {
                 retMe.add((CfgNodeCall) cfgNode);
             }
@@ -125,9 +123,9 @@ public final class Cfg {
             visited.add(node);
             int size = 1;
             CfgEdge[] outEdges = node.getOutEdges();
-            for (int i = 0; i < outEdges.length; i++) {
-                if (outEdges[i] != null) {
-                    size += size(outEdges[i].getDest(), visited);
+            for (CfgEdge outEdge : outEdges) {
+                if (outEdge != null) {
+                    size += size(outEdge.getDest(), visited);
                 }
             }
             return size;

@@ -73,10 +73,9 @@ public class LiteralTfDefine
             // define insensitive constant
 
             // all constants in setMe's insensitivity group have to be set
-            List insensGroup = this.constantsTable.getInsensitiveGroup(constantLit);
-            if (insensGroup != null) {
-                for (Iterator iter = insensGroup.iterator(); iter.hasNext(); ) {
-                    Constant constant = (Constant) iter.next();
+            List<Constant> insensitivityGroup = this.constantsTable.getInsensitiveGroup(constantLit);
+            if (insensitivityGroup != null) {
+                for (Constant constant : insensitivityGroup) {
                     out.defineConstant(constant, valueLit);
                 }
             } else {
@@ -115,10 +114,9 @@ public class LiteralTfDefine
 
             // all constants in setMe's insensitivity group have to undergo a weak update
             // (except setMe itself)
-            List insensGroup = this.constantsTable.getInsensitiveGroup(constantLit);
-            if (insensGroup != null) {
-                for (Iterator iter = insensGroup.iterator(); iter.hasNext(); ) {
-                    Constant weakConstant = (Constant) iter.next();
+            List<Constant> insensitivityGroup = this.constantsTable.getInsensitiveGroup(constantLit);
+            if (insensitivityGroup != null) {
+                for (Constant weakConstant : insensitivityGroup) {
                     if (!weakConstant.equals(constant)) {
                         out.defineConstantWeak(weakConstant, valueLit);
                     }

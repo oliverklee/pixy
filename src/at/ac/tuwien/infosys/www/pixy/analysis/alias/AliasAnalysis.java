@@ -194,7 +194,7 @@ public class AliasAnalysis
 
     // returns the set of must-aliases (Variable's) for the given variable
     // at the given node (folded over all contexts)
-    public Set getMustAliases(Variable var, CfgNode cfgNode) {
+    public Set<Variable> getMustAliases(Variable var, CfgNode cfgNode) {
         InterAnalysisNode aNode = this.interAnalysisInfo.getAnalysisNode(cfgNode);
         if (aNode == null) {
             System.out.println(cfgNode);
@@ -215,7 +215,7 @@ public class AliasAnalysis
 
     // returns the set of may-aliases (Variable's) for the given variable
     // at the given node (folded over all contexts)
-    public Set getMayAliases(Variable var, CfgNode cfgNode) {
+    public Set<Variable> getMayAliases(Variable var, CfgNode cfgNode) {
         InterAnalysisNode aNode = this.interAnalysisInfo.getAnalysisNode(cfgNode);
         AliasLatticeElement value = this.getFoldedValue(aNode);
         if (value == null) {
@@ -231,58 +231,54 @@ public class AliasAnalysis
     // returns an arbitrary global must-alias of the given variable at
     // the given node (folded over all contexts); null if there is none
     public Variable getGlobalMustAlias(Variable var, CfgNode cfgNode) {
-        Set mustAliases = this.getMustAliases(var, cfgNode);
-        for (Iterator iter = mustAliases.iterator(); iter.hasNext(); ) {
-            Variable mustAlias = (Variable) iter.next();
+        for (Variable mustAlias : this.getMustAliases(var, cfgNode)) {
             if (mustAlias.isGlobal()) {
                 return mustAlias;
             }
         }
+
         return null;
     }
 
     // returns a set of local must-aliases of the given variable at
     // the given node (folded over all contexts); empty set if there
     // are none
-    public Set getLocalMustAliases(Variable var, CfgNode cfgNode) {
-        Set mustAliases = this.getMustAliases(var, cfgNode);
+    public Set<Variable> getLocalMustAliases(Variable var, CfgNode cfgNode) {
         Set<Variable> retMe = new HashSet<Variable>();
-        for (Iterator iter = mustAliases.iterator(); iter.hasNext(); ) {
-            Variable mustAlias = (Variable) iter.next();
+        for (Variable mustAlias : this.getMustAliases(var, cfgNode)) {
             if (mustAlias.isLocal()) {
                 retMe.add(mustAlias);
             }
         }
+
         return retMe;
     }
 
     // returns a set of global may-aliases of the given variable at
     // the given node (folded over all contexts); empty set if there
     // are none
-    public Set getGlobalMayAliases(Variable var, CfgNode cfgNode) {
-        Set mayAliases = this.getMayAliases(var, cfgNode);
+    public Set<Variable> getGlobalMayAliases(Variable var, CfgNode cfgNode) {
         Set<Variable> retMe = new HashSet<Variable>();
-        for (Iterator iter = mayAliases.iterator(); iter.hasNext(); ) {
-            Variable mayAlias = (Variable) iter.next();
+        for (Variable mayAlias : this.getMayAliases(var, cfgNode)) {
             if (mayAlias.isGlobal()) {
                 retMe.add(mayAlias);
             }
         }
+
         return retMe;
     }
 
     // returns a set of local may-aliases of the given variable at
     // the given node (folded over all contexts); empty set if there
     // are none
-    public Set getLocalMayAliases(Variable var, CfgNode cfgNode) {
-        Set mayAliases = this.getMayAliases(var, cfgNode);
-        Set<Variable> retMe = new HashSet<Variable>();
-        for (Iterator iter = mayAliases.iterator(); iter.hasNext(); ) {
-            Variable mayAlias = (Variable) iter.next();
+    public Set<Variable> getLocalMayAliases(Variable var, CfgNode cfgNode) {
+        Set<Variable> retMe = new HashSet();
+        for (Variable mayAlias : this.getMayAliases(var, cfgNode)) {
             if (mayAlias.isLocal()) {
                 retMe.add(mayAlias);
             }
         }
+
         return retMe;
     }
 

@@ -32,23 +32,23 @@ public class ConstantsTable {
         return this.constants.get(label);
     }
 
-    List getInsensitiveGroup(String label) {
-        return ((List) this.insensitiveGroups.get(label.toLowerCase()));
+    List<Constant> getInsensitiveGroup(String label) {
+        return this.insensitiveGroups.get(label.toLowerCase());
     }
 
     public Map<String, Constant> getConstants() {
         return this.constants;
     }
 
-    public Map getInsensitiveGroups() {
+    public Map<String, List<Constant>> getInsensitiveGroups() {
         return this.insensitiveGroups;
     }
 
-    // returns a list of Constant's whose names are equal (case-insensitive)
+    // returns a list of Constants whose names are equal (case-insensitive)
     // to the given literal
     // might be NULL if there are no such constants
-    public List getInsensitiveGroup(Literal name) {
-        return (List) this.insensitiveGroups.get(name.toString().toLowerCase());
+    public List<Constant> getInsensitiveGroup(Literal name) {
+        return this.insensitiveGroups.get(name.toString().toLowerCase());
     }
 
     public int size() {
@@ -80,9 +80,8 @@ public class ConstantsTable {
     // adds all constants from the given constants table to this table (leaving out
     // duplicates)
     void addAll(ConstantsTable sourceTable) {
-        Map sourceConstants = sourceTable.getConstants();
-        for (Iterator iter = sourceConstants.entrySet().iterator(); iter.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) iter.next();
+        Map<String, Constant> sourceConstants = sourceTable.getConstants();
+        for (Map.Entry entry : sourceConstants.entrySet()) {
             String sourceLabel = (String) entry.getKey();
             Constant sourceConst = (Constant) entry.getValue();
             if (!this.constants.containsKey(sourceLabel)) {

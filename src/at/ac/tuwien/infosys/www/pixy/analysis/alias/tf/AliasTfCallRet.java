@@ -25,7 +25,7 @@ public class AliasTfCallRet
 
     private InterAnalysisNode analysisNodeAtCallPrep;
     private TacFunction callee;
-    private List cbrParams;
+    private List<List<Variable>> cbrParams;
     private AliasAnalysis aliasAnalysis;
 
 // *********************************************************************************
@@ -81,9 +81,7 @@ public class AliasTfCallRet
         // G-SHADOWS, MUST
 
         // for each must-alias-group in the orig-info
-        for (Iterator iter = origInfo.getMustAliases().getGroups().iterator(); iter.hasNext(); ) {
-            MustAliasGroup group = (MustAliasGroup) iter.next();
-
+        for (MustAliasGroup group : origInfo.getMustAliases().getGroups()) {
             // pick an arbitrary global from this group
             Variable someGlobal = group.getArbitraryGlobal();
 
@@ -129,9 +127,7 @@ public class AliasTfCallRet
             // - groupLocals is empty
             // - there is no global variable in this must-alias group, which leads to
             //   the iteration over an empty set here
-            Set gShadowGlobalMayAliases = calleeIn.getGlobalMayAliases(gShadow);
-            for (Iterator globalIter = gShadowGlobalMayAliases.iterator(); globalIter.hasNext(); ) {
-                Variable globalMayAlias = (Variable) globalIter.next();
+            for (Variable globalMayAlias : calleeIn.getGlobalMayAliases(gShadow)) {
                 outInfo.addMayAliasPairs(groupLocals, globalMayAlias);
             }
         }
@@ -139,9 +135,7 @@ public class AliasTfCallRet
         // G-SHADOWS, MAY
 
         // for each may-alias-pair in the orig-info
-        for (Iterator iter = origInfo.getMayAliases().getPairs().iterator(); iter.hasNext(); ) {
-
-            MayAliasPair pair = (MayAliasPair) iter.next();
+        for (MayAliasPair pair : origInfo.getMayAliases().getPairs()) {
 
             Variable[] localGlobal = pair.getLocalGlobal();
 
@@ -154,9 +148,7 @@ public class AliasTfCallRet
             Variable gShadow = this.callee.getSymbolTable().getGShadow(localGlobal[1]);
 
             // for all global aliases (must and may) of the g-shadow...
-            Set globalAliases = calleeIn.getGlobalAliases(gShadow);
-            for (Iterator globalIter = globalAliases.iterator(); globalIter.hasNext(); ) {
-                Variable globalAlias = (Variable) globalIter.next();
+            for (Variable globalAlias : calleeIn.getGlobalAliases(gShadow)) {
                 MayAliasPair addMePair = new MayAliasPair(globalAlias, localGlobal[0]);
                 outInfo.add(addMePair);
             }
@@ -165,10 +157,8 @@ public class AliasTfCallRet
         // F-SHADOWS
 
         // for all cbr-params...
-        for (Iterator iter = this.cbrParams.iterator(); iter.hasNext(); ) {
-
-            List paramPair = (List) iter.next();
-            Variable actual = (Variable) paramPair.get(0);
+        for (List<Variable> paramPair : this.cbrParams) {
+            Variable actual = paramPair.get(0);
 
             // we are only interested in *local* actual cbr-params
             if (!actual.isLocal()) {
@@ -179,10 +169,10 @@ public class AliasTfCallRet
             Variable fShadow = this.callee.getSymbolTable().getFShadow(formal);
 
             // the f-shadow's global must-aliases
-            Set fShadowGlobalMustAliases = calleeIn.getGlobalMustAliases(fShadow);
+            Set<Variable> fShadowGlobalMustAliases = calleeIn.getGlobalMustAliases(fShadow);
 
             // the f-shadow's global may-aliases
-            Set fShadowGlobalMayAliases = calleeIn.getGlobalMayAliases(fShadow);
+            Set<Variable> fShadowGlobalMayAliases = calleeIn.getGlobalMayAliases(fShadow);
 
             // the actual param's (non-trivial) must-alias group (=> can also be null!)
             MustAliasGroup actualGroup = origInfo.getMustAliasGroup(actual);
@@ -214,25 +204,20 @@ public class AliasTfCallRet
                 }
 
                 // for each global may-alias of the f-shadow...
-                for (Iterator iterator = fShadowGlobalMayAliases.iterator(); iterator.hasNext(); ) {
-                    Variable fShadowGlobalMayAlias = (Variable) iterator.next();
+                for (Variable fShadowGlobalMayAlias : fShadowGlobalMayAliases) {
                     outInfo.addMayAliasPairs(actualGroupLocals, fShadowGlobalMayAlias);
                 }
             }
 
             // for every local may-alias of the actual param...
-            for (Iterator localIter = origInfo.getLocalMayAliases(actual).iterator(); localIter.hasNext(); ) {
-                Variable actualLocalMayAlias = (Variable) localIter.next();
-
+            for (Variable actualLocalMayAlias : origInfo.getLocalMayAliases(actual)) {
                 // for every global must-alias of the f-shadow...
-                for (Iterator innerIter = fShadowGlobalMustAliases.iterator(); innerIter.hasNext(); ) {
-                    Variable fShadowGlobalMustAlias = (Variable) innerIter.next();
+                for (Variable fShadowGlobalMustAlias : fShadowGlobalMustAliases) {
                     outInfo.add(new MayAliasPair(fShadowGlobalMustAlias, actualLocalMayAlias));
                 }
 
                 // for every global may-alias of the f-shadow...
-                for (Iterator innerIter = fShadowGlobalMayAliases.iterator(); innerIter.hasNext(); ) {
-                    Variable fShadowGlobalMayAlias = (Variable) innerIter.next();
+                for (Variable fShadowGlobalMayAlias : fShadowGlobalMayAliases) {
                     outInfo.add(new MayAliasPair(fShadowGlobalMayAlias, actualLocalMayAlias));
                 }
             }

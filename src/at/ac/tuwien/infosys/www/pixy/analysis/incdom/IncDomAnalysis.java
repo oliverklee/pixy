@@ -77,18 +77,17 @@ public class IncDomAnalysis
 
         IncDomLatticeElement latElem =
             (IncDomLatticeElement) this.getAnalysisNode(cfgNode).getInValue();
-        List dominators = latElem.getDominators();
+        List<CfgNode> dominators = latElem.getDominators();
 
         // * input: a list of (dominating) cfg nodes, both includeEnd and
         //   includeStart
         // * output: a chain of unclosed includeStart nodes
         LinkedList<CfgNode> chain = new LinkedList<CfgNode>();
-        for (Iterator iterator = dominators.iterator(); iterator.hasNext(); ) {
-            CfgNode dom = (CfgNode) iterator.next();
-            if (dom instanceof CfgNodeIncludeStart) {
-                chain.add(dom);
-            } else if (dom instanceof CfgNodeIncludeEnd) {
-                CfgNodeIncludeEnd incEnd = (CfgNodeIncludeEnd) dom;
+        for (CfgNode dominator : dominators) {
+            if (dominator instanceof CfgNodeIncludeStart) {
+                chain.add(dominator);
+            } else if (dominator instanceof CfgNodeIncludeEnd) {
+                CfgNodeIncludeEnd incEnd = (CfgNodeIncludeEnd) dominator;
                 if (incEnd.isPeer(chain.getLast())) {
                     chain.removeLast();
                 } else {

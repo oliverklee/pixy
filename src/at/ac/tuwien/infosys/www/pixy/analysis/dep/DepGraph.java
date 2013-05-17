@@ -845,8 +845,7 @@ public class DepGraph {
         List<TacPlace> victimIndices = victim.getIndices();
 
         // add oldIndices to victimIndices
-        for (Iterator oldIter = oldIndices.iterator(); oldIter.hasNext(); ) {
-            TacPlace oldIndex = (TacPlace) oldIter.next();
+        for (TacPlace oldIndex : oldIndices) {
             victimIndices.add(oldIndex);
         }
 
@@ -857,7 +856,7 @@ public class DepGraph {
         // -> the resulting indices of victim correspond to the
         // relation between left and victim
         ListIterator victimIter = victimIndices.listIterator();
-        for (int i = 0; i < leftIndices.size(); i++) {
+        for (TacPlace leftIndice : leftIndices) {
             //System.out.println("i-left-index: " + leftIndices.get(i));
             victimIter.next();
         }
@@ -1683,9 +1682,7 @@ public class DepGraph {
             // remove the temporary node
             this.nodes.remove(tempNode);
             this.edges.remove(tempNode);
-            for (Iterator<Map.Entry<DepGraphNode, List<DepGraphNode>>> iter =
-                     this.edges.entrySet().iterator(); iter.hasNext(); ) {
-                Map.Entry<DepGraphNode, List<DepGraphNode>> entry = iter.next();
+            for (Map.Entry<DepGraphNode, List<DepGraphNode>> entry : this.edges.entrySet()) {
                 List<DepGraphNode> successors = entry.getValue();
                 for (Iterator succIter = successors.iterator(); succIter.hasNext(); ) {
                     DepGraphNode succ = (DepGraphNode) succIter.next();

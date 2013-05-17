@@ -152,8 +152,7 @@ public class SymbolTable {
         // this.variables.putAll(table.getVariables());
 
         // we can iterate over the keys since they are identical to the values
-        for (Iterator iter = table.getVariables().keySet().iterator(); iter.hasNext(); ) {
-            Variable variable = (Variable) iter.next();
+        for (Variable variable : table.getVariables().keySet()) {
             variable.setSymbolTable(this);
             // adjust "local" and "global" attributes
             if (this.isMain) {

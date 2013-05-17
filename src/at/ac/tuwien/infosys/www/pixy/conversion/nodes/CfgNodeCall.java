@@ -83,8 +83,7 @@ public class CfgNodeCall
     public List<Variable> getVariables() {
         // only the params are relevant for globals replacement
         List<Variable> retMe = new LinkedList<Variable>();
-        for (Iterator iter = this.paramList.iterator(); iter.hasNext(); ) {
-            TacActualParam param = (TacActualParam) iter.next();
+        for (TacActualParam param : this.paramList) {
             TacPlace paramPlace = param.getPlace();
             if (paramPlace instanceof Variable) {
                 retMe.add((Variable) paramPlace);
@@ -109,7 +108,7 @@ public class CfgNodeCall
 
     // returns a list consisting of two-element-lists consisting of
     // (actual cbr-param, formal cbr-param) (Variable objects)
-    public List getCbrParams() {
+    public List<List<Variable>> getCbrParams() {
 
         if (this.cbrParamList != null) {
             return this.cbrParamList;

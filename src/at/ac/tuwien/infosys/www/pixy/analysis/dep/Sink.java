@@ -74,9 +74,7 @@ public class Sink
         List<SinkProblem> problems = new LinkedList<SinkProblem>();
 
         // for each sensitive place
-        for (Iterator sensIter = this.sensitivePlaces.iterator(); sensIter.hasNext(); ) {
-            TacPlace sensitivePlace = (TacPlace) sensIter.next();
-
+        for (TacPlace sensitivePlace : this.sensitivePlaces) {
             // list of CallNode's that call the function containing the sink
             List<CfgNode> calledBy = new LinkedList<CfgNode>();
 

@@ -1,5 +1,8 @@
 package at.ac.tuwien.infosys.www.pixy.transduction;
 
+import rationals.State;
+import rationals.Transition;
+
 import java.io.*;
 import java.util.*;
 
@@ -74,22 +77,21 @@ public abstract class MyAutomaton {
 //  ********************************************************************************
 
     // conversion from rationals.Automaton
-    public MyAutomaton(rationals.Automaton a) {
-
+    public MyAutomaton(rationals.Automaton automaton) {
         this();
 
         // auxiliary map from foreign state to my cloned state
         Map<rationals.State, MyState> map = new HashMap<rationals.State, MyState>();
 
         // copy states, updating auxiliary map on the way
-        for (Iterator iter = a.states().iterator(); iter.hasNext(); ) {
-            rationals.State e = (rationals.State) iter.next();
-            map.put(e, this.addState(e.isInitial(), e.isTerminal()));
+        Set<State> states = automaton.states();
+        for (State state : states) {
+            map.put(state, this.addState(state.isInitial(), state.isTerminal()));
         }
 
         // copy transitions
-        for (Iterator iter = a.delta().iterator(); iter.hasNext(); ) {
-            rationals.Transition t = (rationals.Transition) iter.next();
+        Set<Transition> delta = automaton.delta();
+        for (Transition t : delta) {
             this.addTransition(new MyTransition(
                 map.get(t.start()),
                 t.label(),
@@ -500,8 +502,7 @@ public abstract class MyAutomaton {
 
         // terminal states
         pw.println("node [shape=doublecircle,color=white, fontcolor=black];");
-        for (Iterator i = this.getTerminals().iterator(); i.hasNext(); ) {
-            MyState st = (MyState) i.next();
+        for (MyState st : this.getTerminals()) {
             if (st.isInitial())
                 continue;
             pw.println("s" + st + ";");
@@ -509,16 +510,14 @@ public abstract class MyAutomaton {
 
         // normal states
         pw.println("node [shape=circle,color=white, fontcolor=black];");
-        for (Iterator i = this.getStates().iterator(); i.hasNext(); ) {
-            MyState st = (MyState) i.next();
+        for (MyState st : this.getStates()) {
             if (st.isInitial() || st.isTerminal())
                 continue;
             pw.println("s" + st + ";");
         }
 
         // transitions
-        for (Iterator i = this.getDelta().iterator(); i.hasNext(); ) {
-            MyTransition tr = (MyTransition) i.next();
+        for (MyTransition tr : this.getDelta()) {
             pw.println("s" + tr.getStart() + " -> " + "s" + tr.getEnd() + " [ label=\"" + tr.getLabel() + "\" ];");
         }
         pw.println("}");

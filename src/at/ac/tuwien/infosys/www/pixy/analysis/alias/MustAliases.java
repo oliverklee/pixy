@@ -28,8 +28,7 @@ public class MustAliases {
     public MustAliases(MustAliases cloneMe) {
         this.groups = new HashSet<MustAliasGroup>();
         Set<MustAliasGroup> origGroup = cloneMe.getGroups();
-        for (Iterator iter = origGroup.iterator(); iter.hasNext(); ) {
-            MustAliasGroup group = (MustAliasGroup) iter.next();
+        for (MustAliasGroup group : origGroup) {
             this.groups.add(new MustAliasGroup(group));
         }
     }
@@ -45,8 +44,7 @@ public class MustAliases {
     // returns a set of all variables that occur in the contained groups
     public Set<Variable> getVariables() {
         Set<Variable> variables = new HashSet<Variable>();
-        for (Iterator iter = this.groups.iterator(); iter.hasNext(); ) {
-            MustAliasGroup group = (MustAliasGroup) iter.next();
+        for (MustAliasGroup group : this.groups) {
             variables.addAll(group.getVariables());
         }
         return variables;
@@ -131,8 +129,7 @@ public class MustAliases {
     public void removeLocals() {
 
         List<MustAliasGroup> keepUs = new LinkedList<MustAliasGroup>();
-        for (Iterator iter = this.groups.iterator(); iter.hasNext(); ) {
-            MustAliasGroup group = (MustAliasGroup) iter.next();
+        for (MustAliasGroup group : this.groups) {
             group.removeLocals();
 
             if (group.size() > 1) {
@@ -145,8 +142,7 @@ public class MustAliases {
     public void removeGlobals() {
 
         List<MustAliasGroup> keepUs = new LinkedList<MustAliasGroup>();
-        for (Iterator iter = this.groups.iterator(); iter.hasNext(); ) {
-            MustAliasGroup group = (MustAliasGroup) iter.next();
+        for (MustAliasGroup group : this.groups) {
             group.removeGlobals();
 
             if (group.size() > 1) {
@@ -159,8 +155,7 @@ public class MustAliases {
     public void removeVariables(SymbolTable symTab) {
 
         List<MustAliasGroup> keepUs = new LinkedList<MustAliasGroup>();
-        for (Iterator iter = this.groups.iterator(); iter.hasNext(); ) {
-            MustAliasGroup group = (MustAliasGroup) iter.next();
+        for (MustAliasGroup group : this.groups) {
             group.removeVariables(symTab);
 
             if (group.size() > 1) {
@@ -218,32 +213,27 @@ public class MustAliases {
     }
 
     public void replace(Map replacements) {
-        for (Iterator iter = this.groups.iterator(); iter.hasNext(); ) {
-            MustAliasGroup group = (MustAliasGroup) iter.next();
+        for (MustAliasGroup group : this.groups) {
             group.replace(replacements);
         }
     }
 
     public boolean structureEquals(MustAliases comp) {
 
-        Set compGroupSet = comp.getGroups();
+        Set<MustAliasGroup> compGroupSet = comp.getGroups();
 
         if (this.groups.size() != compGroupSet.size()) {
-            // System.out.println("Sizes don't match");
             return false;
         }
 
         // for each of my own groups: check if it is contained in the other group set
-        for (Iterator iter = this.groups.iterator(); iter.hasNext(); ) {
-            MustAliasGroup group = (MustAliasGroup) iter.next();
-
+        for (MustAliasGroup group : this.groups) {
             // linear, slow implementation; but unfortunately, contains() doesn't
             // do what it should; for instance, uncomment the debug output inside
             // the "if" construct and run the analysis on the
             // PHP program given (far) below: sometimes contains() returns true,
             // sometimes it returns false (although it should always return true)
-            for (Iterator iterator = compGroupSet.iterator(); iterator.hasNext(); ) {
-                MustAliasGroup compGroup = (MustAliasGroup) iterator.next();
+            for (MustAliasGroup compGroup : compGroupSet) {
                 if (compGroup.equals(group)) {
                     return true;
                 }

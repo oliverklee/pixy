@@ -195,8 +195,7 @@ public class ProgramConverter {
                 weComeAfterwards = new LinkedList<CfgNodeInclude>();
 
                 // process all literal include nodes in "processUs"
-                for (Iterator iter = processUs.iterator(); iter.hasNext(); ) {
-                    CfgNodeInclude includeNode = (CfgNodeInclude) iter.next();
+                for (CfgNodeInclude includeNode : processUs) {
                     if (this.skipUs.contains(includeNode)) {
                         continue;
                     }
@@ -515,9 +514,7 @@ public class ProgramConverter {
         // try to include the file relative to working directory first:
         // for each specified include path, append it to the working directory
         // and search there for the file that is to be included
-        for (Iterator iter = MyOptions.includePaths.iterator(); iter.hasNext(); ) {
-            File includePath = (File) iter.next();
-
+        for (File includePath : MyOptions.includePaths) {
             File searchIn;  // directory to search in
             if (includePath.isAbsolute()) {
                 searchIn = includePath;
@@ -537,9 +534,7 @@ public class ProgramConverter {
         // but only if the given file name doesn't start with "." or ".."
 
         if (!(fileName.startsWith("./") || fileName.startsWith("../"))) {
-            for (Iterator iter = MyOptions.includePaths.iterator(); iter.hasNext(); ) {
-                File includePath = (File) iter.next();
-
+            for (File includePath : MyOptions.includePaths) {
                 // we've already dealt with absolute include paths in the previous loop
                 if (includePath.isAbsolute()) {
                     continue;

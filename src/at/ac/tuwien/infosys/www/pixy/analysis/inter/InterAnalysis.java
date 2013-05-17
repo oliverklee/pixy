@@ -108,15 +108,7 @@ public abstract class InterAnalysis
         // handle default CFGs (for default parameters) first;
         // for all functions...
         for (TacFunction function : this.functions) {
-
-            // extract params
-            List params = function.getParams();
-
-            // for each param...
-            for (Iterator iter2 = params.iterator(); iter2.hasNext(); ) {
-
-                TacFormalParam param = (TacFormalParam) iter2.next();
-
+            for (TacFormalParam param : function.getParams()) {
                 // if this param has a default value, it also has a small CFG;
                 // traverse it as well...;
                 // NOTE: default CFGs will not be associated with analysis information,
@@ -337,12 +329,7 @@ public abstract class InterAnalysis
                     LatticeElement outValue = inValue;
 
                     // get targets that we have to return to
-                    List reverseTargets = this.getReverseTargets(function, context);
-
-                    // for each target
-                    for (Iterator iter = reverseTargets.iterator(); iter.hasNext(); ) {
-                        ReverseTarget reverseTarget = (ReverseTarget) iter.next();
-
+                    for (ReverseTarget reverseTarget : this.getReverseTargets(function, context)) {
                         // extract target call node
                         CfgNodeCall callNode = reverseTarget.getCallNode();
 
@@ -353,11 +340,7 @@ public abstract class InterAnalysis
                         // determine predecessor node (unique) of the call node
                         CfgNodeCallPrep callPrepNode = callRetNode.getCallPrepNode();
 
-                        // extract set of target contexts
-                        Set contextSet = reverseTarget.getContexts();
-                        for (Iterator contextIter = contextSet.iterator(); contextIter.hasNext(); ) {
-                            Context targetContext = (Context) contextIter.next();
-
+                        for (Context targetContext : reverseTarget.getContexts()) {
                             // if the incoming value at the callprep node is undefined, this means
                             // that the analysis hasn't made the call under this context
                             // (can happen for call-string analysis);
@@ -407,11 +390,11 @@ public abstract class InterAnalysis
 
                     // for each outgoing edge...
                     CfgEdge[] outEdges = node.getOutEdges();
-                    for (int i = 0; i < outEdges.length; i++) {
-                        if (outEdges[i] != null) {
+                    for (CfgEdge outEdge : outEdges) {
+                        if (outEdge != null) {
 
                             // determine the successor
-                            CfgNode succ = outEdges[i].getDest();
+                            CfgNode succ = outEdge.getDest();
 
                             // propagate the result of applying the transfer function
                             // to the successor (under the current context)
@@ -426,11 +409,11 @@ public abstract class InterAnalysis
 
                     // for each outgoing edge...
                     CfgEdge[] outEdges = node.getOutEdges();
-                    for (int i = 0; i < outEdges.length; i++) {
-                        if (outEdges[i] != null) {
+                    for (CfgEdge outEdge : outEdges) {
+                        if (outEdge != null) {
 
                             // determine the successor
-                            CfgNode succ = outEdges[i].getDest();
+                            CfgNode succ = outEdge.getDest();
 
                             // propagate the result of applying the transfer function
                             // to the successor (under the current context)

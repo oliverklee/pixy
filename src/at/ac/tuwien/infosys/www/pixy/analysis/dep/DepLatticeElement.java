@@ -71,7 +71,7 @@ public class DepLatticeElement
     private DepLatticeElement(
         List<TacPlace> places,
         ConstantsTable constantsTable,
-        List functions,
+        List<TacFunction> functions,
         SymbolTable superSymbolTable,
         Variable memberPlace) {
 
@@ -114,9 +114,7 @@ public class DepLatticeElement
         this.arrayLabels.put(memberPlace, DepSet.UNINIT);
 
         // initialize constants
-        Map constants = constantsTable.getConstants();
-        for (Iterator iter = constants.values().iterator(); iter.hasNext(); ) {
-            Constant constant = (Constant) iter.next();
+        for (Constant constant : constantsTable.getConstants().values()) {
             this.placeToDep.put(constant, DepSet.UNINIT);
         }
 
@@ -125,9 +123,7 @@ public class DepLatticeElement
         // their initialization depends on the register_globals setting:
         // true: UNINIT
         // false: like other locals
-        for (Iterator iter = functions.iterator(); iter.hasNext(); ) {
-            TacFunction function = (TacFunction) iter.next();
-
+        for (TacFunction function : functions) {
             if (function.isMain()) {
                 if (MyOptions.optionG) {
                     // if register_globals is active, we don't change the conservative
@@ -137,11 +133,8 @@ public class DepLatticeElement
                     continue;
                 }
             }
-            SymbolTable symtab = function.getSymbolTable();
-            Map variables = symtab.getVariables();
-            for (Iterator varIter = variables.values().iterator(); varIter.hasNext(); ) {
-                Variable variable = (Variable) varIter.next();
-
+            SymbolTable symbolTable = function.getSymbolTable();
+            for (Variable variable : symbolTable.getVariables().values()) {
                 // array elements are handled along with their root
                 if (variable.isArrayElement()) {
                     continue;
@@ -183,24 +176,19 @@ public class DepLatticeElement
         // same for 'argv'
         Variable argv = superSymbolTable.getVariable("$_SERVER[argv]");
         if (argv != null) {
-            List argvElements = argv.getElements();
-            for (Iterator iter = argvElements.iterator(); iter.hasNext(); ) {
-                Variable argvElement = (Variable) iter.next();
+            for (Variable argvElement : argv.getElements()) {
                 harmlessSuperGlobals.add(argvElement);
             }
         }
         argv = superSymbolTable.getVariable("$HTTP_SERVER_VARS[argv]");
         if (argv != null) {
-            List argvElements = argv.getElements();
-            for (Iterator iter = argvElements.iterator(); iter.hasNext(); ) {
-                Variable argvElement = (Variable) iter.next();
+            for (Variable argvElement : argv.getElements()) {
                 harmlessSuperGlobals.add(argvElement);
             }
         }
 
         // collection of harmless variables finished, now make them harmless
-        for (Iterator iter = harmlessSuperGlobals.iterator(); iter.hasNext(); ) {
-            Variable harmlessSuperGlobal = (Variable) iter.next();
+        for (Variable harmlessSuperGlobal : harmlessSuperGlobals) {
             // if it is null, it hasn't been used in the php script
             if (harmlessSuperGlobal != null) {
                 this.placeToDep.put(harmlessSuperGlobal, DepSet.UNINIT);
@@ -595,9 +583,7 @@ public class DepLatticeElement
 
     // mustAliases and mayAliases: of left; mustAliases always have to
     // include left itself
-    public void assign(Variable left,
-                       Set mustAliases, Set mayAliases, CfgNode cfgNode) {
-
+    public void assign(Variable left, Set<Variable> mustAliases, Set<Variable> mayAliases, CfgNode cfgNode) {
         // dep to be assigned to the left side
         DepSet dep = DepSet.create(Dep.create(cfgNode));
 
@@ -631,16 +617,13 @@ public class DepLatticeElement
             // not an array element and not known as array ("normal variable")
             case 1: {
                 // strong update for must-aliases (including left itself)
-                for (Iterator iter = mustAliases.iterator(); iter.hasNext(); ) {
-                    Variable mustAlias = (Variable) iter.next();
-
+                for (Variable mustAlias : mustAliases) {
                     this.setDep(mustAlias, dep);
                     this.setArrayLabel(mustAlias, dep);
                 }
 
                 // weak update for may-aliases
-                for (Iterator iter = mayAliases.iterator(); iter.hasNext(); ) {
-                    Variable mayAlias = (Variable) iter.next();
+                for (Variable mayAlias : mayAliases) {
                     this.lubDep(mayAlias, dep);
                     this.lubArrayLabel(mayAlias, dep);
                 }
@@ -675,8 +658,7 @@ public class DepLatticeElement
 
                 // "weak overlap for all MI variables of left"
                 // here: lub the whole subtrees of all MI variables of left
-                for (Iterator iter = this.getMiList(left).iterator(); iter.hasNext(); ) {
-                    Variable miVar = (Variable) iter.next();
+                for (Variable miVar : this.getMiList(left)) {
                     this.lubWholeTree(miVar, dep);
                 }
                 break;
@@ -717,7 +699,7 @@ public class DepLatticeElement
     // returns a list of array elements that are maybe identical
     // to the given array element; only array elements without
     // non-literal indices are returned
-    List getMiList(Variable var) {
+    List<Variable> getMiList(Variable var) {
 
         if (!var.isArrayElement()) {
             throw new RuntimeException("SNH");
@@ -782,8 +764,7 @@ public class DepLatticeElement
             if (indices.isEmpty()) {
                 miList.addAll(literalElements);
             } else {
-                for (Iterator iter = literalElements.iterator(); iter.hasNext(); ) {
-                    Variable target = (Variable) iter.next();
+                for (Variable target : literalElements) {
                     this.miRecurse(miList, target, new LinkedList<TacPlace>(indices));
                 }
             }
@@ -885,7 +866,10 @@ public class DepLatticeElement
         Variable formalVar = formalParam.getVariable();
         Set<Variable> mustAliases = new HashSet<Variable>();
         mustAliases.add(formalVar);
-        this.assign(formalVar, mustAliases, Collections.emptySet(), cfgNode);
+
+        Set<Variable> mayAliases = Collections.emptySet();
+
+        this.assign(formalVar, mustAliases, mayAliases, cfgNode);
     }
 
 //  setShadow **********************************************************************
@@ -905,12 +889,10 @@ public class DepLatticeElement
     public void copyGlobalLike(DepLatticeElement interIn) {
 
         // dep mappings
-        Map origPlaceToDep = interIn.getPlaceToDep();
-        for (Iterator iter = origPlaceToDep.entrySet().iterator(); iter.hasNext(); ) {
-
-            Map.Entry entry = (Map.Entry) iter.next();
-            TacPlace origPlace = (TacPlace) entry.getKey();
-            DepSet origDep = (DepSet) entry.getValue();
+        Map<TacPlace, DepSet> origPlaceToDep = interIn.getPlaceToDep();
+        for (Map.Entry<TacPlace, DepSet> entry : origPlaceToDep.entrySet()) {
+            TacPlace origPlace = entry.getKey();
+            DepSet origDep = entry.getValue();
 
             // decide whether to copy this place
             boolean copyMe = false;
@@ -931,12 +913,10 @@ public class DepLatticeElement
         }
 
         // array label mappings
-        Map origArrayLabels = interIn.getArrayLabels();
-        for (Iterator iter = origArrayLabels.entrySet().iterator(); iter.hasNext(); ) {
-
-            Map.Entry entry = (Map.Entry) iter.next();
-            TacPlace origPlace = (TacPlace) entry.getKey();
-            DepSet origArrayLabel = (DepSet) entry.getValue();
+        Map<Variable, DepSet> origArrayLabels = interIn.getArrayLabels();
+        for (Map.Entry<Variable, DepSet> entry : origArrayLabels.entrySet()) {
+            TacPlace origPlace = entry.getKey();
+            DepSet origArrayLabel = entry.getValue();
 
             // decide whether to copy this place
             boolean copyMe = false;
@@ -963,12 +943,10 @@ public class DepLatticeElement
                                Set<TacPlace> calleeMod) {
 
         // dep mappings
-        Map origPlaceToDep = interIn.getPlaceToDep();
-        for (Iterator iter = origPlaceToDep.entrySet().iterator(); iter.hasNext(); ) {
-
-            Map.Entry entry = (Map.Entry) iter.next();
-            TacPlace interPlace = (TacPlace) entry.getKey();
-            DepSet interDep = (DepSet) entry.getValue();
+        Map<TacPlace, DepSet> origPlaceToDep = interIn.getPlaceToDep();
+        for (Map.Entry<TacPlace, DepSet> entry : origPlaceToDep.entrySet()) {
+            TacPlace interPlace = entry.getKey();
+            DepSet interDep = entry.getValue();
 
             // decide whether to copy this place
             boolean copyMe = false;
@@ -996,12 +974,10 @@ public class DepLatticeElement
         }
 
         // array label mappings
-        Map interArrayLabels = interIn.getArrayLabels();
-        for (Iterator iter = interArrayLabels.entrySet().iterator(); iter.hasNext(); ) {
-
-            Map.Entry entry = (Map.Entry) iter.next();
-            TacPlace interPlace = (TacPlace) entry.getKey();
-            DepSet interArrayLabel = (DepSet) entry.getValue();
+        Map<Variable, DepSet> interArrayLabels = interIn.getArrayLabels();
+        for (Map.Entry<Variable, DepSet> entry : interArrayLabels.entrySet()) {
+            TacPlace interPlace = entry.getKey();
+            DepSet interArrayLabel = entry.getValue();
 
             // decide whether to copy this place
             boolean copyMe = false;
@@ -1030,12 +1006,10 @@ public class DepLatticeElement
     public void copyMainTemporaries(DepLatticeElement origElement) {
 
         // dep mappings
-        Map origPlaceToDep = origElement.getPlaceToDep();
-        for (Iterator iter = origPlaceToDep.entrySet().iterator(); iter.hasNext(); ) {
-
-            Map.Entry entry = (Map.Entry) iter.next();
-            TacPlace origPlace = (TacPlace) entry.getKey();
-            DepSet origDep = (DepSet) entry.getValue();
+        Map<TacPlace, DepSet> origPlaceToDep = origElement.getPlaceToDep();
+        for (Map.Entry<TacPlace, DepSet> entry : origPlaceToDep.entrySet()) {
+            TacPlace origPlace = entry.getKey();
+            DepSet origDep = entry.getValue();
 
             // nothing to do for non-variables, non-main's, and non-temporaries
             if (!(origPlace instanceof Variable)) {
@@ -1055,12 +1029,10 @@ public class DepLatticeElement
         }
 
         // array label mappings
-        Map origArrayLabels = origElement.getArrayLabels();
-        for (Iterator iter = origArrayLabels.entrySet().iterator(); iter.hasNext(); ) {
-
-            Map.Entry entry = (Map.Entry) iter.next();
-            TacPlace origPlace = (TacPlace) entry.getKey();
-            DepSet origArrayLabel = (DepSet) entry.getValue();
+        Map<Variable, DepSet> origArrayLabels = origElement.getArrayLabels();
+        for (Map.Entry<Variable, DepSet> entry : origArrayLabels.entrySet()) {
+            TacPlace origPlace = entry.getKey();
+            DepSet origArrayLabel = entry.getValue();
 
             // nothing to do for non-variables, non-main's, and non-temporaries
             if (!(origPlace instanceof Variable)) {
@@ -1085,12 +1057,10 @@ public class DepLatticeElement
     public void copyMainVariables(DepLatticeElement origElement) {
 
         // dep mappings
-        Map origPlaceToDep = origElement.getPlaceToDep();
-        for (Iterator iter = origPlaceToDep.entrySet().iterator(); iter.hasNext(); ) {
-
-            Map.Entry entry = (Map.Entry) iter.next();
-            TacPlace origPlace = (TacPlace) entry.getKey();
-            DepSet origDep = (DepSet) entry.getValue();
+        Map<TacPlace, DepSet> origPlaceToDep = origElement.getPlaceToDep();
+        for (Map.Entry<TacPlace, DepSet> entry : origPlaceToDep.entrySet()) {
+            TacPlace origPlace = entry.getKey();
+            DepSet origDep = entry.getValue();
 
             // nothing to do for non-variables and non-main's
             if (!(origPlace instanceof Variable)) {
@@ -1107,12 +1077,10 @@ public class DepLatticeElement
         }
 
         // array label mappings
-        Map origArrayLabels = origElement.getArrayLabels();
-        for (Iterator iter = origArrayLabels.entrySet().iterator(); iter.hasNext(); ) {
-
-            Map.Entry entry = (Map.Entry) iter.next();
-            TacPlace origPlace = (TacPlace) entry.getKey();
-            DepSet origArrayLabel = (DepSet) entry.getValue();
+        Map<Variable, DepSet> origArrayLabels = origElement.getArrayLabels();
+        for (Map.Entry<Variable, DepSet> entry : origArrayLabels.entrySet()) {
+            TacPlace origPlace = entry.getKey();
+            DepSet origArrayLabel = entry.getValue();
 
             // nothing to do for non-variables and non-main's
             if (!(origPlace instanceof Variable)) {
@@ -1134,12 +1102,10 @@ public class DepLatticeElement
     public void copyLocals(DepLatticeElement origElement) {
 
         // dep mappings
-        Map origPlaceToDep = origElement.getPlaceToDep();
-        for (Iterator iter = origPlaceToDep.entrySet().iterator(); iter.hasNext(); ) {
-
-            Map.Entry entry = (Map.Entry) iter.next();
-            TacPlace origPlace = (TacPlace) entry.getKey();
-            DepSet origDep = (DepSet) entry.getValue();
+        Map<TacPlace, DepSet> origPlaceToDep = origElement.getPlaceToDep();
+        for (Map.Entry<TacPlace, DepSet> entry : origPlaceToDep.entrySet()) {
+            TacPlace origPlace = entry.getKey();
+            DepSet origDep = entry.getValue();
 
             // nothing to do for non-variables and non-locals
             if (!(origPlace instanceof Variable)) {
@@ -1154,12 +1120,10 @@ public class DepLatticeElement
         }
 
         // array label mappings
-        Map origArrayLabels = origElement.getArrayLabels();
-        for (Iterator iter = origArrayLabels.entrySet().iterator(); iter.hasNext(); ) {
-
-            Map.Entry entry = (Map.Entry) iter.next();
-            TacPlace origPlace = (TacPlace) entry.getKey();
-            DepSet origArrayLabel = (DepSet) entry.getValue();
+        Map<Variable, DepSet> origArrayLabels = origElement.getArrayLabels();
+        for (Map.Entry<Variable, DepSet> entry : origArrayLabels.entrySet()) {
+            TacPlace origPlace = entry.getKey();
+            DepSet origArrayLabel = entry.getValue();
 
             // nothing to do for non-variables and non-locals
             if (!(origPlace instanceof Variable)) {

@@ -255,9 +255,8 @@ public class TacConverter {
 
     private void assignFunctionsHelper(Cfg cfg, TacFunction function) {
 
-        for (Iterator iter = cfg.dfPreOrder().iterator(); iter.hasNext(); ) {
+        for (CfgNode node : cfg.dfPreOrder()) {
 
-            CfgNode node = (CfgNode) iter.next();
             node.setEnclosingFunction(function);
 
             // enter basic block
@@ -281,8 +280,7 @@ public class TacConverter {
         Set<CfgNode> visited = new HashSet<CfgNode>();
 
         // for each function cfg...
-        for (Iterator iter = this.userFunctions.values().iterator(); iter.hasNext(); ) {
-            TacFunction function = (TacFunction) iter.next();
+        for (TacFunction function : this.userFunctions.values()) {
             Cfg cfg = function.getCfg();
             CfgNode head = cfg.getHead();
             visited.add(head);
@@ -316,7 +314,7 @@ public class TacConverter {
             int contained = 1;
 
             // edges that shall enter the basic block
-            List inEdges = cfgNode.getInEdges();
+            List<CfgEdge> inEdges = cfgNode.getInEdges();
 
             // the first node in the basic block
             CfgNode startNode = cfgNode;
@@ -352,8 +350,7 @@ public class TacConverter {
 
                 // embed basic block:
                 // connect with predecessors
-                for (Iterator iter = inEdges.iterator(); iter.hasNext(); ) {
-                    CfgEdge inEdge = (CfgEdge) iter.next();
+                for (CfgEdge inEdge : inEdges) {
                     inEdge.setDest(basicBlock);
                     basicBlock.addInEdge(inEdge);
                 }
@@ -373,9 +370,8 @@ public class TacConverter {
             }
         } else {
             // try successors
-            List successors = cfgNode.getSuccessors();
-            for (Iterator iter = successors.iterator(); iter.hasNext(); ) {
-                CfgNode successor = (CfgNode) iter.next();
+            List<CfgNode> successors = cfgNode.getSuccessors();
+            for (CfgNode successor : successors) {
                 this.createBasicBlocksHelper(successor, visited);
             }
         }
@@ -543,9 +539,8 @@ public class TacConverter {
 
         // ADJUST INCLUDED INCLUDE NODES *********************
 
-        List includedIncludeNodes = includedTac.getIncludeNodes();
-        for (Iterator iter = includedIncludeNodes.iterator(); iter.hasNext(); ) {
-            CfgNodeInclude includedIncludeNode = (CfgNodeInclude) iter.next();
+        List<CfgNodeInclude> includedIncludeNodes = includedTac.getIncludeNodes();
+        for (CfgNodeInclude includedIncludeNode : includedIncludeNodes) {
             if (includedIncludeNode.getIncludeFunction().isMain()) {
                 includedIncludeNode.setIncludeFunction(includingFunction);
             }
@@ -582,10 +577,10 @@ public class TacConverter {
             CfgNodeIncludeEnd includeEnd = new CfgNodeIncludeEnd(includeStart);
 
             // edges entering the exit
-            List beforeExitList = includedExit.getInEdges();
+            List<CfgEdge> beforeExitList = includedExit.getInEdges();
 
             // edges entering and leaving the "include" node in the including file
-            List includeInEdges = includeNode.getInEdges();
+            List<CfgEdge> includeInEdges = includeNode.getInEdges();
             CfgEdge[] includeOutEdges = includeNode.getOutEdges();
 
             // node after the "include" node
@@ -602,8 +597,7 @@ public class TacConverter {
             afterEntry.removeInEdge(includedEntry);
 
             // redirect edges that enter the include node to includeStart
-            for (Iterator iterator = includeInEdges.iterator(); iterator.hasNext(); ) {
-                CfgEdge inEdge = (CfgEdge) iterator.next();
+            for (CfgEdge inEdge : includeInEdges) {
                 inEdge.setDest(includeStart);
                 includeStart.addInEdge(inEdge);
             }
@@ -613,8 +607,7 @@ public class TacConverter {
             connect(includeStart, afterEntry);
 
             // redirect edges that enter the included cfg's exit node to includeEnd
-            for (Iterator iterator = beforeExitList.iterator(); iterator.hasNext(); ) {
-                CfgEdge inEdge = (CfgEdge) iterator.next();
+            for (CfgEdge inEdge : beforeExitList) {
                 inEdge.setDest(includeEnd);
                 includeEnd.addInEdge(inEdge);
             }
@@ -701,8 +694,7 @@ public class TacConverter {
     // returns the sum of the sizes of the contained cfg's
     public int getSize() {
         int size = 0;
-        for (Iterator iter = this.userFunctions.values().iterator(); iter.hasNext(); ) {
-            TacFunction function = (TacFunction) iter.next();
+        for (TacFunction function : this.userFunctions.values()) {
             size += function.getCfg().size();
         }
         for (TacFunction function : this.getMethods()) {
@@ -782,9 +774,8 @@ public class TacConverter {
     public int getNumberOfVariables() {
 
         int varNum = 0;
-        List varList = this.getVariablesList();
-        for (Iterator iter = varList.iterator(); iter.hasNext(); ) {
-            Variable var = (Variable) iter.next();
+        List<Variable> varList = this.getVariablesList();
+        for (Variable var : varList) {
             if (var.isTemp()) {
                 continue;
             }
@@ -893,8 +884,7 @@ public class TacConverter {
     // returns a list containing all variables
     List<Variable> getVariablesList() {
         List<Variable> variablesList = new LinkedList<Variable>();
-        for (Iterator iter = this.userFunctions.values().iterator(); iter.hasNext(); ) {
-            TacFunction function = (TacFunction) iter.next();
+        for (TacFunction function : this.userFunctions.values()) {
             variablesList.addAll(function.getSymbolTable().getVariables().values());
         }
         for (TacFunction function : this.getMethods()) {
@@ -1004,9 +994,7 @@ public class TacConverter {
         cfg.setHead(startHere);
 
         // remove remaining empty nodes
-        Iterator iter = cfg.dfPreOrder().iterator();
-        while (iter.hasNext()) {
-            CfgNode current = (CfgNode) iter.next();
+        for (CfgNode current : cfg.dfPreOrder()) {
             if (current instanceof CfgNodeEmpty) {
                 this.removeCfgNode(current);
             }
@@ -1020,7 +1008,7 @@ public class TacConverter {
 
         // empty nodes have at most one successor:
         CfgEdge outEdge = cfgNode.getOutEdge(0);
-        List inEdges = cfgNode.getInEdges();
+        List<CfgEdge> inEdges = cfgNode.getInEdges();
         if (outEdge != null) {
             CfgNode succ = outEdge.getDest();
 
@@ -1028,8 +1016,7 @@ public class TacConverter {
             succ.removeInEdge(cfgNode);
 
             // redirect all incoming nodes to this successor node:
-            for (Iterator iter = inEdges.iterator(); iter.hasNext(); ) {
-                CfgEdge inEdge = (CfgEdge) iter.next();
+            for (CfgEdge inEdge : inEdges) {
                 inEdge.setDest(succ);
                 succ.addInEdge(inEdge);
             }
@@ -1052,14 +1039,11 @@ public class TacConverter {
         Variable globalsArray = this.superSymbolTable.getVariable("$GLOBALS");
 
         // traverse CFG...
-        for (Iterator iter = cfg.dfPreOrder().iterator(); iter.hasNext(); ) {
-
-            CfgNode cfgNode = (CfgNode) iter.next();
+        for (CfgNode cfgNode : cfg.dfPreOrder()) {
 
             // inspect this node's variables...
             int varCount = -1;
-            for (Iterator varIter = cfgNode.getVariables().iterator(); varIter.hasNext(); ) {
-                Variable var = (Variable) varIter.next();
+            for (Variable var : cfgNode.getVariables()) {
                 varCount++;
 
                 // nothing to do for placeholders
@@ -1116,9 +1100,8 @@ public class TacConverter {
     void replaceGlobals() {
 
         // for each user-defined function...
-        for (Iterator funcIter = this.userFunctions.values().iterator(); funcIter.hasNext(); ) {
+        for (TacFunction userFunction : this.userFunctions.values()) {
 
-            TacFunction userFunction = (TacFunction) funcIter.next();
             if (userFunction.isMain()) {
                 // nothing to do for the main function
                 continue;
@@ -1130,8 +1113,7 @@ public class TacConverter {
             // mapping "variable name" -> "global variable"
             Map<String, Variable> declaredAsGlobal = new HashMap<String, Variable>();
             // traverse CFG...
-            for (Iterator cfgIter = userFunction.getCfg().dfPreOrder().iterator(); cfgIter.hasNext(); ) {
-                CfgNode cfgNodeX = (CfgNode) cfgIter.next();
+            for (CfgNode cfgNodeX : userFunction.getCfg().dfPreOrder()) {
                 if (!(cfgNodeX instanceof CfgNodeGlobal)) {
                     // we are only interested in "global" statements
                     continue;
@@ -1162,9 +1144,7 @@ public class TacConverter {
             // replacement *******
 
             // traverse CFG...
-            for (Iterator cfgIter = userFunction.getCfg().dfPreOrder().iterator(); cfgIter.hasNext(); ) {
-                CfgNode cfgNode = (CfgNode) cfgIter.next();
-
+            for (CfgNode cfgNode : userFunction.getCfg().dfPreOrder()) {
                 // nothing to do for "global" statements
                 if (cfgNode instanceof CfgNodeGlobal) {
                     continue;
@@ -1172,8 +1152,7 @@ public class TacConverter {
 
                 // inspect this node's variables...
                 int varCount = -1;
-                for (Iterator varIter = cfgNode.getVariables().iterator(); varIter.hasNext(); ) {
-                    Variable var = (Variable) varIter.next();
+                for (Variable var : cfgNode.getVariables()) {
                     varCount++;
 
                     // nothing to do for placeholders
@@ -1230,7 +1209,7 @@ public class TacConverter {
 
     // convenience wrapper around makePlace(String, SymbolTable)
     private Variable makePlace(String varName) {
-        return this.makePlace(varName, (SymbolTable) (this.functionStack.getLast()).getSymbolTable());
+        return this.makePlace(varName, this.functionStack.getLast().getSymbolTable());
     }
 
 // makeReturnPlace(String) *********************************************************
@@ -1631,8 +1610,7 @@ public class TacConverter {
         for (TacFormalParam formalParam : attsParamList.getFormalParamList()) {
             if (formalParam.hasDefault()) {
                 Cfg defaultCfg = formalParam.getDefaultCfg();
-                for (Iterator defaultIter = defaultCfg.dfPreOrder().iterator(); defaultIter.hasNext(); ) {
-                    CfgNode defaultNode = (CfgNode) defaultIter.next();
+                for (CfgNode defaultNode : defaultCfg.dfPreOrder()) {
                     defaultNode.setDefaultParamPrep(entryNode);
                 }
             }
@@ -1692,8 +1670,7 @@ public class TacConverter {
         for (TacFormalParam formalParam : attsParamList.getFormalParamList()) {
             if (formalParam.hasDefault()) {
                 Cfg defaultCfg = formalParam.getDefaultCfg();
-                for (Iterator defaultIter = defaultCfg.dfPreOrder().iterator(); defaultIter.hasNext(); ) {
-                    CfgNode defaultNode = (CfgNode) defaultIter.next();
+                for (CfgNode defaultNode : defaultCfg.dfPreOrder()) {
                     defaultNode.setDefaultParamPrep(entryNode);
                 }
             }
@@ -1749,9 +1726,7 @@ public class TacConverter {
 
     // generate shadow variables for every function in this.userFunctions
     public void generateShadows() {
-        Iterator shadowIter = this.userFunctions.values().iterator();
-        while (shadowIter.hasNext()) {
-            TacFunction userFunction = (TacFunction) shadowIter.next();
+        for (TacFunction userFunction : this.userFunctions.values()) {
             if (userFunction.isMain()) {
                 continue;   // skip the main function
             }
@@ -1771,8 +1746,7 @@ public class TacConverter {
         // G-SHADOWS
 
         // for each variable in the main function...
-        for (Iterator iter = this.mainSymbolTable.getVariablesColl().iterator(); iter.hasNext(); ) {
-            Variable var = (Variable) iter.next();
+        for (Variable var : this.mainSymbolTable.getVariablesColl()) {
             // no need to create shadows for temporaries
             // [what about arrays and array elements?]
             if (var.isTemp()) {
@@ -1784,8 +1758,7 @@ public class TacConverter {
         // F-SHADOWS
 
         // for each formal parameter of this function...
-        for (Iterator iter = function.getParams().iterator(); iter.hasNext(); ) {
-            TacFormalParam param = (TacFormalParam) iter.next();
+        for (TacFormalParam param : function.getParams()) {
             Variable var = param.getVariable();
             // no need to create shadows for arrays and array elements
             if (var.isArray() || var.isArrayElement()) {
@@ -1949,11 +1922,11 @@ public class TacConverter {
         String superName = "$_SERVER";
         Variable superVar = this.superSymbolTable.getVariable(superName);
         Variable var = null;
-        for (int i = 0; i < indices.length; i++) {
+        for (String indice : indices) {
             // only add the variable if it does not exist yet
-            var = this.superSymbolTable.getVariable(superName + "[" + indices[i] + "]");
+            var = this.superSymbolTable.getVariable(superName + "[" + indice + "]");
             if (var == null) {
-                this.makeArrayElementPlace(superVar, new Literal(indices[i]));
+                this.makeArrayElementPlace(superVar, new Literal(indice));
             }
         }
 
@@ -1972,11 +1945,11 @@ public class TacConverter {
 
         superName = "$HTTP_SERVER_VARS";
         superVar = this.superSymbolTable.getVariable(superName);
-        for (int i = 0; i < indices.length; i++) {
+        for (String indice : indices) {
             // only add the variable if it does not exist yet
-            var = this.superSymbolTable.getVariable(superName + "[" + indices[i] + "]");
+            var = this.superSymbolTable.getVariable(superName + "[" + indice + "]");
             if (var == null) {
-                this.makeArrayElementPlace(superVar, new Literal(indices[i]));
+                this.makeArrayElementPlace(superVar, new Literal(indice));
             }
         }
 
@@ -2584,8 +2557,7 @@ public class TacConverter {
         // global variables (= local variables of the main function);
         // note: $GLOBALS-stuff can't be used for formal params, so it is
         // sufficient to traverse the CFG's
-        for (Iterator iter = this.userFunctions.values().iterator(); iter.hasNext(); ) {
-            TacFunction userFunction = (TacFunction) iter.next();
+        for (TacFunction userFunction : this.userFunctions.values()) {
             this.transformGlobals(userFunction.getCfg());
         }
     }
