@@ -378,16 +378,10 @@ public class ProgramConverter {
 
         // summarize into basic blocks;
         // leads to a reduced amount of used memory
-        if (true) {
-            if (MyOptions.optionV) {
-                System.out.println("creating basic blocks");
-            }
-            this.baseTac.createBasicBlocks();
-        } else {
-            if (MyOptions.optionV) {
-                System.out.println("not creating basic blocks");
-            }
+        if (MyOptions.optionV) {
+            System.out.println("creating basic blocks");
         }
+        this.baseTac.createBasicBlocks();
 
         // assign functions to cfg nodes
         this.baseTac.assignFunctions();

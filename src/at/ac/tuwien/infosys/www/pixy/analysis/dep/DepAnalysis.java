@@ -530,14 +530,8 @@ public class DepAnalysis
         }
 
         this.finishedDetection = true;
-        if (false) {
-            System.out.println("cleaning dependency analysis...");
-            System.out.println();
-            this.clean();
-        } else {
-            System.out.println("skipping clean-up");
-            System.out.println();
-        }
+        System.out.println("skipping clean-up");
+        System.out.println();
 
         if (statistics) {
 
@@ -571,9 +565,7 @@ public class DepAnalysis
 
     // call this method when the analysis is finished to detect vulnerabilities
     public void detectVulns() {
-
-        if (true)
-            throw new RuntimeException("dummy method");
+        throw new RuntimeException("dummy method");
     }
 
 //  recycle ************************************************************************

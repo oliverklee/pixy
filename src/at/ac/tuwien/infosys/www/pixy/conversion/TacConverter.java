@@ -841,15 +841,6 @@ public class TacConverter {
             gShadowsTotal += gShadows;
             fShadowsTotal += fShadows;
             normalLocalsTotal += normalLocals;
-
-            if (false) {
-                System.out.println("_______________");
-                System.out.println(userFunction.getName() + ": " + vars.size() + " variables");
-                System.out.println("Normal Locals: " + normalLocals);
-                System.out.println("Temps: " + temps);
-                System.out.println("G-Shadows: " + gShadows);
-                System.out.println("F-Shadows: " + fShadows);
-            }
         }
 
         if (MyOptions.optionV) {
@@ -2434,12 +2425,10 @@ public class TacConverter {
                 if (callee == null) {
 
                     if (BuiltinFunctions.isBuiltinFunction(functionNamePlace.toString())) {
-
                         // since we are now using a separate cfg node for calls to
                         // builtin functions, this case should not happen
-                        if (true) throw new RuntimeException("SNH");
+                        throw new RuntimeException("SNH");
                     } else {
-
                         // not having information about a non-builtin function IS bad,
                         // since it could contain sensitive sinks
                         if (finalPass) {
@@ -2457,7 +2446,6 @@ public class TacConverter {
                         continue;
                     }
                 } else {
-
                     List<TacActualParam> actualParams = prepNode.getParamList();
                     List<TacFormalParam> formalParams = callee.getParams();
                     int actualSize = actualParams.size();
@@ -5476,41 +5464,37 @@ public class TacConverter {
             // but only a member variable; since we are not yet modelling
             // member variables precisely, we can save a few cfg nodes
             // by approximating the following lines of code
-            // (enclosed by a false-condition)
 
-            if (false) {
-                TacAttributes atts0 = this.ref_list(node.getChild(0), leftPlace, null, null);
+//            TacAttributes atts0 = this.ref_list(node.getChild(0), leftPlace, null, null);
+//
+//            // assign this member variable to a temporary
+//            Variable tempVar = newTemp();
+//            CfgNode cfgNode = new CfgNodeAssignSimple(
+//                tempVar,
+//                atts0.getPlace(),
+//                node.getChild(0));
+//
+//            // this temporary becomes the new leftPlace
+//            leftPlace = tempVar;
+//
+//            TacAttributes atts2 = this.object_property(node.getChild(2),
+//                leftPlace, paramList, catchVar);
+//
+//            connect(atts0.getCfg(), cfgNode);
+//            connect(cfgNode, atts2.getCfg());
+//
+//            myAtts.setCfg(new Cfg(atts0.getCfg().getHead(), atts2.getCfg().getTail()));
+//            myAtts.setPlace(atts2.getPlace());
+//            myAtts.setIsKnownCall(atts2.isKnownCall());
 
-                // assign this member variable to a temporary
-                Variable tempVar = newTemp();
-                CfgNode cfgNode = new CfgNodeAssignSimple(
-                    tempVar,
-                    atts0.getPlace(),
-                    node.getChild(0));
+            leftPlace = this.memberPlace;
 
-                // this temporary becomes the new leftPlace
-                leftPlace = tempVar;
+            TacAttributes atts2 = this.object_property(node.getChild(2),
+                leftPlace, paramList, catchVar);
 
-                TacAttributes atts2 = this.object_property(node.getChild(2),
-                    leftPlace, paramList, catchVar);
-
-                connect(atts0.getCfg(), cfgNode);
-                connect(cfgNode, atts2.getCfg());
-
-                myAtts.setCfg(new Cfg(atts0.getCfg().getHead(), atts2.getCfg().getTail()));
-                myAtts.setPlace(atts2.getPlace());
-                myAtts.setIsKnownCall(atts2.isKnownCall());
-            } else {
-
-                leftPlace = this.memberPlace;
-
-                TacAttributes atts2 = this.object_property(node.getChild(2),
-                    leftPlace, paramList, catchVar);
-
-                myAtts.setCfg(atts2.getCfg());
-                myAtts.setPlace(atts2.getPlace());
-                myAtts.setIsKnownCall(atts2.isKnownCall());
-            }
+            myAtts.setCfg(atts2.getCfg());
+            myAtts.setPlace(atts2.getPlace());
+            myAtts.setIsKnownCall(atts2.isKnownCall());
         }
 
         return myAtts;

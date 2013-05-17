@@ -300,10 +300,8 @@ public class SQLTestCase
         int sinkNum = 1;
         int graphNum = 1;
         // LATER: the generated dot file for this example is not
-        // always the same (limitation in the current dot conversion
-        // algorithm)
-        if (false)
-            this.performTest(testNum, sinkNum, graphNum, false);
+        // always the same (limitation in the current dot conversion algorithm)
+        // this.performTest(testNum, sinkNum, graphNum, false);
     }
 
     public void test27() {

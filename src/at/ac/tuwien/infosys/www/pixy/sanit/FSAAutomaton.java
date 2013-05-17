@@ -394,8 +394,7 @@ public class FSAAutomaton {
                         sigma = line.trim();
                         break;
                     case inJumps:
-                        if (true) throw new RuntimeException("not yet");
-                        break;
+                        throw new RuntimeException("not yet");
                 }
             }
         }

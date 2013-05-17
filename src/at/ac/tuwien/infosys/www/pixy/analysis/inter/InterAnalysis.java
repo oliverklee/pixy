@@ -206,9 +206,6 @@ public abstract class InterAnalysis
 //  ********************************************************************************
 
     private static void debug(String s) {
-        if (false) {
-            System.out.println(s);
-        }
     }
 
 //  analyze ************************************************************************
