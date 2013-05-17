@@ -33,6 +33,6 @@ public final class ConnectorWorkList {
     }
 
     boolean hasNext() {
-        return (this.workList.size() > 0 ? true : false);
+        return (this.workList.size() > 0);
     }
 }

@@ -1589,8 +1589,7 @@ public class TacConverter {
 
         // name and referencedom
         String functionName = node.getChild(2).getLexeme().toLowerCase();
-        boolean isReference =
-            (node.getChild(1).getChild(0).getSymbol() == PhpSymbols.T_EPSILON) ? false : true;
+        boolean isReference = (node.getChild(1).getChild(0).getSymbol() == PhpSymbols.T_EPSILON);
 
         TacFunction existingFunction = this.userFunctions.get(functionName);
         if (existingFunction != null) {
@@ -1666,8 +1665,7 @@ public class TacConverter {
     TacFunction methodHelper(ParseNode node, int paramListNum, int statNum, String functionName) {
 
         // referencedom
-        boolean isReference =
-            (node.getChild(1).getChild(0).getSymbol() == PhpSymbols.T_EPSILON) ? false : true;
+        boolean isReference = (node.getChild(1).getChild(0).getSymbol() == PhpSymbols.T_EPSILON);
 
         // the function's frame Cfg
         CfgNodeEntry entryNode = new CfgNodeEntry(node);

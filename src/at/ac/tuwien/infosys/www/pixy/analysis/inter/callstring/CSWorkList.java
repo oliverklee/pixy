@@ -31,6 +31,6 @@ public final class CSWorkList {
     }
 
     boolean hasNext() {
-        return (this.workList.size() > 0 ? true : false);
+        return (this.workList.size() > 0);
     }
 }
