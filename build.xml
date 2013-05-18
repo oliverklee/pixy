@@ -79,6 +79,7 @@
 
     <target name="build" description="Compiles the whole project.">
         <mkdir dir="${build.class.dir}"/>
+        <mkdir dir="${graphs.dir}"/>
         <javac destdir="${build.class.dir}" debug="on" includeantruntime="false">
             <src>
                 <pathelement path="${src.dir}"/>
