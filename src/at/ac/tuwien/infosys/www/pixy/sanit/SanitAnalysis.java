@@ -746,11 +746,7 @@ public abstract class SanitAnalysis
         }
 
         boolean mayTrim(int i) {
-            if (trim.contains(i)) {
-                return true;
-            }
-
-            return !noTrim.contains(i) && defaultTrim;
+            return trim.contains(i) || !noTrim.contains(i) && defaultTrim;
         }
     }
 }
