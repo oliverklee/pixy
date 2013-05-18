@@ -346,10 +346,7 @@ public class Variable
             return false;
         }
         Variable comp = (Variable) obj;
-        if (!this.symbolTable.equals(comp.getSymbolTable())) {
-            return false;
-        }
-        return (this.name.equals(comp.getName()));
+        return this.symbolTable.equals(comp.getSymbolTable()) && this.name.equals(comp.getName());
     }
 
     // EFF: hashcode caching

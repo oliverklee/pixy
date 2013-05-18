@@ -2497,9 +2497,7 @@ public class Automaton
      * Returns true if this automaton accepts no strings.
      */
     public boolean isEmpty() {
-        if (isSingleton())
-            return false;
-        return !initial.accept && initial.transitions.isEmpty();
+        return !isSingleton() && !initial.accept && initial.transitions.isEmpty();
     }
 
     /**
@@ -2519,9 +2517,7 @@ public class Automaton
      * Returns true if the language of this automaton is finite.
      */
     public boolean isFinite() {
-        if (isSingleton())
-            return true;
-        return isFinite(initial, new HashSet<State>());
+        return isSingleton() || isFinite(initial, new HashSet<State>());
     }
 
     /**

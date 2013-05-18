@@ -3873,9 +3873,6 @@ public class BuiltinFunctions {
 
     public static boolean isBuiltinFunction(String functionName) {
         functionName = functionName.toLowerCase();
-        if (functionName.startsWith("_junit_test")) {
-            return true;
-        }
-        return BuiltinFunctions.allBuiltinFunctions.contains(functionName);
+        return functionName.startsWith("_junit_test") || BuiltinFunctions.allBuiltinFunctions.contains(functionName);
     }
 }

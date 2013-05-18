@@ -119,10 +119,7 @@ public class IncludeGraph {
     // tests whether the indicated edge already exists in this graph
     private boolean edgeExists(IncludeNode from, IncludeNode to) {
         Set<IncludeNode> adjSet = this.adjSets.get(from);
-        if (adjSet == null) {
-            return false;
-        }
-        return adjSet.contains(to);
+        return adjSet != null && adjSet.contains(to);
     }
 
 //  addEdge ************************************************************************

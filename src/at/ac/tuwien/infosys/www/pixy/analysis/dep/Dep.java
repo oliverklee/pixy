@@ -73,10 +73,7 @@ public class Dep
 
     // only needed by JUnit tests
     public boolean contains(int line) {
-        if (this.cfgNode == null) {
-            return false;
-        }
-        return (this.cfgNode.getOrigLineno() == line);
+        return this.cfgNode != null && (this.cfgNode.getOrigLineno() == line);
     }
 
 //  ********************************************************************************
