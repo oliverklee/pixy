@@ -7,7 +7,6 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -40,7 +39,7 @@ public class FunctionalAnalysis
 
         //System.out.println("call to getReverseTarget!");
 
-        List<ReverseTarget> retMe = new LinkedList<ReverseTarget>();
+        List<ReverseTarget> retMe = new LinkedList<>();
 
         FunctionalContext context = (FunctionalContext) contextX;
 
@@ -57,8 +56,7 @@ public class FunctionalAnalysis
             if (analysisNode == null) {
                 continue;
             }
-            Set calleeContexts =
-                analysisNode.getReversePhiContexts(context.getLatticeElement());
+            Set<? extends Context> calleeContexts = analysisNode.getReversePhiContexts(context.getLatticeElement());
 
             // during this for loop, there is always at least one non-null set, i.e.
             // the following branch is entered at least once (for all exit nodes

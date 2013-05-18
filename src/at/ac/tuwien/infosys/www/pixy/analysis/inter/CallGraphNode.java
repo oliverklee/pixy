@@ -25,8 +25,8 @@ public class CallGraphNode {
 
     CallGraphNode(TacFunction function) {
         this.function = function;
-        this.outEdges = new HashMap<CfgNodeCall, CallGraphNode>();
-        this.inEdges = new HashMap<CfgNodeCall, CallGraphNode>();
+        this.outEdges = new HashMap<>();
+        this.inEdges = new HashMap<>();
     }
 
 //  ********************************************************************************

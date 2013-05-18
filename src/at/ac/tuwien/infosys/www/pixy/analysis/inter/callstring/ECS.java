@@ -1,6 +1,5 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -14,12 +13,12 @@ public class ECS {
 
     // creates empty ECS
     public ECS() {
-        this.callStrings = new LinkedList<CallString>();
+        this.callStrings = new LinkedList<>();
     }
 
     // creates one-element ECS
     public ECS(CallString firstCallString) {
-        this.callStrings = new LinkedList<CallString>();
+        this.callStrings = new LinkedList<>();
         this.callStrings.add(firstCallString);
     }
 
@@ -45,7 +44,7 @@ public class ECS {
         return this.callStrings.get(position);
     }
 
-    public List getCallStrings() {
+    public List<CallString> getCallStrings() {
         return this.callStrings;
     }
 

@@ -57,9 +57,9 @@ public class LiteralTfAssignRef
         // except that left receives the literal of right;
         // we achieve this through the following actions:
 
-        Set<Variable> mustAliases = new HashSet<Variable>();
+        Set<Variable> mustAliases = new HashSet<>();
         mustAliases.add(left);
-        Set mayAliases = Collections.EMPTY_SET;
+        Set<Variable> mayAliases = Collections.emptySet();
 
         // let the lattice element handle the details
         out.assignSimple(left, right, mustAliases, mayAliases);

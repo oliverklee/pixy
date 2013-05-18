@@ -16,9 +16,7 @@ import java.util.TreeMap;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public final class InterWorkListPoor
-    implements InterWorkList {
-
+public final class InterWorkListPoor implements InterWorkList {
     private LinkedList<InterWorkListElement> unsortedWorkList;
     private SortedMap<Integer, InterWorkListElement> sortedWorkList;
 
@@ -27,8 +25,8 @@ public final class InterWorkListPoor
 // *********************************************************************************
 
     public InterWorkListPoor() {
-        this.unsortedWorkList = new LinkedList<InterWorkListElement>();
-        this.sortedWorkList = new TreeMap<Integer, InterWorkListElement>();
+        this.unsortedWorkList = new LinkedList<>();
+        this.sortedWorkList = new TreeMap<>();
     }
 
 // *********************************************************************************

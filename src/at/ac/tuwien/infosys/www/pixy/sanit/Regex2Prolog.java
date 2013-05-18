@@ -24,7 +24,7 @@ public class Regex2Prolog {
         }
 
         // make a copy for the following work
-        List<String> phpRegex = new LinkedList<String>(phpRegexOrig);
+        List<String> phpRegex = new LinkedList<>(phpRegexOrig);
 
         if (preg) {
             // if the preg regex is not delimited...

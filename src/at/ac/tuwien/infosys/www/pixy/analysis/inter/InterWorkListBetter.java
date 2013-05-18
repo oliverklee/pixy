@@ -10,9 +10,7 @@ import java.util.TreeMap;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public final class InterWorkListBetter
-    implements InterWorkList {
-
+public final class InterWorkListBetter implements InterWorkList {
     private InterWorkListOrder order;
     private SortedMap<Integer, InterWorkListElement> sortedWorkList;
 
@@ -22,7 +20,7 @@ public final class InterWorkListBetter
 
     public InterWorkListBetter(InterWorkListOrder order) {
         this.order = order;
-        this.sortedWorkList = new TreeMap<Integer, InterWorkListElement>();
+        this.sortedWorkList = new TreeMap<>();
     }
 
 // *********************************************************************************

@@ -4,24 +4,19 @@ import at.ac.tuwien.infosys.www.pixy.analysis.Lattice;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.ConstantsTable;
 import at.ac.tuwien.infosys.www.pixy.conversion.SymbolTable;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 
 import java.util.List;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class LiteralLattice
-    extends Lattice {
-
+public class LiteralLattice extends Lattice {
     public LiteralLattice(
-        List places,
-        ConstantsTable constantsTable,
-        List functions,
-        SymbolTable superSymbolTable) {
-
-        // initialize the default element
-        LiteralLatticeElement.initDefault(
-            places, constantsTable, functions, superSymbolTable);
+        List<TacPlace> places, ConstantsTable constantsTable, List<TacFunction> functions, SymbolTable superSymbolTable
+    ) {
+        LiteralLatticeElement.initDefault(places, constantsTable, functions, superSymbolTable);
     }
 
     public LatticeElement lub(

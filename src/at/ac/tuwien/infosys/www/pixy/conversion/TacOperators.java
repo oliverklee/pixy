@@ -43,7 +43,7 @@ public class TacOperators {
     private static Map<String, Integer> nameToOp;
 
     static {
-        nameToOp = new HashMap<String, Integer>();
+        nameToOp = new HashMap<>();
         opToName = new String[29];
 
         add("+", PLUS);

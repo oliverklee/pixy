@@ -2,10 +2,7 @@ package at.ac.tuwien.infosys.www.pixy.analysis.dep;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.Lattice;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
-import at.ac.tuwien.infosys.www.pixy.conversion.ConstantsTable;
-import at.ac.tuwien.infosys.www.pixy.conversion.SymbolTable;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
-import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
+import at.ac.tuwien.infosys.www.pixy.conversion.*;
 
 import java.util.List;
 
@@ -22,16 +19,10 @@ class DepLattice
 // *********************************************************************************
 
     DepLattice(
-        List<TacPlace> places,
-        ConstantsTable constantsTable,
-        List functions,
-        SymbolTable superSymbolTable,
-        Variable memberPlace) {
-
-        // initialize the default element
-        DepLatticeElement.initDefault(
-            places, constantsTable, functions, superSymbolTable,
-            memberPlace);
+        List<TacPlace> places, ConstantsTable constantsTable, List<TacFunction> functions, SymbolTable superSymbolTable,
+        Variable memberPlace
+    ) {
+        DepLatticeElement.initDefault(places, constantsTable, functions, superSymbolTable, memberPlace);
     }
 
 // *********************************************************************************

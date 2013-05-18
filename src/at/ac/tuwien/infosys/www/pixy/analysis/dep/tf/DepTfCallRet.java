@@ -86,7 +86,7 @@ public class DepTfCallRet
         DepLatticeElement outInfo = new DepLatticeElement();
 
         // contains variables that have been tagged as visited
-        Set<Variable> visitedVars = new HashSet<Variable>();
+        Set<Variable> visitedVars = new HashSet<>();
 
         // copy mappings of "global-like" places from calleeIn to outInfo
         // ("global-like": globals, superglobals, and constants)

@@ -52,7 +52,7 @@ public class DepAnalysis
         this.constantsTable = tac.getConstantsTable();
         this.superSymbolTable = tac.getSuperSymbolTable();
         this.memberPlace = tac.getMemberPlace();
-        this.repos = new GenericRepos<LatticeElement>();
+        this.repos = new GenericRepos<>();
 
         this.aliasAnalysis = aliasAnalysis;
         this.literalAnalysis = literalAnalysis;
@@ -91,15 +91,15 @@ public class DepAnalysis
         CfgNodeBasicBlock basicBlock, CfgNode untilHere, DepLatticeElement invalue) {
 
         DepLatticeElement outValue = new DepLatticeElement(invalue);
-        List containedNodes = basicBlock.getContainedNodes();
+        List<CfgNode> containedNodes = basicBlock.getContainedNodes();
         CompositeTransferFunction ctf = (CompositeTransferFunction) this.getTransferFunction(basicBlock);
 
-        Iterator nodesIter = containedNodes.iterator();
-        Iterator tfIter = ctf.iterator();
+        Iterator<CfgNode> nodesIter = containedNodes.iterator();
+        Iterator<TransferFunction> tfIter = ctf.iterator();
 
         while (nodesIter.hasNext() && tfIter.hasNext()) {
-            CfgNode node = (CfgNode) nodesIter.next();
-            TransferFunction tf = (TransferFunction) tfIter.next();
+            CfgNode node = nodesIter.next();
+            TransferFunction tf = tfIter.next();
             if (node == untilHere) {
                 break;
             }
@@ -140,8 +140,8 @@ public class DepAnalysis
 
         CfgNodeAssignSimple cfgNode = (CfgNodeAssignSimple) cfgNodeX;
         Variable left = cfgNode.getLeft();
-        Set mustAliases = this.aliasAnalysis.getMustAliases(left, aliasInNode);
-        Set mayAliases = this.aliasAnalysis.getMayAliases(left, aliasInNode);
+        Set<Variable> mustAliases = this.aliasAnalysis.getMustAliases(left, aliasInNode);
+        Set<Variable> mayAliases = this.aliasAnalysis.getMayAliases(left, aliasInNode);
 
         return new DepTfAssignSimple(
             left,
@@ -155,8 +155,8 @@ public class DepAnalysis
 
         CfgNodeAssignUnary cfgNode = (CfgNodeAssignUnary) cfgNodeX;
         Variable left = cfgNode.getLeft();
-        Set mustAliases = this.aliasAnalysis.getMustAliases(left, aliasInNode);
-        Set mayAliases = this.aliasAnalysis.getMayAliases(left, aliasInNode);
+        Set<Variable> mustAliases = this.aliasAnalysis.getMustAliases(left, aliasInNode);
+        Set<Variable> mayAliases = this.aliasAnalysis.getMayAliases(left, aliasInNode);
 
         return new DepTfAssignUnary(
             left,
@@ -171,8 +171,8 @@ public class DepAnalysis
 
         CfgNodeAssignBinary cfgNode = (CfgNodeAssignBinary) cfgNodeX;
         Variable left = cfgNode.getLeft();
-        Set mustAliases = this.aliasAnalysis.getMustAliases(left, aliasInNode);
-        Set mayAliases = this.aliasAnalysis.getMayAliases(left, aliasInNode);
+        Set<Variable> mustAliases = this.aliasAnalysis.getMustAliases(left, aliasInNode);
+        Set<Variable> mayAliases = this.aliasAnalysis.getMayAliases(left, aliasInNode);
 
         return new DepTfAssignBinary(
             left,
@@ -239,8 +239,8 @@ public class DepAnalysis
         }
 
         // extract actual and formal params
-        List actualParams = cfgNode.getParamList();
-        List formalParams = calledFunction.getParams();
+        List<TacActualParam> actualParams = cfgNode.getParamList();
+        List<TacFormalParam> formalParams = calledFunction.getParams();
 
         // the transfer function to be assigned to this node
         TransferFunction tf = null;
@@ -379,7 +379,7 @@ public class DepAnalysis
     // returns the dependency graphs for the given sink
     public List<DepGraph> getDepGraph(Sink sink) {
 
-        List<DepGraph> retMe = new LinkedList<DepGraph>();
+        List<DepGraph> retMe = new LinkedList<>();
 
         TacFunction mainFunc = this.mainFunction;
         SymbolTable mainSymTab = mainFunc.getSymbolTable();
@@ -422,7 +422,7 @@ public class DepAnalysis
     // this (older) function collects some nice statistics
     public List<DepGraph> getDepGraphs(List<Sink> sinks) {
 
-        List<DepGraph> retMe = new LinkedList<DepGraph>();
+        List<DepGraph> retMe = new LinkedList<>();
 
         // sort sinks by line
         Collections.sort(sinks);
@@ -445,7 +445,7 @@ public class DepAnalysis
         SymbolTable mainSymTab = mainFunc.getSymbolTable();
 
         // map operation name -> number of occurrences
-        Map<String, Integer> opMap = new HashMap<String, Integer>();
+        Map<String, Integer> opMap = new HashMap<>();
 
         // for each sink...
         int i = 0;
@@ -619,8 +619,8 @@ public class DepAnalysis
             int numContexts = cc.getNumContexts(f);
 
             // auxiliary stack and visited set
-            LinkedList<CfgNode> stack = new LinkedList<CfgNode>();
-            Set<CfgNode> visited = new HashSet<CfgNode>();
+            LinkedList<CfgNode> stack = new LinkedList<>();
+            Set<CfgNode> visited = new HashSet<>();
 
             // visit head
             CfgNode current = head;

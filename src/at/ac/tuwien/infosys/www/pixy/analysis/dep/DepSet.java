@@ -14,7 +14,7 @@ import java.util.Set;
 public class DepSet
     implements Recyclable {
 
-    public static GenericRepos<DepSet> repos = new GenericRepos<DepSet>();
+    public static GenericRepos<DepSet> repos = new GenericRepos<>();
 
     // no special treatment necessary for the following:
     static public final DepSet UNINIT = new DepSet(Dep.UNINIT);
@@ -33,13 +33,13 @@ public class DepSet
 //  ********************************************************************************
 
     private DepSet() {
-        this.depSet = new HashSet<Dep>();
+        this.depSet = new HashSet<>();
     }
 
 //  ********************************************************************************
 
     private DepSet(Dep dep) {
-        this.depSet = new HashSet<Dep>();
+        this.depSet = new HashSet<>();
         this.depSet.add(dep);
     }
 
@@ -59,7 +59,7 @@ public class DepSet
 //  ********************************************************************************
 
     public static DepSet create(Dep dep) {
-        Set<Dep> taintSet = new HashSet<Dep>();
+        Set<Dep> taintSet = new HashSet<>();
         taintSet.add(dep);
         return create(taintSet);
     }
@@ -73,7 +73,7 @@ public class DepSet
     // compute the least upper bound (here: union) of the two taint sets
     public static DepSet lub(DepSet a, DepSet b) {
         // union!
-        Set<Dep> resultSet = new HashSet<Dep>();
+        Set<Dep> resultSet = new HashSet<>();
         resultSet.addAll(a.depSet);
         resultSet.addAll(b.depSet);
         return DepSet.create(resultSet);
@@ -95,7 +95,7 @@ public class DepSet
     // (a copy: such that a caller can't modify my state)
     // (shallow copy is sufficient, since the elements of the set are immutable, too)
     public Set<Dep> getDepSet() {
-        return new HashSet<Dep>(this.depSet);
+        return new HashSet<>(this.depSet);
     }
 
 //  ********************************************************************************

@@ -11,9 +11,7 @@ import java.util.*;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepLatticeElement
-    extends LatticeElement {
-
+public class DepLatticeElement extends LatticeElement {
     // contains only non-default mappings;
     // does not contain mappings for non-literal array elements, because:
     // the dep value of such elements solely depends on the array label
@@ -41,8 +39,8 @@ public class DepLatticeElement
     // a lattice element that doesn't modify the information of the
     // default lattice element
     public DepLatticeElement() {
-        this.placeToDep = new HashMap<TacPlace, DepSet>();
-        this.arrayLabels = new HashMap<Variable, DepSet>();
+        this.placeToDep = new HashMap<>();
+        this.arrayLabels = new HashMap<>();
     }
 
 //  DepLatticeElement(DepLatticeElement) ***********************************
@@ -50,9 +48,9 @@ public class DepLatticeElement
     // clones the given element
     public DepLatticeElement(DepLatticeElement element) {
         this.placeToDep =
-            new HashMap<TacPlace, DepSet>(element.getPlaceToDep());
+            new HashMap<>(element.getPlaceToDep());
         this.arrayLabels =
-            new HashMap<Variable, DepSet>(element.getArrayLabels());
+            new HashMap<>(element.getArrayLabels());
     }
 
 //  cloneMe ************************************************************************
@@ -78,8 +76,8 @@ public class DepLatticeElement
         // initialize base mapping for variables: UNINIT
         // (note: array elements have no explicit array label: their label is
         // that of their top enclosing array)
-        this.placeToDep = new HashMap<TacPlace, DepSet>();
-        this.arrayLabels = new HashMap<Variable, DepSet>();
+        this.placeToDep = new HashMap<>();
+        this.arrayLabels = new HashMap<>();
         for (TacPlace place : places) {
 
             if ((place instanceof Variable) &&
@@ -154,7 +152,7 @@ public class DepLatticeElement
         // untaint harmless superglobals;
         // fill this list with harmless superglobals that must be set to
         // harmless;
-        List<Variable> harmlessSuperGlobals = new LinkedList<Variable>();
+        List<Variable> harmlessSuperGlobals = new LinkedList<>();
 
         // NOTE: WHEN ADDING A HARMLESS SUPERGLOBAL HERE, YOU SHOULD ALSO ADD IT TO
         // TacConverter.addSuperGlobalElements()
@@ -215,16 +213,11 @@ public class DepLatticeElement
 
     // initializes the default lattice element
     static void initDefault(
-        List<TacPlace> places,
-        ConstantsTable constantsTable,
-        List functions,
-        SymbolTable superSymbolTable,
-        Variable memberPlace) {
-
-        DepLatticeElement.DEFAULT =
-            new DepLatticeElement(
-                places, constantsTable, functions, superSymbolTable,
-                memberPlace);
+        List<TacPlace> places, ConstantsTable constantsTable, List<TacFunction> functions, SymbolTable superSymbolTable,
+        Variable memberPlace
+    ) {
+        DepLatticeElement.DEFAULT
+            = new DepLatticeElement(places, constantsTable, functions, superSymbolTable, memberPlace);
     }
 
 //  *********************************************************************************
@@ -478,7 +471,7 @@ public class DepLatticeElement
         // this one is necessary because we must not modify a map while
         // iterating over it
         Map<TacPlace, DepSet> newPlaceToDep =
-            new HashMap<TacPlace, DepSet>(this.placeToDep);
+            new HashMap<>(this.placeToDep);
         for (Map.Entry<TacPlace, DepSet> myEntry : this.placeToDep.entrySet()) {
             TacPlace myPlace = myEntry.getKey();
             DepSet myDep = myEntry.getValue();
@@ -517,7 +510,7 @@ public class DepLatticeElement
         // ARRAY LABELS ***
 
         // lub over my non-default mappings
-        Map<Variable, DepSet> newArrayLabels = new HashMap<Variable, DepSet>(this.arrayLabels);
+        Map<Variable, DepSet> newArrayLabels = new HashMap<>(this.arrayLabels);
         for (Map.Entry<Variable, DepSet> myEntry : this.arrayLabels.entrySet()) {
             Variable myVar = myEntry.getKey();
             DepSet myArrayLabel = myEntry.getValue();
@@ -700,7 +693,6 @@ public class DepLatticeElement
     // to the given array element; only array elements without
     // non-literal indices are returned
     List<Variable> getMiList(Variable var) {
-
         if (!var.isArrayElement()) {
             throw new RuntimeException("SNH");
         }
@@ -709,13 +701,13 @@ public class DepLatticeElement
         }
 
         // the list to be returned (contains Variables)
-        List<Variable> miList = new LinkedList<Variable>();
+        List<Variable> miList = new LinkedList<>();
 
         // root of the array tree, indices of the array element
         Variable root = var.getTopEnclosingArray();
         List<TacPlace> indices = var.getIndices();
 
-        this.miRecurse(miList, root, new LinkedList<TacPlace>(indices));
+        this.miRecurse(miList, root, new LinkedList<>(indices));
         return miList;
     }
 
@@ -765,7 +757,7 @@ public class DepLatticeElement
                 miList.addAll(literalElements);
             } else {
                 for (Variable target : literalElements) {
-                    this.miRecurse(miList, target, new LinkedList<TacPlace>(indices));
+                    this.miRecurse(miList, target, new LinkedList<>(indices));
                 }
             }
         }
@@ -778,9 +770,9 @@ public class DepLatticeElement
     public void resetVariables(SymbolTable symTab) {
 
         // reset deps
-        for (Iterator iter = this.placeToDep.entrySet().iterator(); iter.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            TacPlace place = (TacPlace) entry.getKey();
+        for (Iterator<Map.Entry<TacPlace, DepSet>> iter = this.placeToDep.entrySet().iterator(); iter.hasNext(); ) {
+            Map.Entry<TacPlace, DepSet> entry = iter.next();
+            TacPlace place = entry.getKey();
 
             if (!(place instanceof Variable)) {
                 // nothing to do for non-variables (i.e., constants)
@@ -794,12 +786,13 @@ public class DepLatticeElement
         }
 
         // reset array labels
-        for (Iterator iter = this.arrayLabels.entrySet().iterator(); iter.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            TacPlace place = (TacPlace) entry.getKey();
+        for (Iterator<Map.Entry<Variable, DepSet>> iter = this.arrayLabels.entrySet().iterator(); iter.hasNext(); ) {
+            Map.Entry<Variable, DepSet> entry = iter.next();
+            TacPlace place = entry.getKey();
 
             if (!(place instanceof Variable)) {
                 // nothing to do for non-variables (i.e., constants)
+                // Note: Is this possible here at all as of the Map contents data types?
                 continue;
             }
 
@@ -817,9 +810,9 @@ public class DepLatticeElement
     public void resetTemporaries(SymbolTable symTab) {
 
         // reset deps
-        for (Iterator iter = this.placeToDep.entrySet().iterator(); iter.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            TacPlace place = (TacPlace) entry.getKey();
+        for (Iterator<Map.Entry<TacPlace, DepSet>> iter = this.placeToDep.entrySet().iterator(); iter.hasNext(); ) {
+            Map.Entry<TacPlace, DepSet> entry = iter.next();
+            TacPlace place = entry.getKey();
 
             if (!(place instanceof Variable)) {
                 // nothing to do for non-variables (i.e., constants)
@@ -838,12 +831,13 @@ public class DepLatticeElement
         }
 
         // reset array labels
-        for (Iterator iter = this.arrayLabels.entrySet().iterator(); iter.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            TacPlace place = (TacPlace) entry.getKey();
+        for (Iterator<Map.Entry<Variable, DepSet>>  iter = this.arrayLabels.entrySet().iterator(); iter.hasNext(); ) {
+            Map.Entry<Variable, DepSet> entry = iter.next();
+            TacPlace place = entry.getKey();
 
             if (!(place instanceof Variable)) {
                 // nothing to do for non-variables (i.e., constants)
+                // Note: Is this possible here at all as of the Map contents data types?
                 continue;
             }
 
@@ -864,7 +858,7 @@ public class DepLatticeElement
     // sets the dep and array label of the given formal
     public void setFormal(TacFormalParam formalParam, CfgNode cfgNode) {
         Variable formalVar = formalParam.getVariable();
-        Set<Variable> mustAliases = new HashSet<Variable>();
+        Set<Variable> mustAliases = new HashSet<>();
         mustAliases.add(formalVar);
 
         Set<Variable> mayAliases = Collections.emptySet();

@@ -57,7 +57,7 @@ public class XSSTestCase
     public void test01() {
         String testNum = "01";
         // list containing the line numbers for which we expect a vuln report
-        List<Integer> exp = new LinkedList<Integer>();
+        List<Integer> exp = new LinkedList<>();
         exp.add(6);
         exp.add(8);
         this.performTest(testNum, exp);
@@ -65,7 +65,7 @@ public class XSSTestCase
 
     public void test02() {
         String testNum = "02";
-        List<Integer> exp = new LinkedList<Integer>();
+        List<Integer> exp = new LinkedList<>();
         exp.add(10);
         exp.add(11);
         exp.add(12);
@@ -75,7 +75,7 @@ public class XSSTestCase
 
     public void test03() {
         String testNum = "03";
-        List<Integer> exp = new LinkedList<Integer>();
+        List<Integer> exp = new LinkedList<>();
         exp.add(13);
         this.performTest(testNum, exp);
     }

@@ -58,7 +58,7 @@ public class CfgNodeAssignBinary
     }
 
     public List<Variable> getVariables() {
-        List<Variable> retMe = new LinkedList<Variable>();
+        List<Variable> retMe = new LinkedList<>();
         retMe.add(this.left);
         if (this.leftOperand instanceof Variable) {
             retMe.add((Variable) this.leftOperand);

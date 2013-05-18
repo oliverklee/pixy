@@ -18,17 +18,17 @@ public class DepTfAssignSimple
     extends TransferFunction {
 
     private Variable left;
-    private Set mustAliases;
-    private Set mayAliases;
+    private Set<Variable> mustAliases;
+    private Set<Variable> mayAliases;
     private CfgNode cfgNode;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public DepTfAssignSimple(TacPlace left, TacPlace right,
-                             Set mustAliases, Set mayAliases, CfgNode cfgNode) {
-
+    public DepTfAssignSimple(
+        TacPlace left, TacPlace right, Set<Variable> mustAliases, Set<Variable> mayAliases, CfgNode cfgNode
+    ) {
         this.left = (Variable) left;  // must be a variable
         this.mustAliases = mustAliases;
         this.mayAliases = mayAliases;

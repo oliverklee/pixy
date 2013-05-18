@@ -29,7 +29,7 @@ public class CfgNodeUnset
     }
 
     public List<Variable> getVariables() {
-        List<Variable> retMe = new LinkedList<Variable>();
+        List<Variable> retMe = new LinkedList<>();
         if (this.operand instanceof Variable) {
             retMe.add(this.operand);
         } else {

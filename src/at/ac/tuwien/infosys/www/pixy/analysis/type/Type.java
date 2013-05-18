@@ -14,7 +14,7 @@ public class Type {
     private static Map<String, Type> classTypes;
 
     public static void initTypes(Collection<String> classNames) {
-        classTypes = new HashMap<String, Type>();
+        classTypes = new HashMap<>();
         for (String className : classNames) {
             classTypes.put(className, new Type(className));
         }

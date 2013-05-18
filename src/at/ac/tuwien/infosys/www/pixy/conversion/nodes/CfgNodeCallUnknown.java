@@ -5,7 +5,6 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParam;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -56,7 +55,7 @@ public class CfgNodeCallUnknown
     }
 
     public List<Variable> getVariables() {
-        List<Variable> retMe = new LinkedList<Variable>();
+        List<Variable> retMe = new LinkedList<>();
         for (TacActualParam param : this.paramList) {
             TacPlace paramPlace = param.getPlace();
             if (paramPlace instanceof Variable) {

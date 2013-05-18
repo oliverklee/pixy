@@ -17,7 +17,7 @@ public class CallGraph {
     private TacFunction mainFunction;
 
     CallGraph(TacFunction mainFunction) {
-        this.nodes = new HashMap<TacFunction, CallGraphNode>();
+        this.nodes = new HashMap<>();
         this.mainFunction = mainFunction;
         this.nodes.put(mainFunction, new CallGraphNode(mainFunction));
     }
@@ -45,11 +45,11 @@ public class CallGraph {
     // computes the postorder on the call graph
     public Map<TacFunction, Integer> getPostOrder() {
 
-        List<CallGraphNode> postorder = new LinkedList<CallGraphNode>();
+        List<CallGraphNode> postorder = new LinkedList<>();
 
         // auxiliary stack and visited set
-        LinkedList<CallGraphNode> stack = new LinkedList<CallGraphNode>();
-        Set<CallGraphNode> visited = new HashSet<CallGraphNode>();
+        LinkedList<CallGraphNode> stack = new LinkedList<>();
+        Set<CallGraphNode> visited = new HashSet<>();
 
         stack.add(this.nodes.get(this.mainFunction));
 
@@ -78,7 +78,7 @@ public class CallGraph {
             }
         }
 
-        Map<TacFunction, Integer> retMe = new HashMap<TacFunction, Integer>();
+        Map<TacFunction, Integer> retMe = new HashMap<>();
         int i = 0;
         for (CallGraphNode f : postorder) {
             retMe.put(f.getFunction(), i++);

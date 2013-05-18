@@ -42,7 +42,7 @@ public class MyTransducer
         super();
 
         // auxiliary map from foreign state to my cloned state
-        Map<rationals.State, MyState> map = new HashMap<rationals.State, MyState>();
+        Map<rationals.State, MyState> map = new HashMap<>();
 
         // copy states, updating auxiliary map on the way
         Set<State> states = a.states();

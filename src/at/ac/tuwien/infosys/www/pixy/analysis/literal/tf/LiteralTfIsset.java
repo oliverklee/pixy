@@ -47,9 +47,9 @@ public class LiteralTfIsset
 
         // not so intelligent, but sound;
         // "setMe" is a temporary variable, which has no aliases
-        Set<Variable> mustAliases = new HashSet<Variable>();
+        Set<Variable> mustAliases = new HashSet<>();
         mustAliases.add(setMe);
-        Set mayAliases = Collections.EMPTY_SET;
+        Set<Variable> mayAliases = Collections.emptySet();
         out.assignSimple(setMe, Literal.TOP, mustAliases, mayAliases);
 
         return out;

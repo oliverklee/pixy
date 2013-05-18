@@ -21,8 +21,8 @@ public class DepTfAssignBinary
     private TacPlace leftOperand;
     private TacPlace rightOperand;
     private int op;
-    private Set mustAliases;
-    private Set mayAliases;
+    private Set<Variable> mustAliases;
+    private Set<Variable> mayAliases;
     private CfgNode cfgNode;
 
 // *********************************************************************************
@@ -30,9 +30,10 @@ public class DepTfAssignBinary
 // *********************************************************************************
 
     // mustAliases, mayAliases: of setMe
-    public DepTfAssignBinary(TacPlace left, TacPlace leftOperand, TacPlace rightOperand,
-                             int op, Set mustAliases, Set mayAliases, CfgNode cfgNode) {
-
+    public DepTfAssignBinary(
+        TacPlace left, TacPlace leftOperand, TacPlace rightOperand, int op, Set<Variable> mustAliases,
+        Set<Variable> mayAliases, CfgNode cfgNode
+    ) {
         this.left = (Variable) left;  // must be a variable
         this.leftOperand = leftOperand;
         this.rightOperand = rightOperand;

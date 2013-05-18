@@ -9,7 +9,6 @@ import java.util.*;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public final class Cfg {
-
     private CfgNode head;
     private final CfgNode tail;
     private final int tailEdgeType;
@@ -57,7 +56,7 @@ public final class Cfg {
     // EFF: this function should be called only once, and the result cached;
     // this is what currently happens in ConnectorComputation
     public List<CfgNodeCall> getContainedCalls() {
-        List<CfgNodeCall> retMe = new LinkedList<CfgNodeCall>();
+        List<CfgNodeCall> retMe = new LinkedList<>();
         for (CfgNode cfgNode : this.dfPreOrder()) {
             if (cfgNode instanceof CfgNodeCall) {
                 retMe.add((CfgNodeCall) cfgNode);
@@ -97,11 +96,11 @@ public final class Cfg {
 // OTHER ***************************************************************************
 
     public void assignReversePostOrder() {
-        LinkedList postorder = this.dfPostOrder();
-        ListIterator iter = postorder.listIterator(postorder.size());
+        LinkedList<CfgNode> postorder = this.dfPostOrder();
+        ListIterator<CfgNode> iter = postorder.listIterator(postorder.size());
         int i = 0;
         while (iter.hasPrevious()) {
-            CfgNode cfgNode = (CfgNode) iter.previous();
+            CfgNode cfgNode = iter.previous();
             cfgNode.setReversePostOrder(i);
             i++;
         }
@@ -109,7 +108,7 @@ public final class Cfg {
 
     // returns the number of nodes in this Cfg
     public int size() {
-        Set<CfgNode> visited = new HashSet<CfgNode>();
+        Set<CfgNode> visited = new HashSet<>();
         int s = size(this.head, visited);
         //visited = null;
         return s;
@@ -139,15 +138,14 @@ public final class Cfg {
     // breadth first iterator;
     // NOTE: when iterating over large CFGs, use should better use
     // dfPreOrderIterator; bfIterator tends to produce stack overflows
-    public Iterator bfIterator() {
-
+    public Iterator<CfgNode> bfIterator() {
         // list for the iterator
-        LinkedList<CfgNode> list = new LinkedList<CfgNode>();
+        LinkedList<CfgNode> list = new LinkedList<>();
 
         // queue for nodes that still have to be visited
-        LinkedList<CfgNode> queue = new LinkedList<CfgNode>();
+        LinkedList<CfgNode> queue = new LinkedList<>();
 
-        Set<CfgNode> visited = new HashSet<CfgNode>();
+        Set<CfgNode> visited = new HashSet<>();
 
         queue.add(this.head);
         visited.add(this.head);
@@ -190,16 +188,16 @@ public final class Cfg {
 
     // depth first iterator (preorder)
     public LinkedList<CfgNode> dfPreOrder() {
-        LinkedList<CfgNode> preorder = new LinkedList<CfgNode>();
-        LinkedList<CfgNode> postorder = new LinkedList<CfgNode>();
+        LinkedList<CfgNode> preorder = new LinkedList<>();
+        LinkedList<CfgNode> postorder = new LinkedList<>();
         this.dfIterator(preorder, postorder);
         return preorder;
     }
 
     // depth first iterator (postorder)
     public LinkedList<CfgNode> dfPostOrder() {
-        LinkedList<CfgNode> preorder = new LinkedList<CfgNode>();
-        LinkedList<CfgNode> postorder = new LinkedList<CfgNode>();
+        LinkedList<CfgNode> preorder = new LinkedList<>();
+        LinkedList<CfgNode> postorder = new LinkedList<>();
         this.dfIterator(preorder, postorder);
         return postorder;
     }
@@ -208,8 +206,8 @@ public final class Cfg {
     private void dfIterator(LinkedList<CfgNode> preorder, LinkedList<CfgNode> postorder) {
 
         // auxiliary stack and visited set
-        LinkedList<CfgNode> stack = new LinkedList<CfgNode>();
-        Set<CfgNode> visited = new HashSet<CfgNode>();
+        LinkedList<CfgNode> stack = new LinkedList<>();
+        Set<CfgNode> visited = new HashSet<>();
 
         // visit head:
         // mark it as visited, add it to stack and preorder

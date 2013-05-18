@@ -21,7 +21,7 @@ public class DepClientInfo {
         this.name = name;
         this.className = className;
         this.performMe = false;
-        this.sinks = new HashMap<String, Set<Integer>>();
+        this.sinks = new HashMap<>();
     }
 
     void addSinks(Map<String, Set<Integer>> addUs) {

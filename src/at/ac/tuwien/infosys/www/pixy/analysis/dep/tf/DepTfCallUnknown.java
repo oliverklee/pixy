@@ -37,7 +37,7 @@ public class DepTfCallUnknown
 
         // create an appropariate taint value (holding the function's name);
         // the array label is identic to the taint value
-        Set<Dep> ets = new HashSet<Dep>();
+        Set<Dep> ets = new HashSet<>();
         ets.add(Dep.create(this.cfgNode));
         DepSet retDepSet = DepSet.create(ets);
         DepSet retArrayLabel = retDepSet;

@@ -56,7 +56,7 @@ public abstract class DepClient {
 
     // returns a list of sinks for this analysis
     public List<Sink> collectSinks() {
-        List<Sink> sinks = new LinkedList<Sink>();
+        List<Sink> sinks = new LinkedList<>();
         for (TacFunction function : this.depAnalysis.getFunctions()) {
             for (CfgNode cfgNodeX : function.getCfg().dfPreOrder()) {
                 checkForSink(cfgNodeX, function, sinks);
@@ -231,7 +231,7 @@ public abstract class DepClient {
             DepGraphOpNode opNode = (DepGraphOpNode) node;
             String opName = opNode.getName();
             // list for indices of multi-dependency functions
-            List<Integer> multiList = new LinkedList<Integer>();
+            List<Integer> multiList = new LinkedList<>();
 
             if (!opNode.isBuiltin()) {
 
@@ -319,7 +319,7 @@ public abstract class DepClient {
                                            DepGraph orig, List<Integer> indices, boolean inverse) {
 
         List<DepGraphNode> succs = orig.getSuccessors(opNode);
-        Set<Integer> indexSet = new HashSet<Integer>(indices);
+        Set<Integer> indexSet = new HashSet<>(indices);
 
         int count = -1;
         boolean created = false;
@@ -364,7 +364,7 @@ public abstract class DepClient {
 
         Set<DepGraphUninitNode> uninitNodes = relevant.getUninitNodes();
 
-        Map<DepGraphUninitNode, InitialTaint> retMe = new HashMap<DepGraphUninitNode, InitialTaint>();
+        Map<DepGraphUninitNode, InitialTaint> retMe = new HashMap<>();
 
         for (DepGraphUninitNode uninitNode : uninitNodes) {
             Set<DepGraphNode> preds = relevant.getPredecessors(uninitNode);
@@ -402,7 +402,7 @@ public abstract class DepClient {
 
     protected List<DepGraphNormalNode> findDangerousSources(DepGraph relevant) {
 
-        List<DepGraphNormalNode> retMe = new LinkedList<DepGraphNormalNode>();
+        List<DepGraphNormalNode> retMe = new LinkedList<>();
 
         // get dangerous uninit nodes, and then inspect their predecessors
         Set<DepGraphUninitNode> uninitNodes = this.findDangerousUninit(relevant).keySet();

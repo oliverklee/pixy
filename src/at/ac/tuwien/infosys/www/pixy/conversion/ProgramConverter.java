@@ -84,10 +84,10 @@ public class ProgramConverter {
 
         this.lines = 0;
 
-        this.allFiles = new HashSet<File>();
+        this.allFiles = new HashSet<>();
         this.allFiles.add(MyOptions.entryFile);
 
-        this.skipUs = new HashSet<CfgNodeInclude>();
+        this.skipUs = new HashSet<>();
 
         // initialize superglobals symbol table with superglobal arrays
         this.superSymbolTable = new SymbolTable("_superglobals", true);
@@ -121,7 +121,7 @@ public class ProgramConverter {
 
 //  getAllFiles ********************************************************************
 
-    public Set getAllFiles() {
+    public Set<File> getAllFiles() {
         return this.allFiles;
     }
 
@@ -151,13 +151,13 @@ public class ProgramConverter {
         // STATS
         //
         // include nodes that could not be resolved
-        Set<CfgNodeInclude> topIncludes = new HashSet<CfgNodeInclude>();
+        Set<CfgNodeInclude> topIncludes = new HashSet<>();
         //
         // literal includes for which the target file could not be found
-        SortedMap<CfgNodeInclude, String> notFoundLiteralIncludes = new TreeMap<CfgNodeInclude, String>();
+        SortedMap<CfgNodeInclude, String> notFoundLiteralIncludes = new TreeMap<>();
         //
         // dynamic includes for which the target file could not be found
-        SortedMap<CfgNodeInclude, String> notFoundDynamicIncludes = new TreeMap<CfgNodeInclude, String>();
+        SortedMap<CfgNodeInclude, String> notFoundDynamicIncludes = new TreeMap<>();
         //
         // number of included literal includes
         int resolvedLit = 0;
@@ -192,7 +192,7 @@ public class ProgramConverter {
 
                 // auxiliary list: will be filled with the include nodes
                 // contained in included files
-                weComeAfterwards = new LinkedList<CfgNodeInclude>();
+                weComeAfterwards = new LinkedList<>();
 
                 // process all literal include nodes in "processUs"
                 for (CfgNodeInclude includeNode : processUs) {
@@ -263,9 +263,9 @@ public class ProgramConverter {
             literalAnalysis.analyze();
 
             processUs = literalAnalysis.getIncludeNodes();
-            weComeAfterwards = new LinkedList<CfgNodeInclude>();
-            notFoundDynamicIncludes = new TreeMap<CfgNodeInclude, String>();
-            topIncludes = new HashSet<CfgNodeInclude>();
+            weComeAfterwards = new LinkedList<>();
+            notFoundDynamicIncludes = new TreeMap<>();
+            topIncludes = new HashSet<>();
 
             for (CfgNodeInclude includeNode : processUs) {
 
@@ -407,7 +407,7 @@ public class ProgramConverter {
                 System.out.println("   [" + entry.getValue() + "]");
             }
             System.out.println("unresolved non-literal includes: " + topIncludes.size());
-            List<CfgNodeInclude> topIncludesList = new LinkedList<CfgNodeInclude>(topIncludes);
+            List<CfgNodeInclude> topIncludesList = new LinkedList<>(topIncludes);
             Collections.sort(topIncludesList);
             for (CfgNodeInclude includeNode : topIncludesList) {
                 System.out.println("- " + includeNode.getLoc());
@@ -441,19 +441,18 @@ public class ProgramConverter {
     // - input: a set of unresolved or not found includes
     // - output: the same set, but without those that are inside functions
     //   that are never called
-    private void removeUnreachables(
-        Set<CfgNodeInclude> includeSet, Map<CfgNodeInclude, String> includeMap) {
-
-        for (Iterator iter = includeSet.iterator(); iter.hasNext(); ) {
-            CfgNodeInclude includeNode = (CfgNodeInclude) iter.next();
+    private void removeUnreachables(Set<CfgNodeInclude> includeSet, Map<CfgNodeInclude, String> includeMap) {
+        for (Iterator<CfgNodeInclude> iter = includeSet.iterator(); iter.hasNext(); ) {
+            CfgNodeInclude includeNode = iter.next();
             InterAnalysisNode incAnNode = literalAnalysis.getAnalysisNode(includeNode);
             if (incAnNode.getPhi().isEmpty()) {
                 iter.remove();
             }
         }
-        for (Iterator iter = includeMap.entrySet().iterator(); iter.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            CfgNodeInclude includeNode = (CfgNodeInclude) entry.getKey();
+
+        for (Iterator<Map.Entry<CfgNodeInclude, String>> iter = includeMap.entrySet().iterator(); iter.hasNext(); ) {
+            Map.Entry<CfgNodeInclude, String> entry = iter.next();
+            CfgNodeInclude includeNode = entry.getKey();
             InterAnalysisNode incAnNode = literalAnalysis.getAnalysisNode(includeNode);
             if (incAnNode.getPhi().isEmpty()) {
                 iter.remove();

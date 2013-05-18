@@ -21,12 +21,12 @@ public class MustAliases {
 
     // creates empty must alias information
     public MustAliases() {
-        this.groups = new HashSet<MustAliasGroup>();
+        this.groups = new HashSet<>();
     }
 
     // clones the given object
     public MustAliases(MustAliases cloneMe) {
-        this.groups = new HashSet<MustAliasGroup>();
+        this.groups = new HashSet<>();
         Set<MustAliasGroup> origGroup = cloneMe.getGroups();
         for (MustAliasGroup group : origGroup) {
             this.groups.add(new MustAliasGroup(group));
@@ -43,7 +43,7 @@ public class MustAliases {
 
     // returns a set of all variables that occur in the contained groups
     public Set<Variable> getVariables() {
-        Set<Variable> variables = new HashSet<Variable>();
+        Set<Variable> variables = new HashSet<>();
         for (MustAliasGroup group : this.groups) {
             variables.addAll(group.getVariables());
         }
@@ -55,8 +55,8 @@ public class MustAliases {
     public MustAliasGroup getMustAliasGroup(Variable x) {
         // EFF: there are faster ways to do this
         boolean searchGroup = true;
-        for (Iterator iter = this.groups.iterator(); iter.hasNext() && searchGroup; ) {
-            MustAliasGroup group = (MustAliasGroup) iter.next();
+        for (Iterator<MustAliasGroup> iter = this.groups.iterator(); iter.hasNext() && searchGroup; ) {
+            MustAliasGroup group = iter.next();
             if (group.contains(x)) {
                 return group;
             }
@@ -67,7 +67,7 @@ public class MustAliases {
     // returns all global variables that are must-aliases of the given variable
     // (a set of Variables)
     public Set<Variable> getGlobalAliases(Variable var) {
-        Set<Variable> retMe = new HashSet<Variable>();
+        Set<Variable> retMe = new HashSet<>();
         MustAliasGroup group = this.getMustAliasGroup(var);
         if (group != null) {
             retMe.addAll(group.getGlobals());
@@ -128,7 +128,7 @@ public class MustAliases {
 
     public void removeLocals() {
 
-        List<MustAliasGroup> keepUs = new LinkedList<MustAliasGroup>();
+        List<MustAliasGroup> keepUs = new LinkedList<>();
         for (MustAliasGroup group : this.groups) {
             group.removeLocals();
 
@@ -136,12 +136,12 @@ public class MustAliases {
                 keepUs.add(group);
             }
         }
-        this.groups = new HashSet<MustAliasGroup>(keepUs);
+        this.groups = new HashSet<>(keepUs);
     }
 
     public void removeGlobals() {
 
-        List<MustAliasGroup> keepUs = new LinkedList<MustAliasGroup>();
+        List<MustAliasGroup> keepUs = new LinkedList<>();
         for (MustAliasGroup group : this.groups) {
             group.removeGlobals();
 
@@ -149,12 +149,12 @@ public class MustAliases {
                 keepUs.add(group);
             }
         }
-        this.groups = new HashSet<MustAliasGroup>(keepUs);
+        this.groups = new HashSet<>(keepUs);
     }
 
     public void removeVariables(SymbolTable symTab) {
 
-        List<MustAliasGroup> keepUs = new LinkedList<MustAliasGroup>();
+        List<MustAliasGroup> keepUs = new LinkedList<>();
         for (MustAliasGroup group : this.groups) {
             group.removeVariables(symTab);
 
@@ -162,7 +162,7 @@ public class MustAliases {
                 keepUs.add(group);
             }
         }
-        this.groups = new HashSet<MustAliasGroup>(keepUs);
+        this.groups = new HashSet<>(keepUs);
     }
 
     // removes the given variable from its group (if there
@@ -212,7 +212,7 @@ public class MustAliases {
         this.groups.add(group);
     }
 
-    public void replace(Map replacements) {
+    public void replace(Map<Variable, Variable> replacements) {
         for (MustAliasGroup group : this.groups) {
             group.replace(replacements);
         }

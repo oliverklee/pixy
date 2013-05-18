@@ -23,14 +23,14 @@ public class MayAliasPair {
 //  ********************************************************************************
 
     public MayAliasPair(Variable a, Variable b) {
-        this.pair = new HashSet<Variable>();
+        this.pair = new HashSet<>();
         this.pair.add(a);
         this.pair.add(b);
     }
 
     // clones the given pair
     public MayAliasPair(MayAliasPair orig) {
-        this.pair = new HashSet<Variable>();
+        this.pair = new HashSet<>();
         for (Variable variable : orig.getPair()) {
             this.pair.add(variable);
         }
@@ -52,9 +52,9 @@ public class MayAliasPair {
     // of the group is a global variable, this global variable is returned;
     // null otherwise
     public Variable getGlobalMayAlias(Variable var) {
-        Iterator iter = this.pair.iterator();
-        Variable firstElement = (Variable) iter.next();
-        Variable secondElement = (Variable) iter.next();
+        Iterator<Variable> iter = this.pair.iterator();
+        Variable firstElement = iter.next();
+        Variable secondElement = iter.next();
 
         if (firstElement == var) {
             if (secondElement.isGlobal()) {
@@ -77,9 +77,9 @@ public class MayAliasPair {
     // of the group is a local variable, this local variable is returned;
     // null otherwise
     public Variable getLocalMayAlias(Variable var) {
-        Iterator iter = this.pair.iterator();
-        Variable firstElement = (Variable) iter.next();
-        Variable secondElement = (Variable) iter.next();
+        Iterator<Variable> iter = this.pair.iterator();
+        Variable firstElement = iter.next();
+        Variable secondElement = iter.next();
 
         if (firstElement == var) {
             if (secondElement.isLocal()) {
@@ -101,10 +101,9 @@ public class MayAliasPair {
     // if the given variable is contained in this pair, the other variable
     // from the pair is returned; null otherwise
     public Variable getMayAlias(Variable var) {
-
-        Iterator iter = this.pair.iterator();
-        Variable firstElement = (Variable) iter.next();
-        Variable secondElement = (Variable) iter.next();
+        Iterator<Variable> iter = this.pair.iterator();
+        Variable firstElement = iter.next();
+        Variable secondElement = iter.next();
 
         if (firstElement == var) {
             return secondElement;
@@ -118,10 +117,9 @@ public class MayAliasPair {
     // if this pair contains one local and one global variable, an array containing
     // these variables (in this order) is returned; null otherwise
     public Variable[] getLocalGlobal() {
-
-        Iterator iter = this.pair.iterator();
-        Variable firstElement = (Variable) iter.next();
-        Variable secondElement = (Variable) iter.next();
+        Iterator<Variable> iter = this.pair.iterator();
+        Variable firstElement = iter.next();
+        Variable secondElement = iter.next();
 
         if (firstElement.isLocal()) {
             if (secondElement.isGlobal()) {
@@ -149,9 +147,9 @@ public class MayAliasPair {
     // returns true if this pair contains one local and one global variable;
     // false otherwise
     public boolean containsLocalAndGlobal() {
-        Iterator iter = this.pair.iterator();
-        Variable firstVar = (Variable) iter.next();
-        Variable secondVar = (Variable) iter.next();
+        Iterator<Variable> iter = this.pair.iterator();
+        Variable firstVar = iter.next();
+        Variable secondVar = iter.next();
         if (firstVar.isLocal()) {
             if (secondVar.isGlobal()) {
                 return true;
@@ -212,10 +210,10 @@ public class MayAliasPair {
     }
 
     // expects a map Variable -> Variable (replaceMe -> replaceBy)
-    public void replace(Map replacements) {
-        Set<Variable> newPair = new HashSet<Variable>(this.pair);
+    public void replace(Map<Variable, Variable> replacements) {
+        Set<Variable> newPair = new HashSet<>(this.pair);
         for (Variable var : this.pair) {
-            Variable replaceBy = (Variable) replacements.get(var);
+            Variable replaceBy = replacements.get(var);
             if (replaceBy != null) {
                 newPair.remove(var);
                 newPair.add(replaceBy);

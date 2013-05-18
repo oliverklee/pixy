@@ -80,7 +80,7 @@ public class Variable
         this.indices = null;
 
         this.dependsOn = null;
-        this.indexFor = new LinkedList<Variable>();
+        this.indexFor = new LinkedList<>();
 
         this.isTemp = false;
         this.isMember = false;
@@ -120,14 +120,14 @@ public class Variable
             // System.out.println("WARNING: unchecked call to Variable.getElements()");
             return Collections.emptyList();
         } else {
-            return new LinkedList<Variable>(this.elements.values());
+            return new LinkedList<>(this.elements.values());
         }
     }
 
     // returns all elements recursively (i.e., the whole array tree, without
     // the root)
     public List<Variable> getElementsRecursive() {
-        List<Variable> retMe = new LinkedList<Variable>();
+        List<Variable> retMe = new LinkedList<>();
         Collection<Variable> directElements = this.elements.values();
         retMe.addAll(directElements);
         for (Variable directElement : directElements) {
@@ -167,9 +167,9 @@ public class Variable
 
     public List<TacPlace> getIndices() {
         if (this.indices == null) {
-            return new LinkedList<TacPlace>();
+            return new LinkedList<>();
         } else {
-            return new LinkedList<TacPlace>(this.indices);
+            return new LinkedList<>(this.indices);
         }
     }
 
@@ -251,8 +251,8 @@ public class Variable
     void setIsArray(boolean isArray) {
         if (isArray && !this.isArray) {
             this.isArray = isArray;
-            this.elements = new LinkedHashMap<TacPlace, Variable>();
-            this.literalElements = new LinkedList<Variable>();
+            this.elements = new LinkedHashMap<>();
+            this.literalElements = new LinkedList<>();
         } else {
             System.out.println("Warning: unchecked call to Variable.setIsArray()");
         }
@@ -271,7 +271,7 @@ public class Variable
     void setArrayElementAttributes(Variable enclosingArray, TacPlace index) {
 
         this.isArrayElement = true;
-        this.indices = new LinkedList<TacPlace>();
+        this.indices = new LinkedList<>();
         this.hasNonLiteralIndices = enclosingArray.hasNonLiteralIndices();
         this.enclosingArray = enclosingArray;
         if (enclosingArray.isArrayElement()) {

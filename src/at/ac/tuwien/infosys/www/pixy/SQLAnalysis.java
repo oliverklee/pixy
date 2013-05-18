@@ -47,7 +47,7 @@ public class SQLAnalysis
         System.out.println("*****************");
         System.out.println();
 
-        List<Integer> retMe = new LinkedList<Integer>();
+        List<Integer> retMe = new LinkedList<>();
 
         // collect sinks
         List<Sink> sinks = this.collectSinks();
@@ -227,8 +227,8 @@ public class SQLAnalysis
     Automaton toAutomaton(DepGraph depGraph, DepGraph origDepGraph) {
         depGraph.eliminateCycles();
         DepGraphNode root = depGraph.getRoot();
-        Map<DepGraphNode, Automaton> deco = new HashMap<DepGraphNode, Automaton>();
-        Set<DepGraphNode> visited = new HashSet<DepGraphNode>();
+        Map<DepGraphNode, Automaton> deco = new HashMap<>();
+        Set<DepGraphNode> visited = new HashSet<>();
         this.decorate(root, deco, visited, depGraph, origDepGraph);
         Automaton rootDeco = deco.get(root).clone();
 
@@ -405,14 +405,14 @@ public class SQLAnalysis
 
         List<DepGraphNode> successors = depGraph.getSuccessors(node);
         if (successors == null) {
-            successors = new LinkedList<DepGraphNode>();
+            successors = new LinkedList<>();
         }
 
         Automaton retMe = null;
 
         String opName = node.getName();
 
-        List<Integer> multiList = new LinkedList<Integer>();
+        List<Integer> multiList = new LinkedList<>();
 
         if (!node.isBuiltin()) {
 
@@ -565,7 +565,7 @@ public class SQLAnalysis
                                                  Map<DepGraphNode, Automaton> deco, List<Integer> indices, boolean inverse) {
 
         boolean indirectly = false;
-        Set<Integer> indexSet = new HashSet<Integer>(indices);
+        Set<Integer> indexSet = new HashSet<>(indices);
 
         int count = -1;
         for (DepGraphNode succ : succs) {
@@ -622,7 +622,7 @@ public class SQLAnalysis
         if (MyOptions.option_P) {
             if (auto.isFinite()) {
                 Set<String> finiteStringsSet = auto.getFiniteStrings();
-                List<String> finiteStrings = new LinkedList<String>(finiteStringsSet);
+                List<String> finiteStrings = new LinkedList<>(finiteStringsSet);
                 Collections.sort(finiteStrings);
                 System.out.println();
                 System.out.println("IS FINITE");

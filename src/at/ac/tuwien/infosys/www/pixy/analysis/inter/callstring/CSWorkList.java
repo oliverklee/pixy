@@ -14,7 +14,7 @@ public final class CSWorkList {
 // *********************************************************************************
 
     CSWorkList() {
-        this.workList = new LinkedList<CSWorkListElement>();
+        this.workList = new LinkedList<>();
     }
 
 // *********************************************************************************

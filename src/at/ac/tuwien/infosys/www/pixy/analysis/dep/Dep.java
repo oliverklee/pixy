@@ -14,7 +14,7 @@ public class Dep
     implements Recyclable {
 
     public static GenericRepos<Dep> repos =
-        new GenericRepos<Dep>();
+        new GenericRepos<>();
 
     // special, parameterized label
     public static final Dep UNINIT =

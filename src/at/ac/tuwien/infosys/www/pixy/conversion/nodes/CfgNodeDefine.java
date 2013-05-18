@@ -48,7 +48,7 @@ public class CfgNodeDefine
     }
 
     public List<Variable> getVariables() {
-        List<Variable> retMe = new LinkedList<Variable>();
+        List<Variable> retMe = new LinkedList<>();
         if (this.setMe instanceof Variable) {
             retMe.add((Variable) setMe);
         } else {

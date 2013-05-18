@@ -37,7 +37,7 @@ public class CfgNodeAssignSimple
     }
 
     public List<Variable> getVariables() {
-        List<Variable> retMe = new LinkedList<Variable>();
+        List<Variable> retMe = new LinkedList<>();
         retMe.add(this.left);
         if (this.right instanceof Variable) {
             retMe.add((Variable) this.right);

@@ -4,10 +4,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.conversion.Cfg;
-import at.ac.tuwien.infosys.www.pixy.conversion.SymbolTable;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacFormalParam;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
+import at.ac.tuwien.infosys.www.pixy.conversion.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
 import java.util.Iterator;
@@ -17,11 +14,9 @@ import java.util.ListIterator;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepTfCallPrep
-    extends TransferFunction {
-
-    private List actualParams;
-    private List formalParams;
+public class DepTfCallPrep extends TransferFunction {
+    private List<TacActualParam> actualParams;
+    private List<TacFormalParam> formalParams;
     private TacFunction caller;
     private TacFunction callee;
     private DepAnalysis depAnalysis;
@@ -31,11 +26,10 @@ public class DepTfCallPrep
 //  CONSTRUCTORS ********************************************************************
 //  *********************************************************************************
 
-    public DepTfCallPrep(List actualParams, List formalParams,
-                         TacFunction caller, TacFunction callee,
-                         DepAnalysis depAnalysis,
-                         CfgNode cfgNode) {
-
+    public DepTfCallPrep(
+        List<TacActualParam> actualParams, List<TacFormalParam> formalParams, TacFunction caller, TacFunction callee,
+        DepAnalysis depAnalysis, CfgNode cfgNode
+    ) {
         this.actualParams = actualParams;
         this.formalParams = formalParams;
         this.caller = caller;
@@ -49,30 +43,26 @@ public class DepTfCallPrep
 //  *********************************************************************************
 
     public LatticeElement transfer(LatticeElement inX) {
-
         DepLatticeElement in = (DepLatticeElement) inX;
         DepLatticeElement out = new DepLatticeElement(in);
 
         // set formal params...
 
         // use a ListIterator for formals because we might need to step back (see below)
-        ListIterator formalIter = formalParams.listIterator();
-        Iterator actualIter = actualParams.iterator();
+        ListIterator<TacFormalParam> formalIter = formalParams.listIterator();
+        Iterator<TacActualParam> actualIter = actualParams.iterator();
 
         // for each formal parameter...
         while (formalIter.hasNext()) {
-
-            TacFormalParam formalParam = (TacFormalParam) formalIter.next();
+            TacFormalParam formalParam = formalIter.next();
 
             if (actualIter.hasNext()) {
-
                 // there is a corresponding actual parameter; advance iterator
                 actualIter.next();
 
                 // set the formal
                 out.setFormal(formalParam, cfgNode);
             } else {
-
                 // there is no corresponding actual parameter, use default values
                 // for the remaining formal parameters
 
@@ -80,10 +70,9 @@ public class DepTfCallPrep
                 formalIter.previous();
 
                 while (formalIter.hasNext()) {
-                    formalParam = (TacFormalParam) formalIter.next();
+                    formalParam = formalIter.next();
 
                     if (formalParam.hasDefault()) {
-
                         Cfg defaultCfg = formalParam.getDefaultCfg();
 
                         // default CFG's have no branches;

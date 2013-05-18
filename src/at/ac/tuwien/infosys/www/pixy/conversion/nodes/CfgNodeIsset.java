@@ -35,7 +35,7 @@ public class CfgNodeIsset
     }
 
     public List<Variable> getVariables() {
-        List<Variable> retMe = new LinkedList<Variable>();
+        List<Variable> retMe = new LinkedList<>();
         if (this.left instanceof Variable) {
             retMe.add((Variable) this.left);
         } else {

@@ -9,7 +9,6 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeTester;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -40,7 +39,7 @@ public class DepTfTester
         TacFunction function = cfgNode.getEnclosingFunction();
         this.retVar = function.getRetVar();
         this.whatToTest = cfgNode.getWhatToTest();
-        this.testUs = new LinkedList<Variable>();
+        this.testUs = new LinkedList<>();
 
         // extract formals that are to be tested
         for (Integer paramNumber : cfgNode.getParamNumbers()) {

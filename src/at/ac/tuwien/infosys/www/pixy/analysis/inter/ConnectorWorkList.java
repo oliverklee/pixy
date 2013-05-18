@@ -8,7 +8,6 @@ import java.util.LinkedList;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public final class ConnectorWorkList {
-
     private LinkedList<ConnectorWorkListElement> workList;
 
 // *********************************************************************************
@@ -16,7 +15,7 @@ public final class ConnectorWorkList {
 // *********************************************************************************
 
     ConnectorWorkList() {
-        this.workList = new LinkedList<ConnectorWorkListElement>();
+        this.workList = new LinkedList<>();
     }
 
 // *********************************************************************************

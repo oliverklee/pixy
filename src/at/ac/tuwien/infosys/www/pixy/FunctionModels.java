@@ -28,7 +28,7 @@ public class FunctionModels {
         this.f_strongSanit = f_strongSanit;
         this.f_weakSanit = f_weakSanit;
 
-        this.allModels = new HashSet<String>();
+        this.allModels = new HashSet<>();
         this.allModels.addAll(f_evil);
         this.allModels.addAll(f_multi.keySet());
         this.allModels.addAll(f_invMulti.keySet());

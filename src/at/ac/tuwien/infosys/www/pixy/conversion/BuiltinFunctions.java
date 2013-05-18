@@ -1,7 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.conversion;
 
 import java.util.HashSet;
-import java.util.Set;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
@@ -11,18 +10,17 @@ public class BuiltinFunctions {
     // set containing the lower-case names of ALL builtin PHP functions,
     // i.e. including those that are not modeled in the builtin functions
     // input file
-    private static Set allBuiltinFunctions = BuiltinFunctions.initBuiltinFunctions();
+    private static HashSet<String> allBuiltinFunctions = BuiltinFunctions.initBuiltinFunctions();
 
     // we don't want instances of this helper class
     private BuiltinFunctions() {
     }
 
     // initializes the builtin functions set
-    private static Set initBuiltinFunctions() {
+    private static HashSet<String> initBuiltinFunctions() {
+        HashSet<String> allBuiltinFunctions = new HashSet<>();
 
-        HashSet<String> allBuiltinFunctions = new HashSet<String>();
-
-        // this additional sanitization function can be used
+        // this additional sanitation function can be used
         // to suppress false warnings
         allBuiltinFunctions.add(InternalStrings.suppression);
 

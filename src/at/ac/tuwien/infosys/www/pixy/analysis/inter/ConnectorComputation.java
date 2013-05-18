@@ -58,9 +58,9 @@ public class ConnectorComputation {
         // by the way, build list with call nodes
         // and the call graph
 
-        List<CfgNodeCall> callNodes = new LinkedList<CfgNodeCall>();
-        this.function2ECS = new HashMap<TacFunction, ECS>();
-        this.containedCalls = new HashMap<TacFunction, List<CfgNodeCall>>();
+        List<CfgNodeCall> callNodes = new LinkedList<>();
+        this.function2ECS = new HashMap<>();
+        this.containedCalls = new HashMap<>();
 
         for (TacFunction function : functions) {
             this.function2ECS.put(function, new ECS());
@@ -80,7 +80,7 @@ public class ConnectorComputation {
         this.workList.add(new ConnectorWorkListElement(mainFunction, emptyCallString));
 
         // initialize connector functions
-        this.call2ConnectorFunction = new HashMap<CfgNodeCall, ConnectorFunction>();
+        this.call2ConnectorFunction = new HashMap<>();
         for (CfgNodeCall callNode : callNodes) {
             this.call2ConnectorFunction.put(callNode, new ConnectorFunction());
         }
@@ -107,7 +107,7 @@ public class ConnectorComputation {
         //     - add the callee's contained call nodes to the queue
         //     - mark the callee as visited
         List<CfgNodeCall> processUs = this.containedCalls.get(this.mainFunction);
-        Set<TacFunction> visited = new HashSet<TacFunction>();
+        Set<TacFunction> visited = new HashSet<>();
         visited.add(this.mainFunction);
         while (!processUs.isEmpty()) {
             CfgNodeCall callNode = processUs.remove(0);
@@ -189,7 +189,7 @@ public class ConnectorComputation {
             throw new RuntimeException("SNH");
         }
 
-        List<ReverseTarget> reverseTargets = new LinkedList<ReverseTarget>();
+        List<ReverseTarget> reverseTargets = new LinkedList<>();
 
         // determine call nodes to which we have to return
         if (this.kSize == 0) {
@@ -201,7 +201,7 @@ public class ConnectorComputation {
             // i.e., |ECS| = 1 for each function
 
             // prepare one-element context set
-            Set<Context> contextSet = new HashSet<Context>();
+            Set<Context> contextSet = new HashSet<>();
             contextSet.add(new CSContext(0));
 
             // for each call to this function...
@@ -217,7 +217,7 @@ public class ConnectorComputation {
             CallString exitedCallString = exitedECS.getCallString(sourcePosition);
             CfgNodeCall returnToMe = exitedCallString.getLast();
             ConnectorFunction returnToMeCF = this.getConFunc(returnToMe);
-            Set<Context> returnToMePositions = returnToMeCF.reverseApply(sourcePosition);
+            Set<CSContext> returnToMePositions = returnToMeCF.reverseApply(sourcePosition);
 
             reverseTargets.add(new ReverseTarget(returnToMe, returnToMePositions));
         }

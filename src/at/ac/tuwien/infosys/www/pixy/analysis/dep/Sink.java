@@ -4,7 +4,6 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,7 +30,7 @@ public class Sink
 
     public Sink(CfgNode cfgNode, TacFunction function) {
         this.cfgNode = cfgNode;
-        this.sensitivePlaces = new LinkedList<TacPlace>();
+        this.sensitivePlaces = new LinkedList<>();
         this.lineNo = -1;
         this.function = function;
     }
@@ -71,12 +70,12 @@ public class Sink
     List<SinkProblem> getSinkProblems() {
 
         // to be returned
-        List<SinkProblem> problems = new LinkedList<SinkProblem>();
+        List<SinkProblem> problems = new LinkedList<>();
 
         // for each sensitive place
         for (TacPlace sensitivePlace : this.sensitivePlaces) {
             // list of CallNode's that call the function containing the sink
-            List<CfgNode> calledBy = new LinkedList<CfgNode>();
+            List<CfgNode> calledBy = new LinkedList<>();
 
             SinkProblem problem = new SinkProblem(sensitivePlace);
             problem.setCallList(calledBy);

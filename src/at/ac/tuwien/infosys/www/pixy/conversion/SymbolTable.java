@@ -1,6 +1,9 @@
 package at.ac.tuwien.infosys.www.pixy.conversion;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
@@ -27,7 +30,7 @@ public class SymbolTable {
         if (name == null) {
             throw new RuntimeException("SNH");
         }
-        this.variables = new LinkedHashMap<Variable, Variable>();
+        this.variables = new LinkedHashMap<>();
         this.name = name;
         this.isSuperSymTab = isSuperSymTab;
         this.isMain = false;
@@ -41,8 +44,8 @@ public class SymbolTable {
         if (name.equals(InternalStrings.mainFunctionName)) {
             this.isMain = true;
         }
-        this.globals2GShadows = new HashMap<Variable, Variable>();
-        this.formals2FShadows = new HashMap<Variable, Variable>();
+        this.globals2GShadows = new HashMap<>();
+        this.formals2FShadows = new HashMap<>();
     }
 
 // *********************************************************************************

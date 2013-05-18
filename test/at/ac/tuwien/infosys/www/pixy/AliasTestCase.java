@@ -91,16 +91,15 @@ public class AliasTestCase
     // checks if the context table at the given hotspot ID contains exactly the
     // lattice elements contained in expectedElements
     private void checkContext(List<AliasLatticeElement> expectedElements, int hotspotId) {
-        Map<Context, LatticeElement> hotspotPhi =
-            new HashMap<Context, LatticeElement>(this.getHotspotInfo(hotspotId).getPhi());
+        HashMap<Context, LatticeElement> hotspotPhi = new HashMap<>(this.getHotspotInfo(hotspotId).getPhi());
 
         // for each expected element...
         for (AliasLatticeElement expected : expectedElements) {
             // if you find it in the real context map: OK and remove it from there
             boolean foundIt = false;
-            for (Iterator elementIter = hotspotPhi.entrySet().iterator(); elementIter.hasNext(); ) {
-                Map.Entry entry = (Map.Entry) elementIter.next();
-                AliasLatticeElement element = (AliasLatticeElement) entry.getValue();
+            for (Iterator<Map.Entry<Context, LatticeElement>> elementIter = hotspotPhi.entrySet().iterator(); elementIter.hasNext(); ) {
+                Map.Entry<Context, LatticeElement> entry = elementIter.next();
+                LatticeElement element = entry.getValue();
                 if (element.structureEquals(expected)) {
                     foundIt = true;
                     elementIter.remove();
@@ -866,7 +865,7 @@ public class AliasTestCase
         MustAliases must;
         MayAliases may;
         AliasLatticeElement expected;
-        List<AliasLatticeElement> expectedList = new LinkedList<AliasLatticeElement>();
+        List<AliasLatticeElement> expectedList = new LinkedList<>();
 
         // first context
         must = new MustAliases();
@@ -909,7 +908,7 @@ public class AliasTestCase
         MustAliases must;
         MayAliases may;
         AliasLatticeElement expected;
-        List<AliasLatticeElement> expectedList = new LinkedList<AliasLatticeElement>();
+        List<AliasLatticeElement> expectedList = new LinkedList<>();
 
         // first context
         must = new MustAliases();

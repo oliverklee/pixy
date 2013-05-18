@@ -15,7 +15,7 @@ public abstract class AnalysisInfo {
     protected HashMap<CfgNode, AnalysisNode> map;
 
     protected AnalysisInfo() {
-        this.map = new HashMap<CfgNode, AnalysisNode>();
+        this.map = new HashMap<>();
     }
 
     public void add(CfgNode cfgNode, AnalysisNode analysisNode) {

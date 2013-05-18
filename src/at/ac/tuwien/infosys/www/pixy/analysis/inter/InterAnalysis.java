@@ -13,9 +13,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacFormalParam;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.*;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Vase class for interprocedural analyses (Sharir and Pnueli). Can be used for the functional and the call-string

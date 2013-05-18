@@ -52,7 +52,7 @@ class SpecialNodes {
                     throw new RuntimeException("Error: Invalid '~_test_' marker in builtin functions file");
             }
 
-            Set numSet;
+            Set<Integer> numSet;
             try {
                 numSet = makeNumSet(marker.substring(delimiter + 1, marker.length()));
             } catch (NumberFormatException ex) {
@@ -84,7 +84,7 @@ class SpecialNodes {
     private static Set<Integer> makeNumSet(String numString)
         throws NumberFormatException {
 
-        Set<Integer> numSet = new HashSet<Integer>();
+        Set<Integer> numSet = new HashSet<>();
 
         boolean findNext = true;
         int from = 0;

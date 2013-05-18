@@ -134,13 +134,13 @@ public class TacConverter {
         this.file = file;
 
         this.phpParseTree = phpParseTree;
-        this.breakTargetStack = new LinkedList<CfgNode>();
-        this.continueTargetStack = new LinkedList<CfgNode>();
-        this.functionStack = new LinkedList<TacFunction>();
-        this.classStack = new LinkedList<TacClass>();
+        this.breakTargetStack = new LinkedList<>();
+        this.continueTargetStack = new LinkedList<>();
+        this.functionStack = new LinkedList<>();
+        this.classStack = new LinkedList<>();
 
-        this.functionCalls = new HashMap<TacFunction, List<CfgNodeCallPrep>>();
-        this.methodCalls = new HashMap<TacFunction, List<CfgNodeCallPrep>>();
+        this.functionCalls = new HashMap<>();
+        this.methodCalls = new HashMap<>();
 
         this.voidPlace = new Literal("_void");
         // populate the special symbol table
@@ -155,7 +155,7 @@ public class TacConverter {
 
         this.mainSymbolTable = null;
 
-        this.userFunctions = new HashMap<String, TacFunction>();
+        this.userFunctions = new HashMap<>();
         this.mainFunction = null;
 
         // initialize symbol table for superglobals
@@ -193,12 +193,12 @@ public class TacConverter {
         this.specialNodes = specialNodes;
 
         // initialize hotspots map
-        this.hotspots = new HashMap<Integer, CfgNodeHotspot>();
+        this.hotspots = new HashMap<>();
 
-        this.includeNodes = new LinkedList<CfgNodeInclude>();
+        this.includeNodes = new LinkedList<>();
 
-        this.userClasses = new HashMap<String, TacClass>();
-        this.userMethods = new HashMap<String, Map<String, TacFunction>>();
+        this.userClasses = new HashMap<>();
+        this.userMethods = new HashMap<>();
     }
 
 // *********************************************************************************
@@ -277,7 +277,7 @@ public class TacConverter {
     public void createBasicBlocks() {
 
         // which cfg nodes did we already visit?
-        Set<CfgNode> visited = new HashSet<CfgNode>();
+        Set<CfgNode> visited = new HashSet<>();
 
         // for each function cfg...
         for (TacFunction function : this.userFunctions.values()) {
@@ -318,8 +318,6 @@ public class TacConverter {
 
             // the first node in the basic block
             CfgNode startNode = cfgNode;
-
-            //System.out.println("start node: " + cfgNode.toString());
 
             // the basic block
             CfgNodeBasicBlock basicBlock = new CfgNodeBasicBlock(startNode);
@@ -672,7 +670,7 @@ public class TacConverter {
 
     // returns all functions and methods
     public List<TacFunction> getAllFunctions() {
-        List<TacFunction> retMe = new LinkedList<TacFunction>();
+        List<TacFunction> retMe = new LinkedList<>();
         retMe.addAll(this.userFunctions.values());
         retMe.addAll(this.getMethods());
         return retMe;
@@ -682,7 +680,7 @@ public class TacConverter {
 
     // returns all user-defined methods
     private Collection<TacFunction> getMethods() {
-        List<TacFunction> retMe = new LinkedList<TacFunction>();
+        List<TacFunction> retMe = new LinkedList<>();
         for (Map<String, TacFunction> class2Method : this.userMethods.values()) {
             retMe.addAll(class2Method.values());
         }
@@ -759,7 +757,7 @@ public class TacConverter {
 
     // returns a list containing all variables and constants
     public List<TacPlace> getPlacesList() {
-        List<TacPlace> placesList = new LinkedList<TacPlace>();
+        List<TacPlace> placesList = new LinkedList<>();
         placesList.addAll(this.constantsTable.getConstants().values());
         placesList.addAll(this.getVariablesList());
         placesList.addAll(this.superSymbolTable.getVariables().values());
@@ -883,7 +881,7 @@ public class TacConverter {
 
     // returns a list containing all variables
     List<Variable> getVariablesList() {
-        List<Variable> variablesList = new LinkedList<Variable>();
+        List<Variable> variablesList = new LinkedList<>();
         for (TacFunction function : this.userFunctions.values()) {
             variablesList.addAll(function.getSymbolTable().getVariables().values());
         }
@@ -1071,11 +1069,11 @@ public class TacConverter {
                 // construct name of the corresponding main local
                 StringBuilder varNameBuffer = new StringBuilder();
                 varNameBuffer.append("$");
-                Iterator indicesIter = var.getIndices().iterator();
-                TacPlace firstIndex = (TacPlace) indicesIter.next();
+                Iterator<TacPlace> indicesIter = var.getIndices().iterator();
+                TacPlace firstIndex = indicesIter.next();
                 varNameBuffer.append(firstIndex.getLiteral().toString());
                 while (indicesIter.hasNext()) {
-                    TacPlace index = (TacPlace) indicesIter.next();
+                    TacPlace index = indicesIter.next();
                     varNameBuffer.append("[");
                     varNameBuffer.append(index.getLiteral().toString());
                     varNameBuffer.append("]");
@@ -1111,7 +1109,7 @@ public class TacConverter {
 
             // retrieve a set of variables that have been declared as "global";
             // mapping "variable name" -> "global variable"
-            Map<String, Variable> declaredAsGlobal = new HashMap<String, Variable>();
+            Map<String, Variable> declaredAsGlobal = new HashMap<>();
             // traverse CFG...
             for (CfgNode cfgNodeX : userFunction.getCfg().dfPreOrder()) {
                 if (!(cfgNodeX instanceof CfgNodeGlobal)) {
@@ -1316,7 +1314,7 @@ public class TacConverter {
     private TacFunction addMethod(String methodName, String className, TacFunction method) {
         Map<String, TacFunction> class2Method = this.userMethods.get(methodName);
         if (class2Method == null) {
-            class2Method = new HashMap<String, TacFunction>();
+            class2Method = new HashMap<>();
             this.userMethods.put(methodName, class2Method);
         }
         TacFunction existingMethod = class2Method.get(className);
@@ -1851,7 +1849,7 @@ public class TacConverter {
     public void addFunctionCall(TacFunction enclosingFunction, CfgNodeCallPrep prepNode) {
         List<CfgNodeCallPrep> nodeList = this.functionCalls.get(enclosingFunction);
         if (nodeList == null) {
-            nodeList = new LinkedList<CfgNodeCallPrep>();
+            nodeList = new LinkedList<>();
             this.functionCalls.put(enclosingFunction, nodeList);
         }
         nodeList.add(prepNode);
@@ -1860,7 +1858,7 @@ public class TacConverter {
     public void addFunctionCalls(TacFunction enclosingFunction, List<CfgNodeCallPrep> prepNodes) {
         List<CfgNodeCallPrep> nodeList = this.functionCalls.get(enclosingFunction);
         if (nodeList == null) {
-            nodeList = new LinkedList<CfgNodeCallPrep>();
+            nodeList = new LinkedList<>();
             this.functionCalls.put(enclosingFunction, nodeList);
         }
         nodeList.addAll(prepNodes);
@@ -1880,7 +1878,7 @@ public class TacConverter {
     public void addMethodCall(TacFunction enclosingFunction, CfgNodeCallPrep prepNode) {
         List<CfgNodeCallPrep> nodeList = this.methodCalls.get(enclosingFunction);
         if (nodeList == null) {
-            nodeList = new LinkedList<CfgNodeCallPrep>();
+            nodeList = new LinkedList<>();
             this.methodCalls.put(enclosingFunction, nodeList);
         }
         nodeList.add(prepNode);
@@ -1889,7 +1887,7 @@ public class TacConverter {
     public void addMethodCalls(TacFunction enclosingFunction, List<CfgNodeCallPrep> prepNodes) {
         List<CfgNodeCallPrep> nodeList = this.methodCalls.get(enclosingFunction);
         if (nodeList == null) {
-            nodeList = new LinkedList<CfgNodeCallPrep>();
+            nodeList = new LinkedList<>();
             this.methodCalls.put(enclosingFunction, nodeList);
         }
         nodeList.addAll(prepNodes);
@@ -2109,7 +2107,7 @@ public class TacConverter {
         CfgNode backupNode = new CfgNodeAssignSimple(arrayPlace, attsArray.getPlace(), node);
 
         // create nodes for calls to reset() and each()
-        List<TacActualParam> paramList = new LinkedList<TacActualParam>();
+        List<TacActualParam> paramList = new LinkedList<>();
         paramList.add(new TacActualParam(arrayPlace, false));
         int logId = this.tempId;
         // place for the array returned by each(); can also be used
@@ -2320,7 +2318,7 @@ public class TacConverter {
                     }
                     continue;
                 } else {
-                    List actualParams = prepNode.getParamList();
+                    List<TacActualParam> actualParams = prepNode.getParamList();
                     List<TacFormalParam> formalParams = callee.getParams();
                     int actualSize = actualParams.size();
                     int formalSize = formalParams.size();
@@ -2369,7 +2367,6 @@ public class TacConverter {
         }
 
         // function backpatching
-        //for (Iterator iter = this.functionCalls.iterator(); iter.hasNext(); ) {
         for (List<CfgNodeCallPrep> callList : this.functionCalls.values()) {
             for (CfgNodeCallPrep prepNode : callList) {
 
@@ -2905,7 +2902,7 @@ public class TacConverter {
                     // -> T_VARIABLE
                     TacPlace paramPlace = this.makePlace(firstChild.getLexeme());
                     TacFormalParam param = new TacFormalParam(paramPlace.getVariable());
-                    List<TacFormalParam> paramList = new LinkedList<TacFormalParam>();
+                    List<TacFormalParam> paramList = new LinkedList<>();
                     paramList.add(param);
                     myAtts.setFormalParamList(paramList);
                 } else {
@@ -2922,7 +2919,7 @@ public class TacConverter {
                     TacFormalParam param = new TacFormalParam(
                         paramPlace.getVariable(), true, defaultCfg);
 
-                    List<TacFormalParam> paramList = new LinkedList<TacFormalParam>();
+                    List<TacFormalParam> paramList = new LinkedList<>();
                     paramList.add(param);
                     myAtts.setFormalParamList(paramList);
                 }
@@ -2934,7 +2931,7 @@ public class TacConverter {
             case PhpSymbols.T_BITWISE_AND: {
                 TacPlace paramPlace = this.makePlace(node.getChild(1).getLexeme());
                 TacFormalParam param = new TacFormalParam(paramPlace.getVariable(), true);
-                List<TacFormalParam> paramList = new LinkedList<TacFormalParam>();
+                List<TacFormalParam> paramList = new LinkedList<>();
                 paramList.add(param);
                 myAtts.setFormalParamList(paramList);
                 break;
@@ -2945,7 +2942,7 @@ public class TacConverter {
                 // undocumented feature, ignore T_CONST
                 TacPlace paramPlace = this.makePlace(node.getChild(1).getLexeme());
                 TacFormalParam param = new TacFormalParam(paramPlace.getVariable());
-                List<TacFormalParam> paramList = new LinkedList<TacFormalParam>();
+                List<TacFormalParam> paramList = new LinkedList<>();
                 paramList.add(param);
                 myAtts.setFormalParamList(paramList);
                 break;
@@ -4652,7 +4649,7 @@ public class TacConverter {
                 EncapsList encapsList = attsList.getEncapsList();
                 TacAttributes deepList = encapsList.makeAtts(newTemp(), node);
 
-                List<TacActualParam> paramList = new LinkedList<TacActualParam>();
+                List<TacActualParam> paramList = new LinkedList<>();
                 paramList.add(new TacActualParam(deepList.getPlace(), false));
 
                 Cfg execCallCfg = this.functionCallHelper(
@@ -4703,7 +4700,7 @@ public class TacConverter {
             // -> empty
             CfgNode cfgNode = new CfgNodeEmpty();
             myAtts.setCfg(new Cfg(cfgNode, cfgNode));
-            List<TacActualParam> ll = new LinkedList<TacActualParam>();
+            List<TacActualParam> ll = new LinkedList<>();
             myAtts.setActualParamList(ll);
         } else {
             // -> ( function_call_parameter_list )
@@ -5045,7 +5042,7 @@ public class TacConverter {
             // -> empty
             CfgNode cfgNode = new CfgNodeEmpty();
             myAtts.setCfg(new Cfg(cfgNode, cfgNode));
-            List<TacActualParam> ll = new LinkedList<TacActualParam>();
+            List<TacActualParam> ll = new LinkedList<>();
             myAtts.setActualParamList(ll);
         }
 
@@ -5068,7 +5065,7 @@ public class TacConverter {
                 TacAttributes attsExpr = this.expr_without_variable(firstChild);
                 myAtts.setCfg(attsExpr.getCfg());
 
-                List<TacActualParam> paramList = new LinkedList<TacActualParam>();
+                List<TacActualParam> paramList = new LinkedList<>();
                 paramList.add(new TacActualParam(attsExpr.getPlace(), false));
                 myAtts.setActualParamList(paramList);
 
@@ -5081,7 +5078,7 @@ public class TacConverter {
                 TacAttributes attsCvar = this.cvar(firstChild);
                 myAtts.setCfg(attsCvar.getCfg());
 
-                List<TacActualParam> paramList = new LinkedList<TacActualParam>();
+                List<TacActualParam> paramList = new LinkedList<>();
                 paramList.add(new TacActualParam(attsCvar.getPlace(), false));
                 myAtts.setActualParamList(paramList);
 
@@ -5094,7 +5091,7 @@ public class TacConverter {
                 TacAttributes attsCvar = this.w_cvar(node.getChild(1));
                 myAtts.setCfg(attsCvar.getCfg());
 
-                List<TacActualParam> paramList = new LinkedList<TacActualParam>();
+                List<TacActualParam> paramList = new LinkedList<>();
                 paramList.add(new TacActualParam(attsCvar.getPlace(), true));
                 myAtts.setActualParamList(paramList);
 

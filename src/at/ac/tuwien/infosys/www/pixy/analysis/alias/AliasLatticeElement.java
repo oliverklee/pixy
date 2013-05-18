@@ -63,12 +63,12 @@ public class AliasLatticeElement
     // returns a set of must-aliases of variable x
     // (including x itself); hence, the returned set always has
     // at least one element
-    public Set getMustAliases(Variable x) {
+    public Set<Variable> getMustAliases(Variable x) {
         Set<Variable> retMe;
         MustAliasGroup group = this.mustAliases.getMustAliasGroup(x);
         if (group == null) {
             // there is no explicit group
-            retMe = new HashSet<Variable>();
+            retMe = new HashSet<>();
             retMe.add(x);
         } else {
             retMe = group.getVariables();
@@ -108,7 +108,7 @@ public class AliasLatticeElement
     // returns the global variables that are aliases (must / may) of the
     // given variable (a set of Variables)
     public Set<Variable> getGlobalAliases(Variable var) {
-        Set<Variable> retMe = new HashSet<Variable>();
+        Set<Variable> retMe = new HashSet<>();
         retMe.addAll(this.mustAliases.getGlobalAliases(var));
         retMe.addAll(this.mayAliases.getGlobalAliases(var));
         return retMe;
@@ -125,9 +125,9 @@ public class AliasLatticeElement
         MayAliases newMayAliases = new MayAliases();
 
         for (MayAliasPair pair : this.mayAliases.getPairs()) {
-            Iterator pairIter = pair.getPair().iterator();
-            Variable firstElement = (Variable) pairIter.next();
-            Variable secondElement = (Variable) pairIter.next();
+            Iterator<Variable> pairIter = pair.getPair().iterator();
+            Variable firstElement = pairIter.next();
+            Variable secondElement = pairIter.next();
             // we only keep this pair if it doesn't conflict with must-information
             if (!this.mustAliases.isMustAlias(firstElement, secondElement)) {
                 newMayAliases.add(pair);
@@ -200,7 +200,7 @@ public class AliasLatticeElement
 
         // collect variables from both must-alias-group sets
         // to create an SccGraph with them
-        Set<Variable> variablesInMust = new HashSet<Variable>();
+        Set<Variable> variablesInMust = new HashSet<>();
         variablesInMust.addAll(this.mustAliases.getVariables());
         variablesInMust.addAll(foreignMustAliases.getVariables());
 
@@ -255,7 +255,7 @@ public class AliasLatticeElement
     }
 
     // expects a map from Variable -> Variable (replaceMe -> replaceBy)
-    public void replace(Map replacements) {
+    public void replace(Map<Variable, Variable> replacements) {
         this.mustAliases.replace(replacements);
         this.mayAliases.replace(replacements);
     }

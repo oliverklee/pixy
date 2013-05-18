@@ -34,12 +34,12 @@ public class LiteralLatticeElement
     // creates a lattice element that adds no information to the
     // default lattice element
     public LiteralLatticeElement() {
-        this.placeToLit = new HashMap<TacPlace, Literal>();
+        this.placeToLit = new HashMap<>();
     }
 
     // clones the given element
     public LiteralLatticeElement(LiteralLatticeElement cloneMe) {
-        this.placeToLit = new HashMap<TacPlace, Literal>(cloneMe.getPlaceToLit());
+        this.placeToLit = new HashMap<>(cloneMe.getPlaceToLit());
     }
 
     public LatticeElement cloneMe() {
@@ -65,7 +65,7 @@ public class LiteralLatticeElement
         SymbolTable superSymbolTable) {
 
         // initialize conservative base mapping for variables & constants: TOP
-        this.placeToLit = new HashMap<TacPlace, Literal>();
+        this.placeToLit = new HashMap<>();
         for (TacPlace place : places) {
             this.placeToLit.put(place, Literal.TOP);
         }
@@ -121,14 +121,9 @@ public class LiteralLatticeElement
 
     // initializes the default lattice element
     static void initDefault(
-        List places,
-        ConstantsTable constantsTable,
-        List functions,
-        SymbolTable superSymbolTable) {
-
-        LiteralLatticeElement.DEFAULT =
-            new LiteralLatticeElement(places, constantsTable, functions,
-                superSymbolTable);
+        List<TacPlace> places, ConstantsTable constantsTable, List<TacFunction> functions, SymbolTable superSymbolTable
+    ) {
+        LiteralLatticeElement.DEFAULT = new LiteralLatticeElement(places, constantsTable, functions, superSymbolTable);
     }
 
 //  ********************************************************************************
@@ -157,14 +152,13 @@ public class LiteralLatticeElement
 
     // returns the non-default literal for this place if that mapping exists,
     // or the default literal otherwise
-    private Literal getLiteralFrom(TacPlace place, Map readFrom) {
-
+    private Literal getLiteralFrom(TacPlace place, Map<TacPlace, Literal> readFrom) {
         if (place instanceof Literal) {
             return (Literal) place;
         }
 
         // return the non-default mapping (if there is one)
-        Literal nonDefaultLit = (Literal) readFrom.get(place);
+        Literal nonDefaultLit = readFrom.get(place);
         if (nonDefaultLit != null) {
             return nonDefaultLit;
         }
@@ -314,9 +308,9 @@ public class LiteralLatticeElement
 
         // lub over my non-default mappings
         for (Map.Entry<TacPlace, Literal> tacPlaceLiteralEntry : this.placeToLit.entrySet()) {
-            Map.Entry myEntry = (Map.Entry) tacPlaceLiteralEntry;
-            TacPlace myPlace = (TacPlace) myEntry.getKey();
-            Literal myLiteral = (Literal) myEntry.getValue();
+            Map.Entry<TacPlace, Literal> myEntry = tacPlaceLiteralEntry;
+            TacPlace myPlace = myEntry.getKey();
+            Literal myLiteral = myEntry.getValue();
 
             Literal foreignLiteral = foreign.getLiteral(myPlace);
             if (!foreignLiteral.equals(myLiteral)) {
@@ -343,10 +337,10 @@ public class LiteralLatticeElement
         }
 
         // cleaning pass: remove defaults
-        for (Iterator iter = this.placeToLit.entrySet().iterator(); iter.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            TacPlace place = (TacPlace) entry.getKey();
-            Literal lit = (Literal) entry.getValue();
+        for (Iterator<Map.Entry<TacPlace, Literal>> iter = this.placeToLit.entrySet().iterator(); iter.hasNext(); ) {
+            Map.Entry<TacPlace, Literal> entry = iter.next();
+            TacPlace place = entry.getKey();
+            Literal lit = entry.getValue();
             if (getDefaultLiteral(place).equals(lit)) {
                 iter.remove();
             }
@@ -388,7 +382,7 @@ public class LiteralLatticeElement
     public void assignSimple(Variable left, TacPlace right, Set<Variable> mustAliases, Set<Variable> mayAliases) {
 
         // initialize state copy (required by strongOverlap)
-        this.origPlaceToLit = new HashMap<TacPlace, Literal>(this.placeToLit);
+        this.origPlaceToLit = new HashMap<>(this.placeToLit);
 
         // case distinguisher for the left variable
         int leftCase;
@@ -466,9 +460,7 @@ public class LiteralLatticeElement
 
 //  assignUnary ********************************************************************
 
-    public void assignUnary(Variable left, TacPlace right, int op,
-                            Set mustAliases, Set mayAliases) {
-
+    public void assignUnary(Variable left, TacPlace right, int op, Set<Variable> mustAliases, Set<Variable> mayAliases) {
         // base literal; must undergo conversion depending on operator
         Literal baseLit = this.getLiteral(right);
 
@@ -553,10 +545,10 @@ public class LiteralLatticeElement
 
 //  assignBinary********************************************************************
 
-    public void assignBinary(Variable left, TacPlace leftOperand,
-                             TacPlace rightOperand, int op, Set mustAliases, Set mayAliases,
-                             CfgNode cfgNode) {
-
+    public void assignBinary(
+        Variable left, TacPlace leftOperand, TacPlace rightOperand, int op, Set<Variable> mustAliases,
+        Set<Variable> mayAliases, CfgNode cfgNode
+    ) {
         // base literals; must undergo conversion depending on operator
         Literal baseLeftLit = this.getLiteral(leftOperand);
         Literal baseRightLit = this.getLiteral(rightOperand);
@@ -756,13 +748,13 @@ public class LiteralLatticeElement
         }
 
         // the list to be returned (contains Variables)
-        List<Variable> miList = new LinkedList<Variable>();
+        List<Variable> miList = new LinkedList<>();
 
         // root of the array tree, indices of the array element
         Variable root = var.getTopEnclosingArray();
         List<TacPlace> indices = var.getIndices();
 
-        this.miRecurse(miList, root, new LinkedList<TacPlace>(indices));
+        this.miRecurse(miList, root, new LinkedList<>(indices));
         return miList;
     }
 
@@ -812,7 +804,7 @@ public class LiteralLatticeElement
                 miList.addAll(literalElements);
             } else {
                 for (Variable target : literalElements) {
-                    this.miRecurse(miList, target, new LinkedList<TacPlace>(indices));
+                    this.miRecurse(miList, target, new LinkedList<>(indices));
                 }
             }
         }
@@ -900,9 +892,9 @@ public class LiteralLatticeElement
     // (by removing their non-default mapping)
     public void resetVariables(SymbolTable symTab) {
 
-        for (Iterator iter = this.placeToLit.entrySet().iterator(); iter.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            TacPlace place = (TacPlace) entry.getKey();
+        for (Iterator<Map.Entry<TacPlace, Literal>> iter = this.placeToLit.entrySet().iterator(); iter.hasNext(); ) {
+            Map.Entry<TacPlace, Literal> entry = iter.next();
+            TacPlace place = entry.getKey();
 
             if (!(place instanceof Variable)) {
                 // nothing to do for non-variables (i.e., constants)
@@ -923,7 +915,7 @@ public class LiteralLatticeElement
     public void setFormal(TacFormalParam formalParam, TacPlace place) {
 
         // initialize state copy (required by strongOverlap)
-        this.origPlaceToLit = new HashMap<TacPlace, Literal>(this.placeToLit);
+        this.origPlaceToLit = new HashMap<>(this.placeToLit);
 
         Variable formalVar = formalParam.getVariable();
         this.strongOverlap(formalVar, place);

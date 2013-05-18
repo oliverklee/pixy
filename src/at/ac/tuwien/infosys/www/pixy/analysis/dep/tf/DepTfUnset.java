@@ -55,9 +55,9 @@ public class DepTfUnset
         DepLatticeElement out = new DepLatticeElement(in);
 
         // unsetting a variable means setting it to NULL (untainted/clean)
-        Set<Variable> mustAliases = new HashSet<Variable>();
+        Set<Variable> mustAliases = new HashSet<>();
         mustAliases.add(operand);
-        Set mayAliases = Collections.EMPTY_SET;
+        Set<Variable> mayAliases = Collections.emptySet();
         out.assign(operand, mustAliases, mayAliases, cfgNode);
 
         return out;

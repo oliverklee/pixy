@@ -39,7 +39,7 @@ public class FileAnalysis extends DepClient {
         System.out.println("*****************");
         System.out.println();
 
-        List<Integer> retMe = new LinkedList<Integer>();
+        List<Integer> retMe = new LinkedList<>();
 
         // collect sinks
         List<Sink> sinks = this.collectSinks();
@@ -113,7 +113,7 @@ public class FileAnalysis extends DepClient {
         if (MyOptions.option_P) {
             if (auto.isFinite()) {
                 Set<String> finiteStringsSet = auto.getFiniteStrings();
-                List<String> finiteStrings = new LinkedList<String>(finiteStringsSet);
+                List<String> finiteStrings = new LinkedList<>(finiteStringsSet);
                 Collections.sort(finiteStrings);
                 System.out.println("IS FINITE");
                 System.out.println();
@@ -146,8 +146,8 @@ public class FileAnalysis extends DepClient {
     private Automaton toAutomaton(DepGraph depGraph) {
         depGraph.eliminateCycles();
         DepGraphNode root = depGraph.getRoot();
-        Map<DepGraphNode, Automaton> deco = new HashMap<DepGraphNode, Automaton>();
-        Set<DepGraphNode> visited = new HashSet<DepGraphNode>();
+        Map<DepGraphNode, Automaton> deco = new HashMap<>();
+        Set<DepGraphNode> visited = new HashSet<>();
         this.decorate(root, deco, visited, depGraph);
         Automaton rootDeco = deco.get(root).clone();
         // BEWARE: minimization can lead to an automaton that is less human-readable
@@ -257,7 +257,7 @@ public class FileAnalysis extends DepClient {
 
         List<DepGraphNode> successors = depGraph.getSuccessors(node);
         if (successors == null) {
-            successors = new LinkedList<DepGraphNode>();
+            successors = new LinkedList<>();
         }
 
         Automaton retMe = null;

@@ -12,7 +12,6 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeBasicBlock;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeIncludeEnd;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeIncludeStart;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,7 +32,7 @@ public class IncDomAnalysis
 //  IncDomAnalysis *****************************************************************
 
     public IncDomAnalysis(TacFunction function) {
-        this.repos = new GenericRepos<LatticeElement>();
+        this.repos = new GenericRepos<>();
         this.initGeneral(function);
     }
 
@@ -73,16 +72,14 @@ public class IncDomAnalysis
 
     // computes and returns the include chain list (consisting of cfg nodes)
     // for the given cfg node
-    public List getIncludeChain(CfgNode cfgNode) {
-
-        IncDomLatticeElement latElem =
-            (IncDomLatticeElement) this.getAnalysisNode(cfgNode).getInValue();
+    public LinkedList<CfgNode> getIncludeChain(CfgNode cfgNode) {
+        IncDomLatticeElement latElem = (IncDomLatticeElement) this.getAnalysisNode(cfgNode).getInValue();
         List<CfgNode> dominators = latElem.getDominators();
 
         // * input: a list of (dominating) cfg nodes, both includeEnd and
         //   includeStart
         // * output: a chain of unclosed includeStart nodes
-        LinkedList<CfgNode> chain = new LinkedList<CfgNode>();
+        LinkedList<CfgNode> chain = new LinkedList<>();
         for (CfgNode dominator : dominators) {
             if (dominator instanceof CfgNodeIncludeStart) {
                 chain.add(dominator);
@@ -107,7 +104,7 @@ public class IncDomAnalysis
 //  computeChain *******************************************************************
 
     // shortcut function
-    public static List computeChain(TacFunction function, CfgNode cfgNode) {
+    public static LinkedList<CfgNode> computeChain(TacFunction function, CfgNode cfgNode) {
         IncDomAnalysis incDomAnalysis = new IncDomAnalysis(function);
         incDomAnalysis.analyze();
         return incDomAnalysis.getIncludeChain(cfgNode);

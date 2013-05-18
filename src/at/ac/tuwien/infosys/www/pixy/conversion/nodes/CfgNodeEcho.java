@@ -31,7 +31,7 @@ public class CfgNodeEcho
 
     public List<Variable> getVariables() {
         if (this.place instanceof Variable) {
-            List<Variable> retMe = new LinkedList<Variable>();
+            List<Variable> retMe = new LinkedList<>();
             retMe.add((Variable) this.place);
             return retMe;
         } else {

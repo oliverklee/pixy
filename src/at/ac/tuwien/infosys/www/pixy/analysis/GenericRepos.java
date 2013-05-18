@@ -31,12 +31,11 @@ import java.util.Map;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class GenericRepos<E extends Recyclable> {
-
     // structure hash code (Integer) -> List of Recyclable's
     private Map<Integer, List<E>> repos;
 
     public GenericRepos() {
-        this.repos = new HashMap<Integer, List<E>>();
+        this.repos = new HashMap<>();
     }
 
     // if the given element equals one from the repository: the
@@ -52,7 +51,7 @@ public class GenericRepos<E extends Recyclable> {
         List<E> candidates = this.repos.get(structureHashCode);
         if (candidates == null) {
             // no candidates list: add recycleMe to the repos and return it
-            List<E> recycleMeList = new LinkedList<E>();
+            List<E> recycleMeList = new LinkedList<>();
             recycleMeList.add(recycleMe);
             this.repos.put(structureHashCode, recycleMeList);
             return recycleMe;

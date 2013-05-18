@@ -24,15 +24,15 @@ public class DummyAliasAnalysis
     // returns the set of must-aliases (Variable's) for the given variable
     // at the given node (folded over all contexts)
     public Set<Variable> getMustAliases(Variable var, CfgNode cfgNode) {
-        Set<Variable> retMe = new HashSet<Variable>();
+        Set<Variable> retMe = new HashSet<>();
         retMe.add(var);
         return retMe;
     }
 
     // returns the set of may-aliases (Variable's) for the given variable
     // at the given node (folded over all contexts)
-    public Set getMayAliases(Variable var, CfgNode cfgNode) {
-        return Collections.EMPTY_SET;
+    public Set<Variable> getMayAliases(Variable var, CfgNode cfgNode) {
+        return Collections.emptySet();
     }
 
     // returns an arbitrary global must-alias of the given variable at
@@ -44,21 +44,21 @@ public class DummyAliasAnalysis
     // returns a set of local must-aliases of the given variable at
     // the given node (folded over all contexts); empty set if there
     // are none
-    public Set getLocalMustAliases(Variable var, CfgNode cfgNode) {
-        return Collections.EMPTY_SET;
+    public Set<Variable> getLocalMustAliases(Variable var, CfgNode cfgNode) {
+        return Collections.emptySet();
     }
 
     // returns a set of global may-aliases of the given variable at
     // the given node (folded over all contexts); empty set if there
     // are none
-    public Set getGlobalMayAliases(Variable var, CfgNode cfgNode) {
-        return Collections.EMPTY_SET;
+    public Set<Variable> getGlobalMayAliases(Variable var, CfgNode cfgNode) {
+        return Collections.emptySet();
     }
 
     // returns a set of local may-aliases of the given variable at
     // the given node (folded over all contexts); empty set if there
     // are none
-    public Set getLocalMayAliases(Variable var, CfgNode cfgNode) {
-        return Collections.EMPTY_SET;
+    public Set<Variable> getLocalMayAliases(Variable var, CfgNode cfgNode) {
+        return Collections.emptySet();
     }
 }

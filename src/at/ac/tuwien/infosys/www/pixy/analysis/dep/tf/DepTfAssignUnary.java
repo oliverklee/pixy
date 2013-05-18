@@ -20,8 +20,8 @@ public class DepTfAssignUnary
     private Variable left;
     private TacPlace right;
     private int op;
-    private Set mustAliases;
-    private Set mayAliases;
+    private Set<Variable> mustAliases;
+    private Set<Variable> mayAliases;
     private CfgNode cfgNode;
 
 // *********************************************************************************
@@ -29,9 +29,9 @@ public class DepTfAssignUnary
 // *********************************************************************************
 
     // mustAliases, mayAliases: of setMe
-    public DepTfAssignUnary(TacPlace left, TacPlace right, int op,
-                            Set mustAliases, Set mayAliases, CfgNode cfgNode) {
-
+    public DepTfAssignUnary(
+        TacPlace left, TacPlace right, int op, Set<Variable> mustAliases, Set<Variable> mayAliases, CfgNode cfgNode
+    ) {
         this.left = (Variable) left;  // must be a variable
         this.right = right;
         this.op = op;

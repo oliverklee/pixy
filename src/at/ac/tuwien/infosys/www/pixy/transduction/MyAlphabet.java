@@ -20,7 +20,7 @@ public class MyAlphabet {
             'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
             ' ', '*', '"', '\'', '='};
 
-        this.alphabet = new HashSet<Character>();
+        this.alphabet = new HashSet<>();
         for (char c : alphabet) {
             this.alphabet.add(c);
         }
@@ -32,7 +32,7 @@ public class MyAlphabet {
      * @return a copy of the alphabet
      */
     public Set<Character> getAlphabet() {
-        return new HashSet<Character>(this.alphabet);
+        return new HashSet<>(this.alphabet);
     }
 
     // returns the contents for an fsmtools symbols file

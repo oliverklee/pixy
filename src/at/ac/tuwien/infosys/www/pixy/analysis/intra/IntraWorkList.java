@@ -16,7 +16,7 @@ public final class IntraWorkList {
 // *********************************************************************************
 
     IntraWorkList() {
-        this.workList = new LinkedList<CfgNode>();
+        this.workList = new LinkedList<>();
     }
 
 // *********************************************************************************

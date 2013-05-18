@@ -11,7 +11,6 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeDefine;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -70,13 +69,9 @@ public class DepTfDefine
             return out;
         }
 
-        // retrieve the taint that the constant shall be set to
-        //DepSet valueTaint = DepSet.create(Dep.create(cfgNode));
-
         // determine the (boolean) literal of the case flag
         if (this.caseInsensitive == Constant.TRUE) {
             // define insensitive constant
-
             // all constants in setMe's insensitivity group have to be set
             List<Constant> insensitiveGroup = this.constantsTable.getInsensitiveGroup(constantLit);
             if (insensitiveGroup != null) {

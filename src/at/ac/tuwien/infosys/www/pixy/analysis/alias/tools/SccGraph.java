@@ -2,7 +2,10 @@ package at.ac.tuwien.infosys.www.pixy.analysis.alias.tools;
 
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Auxiliary graph for computing least upper bounds of alias lattice elements.
@@ -24,9 +27,9 @@ public class SccGraph {
 
     // expects a set of variables for which to create nodes
     public SccGraph(Set<Variable> variables) {
-        this.label2nodes = new HashMap<Variable, SccNode>();
-        this.singleEdges = new HashSet<SccEdge>();
-        this.doubleEdges = new HashSet<SccEdge>();
+        this.label2nodes = new HashMap<>();
+        this.singleEdges = new HashSet<>();
+        this.doubleEdges = new HashSet<>();
         for (Variable variable : variables) {
             this.createNode(variable);
         }
@@ -44,7 +47,7 @@ public class SccGraph {
 
     public void drawFirstScc(Set<Variable> varSet) {
         Set<Variable> fromVarSet = varSet;
-        Set<Variable> toVarSet = new HashSet<Variable>(fromVarSet);
+        Set<Variable> toVarSet = new HashSet<>(fromVarSet);
 
         for (Variable fromVar : fromVarSet) {
             toVarSet.remove(fromVar);
@@ -63,7 +66,7 @@ public class SccGraph {
 
     public void drawSecondScc(Set<Variable> varSet) {
         Set<Variable> fromVarSet = varSet;
-        Set<Variable> toVarSet = new HashSet<Variable>(fromVarSet);
+        Set<Variable> toVarSet = new HashSet<>(fromVarSet);
 
         for (Variable fromVar : fromVarSet) {
             toVarSet.remove(fromVar);
@@ -98,10 +101,10 @@ public class SccGraph {
     public Set<Set<Variable>> getDoubleSccs() {
 
         // to be returned:
-        Set<Set<Variable>> sccs = new HashSet<Set<Variable>>();
+        Set<Set<Variable>> sccs = new HashSet<>();
 
         // we start with a workset containing all nodes from the graph
-        Set<SccNode> nodesWorkSet = new HashSet<SccNode>(this.label2nodes.values());
+        Set<SccNode> nodesWorkSet = new HashSet<>(this.label2nodes.values());
 
         while (!nodesWorkSet.isEmpty()) {
 
@@ -115,7 +118,7 @@ public class SccGraph {
             if (!doubleTargets.isEmpty()) {
 
                 // transform this set of SccNodes into a set of Variables
-                Set<Variable> scc = new HashSet<Variable>();
+                Set<Variable> scc = new HashSet<>();
                 for (SccNode sccNode : doubleTargets) {
                     scc.add(sccNode.getLabel());
                 }

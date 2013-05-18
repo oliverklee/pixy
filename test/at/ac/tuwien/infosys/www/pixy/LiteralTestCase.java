@@ -273,32 +273,32 @@ public class LiteralTestCase
 
         // z1[$i]
         miVar = varZ1_i;
-        miSet = new HashSet<Variable>(elements[hid].getMiList(miVar));
-        expected = new HashSet<Variable>();
+        miSet = new HashSet<>(elements[hid].getMiList(miVar));
+        expected = new HashSet<>();
         expected.add(varZ1_1);
         expected.add(varZ1_2);
         Assert.assertTrue(miSet.equals(expected));
 
         // z2[1][$i]
         miVar = varZ2_1_i;
-        miSet = new HashSet<Variable>(elements[hid].getMiList(miVar));
-        expected = new HashSet<Variable>();
+        miSet = new HashSet<>(elements[hid].getMiList(miVar));
+        expected = new HashSet<>();
         expected.add(varZ2_1_1);
         expected.add(varZ2_1_2);
         Assert.assertTrue(miSet.equals(expected));
 
         // z2[$i][1]
         miVar = varZ2_i_1;
-        miSet = new HashSet<Variable>(elements[hid].getMiList(miVar));
-        expected = new HashSet<Variable>();
+        miSet = new HashSet<>(elements[hid].getMiList(miVar));
+        expected = new HashSet<>();
         expected.add(varZ2_1_1);
         expected.add(varZ2_2_1);
         Assert.assertTrue(miSet.equals(expected));
 
         // z2[$i][$j]
         miVar = varZ2_i_j;
-        miSet = new HashSet<Variable>(elements[hid].getMiList(miVar));
-        expected = new HashSet<Variable>();
+        miSet = new HashSet<>(elements[hid].getMiList(miVar));
+        expected = new HashSet<>();
         expected.add(varZ2_1_1);
         expected.add(varZ2_1_2);
         expected.add(varZ2_2_1);
@@ -307,8 +307,8 @@ public class LiteralTestCase
 
         // z3[1][$i][3][$j]
         miVar = varZ3_1_i_3_j;
-        miSet = new HashSet<Variable>(elements[hid].getMiList(miVar));
-        expected = new HashSet<Variable>();
+        miSet = new HashSet<>(elements[hid].getMiList(miVar));
+        expected = new HashSet<>();
         expected.add(varZ3_1_2_3_4);
         expected.add(varZ3_1_9_3_9);
         Assert.assertTrue(miSet.equals(expected));

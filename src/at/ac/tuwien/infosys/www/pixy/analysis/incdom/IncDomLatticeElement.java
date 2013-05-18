@@ -23,12 +23,12 @@ public class IncDomLatticeElement
 
     // creates an empty lattice element
     public IncDomLatticeElement() {
-        this.dominators = new LinkedList<CfgNode>();
+        this.dominators = new LinkedList<>();
     }
 
     // clones the given element
     public IncDomLatticeElement(IncDomLatticeElement cloneMe) {
-        this.dominators = new LinkedList<CfgNode>(cloneMe.getDominators());
+        this.dominators = new LinkedList<>(cloneMe.getDominators());
     }
 
     public LatticeElement cloneMe() {
@@ -58,13 +58,13 @@ public class IncDomLatticeElement
 
     public void lub(IncDomLatticeElement element) {
         // longest matching prefix
-        Iterator foreignIter = element.getDominators().iterator();
-        Iterator myIter = this.dominators.iterator();
-        List<CfgNode> newList = new LinkedList<CfgNode>();
+        Iterator<CfgNode> foreignIter = element.getDominators().iterator();
+        Iterator<CfgNode> myIter = this.dominators.iterator();
+        List<CfgNode> newList = new LinkedList<>();
         boolean goOn = true;
         while (foreignIter.hasNext() && myIter.hasNext() && goOn) {
-            CfgNode myNode = (CfgNode) myIter.next();
-            CfgNode foreignNode = (CfgNode) foreignIter.next();
+            CfgNode myNode = myIter.next();
+            CfgNode foreignNode = foreignIter.next();
             if (myNode == foreignNode) {
                 newList.add(myNode);
             } else {

@@ -1,7 +1,10 @@
 package at.ac.tuwien.infosys.www.pixy.conversion.includes;
 
 import java.io.File;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * An include graph consists of vertices corresponding to files and directed edges corresponding to include relationships.
@@ -29,21 +32,21 @@ public class IncludeGraph {
     public IncludeGraph(File rootFile) {
         this.root = new IncludeNode(rootFile);
 
-        this.nodes = new HashSet<IncludeNode>();
+        this.nodes = new HashSet<>();
         this.nodes.add(root);
 
-        this.adjSets = new HashMap<IncludeNode, Set<IncludeNode>>();
+        this.adjSets = new HashMap<>();
         this.adjSets.put(root, new HashSet<IncludeNode>());
 
-        this.inDegrees = new HashMap<IncludeNode, Integer>();
+        this.inDegrees = new HashMap<>();
         this.inDegrees.put(root, 0);
     }
 
     private IncludeGraph(IncludeGraph cloneMe) {
         this.root = cloneMe.root;
-        this.nodes = new HashSet<IncludeNode>(cloneMe.nodes);
-        this.adjSets = new HashMap<IncludeNode, Set<IncludeNode>>(cloneMe.adjSets);
-        this.inDegrees = new HashMap<IncludeNode, Integer>(cloneMe.inDegrees);
+        this.nodes = new HashSet<>(cloneMe.nodes);
+        this.adjSets = new HashMap<>(cloneMe.adjSets);
+        this.inDegrees = new HashMap<>(cloneMe.inDegrees);
     }
 
 //  ********************************************************************************
@@ -115,7 +118,7 @@ public class IncludeGraph {
 
     // tests whether the indicated edge already exists in this graph
     private boolean edgeExists(IncludeNode from, IncludeNode to) {
-        Set adjSet = (Set) this.adjSets.get(from);
+        Set<IncludeNode> adjSet = this.adjSets.get(from);
         if (adjSet == null) {
             return false;
         }
@@ -135,7 +138,7 @@ public class IncludeGraph {
 
     private void removeEdge(IncludeNode from, IncludeNode to) {
         this.decreaseInDegree(to);
-        Set adjSet = (Set) this.adjSets.get(from);
+        Set<IncludeNode> adjSet = this.adjSets.get(from);
         adjSet.remove(to);
     }
 
@@ -158,7 +161,7 @@ public class IncludeGraph {
     private void addNode(IncludeNode node) {
         this.nodes.add(node);
 
-        Set adjSet = (Set) this.adjSets.get(node);
+        Set<IncludeNode> adjSet = this.adjSets.get(node);
         if (adjSet == null) {
             this.adjSets.put(node, new HashSet<IncludeNode>());
         }
@@ -210,7 +213,7 @@ public class IncludeGraph {
 
     // returns a set of IncludeNode's with in-degree zero
     private Set<IncludeNode> getInDegreeZeros() {
-        Set<IncludeNode> retMe = new HashSet<IncludeNode>();
+        Set<IncludeNode> retMe = new HashSet<>();
 
         // EFF: this is a linear search
         for (Map.Entry<IncludeNode, Integer> entry : this.inDegrees.entrySet()) {

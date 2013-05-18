@@ -94,7 +94,7 @@ public class TypeTestCase
             + sinkNum, sinks.size() == sinkNum);
 
         // collect depGraphs
-        List<DepGraph> depGraphs = new LinkedList<DepGraph>();
+        List<DepGraph> depGraphs = new LinkedList<>();
         for (Sink sink : sinks) {
             depGraphs.addAll(depAnalysis.getDepGraph(sink));
         }

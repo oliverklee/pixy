@@ -45,7 +45,7 @@ public abstract class IntraAnalysis
 
         // first-time initialization
         if (this.functions == null) {
-            this.functions = new LinkedList<TacFunction>();
+            this.functions = new LinkedList<>();
             // initialize carrier lattice
             this.initLattice();
         }

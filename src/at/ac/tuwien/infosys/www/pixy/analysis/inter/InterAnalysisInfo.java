@@ -6,8 +6,6 @@ import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
-import java.util.Iterator;
-
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */

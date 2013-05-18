@@ -14,7 +14,6 @@ import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysisInfo;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring.ECS;
-import at.ac.tuwien.infosys.www.pixy.analysis.intra.IntraAnalysisInfo;
 import at.ac.tuwien.infosys.www.pixy.analysis.intra.IntraAnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.DummyLiteralAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralAnalysis;
@@ -164,7 +163,7 @@ public final class Dumper {
     static void dumpDot(Cfg cfg, String graphName, Writer outWriter) {
 
         try {
-            Dumper.node2Int = new HashMap<CfgNode, Integer>();
+            Dumper.node2Int = new HashMap<>();
             Dumper.idCounter = 0;
             outWriter.write("digraph cfg {\n  label=\"");
             outWriter.write(escapeDot(graphName, 0));
@@ -334,10 +333,10 @@ public final class Dumper {
             CfgNodeCallPrep cfgNode = (CfgNodeCallPrep) cfgNodeX;
 
             // construct parameter list
-            List paramList = cfgNode.getParamList();
+            List<TacActualParam> paramList = cfgNode.getParamList();
             StringBuilder paramListStringBuf = new StringBuilder();
-            for (Iterator iter = paramList.iterator(); iter.hasNext(); ) {
-                TacActualParam param = (TacActualParam) iter.next();
+            for (Iterator<TacActualParam> iter = paramList.iterator(); iter.hasNext(); ) {
+                TacActualParam param = iter.next();
                 if (param.isReference()) {
                     paramListStringBuf.append("&");
                 }
@@ -360,10 +359,10 @@ public final class Dumper {
             CfgNodeCallBuiltin cfgNode = (CfgNodeCallBuiltin) cfgNodeX;
 
             // construct parameter list
-            List paramList = cfgNode.getParamList();
+            List<TacActualParam> paramList = cfgNode.getParamList();
             StringBuilder paramListStringBuf = new StringBuilder();
-            for (Iterator iter = paramList.iterator(); iter.hasNext(); ) {
-                TacActualParam param = (TacActualParam) iter.next();
+            for (Iterator<TacActualParam> iter = paramList.iterator(); iter.hasNext(); ) {
+                TacActualParam param = iter.next();
                 if (param.isReference()) {
                     paramListStringBuf.append("&");
                 }
@@ -382,10 +381,10 @@ public final class Dumper {
             CfgNodeCallUnknown cfgNode = (CfgNodeCallUnknown) cfgNodeX;
 
             // construct parameter list
-            List paramList = cfgNode.getParamList();
+            List<TacActualParam> paramList = cfgNode.getParamList();
             StringBuilder paramListStringBuf = new StringBuilder();
-            for (Iterator iter = paramList.iterator(); iter.hasNext(); ) {
-                TacActualParam param = (TacActualParam) iter.next();
+            for (Iterator<TacActualParam> iter = paramList.iterator(); iter.hasNext(); ) {
+                TacActualParam param = iter.next();
                 if (param.isReference()) {
                     paramListStringBuf.append("&");
                 }
@@ -679,8 +678,8 @@ public final class Dumper {
                 writer.write(function.getName() + linesep);
                 writer.write("****************************************************" + linesep + linesep);
                 // for each Cfg node...
-                for (Iterator bft = cfg.bfIterator(); bft.hasNext(); ) {
-                    CfgNode cfgNode = (CfgNode) bft.next();
+                for (Iterator<CfgNode> bft = cfg.bfIterator(); bft.hasNext(); ) {
+                    CfgNode cfgNode = bft.next();
                     writer.write("----------------------------------------" + linesep);
                     writer.write(cfgNode.getFileName() + ", " + cfgNode.getOrigLineno() +
                         ", " + makeCfgNodeName(cfgNode) + linesep);
@@ -867,7 +866,7 @@ public final class Dumper {
     }
 
     static public void dump(MayAliasPair mayAliasPair, Writer writer) throws IOException {
-        Set pair = mayAliasPair.getPair();
+        Set<Variable> pair = mayAliasPair.getPair();
         Object[] pairArray = pair.toArray();
         writer.write("(" + pairArray[0] + " " + pairArray[1] + ")" + linesep);
     }
@@ -880,52 +879,5 @@ public final class Dumper {
             System.out.println(ecs);
             System.out.println();
         }
-    }
-
-    // output format:
-    // function name: # of ecs (i.e., how many contexts), # of cfg nodes: product;
-    // ordered by product
-    static public void dumpECSStats(Map<TacFunction, ECS> function2ECS) {
-        // TacFunction, # of ecs, # of cfg nodes, #ecs * #nodes
-        List<List> output = new LinkedList<List>();
-        for (Map.Entry<TacFunction, ECS> entry : function2ECS.entrySet()) {
-            TacFunction function = entry.getKey();
-            ECS ecs = entry.getValue();
-            int ecsLength = ecs.getCallStrings().size();
-            int cfgSize = function.getCfg().size();
-            int product = ecsLength * cfgSize;
-
-            int insertAtIndex = 0;
-            for (List anOutput : output) {
-                List nextList = anOutput;
-                int compProduct = (Integer) nextList.get(3);
-                if (product > compProduct) {
-                    break;
-                }
-                insertAtIndex++;
-            }
-
-            List insertMe = new LinkedList();
-            insertMe.add(function);
-            insertMe.add(ecsLength);
-            insertMe.add(cfgSize);
-            insertMe.add(product);
-            output.add(insertAtIndex, insertMe);
-        }
-
-        int total = 0;
-        for (List<Object> anOutput : output) {
-            List outputList = (List) anOutput;
-            TacFunction function = (TacFunction) outputList.get(0);
-            int ecsLength = (Integer) outputList.get(1);
-            int cfgSize = (Integer) outputList.get(2);
-            int product = (Integer) outputList.get(3);
-            System.out.println(function.getName() + ": " + ecsLength + ", " + cfgSize + ": " + product);
-            total += product;
-        }
-
-        System.out.println();
-        System.out.println("total product: " + total);
-        System.out.println();
     }
 }

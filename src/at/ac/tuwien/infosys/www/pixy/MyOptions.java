@@ -15,7 +15,6 @@ import java.util.*;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class MyOptions {
-
     // various boolean options and their defaults;
     // explanations are given in the cli help output (see main method of Checker)
     public static boolean optionA = false;
@@ -107,11 +106,11 @@ public class MyOptions {
     // read models for builtin php functions
     private static FunctionModels readModelFile(DepClientInfo dci) {
 
-        Set<String> f_evil = new HashSet<String>();
-        Map<String, Set<Integer>> f_multi = new HashMap<String, Set<Integer>>();
-        Map<String, Set<Integer>> f_invMulti = new HashMap<String, Set<Integer>>();
-        Set<String> f_strongSanit = new HashSet<String>();
-        Map<String, Set<Integer>> f_weakSanit = new HashMap<String, Set<Integer>>();
+        Set<String> f_evil = new HashSet<>();
+        Map<String, Set<Integer>> f_multi = new HashMap<>();
+        Map<String, Set<Integer>> f_invMulti = new HashMap<>();
+        Set<String> f_strongSanit = new HashSet<>();
+        Map<String, Set<Integer>> f_weakSanit = new HashMap<>();
 
         String strongSanitMarker = "0";
         String weakSanitMarker = "1";
@@ -134,7 +133,7 @@ public class MyOptions {
                 e.getMessage());
         }
 
-        Class tacOps;
+        Class<?> tacOps;
         try {
             tacOps = Class.forName("at.ac.tuwien.infosys.www.pixy.conversion.TacOperators");
         } catch (ClassNotFoundException e1) {
@@ -178,7 +177,7 @@ public class MyOptions {
             } else if (type.equals(weakSanitMarker)) {
 
                 // weak sanitization
-                Set<Integer> params = new HashSet<Integer>();
+                Set<Integer> params = new HashSet<>();
                 while (funcTokenizer.hasMoreTokens()) {
                     String param = funcTokenizer.nextToken().trim();
                     try {
@@ -191,7 +190,7 @@ public class MyOptions {
             } else if (type.equals(multiMarker)) {
 
                 // multi-dependency
-                Set<Integer> params = new HashSet<Integer>();
+                Set<Integer> params = new HashSet<>();
                 while (funcTokenizer.hasMoreTokens()) {
                     String param = funcTokenizer.nextToken().trim();
                     try {
@@ -204,7 +203,7 @@ public class MyOptions {
             } else if (type.equals(invMultiMarker)) {
 
                 // inverse multi-dependency
-                Set<Integer> params = new HashSet<Integer>();
+                Set<Integer> params = new HashSet<>();
                 while (funcTokenizer.hasMoreTokens()) {
                     String param = funcTokenizer.nextToken().trim();
                     try {
@@ -247,7 +246,7 @@ public class MyOptions {
         if (indices == null) {
             indexSet = null;
         } else {
-            indexSet = new HashSet<Integer>();
+            indexSet = new HashSet<>();
             for (int index : indices) {
                 indexSet.add(index);
             }
@@ -291,7 +290,7 @@ public class MyOptions {
             // convert parameter list for this sink
             StringTokenizer paramTokenizer = new StringTokenizer(params, ":");
             int numTokens = paramTokenizer.countTokens();
-            Set<Integer> paramSet = new HashSet<Integer>();
+            Set<Integer> paramSet = new HashSet<>();
             while (paramTokenizer.hasMoreTokens()) {
                 String param = paramTokenizer.nextToken();
                 try {
@@ -316,7 +315,7 @@ public class MyOptions {
     public static void initSinks() {
         for (DepClientInfo dci : analyses) {
             String sinkFileName = "sinks_" + dci.getName() + ".txt";
-            Map<String, Set<Integer>> sinks = new HashMap<String, Set<Integer>>();
+            Map<String, Set<Integer>> sinks = new HashMap<>();
             readSinkFile(MyOptions.pixy_home + "/" + MyOptions.configDir + "/" + sinkFileName, sinks);
             dci.addSinks(sinks);
         }
@@ -335,7 +334,7 @@ public class MyOptions {
                 String sinkFileName = sfnTokenizer.nextToken();
 
                 // fill this map with the information contained in the file
-                Map<String, Set<Integer>> sinks = new HashMap<String, Set<Integer>>();
+                Map<String, Set<Integer>> sinks = new HashMap<>();
 
                 String sinkType = readSinkFile(sinkFileName, sinks);
 
@@ -420,12 +419,12 @@ public class MyOptions {
         }
 
         // harmless server indices
-        harmlessServerIndices = new HashSet<String>();
+        harmlessServerIndices = new HashSet<>();
 
         // name2depclient mapping
 
-        name2Analysis = new HashMap<String, DepClientInfo>();
-        className2Name = new HashMap<String, String>();
+        name2Analysis = new HashMap<>();
+        className2Name = new HashMap<>();
         for (DepClientInfo dci : analyses) {
             name2Analysis.put(dci.getName(), dci);
             className2Name.put(dci.getClassName(), dci.getName());

@@ -14,7 +14,7 @@ public class CompositeTransferFunction
     private List<TransferFunction> tfs;
 
     public CompositeTransferFunction() {
-        this.tfs = new LinkedList<TransferFunction>();
+        this.tfs = new LinkedList<>();
     }
 
     public void add(TransferFunction tf) {
@@ -22,7 +22,7 @@ public class CompositeTransferFunction
     }
 
     // returns an iterator over the contained transfer functions
-    public Iterator iterator() {
+    public Iterator<TransferFunction> iterator() {
         return this.tfs.iterator();
     }
 

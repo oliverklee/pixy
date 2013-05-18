@@ -17,7 +17,7 @@ public final class FunctionalWorkList {
 // *********************************************************************************
 
     FunctionalWorkList() {
-        this.workList = new LinkedList<FunctionalWorkListElement>();
+        this.workList = new LinkedList<>();
     }
 
 // *********************************************************************************

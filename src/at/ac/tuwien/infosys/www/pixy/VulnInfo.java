@@ -25,8 +25,8 @@ public class VulnInfo {
     private int customSanitThrownAwayCount;
 
     VulnInfo() {
-        this.depGraphs = new LinkedList<DepGraph>();
-        this.depGraphsMin = new LinkedList<DepGraph>();
+        this.depGraphs = new LinkedList<>();
+        this.depGraphsMin = new LinkedList<>();
         this.totalPathCount = 0;
         this.basicPathCount = 0;
         //this.dangerousUninit = new LinkedList<Map<DepGraphUninitNode, InitialTaint>>();

@@ -14,8 +14,7 @@ import java.util.Set;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public abstract class InterAnalysisNode
-    extends AnalysisNode {
+public abstract class InterAnalysisNode extends AnalysisNode {
 
     // context map for interprocedural analysis
     // (Context -> input LatticeElement at current CFG node)
@@ -31,7 +30,7 @@ public abstract class InterAnalysisNode
 
     protected InterAnalysisNode(TransferFunction tf) {
         super(tf);
-        this.phi = new HashMap<Context, LatticeElement>();
+        this.phi = new HashMap<>();
         this.foldedValue = null;
     }
 
@@ -55,23 +54,22 @@ public abstract class InterAnalysisNode
 
     // like getUnrecycledFoldedValue, but does not perform caching
     public LatticeElement computeFoldedValue() {
-
         if (this.hasFoldedValue()) {
             return this.foldedValue;
         }
 
-        Iterator iter = this.phi.values().iterator();
+        Iterator<? extends LatticeElement> iter = this.phi.values().iterator();
         if (!iter.hasNext()) {
             return null;
         }
 
         // initialize the folded value as a clone of the first value
         // in the phi map
-        LatticeElement foldedValue = ((LatticeElement) iter.next()).cloneMe();
+        LatticeElement foldedValue = iter.next().cloneMe();
 
         // lub the rest of the values over the start value
         while (iter.hasNext()) {
-            foldedValue.lub((LatticeElement) iter.next());
+            foldedValue.lub(iter.next());
         }
 
         return foldedValue;
@@ -105,24 +103,23 @@ public abstract class InterAnalysisNode
     // DOESN'T PERFORM RECYCLING OF THE FOLDED ELEMENT,
     // and performs caching (might become a memory-eater)
     public LatticeElement getUnrecycledFoldedValue() {
-
         // no need to recompute it if we already have it
         if (this.hasFoldedValue()) {
             return this.foldedValue;
         }
 
-        Iterator iter = this.phi.values().iterator();
+        Iterator<? extends LatticeElement> iter = this.phi.values().iterator();
         if (!iter.hasNext()) {
             return null;
         }
 
         // initialize the folded value as a clone of the first value
         // in the phi map
-        this.foldedValue = ((LatticeElement) iter.next()).cloneMe();
+        this.foldedValue = iter.next().cloneMe();
 
         // lub the rest of the values over the start value
         while (iter.hasNext()) {
-            this.foldedValue.lub((LatticeElement) iter.next());
+            this.foldedValue.lub(iter.next());
         }
 
         return this.foldedValue;

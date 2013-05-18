@@ -11,7 +11,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
@@ -90,7 +93,7 @@ public class MyTransductions {
         t.addTransition(new Transition(start, new TransducerRelation(search.charAt(0), null), firstAccept));
 
         State current = firstAccept;
-        List<Object> pushback = new LinkedList<Object>();
+        List<Object> pushback = new LinkedList<>();
         // for all but the first and the last state of the acceptor
         for (int i = 1; i < search.length(); i++) {
             State next = t.addState(false, false);
@@ -116,7 +119,7 @@ public class MyTransductions {
         State lastAccept = current;
 
         // back to start with replacement
-        List<Object> replaceWithList = new LinkedList<Object>();
+        List<Object> replaceWithList = new LinkedList<>();
         for (char c : replace.toCharArray()) {
             replaceWithList.add(c);
         }
@@ -169,7 +172,7 @@ public class MyTransductions {
         TransducerNivat t, MyAlphabet alphabet, List<Object> prefix, State from, State to
     ) throws Exception {
         Set<Transition> fromTrans = t.delta(from);
-        Set<Object> existingInLabels = new HashSet<Object>();
+        Set<Object> existingInLabels = new HashSet<>();
 
         // collect existing in-labels from all transitions leaving "from"
         for (Transition transition : fromTrans) {
@@ -182,7 +185,7 @@ public class MyTransductions {
         // add transition if this label was not found in the previous loop;
         for (Character c : alphabet.getAlphabet()) {
             if (!existingInLabels.contains(c)) {
-                List<Object> composite = new LinkedList<Object>(prefix);
+                List<Object> composite = new LinkedList<>(prefix);
                 composite.add(c);
                 makeCompositeTransition(t, composite, c, from, to);
             }
@@ -196,7 +199,7 @@ public class MyTransductions {
     ) throws Exception {
 
         Set<Transition> fromTrans = t.delta(from);
-        Set<Object> existingInLabels = new HashSet<Object>();
+        Set<Object> existingInLabels = new HashSet<>();
 
         // collect existing in-labels from all transitions leaving "from"
         for (Transition trans : fromTrans) {

@@ -21,7 +21,7 @@ public class EncapsList {
     private List<Object> encapsList;
 
     EncapsList() {
-        this.encapsList = new LinkedList<Object>();
+        this.encapsList = new LinkedList<>();
     }
 
     void dump() {
@@ -52,7 +52,7 @@ public class EncapsList {
         // is the temporary variable still empty?
         boolean tempEmpty = true;
 
-        Iterator iter = this.encapsList.iterator();
+        Iterator<Object> iter = this.encapsList.iterator();
         Literal lastLiteral = null;
         while (iter.hasNext()) {
             Object obj = iter.next();
@@ -68,7 +68,6 @@ public class EncapsList {
                     lastLiteral = lit;
                 }
             } else if (obj instanceof TacPlace) {
-
                 if (lastLiteral != null) {
                     // catch the last literal in a temporary
 

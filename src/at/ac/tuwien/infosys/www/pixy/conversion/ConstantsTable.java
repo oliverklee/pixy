@@ -20,8 +20,8 @@ public class ConstantsTable {
 // *********************************************************************************
 
     ConstantsTable() {
-        this.constants = new LinkedHashMap<String, Constant>();
-        this.insensitiveGroups = new HashMap<String, List<Constant>>();
+        this.constants = new LinkedHashMap<>();
+        this.insensitiveGroups = new HashMap<>();
     }
 
 // *********************************************************************************
@@ -68,7 +68,7 @@ public class ConstantsTable {
         if (oldList == null) {
             // this constant is the first one in its insensitivity group:
             // new list has to be created
-            List<Constant> newList = new LinkedList<Constant>();
+            List<Constant> newList = new LinkedList<>();
             newList.add(newConst);
             this.insensitiveGroups.put(lowLabel, newList);
         } else {
@@ -81,9 +81,9 @@ public class ConstantsTable {
     // duplicates)
     void addAll(ConstantsTable sourceTable) {
         Map<String, Constant> sourceConstants = sourceTable.getConstants();
-        for (Map.Entry entry : sourceConstants.entrySet()) {
-            String sourceLabel = (String) entry.getKey();
-            Constant sourceConst = (Constant) entry.getValue();
+        for (Map.Entry<String, Constant> entry : sourceConstants.entrySet()) {
+            String sourceLabel = entry.getKey();
+            Constant sourceConst = entry.getValue();
             if (!this.constants.containsKey(sourceLabel)) {
                 this.add(sourceConst);
             }

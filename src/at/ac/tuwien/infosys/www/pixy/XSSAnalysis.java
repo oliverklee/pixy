@@ -41,7 +41,7 @@ public class XSSAnalysis
         System.out.println("*****************");
         System.out.println();
 
-        List<Integer> retMe = new LinkedList<Integer>();
+        List<Integer> retMe = new LinkedList<>();
 
         // collect sinks
         List<Sink> sinks = this.collectSinks();

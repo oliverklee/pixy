@@ -61,9 +61,9 @@ public class DepTfAssignRef
         // array label mapping: the same;
         // we achieve this through the following actions:
 
-        Set<Variable> mustAliases = new HashSet<Variable>();
+        Set<Variable> mustAliases = new HashSet<>();
         mustAliases.add(left);
-        Set mayAliases = Collections.EMPTY_SET;
+        Set<Variable> mayAliases = Collections.emptySet();
 
         // let the lattice element handle the details
         out.assign(left, mustAliases, mayAliases, cfgNode);

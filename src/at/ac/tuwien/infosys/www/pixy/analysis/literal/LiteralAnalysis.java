@@ -7,7 +7,6 @@ import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunctionId;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.AnalysisType;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterWorkList;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.tf.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
@@ -45,9 +44,9 @@ public class LiteralAnalysis
         InterWorkList workList) {
 
         this.tac = tac;
-        this.repos = new GenericRepos<LatticeElement>();
+        this.repos = new GenericRepos<>();
         this.aliasAnalysis = aliasAnalysis;
-        this.includeNodes = new LinkedList<CfgNodeInclude>();
+        this.includeNodes = new LinkedList<>();
 
         this.initGeneral(tac.getAllFunctions(), tac.getMainFunction(),
             analysisType, workList);
@@ -81,8 +80,8 @@ public class LiteralAnalysis
 
         CfgNodeAssignSimple cfgNode = (CfgNodeAssignSimple) cfgNodeX;
         Variable left = cfgNode.getLeft();
-        Set mustAliases = this.aliasAnalysis.getMustAliases(left, aliasInNode);
-        Set mayAliases = this.aliasAnalysis.getMayAliases(left, aliasInNode);
+        Set<Variable> mustAliases = this.aliasAnalysis.getMustAliases(left, aliasInNode);
+        Set<Variable> mayAliases = this.aliasAnalysis.getMayAliases(left, aliasInNode);
 
         return new LiteralTfAssignSimple(
             left,
@@ -95,8 +94,8 @@ public class LiteralAnalysis
 
         CfgNodeAssignUnary cfgNode = (CfgNodeAssignUnary) cfgNodeX;
         Variable left = cfgNode.getLeft();
-        Set mustAliases = this.aliasAnalysis.getMustAliases(left, aliasInNode);
-        Set mayAliases = this.aliasAnalysis.getMayAliases(left, aliasInNode);
+        Set<Variable> mustAliases = this.aliasAnalysis.getMustAliases(left, aliasInNode);
+        Set<Variable> mayAliases = this.aliasAnalysis.getMayAliases(left, aliasInNode);
 
         return new LiteralTfAssignUnary(
             left,
@@ -110,8 +109,8 @@ public class LiteralAnalysis
 
         CfgNodeAssignBinary cfgNode = (CfgNodeAssignBinary) cfgNodeX;
         Variable left = cfgNode.getLeft();
-        Set mustAliases = this.aliasAnalysis.getMustAliases(left, aliasInNode);
-        Set mayAliases = this.aliasAnalysis.getMayAliases(left, aliasInNode);
+        Set<Variable> mustAliases = this.aliasAnalysis.getMustAliases(left, aliasInNode);
+        Set<Variable> mayAliases = this.aliasAnalysis.getMayAliases(left, aliasInNode);
 
         return new LiteralTfAssignBinary(
             left,
@@ -164,8 +163,8 @@ public class LiteralAnalysis
         }
 
         // extract actual and formal params
-        List actualParams = cfgNode.getParamList();
-        List formalParams = calledFunction.getParams();
+        List<TacActualParam> actualParams = cfgNode.getParamList();
+        List<TacFormalParam> formalParams = calledFunction.getParams();
 
         // the transfer function to be assigned to this node
         TransferFunction tf = null;
@@ -253,8 +252,8 @@ public class LiteralAnalysis
             // local's literal would remain "NULL" (the default value for locals);
             // => approximate by assigning TOP to the operand
 
-            Set mustAliases = this.aliasAnalysis.getMustAliases(globalOp, cfgNode);
-            Set mayAliases = this.aliasAnalysis.getMayAliases(globalOp, cfgNode);
+            Set<Variable> mustAliases = this.aliasAnalysis.getMustAliases(globalOp, cfgNode);
+            Set<Variable> mayAliases = this.aliasAnalysis.getMayAliases(globalOp, cfgNode);
 
             return new LiteralTfAssignSimple(
                 globalOp,

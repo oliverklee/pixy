@@ -19,17 +19,17 @@ public class LiteralTfAssignUnary
     private Variable left;
     private TacPlace right;
     private int op;
-    private Set mustAliases;
-    private Set mayAliases;
+    private Set<Variable> mustAliases;
+    private Set<Variable> mayAliases;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
     // mustAliases, mayAliases: of setMe
-    public LiteralTfAssignUnary(TacPlace left, TacPlace right, int op,
-                                Set mustAliases, Set mayAliases) {
-
+    public LiteralTfAssignUnary(
+        TacPlace left, TacPlace right, int op, Set<Variable> mustAliases, Set<Variable> mayAliases
+    ) {
         this.left = (Variable) left;  // must be a variable
         this.right = right;
         this.op = op;

@@ -42,7 +42,7 @@ public class ModAnalysis {
 
     private void analyze(List<TacFunction> functions, CallGraph callGraph) {
 
-        this.func2Mod = new HashMap<TacFunction, Set<TacPlace>>();
+        this.func2Mod = new HashMap<>();
 
         // intraprocedural analysis
 
@@ -53,8 +53,7 @@ public class ModAnalysis {
         //     can be modified inside this function;
         //     ignore function calls at this stage
         for (TacFunction function : functions) {
-
-            Set<TacPlace> modSet = new HashSet<TacPlace>();
+            Set<TacPlace> modSet = new HashSet<>();
 
             for (CfgNode cfgNodeX : function.getCfg().dfPreOrder()) {
                 this.processNode(cfgNodeX, modSet);
@@ -78,7 +77,7 @@ public class ModAnalysis {
         Map<TacFunction, Integer> postorder = callGraph.getPostOrder();
 
         // initialize worklist
-        SortedMap<Integer, TacFunction> worklist = new TreeMap<Integer, TacFunction>();
+        SortedMap<Integer, TacFunction> worklist = new TreeMap<>();
         for (Map.Entry<TacFunction, Integer> entry : postorder.entrySet()) {
             worklist.put(entry.getValue(), entry.getKey());
         }

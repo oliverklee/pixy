@@ -85,7 +85,7 @@ public class LiteralTfCallRet
         LiteralLatticeElement outInfo = new LiteralLatticeElement();
 
         // contains variables that have been tagged as visited
-        Set<Variable> visitedVars = new HashSet<Variable>();
+        Set<Variable> visitedVars = new HashSet<>();
 
         // copy mappings of "global-like" places from calleeIn to outInfo
         // ("global-like": globals, superglobals, and constants)
@@ -193,9 +193,9 @@ public class LiteralTfCallRet
 
         // for each call-by-reference parameter pair
         for (List<Variable> paramPair : this.cbrParams) {
-            Iterator paramPairIter = paramPair.iterator();
-            Variable actualVar = (Variable) paramPairIter.next();
-            Variable formalVar = (Variable) paramPairIter.next();
+            Iterator<Variable> paramPairIter = paramPair.iterator();
+            Variable actualVar = paramPairIter.next();
+            Variable formalVar = paramPairIter.next();
 
             // local may-aliases of the actual parameter (at call-time)
             Set<Variable> localMayAliases = this.aliasAnalysis.getLocalMayAliases(actualVar, this.prepNode);

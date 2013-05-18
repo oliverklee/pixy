@@ -105,7 +105,7 @@ public abstract class SanitAnalysis
 
             DepGraph workGraph = new DepGraph(depGraph);
 
-            Map<DepGraphNode, FSAAutomaton> deco = new HashMap<DepGraphNode, FSAAutomaton>();
+            Map<DepGraphNode, FSAAutomaton> deco = new HashMap<>();
             FSAAutomaton auto = this.toAutomatonSanit(workGraph, depGraph, deco);
 
             // intersect this automaton with the undesired stuff;
@@ -194,7 +194,7 @@ public abstract class SanitAnalysis
         System.out.println("*****************");
         System.out.println();
 
-        return new LinkedList<Integer>();
+        return new LinkedList<>();
     }
 
 //  ********************************************************************************
@@ -207,7 +207,7 @@ public abstract class SanitAnalysis
                                             Map<DepGraphNode, FSAAutomaton> deco) {
         depGraph.eliminateCycles();
         DepGraphNode root = depGraph.getRoot();
-        Set<DepGraphNode> visited = new HashSet<DepGraphNode>();
+        Set<DepGraphNode> visited = new HashSet<>();
         this.decorateSanit(root, deco, visited, depGraph, origDepGraph, true);
         FSAAutomaton rootDeco = deco.get(root).clone();
 
@@ -408,23 +408,20 @@ public abstract class SanitAnalysis
     // returns an automaton for the given operation node
     private FSAAutomaton makeAutoForOp(DepGraphOpNode node, Map<DepGraphNode, FSAAutomaton> deco,
                                              DepGraph depGraph, boolean trimAllowed) {
-
         List<DepGraphNode> successors = depGraph.getSuccessors(node);
         if (successors == null) {
-            successors = new LinkedList<DepGraphNode>();
+            successors = new LinkedList<>();
         }
 
         FSAAutomaton retMe = null;
 
         String opName = node.getName();
 
-        List<Integer> multiList = new LinkedList<Integer>();
+        List<Integer> multiList = new LinkedList<>();
 
         if (!node.isBuiltin()) {
-
             // call to function or method for which no definition
             // could be found
-
             CfgNode cfgNodeX = node.getCfgNode();
             if (cfgNodeX instanceof CfgNodeCallUnknown) {
                 CfgNodeCallUnknown cfgNode = (CfgNodeCallUnknown) cfgNodeX;
@@ -441,7 +438,6 @@ public abstract class SanitAnalysis
                 throw new RuntimeException("SNH");
             }
         } else if (opName.equals(".")) {
-
             // CONCAT
             for (DepGraphNode succ : successors) {
                 FSAAutomaton succAuto = deco.get(succ);
@@ -578,7 +574,7 @@ public abstract class SanitAnalysis
             return FSAAutomaton.makeAnyString();
         }
 
-        Set<Integer> indexSet = new HashSet<Integer>(indices);
+        Set<Integer> indexSet = new HashSet<>(indices);
 
         int count = -1;
         for (DepGraphNode succ : succs) {
@@ -686,7 +682,7 @@ public abstract class SanitAnalysis
 
     // locates custom sanitization nodes in the given depgraph and returns them
     public static List<DepGraphNode> findCustomSanit(DepGraph depGraph) {
-        List<DepGraphNode> retMe = new LinkedList<DepGraphNode>();
+        List<DepGraphNode> retMe = new LinkedList<>();
         for (DepGraphNode node : depGraph.getNodes()) {
             if (isCustomSanit(node)) {
                 retMe.add(node);
@@ -733,8 +729,8 @@ public abstract class SanitAnalysis
 
         TrimInfo() {
             this.defaultTrim = true;
-            this.trim = new LinkedList<Integer>();
-            this.noTrim = new LinkedList<Integer>();
+            this.trim = new LinkedList<>();
+            this.noTrim = new LinkedList<>();
         }
 
         void setDefaultTrim(boolean defaultTrim) {

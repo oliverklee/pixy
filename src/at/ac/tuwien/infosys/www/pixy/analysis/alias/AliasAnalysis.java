@@ -5,24 +5,21 @@ import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunctionId;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.tf.*;
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.*;
-import at.ac.tuwien.infosys.www.pixy.conversion.SymbolTable;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
+import at.ac.tuwien.infosys.www.pixy.analysis.inter.AnalysisType;
+import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysisNode;
+import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterWorkListPoor;
+import at.ac.tuwien.infosys.www.pixy.conversion.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.*;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class AliasAnalysis
-    extends InterAnalysis {
-
+public class AliasAnalysis extends InterAnalysis {
     private GenericRepos<LatticeElement> repos;
 
 //  ********************************************************************************
@@ -32,7 +29,7 @@ public class AliasAnalysis
 //  AliasAnalysis ******************************************************************
 
     public AliasAnalysis(TacConverter tac, AnalysisType analysisType) {
-        this.repos = new GenericRepos<LatticeElement>();
+        this.repos = new GenericRepos<>();
         this.initGeneral(tac.getAllFunctions(), tac.getMainFunction(),
             analysisType, new InterWorkListPoor());
     }
@@ -139,8 +136,8 @@ public class AliasAnalysis
         }
 
         // extract actual and formal params
-        List actualParams = cfgNode.getParamList();
-        List formalParams = calledFunction.getParams();
+        List<TacActualParam> actualParams = cfgNode.getParamList();
+        List<TacFormalParam> formalParams = calledFunction.getParams();
 
         // the transfer function to be assigned to this node
         TransferFunction tf = null;
@@ -205,7 +202,7 @@ public class AliasAnalysis
             // if we enter this branch, it means that the must-aliases for variable var
             // were requested for a node inside a CFG for default function params;
             // no aliases in there
-            Set<Variable> retMe = new HashSet<Variable>();
+            Set<Variable> retMe = new HashSet<>();
             retMe.add(var);
             return retMe;
         } else {
@@ -220,7 +217,7 @@ public class AliasAnalysis
         AliasLatticeElement value = this.getFoldedValue(aNode);
         if (value == null) {
             // explanations see: getMustAliases
-            Set<Variable> retMe = new HashSet<Variable>();
+            Set<Variable> retMe = new HashSet<>();
             retMe.add(var);
             return retMe;
         } else {
@@ -244,7 +241,7 @@ public class AliasAnalysis
     // the given node (folded over all contexts); empty set if there
     // are none
     public Set<Variable> getLocalMustAliases(Variable var, CfgNode cfgNode) {
-        Set<Variable> retMe = new HashSet<Variable>();
+        Set<Variable> retMe = new HashSet<>();
         for (Variable mustAlias : this.getMustAliases(var, cfgNode)) {
             if (mustAlias.isLocal()) {
                 retMe.add(mustAlias);
@@ -258,7 +255,7 @@ public class AliasAnalysis
     // the given node (folded over all contexts); empty set if there
     // are none
     public Set<Variable> getGlobalMayAliases(Variable var, CfgNode cfgNode) {
-        Set<Variable> retMe = new HashSet<Variable>();
+        Set<Variable> retMe = new HashSet<>();
         for (Variable mayAlias : this.getMayAliases(var, cfgNode)) {
             if (mayAlias.isGlobal()) {
                 retMe.add(mayAlias);
@@ -272,7 +269,7 @@ public class AliasAnalysis
     // the given node (folded over all contexts); empty set if there
     // are none
     public Set<Variable> getLocalMayAliases(Variable var, CfgNode cfgNode) {
-        Set<Variable> retMe = new HashSet();
+        Set<Variable> retMe = new HashSet<>();
         for (Variable mayAlias : this.getMayAliases(var, cfgNode)) {
             if (mayAlias.isLocal()) {
                 retMe.add(mayAlias);

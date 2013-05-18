@@ -54,9 +54,9 @@ public class LiteralTfUnset
         LiteralLatticeElement out = new LiteralLatticeElement(in);
 
         // unsetting a variable means setting it to null for literal analysis
-        Set<Variable> mustAliases = new HashSet<Variable>();
+        Set<Variable> mustAliases = new HashSet<>();
         mustAliases.add(operand);
-        Set mayAliases = Collections.EMPTY_SET;
+        Set<Variable> mayAliases = Collections.emptySet();
         out.assignSimple(operand, Literal.NULL, mustAliases, mayAliases);
 
         return out;

@@ -48,7 +48,7 @@ public class CfgNodeStatic
     }
 
     public List<Variable> getVariables() {
-        List<Variable> retMe = new LinkedList<Variable>();
+        List<Variable> retMe = new LinkedList<>();
         if (this.operand instanceof Variable) {
             retMe.add((Variable) this.operand);
         } else {

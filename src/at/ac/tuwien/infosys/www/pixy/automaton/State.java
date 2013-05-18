@@ -40,9 +40,7 @@ import java.util.Set;
  *
  * @author Anders M&oslash;ller &lt;<a href="mailto:amoeller@brics.dk">amoeller@brics.dk</a>&gt;
  */
-public class State
-    implements Serializable, Comparable {
-
+public class State implements Serializable, Comparable<State> {
     static final long serialVersionUID = 30001;
 
     boolean accept;
@@ -65,7 +63,7 @@ public class State
      * Resets transition set.
      */
     void resetTransitions() {
-        transitions = new HashSet<Transition>();
+        transitions = new HashSet<>();
     }
 
     /**
@@ -161,7 +159,7 @@ public class State
      * Compares this object with the specified object for order.
      * States are ordered by the time of construction.
      */
-    public int compareTo(Object o) {
-        return ((State) o).id - id;
+    public int compareTo(State state) {
+        return state.id - id;
     }
 }

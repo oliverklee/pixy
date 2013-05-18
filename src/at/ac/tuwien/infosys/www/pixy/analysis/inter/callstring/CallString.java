@@ -3,19 +3,17 @@ package at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
 
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class CallString {
-
     // a list of CfgNodeCall's; never longer than the k-size of the analysis
     private LinkedList<CfgNodeCall> callNodeList;
 
     // creates the empty call string
     public CallString() {
-        this.callNodeList = new LinkedList<CfgNodeCall>();
+        this.callNodeList = new LinkedList<>();
     }
 
     // shall only be used by CallString.append
@@ -24,7 +22,7 @@ public class CallString {
     }
 
     public CallString append(CfgNodeCall callNode, int kSize) {
-        LinkedList<CfgNodeCall> newList = new LinkedList<CfgNodeCall>(this.callNodeList);
+        LinkedList<CfgNodeCall> newList = new LinkedList<>(this.callNodeList);
         newList.add(callNode);
         if (newList.size() > kSize) {
             newList.remove(0);
@@ -37,7 +35,7 @@ public class CallString {
         return this.callNodeList.getLast();
     }
 
-    public List getCallNodeList() {
+    public LinkedList<CfgNodeCall> getCallNodeList() {
         return this.callNodeList;
     }
 

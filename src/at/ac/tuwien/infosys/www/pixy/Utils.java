@@ -71,7 +71,7 @@ public class Utils {
     // - output: a list with all files (canonical) located in the
     //   same directory and in enclosed directories
     public static List<File> fileListFromFile(String rootFileName) {
-        List<File> retMe = new LinkedList<File>();
+        List<File> retMe = new LinkedList<>();
         File rootFile = new File(rootFileName);
         File rootDir = rootFile.getParentFile();
         fileListHelper(rootDir, retMe);
@@ -82,7 +82,7 @@ public class Utils {
     // - output: a list with all files (canonical) located in this
     //   directory and in enclosed directories
     public static List<File> fileListFromDir(String rootDirName) {
-        List<File> retMe = new LinkedList<File>();
+        List<File> retMe = new LinkedList<>();
         File rootDir = new File(rootDirName);
         fileListHelper(rootDir, retMe);
         return retMe;
@@ -92,7 +92,7 @@ public class Utils {
 
         try {
 
-            List<File> dirList = new LinkedList<File>();
+            List<File> dirList = new LinkedList<>();
             File[] fileList = dir.listFiles();
             for (File f : fileList) {
                 if (f.isFile()) {

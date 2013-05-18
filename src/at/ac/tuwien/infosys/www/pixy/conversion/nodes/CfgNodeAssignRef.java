@@ -35,7 +35,7 @@ public class CfgNodeAssignRef
     }
 
     public List<Variable> getVariables() {
-        List<Variable> retMe = new LinkedList<Variable>();
+        List<Variable> retMe = new LinkedList<>();
         retMe.add(this.left);
         retMe.add(this.right);
         return retMe;

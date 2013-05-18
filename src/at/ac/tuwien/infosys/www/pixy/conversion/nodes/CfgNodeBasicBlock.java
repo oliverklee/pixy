@@ -2,7 +2,6 @@ package at.ac.tuwien.infosys.www.pixy.conversion.nodes;
 
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -18,7 +17,7 @@ public class CfgNodeBasicBlock
     // with this basic block node (important for line number)
     public CfgNodeBasicBlock(CfgNode initialNode) {
         super(initialNode.getParseNode());
-        this.containedNodes = new LinkedList<CfgNode>();
+        this.containedNodes = new LinkedList<>();
         this.containedNodes.add(initialNode);
     }
 
@@ -38,7 +37,7 @@ public class CfgNodeBasicBlock
     }
 
     public List<Variable> getVariables() {
-        List<Variable> variables = new LinkedList<Variable>();
+        List<Variable> variables = new LinkedList<>();
         for (CfgNode node : this.containedNodes) {
             variables.addAll(node.getVariables());
         }
@@ -47,7 +46,7 @@ public class CfgNodeBasicBlock
 
     public void replaceVariable(int index, Variable replacement) {
         for (CfgNode node : this.containedNodes) {
-            List gotVariables = node.getVariables();
+            List<Variable> gotVariables = node.getVariables();
             if (gotVariables.size() > index) {
                 node.replaceVariable(index, replacement);
                 return;

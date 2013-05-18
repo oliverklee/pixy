@@ -32,7 +32,7 @@ public class FunctionalAnalysisNode
         super(tf);
         // maintain reverse mapping for call nodes
         if (node instanceof CfgNodeCall) {
-            this.reversePhi = new HashMap<LatticeElement, Set<FunctionalContext>>();
+            this.reversePhi = new HashMap<>();
         } else {
             this.reversePhi = null;
         }
@@ -44,7 +44,7 @@ public class FunctionalAnalysisNode
 
     // returns a set of contexts that are mapped to the given value
     Set<FunctionalContext> getReversePhiContexts(LatticeElement value) {
-        return (this.reversePhi.get(value));
+        return this.reversePhi.get(value);
     }
 
 // *********************************************************************************
@@ -62,7 +62,7 @@ public class FunctionalAnalysisNode
         if (this.reversePhi != null) {
             Set<FunctionalContext> contextSet = this.reversePhi.get(value);
             if (contextSet == null) {
-                contextSet = new HashSet<FunctionalContext>();
+                contextSet = new HashSet<>();
                 this.reversePhi.put(value, contextSet);
             }
             contextSet.add(context);

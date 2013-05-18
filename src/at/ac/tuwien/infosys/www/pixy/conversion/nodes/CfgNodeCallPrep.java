@@ -57,7 +57,7 @@ public class CfgNodeCallPrep
 
     // returns a list consisting of two-element-lists consisting of
     // (actual cbr-param, formal cbr-param) (Variable objects)
-    public List getCbrParams() {
+    public List<List<Variable>> getCbrParams() {
         return this.getCallNode().getCbrParams();
     }
 

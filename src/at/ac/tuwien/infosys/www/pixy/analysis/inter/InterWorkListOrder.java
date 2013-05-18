@@ -28,8 +28,7 @@ public class InterWorkListOrder {
 //  ********************************************************************************
 
     public InterWorkListOrder(TacConverter tac, ConnectorComputation cc) {
-
-        this.order = new HashMap<InterWorkListElement, Integer>();
+        this.order = new HashMap<>();
 
         TacFunction mainFunction = tac.getMainFunction();
         CfgNode startNode = mainFunction.getCfg().getHead();
@@ -44,10 +43,10 @@ public class InterWorkListOrder {
         LinkedList<InterWorkListElement> postorder = this.getPostorder(start, cc);
 
         // get *reverse* postorder
-        ListIterator iter = postorder.listIterator(postorder.size());
+        ListIterator<InterWorkListElement> iter = postorder.listIterator(postorder.size());
         int i = 0;
         while (iter.hasPrevious()) {
-            InterWorkListElement iwle = (InterWorkListElement) iter.previous();
+            InterWorkListElement iwle = iter.previous();
             this.order.put(iwle, i);
             i++;
         }
@@ -60,11 +59,11 @@ public class InterWorkListOrder {
         InterWorkListElement start, ConnectorComputation cc) {
 
         // this is what we want to compute
-        LinkedList<InterWorkListElement> postorder = new LinkedList<InterWorkListElement>();
+        LinkedList<InterWorkListElement> postorder = new LinkedList<>();
 
         // auxiliary stack and visited set
-        LinkedList<InterWorkListElement> stack = new LinkedList<InterWorkListElement>();
-        Set<InterWorkListElement> visited = new HashSet<InterWorkListElement>();
+        LinkedList<InterWorkListElement> stack = new LinkedList<>();
+        Set<InterWorkListElement> visited = new HashSet<>();
 
         // begin with start element
         stack.add(start);
@@ -96,7 +95,6 @@ public class InterWorkListOrder {
                 CfgNodeCall callNode = (CfgNodeCall) cfgNode;
                 TacFunction callee = callNode.getCallee();
                 if (callee == null) {
-
                     // for unknown calls:
                     // simply move on to the callret node; context stays the same
 
@@ -107,7 +105,6 @@ public class InterWorkListOrder {
                         nextElement = null;
                     }
                 } else {
-
                     // for normal calls:
                     // enter function under corresponding context
 
@@ -123,7 +120,6 @@ public class InterWorkListOrder {
                     }
                 }
             } else if (cfgNode instanceof CfgNodeExit) {
-
                 CfgNodeExit exitNode = (CfgNodeExit) cfgNode;
                 TacFunction exitedFunction = exitNode.getEnclosingFunction();
 

@@ -41,11 +41,11 @@ public abstract class MyAutomaton {
     // constructs a new, empty automaton
     public MyAutomaton() {
         this.counter = 0;
-        this.states = new HashSet<MyState>();
+        this.states = new HashSet<>();
         this.initial = null;
-        this.terminals = new HashSet<MyState>();
-        this.state2trans = new HashMap<MyState, Set<MyTransition>>();
-        this.reverseState2trans = new HashMap<MyState, Set<MyTransition>>();
+        this.terminals = new HashSet<>();
+        this.state2trans = new HashMap<>();
+        this.reverseState2trans = new HashMap<>();
     }
 
 //  ********************************************************************************
@@ -56,7 +56,7 @@ public abstract class MyAutomaton {
         this();
 
         // map from orig state to cloned state
-        Map<MyState, MyState> map = new HashMap<MyState, MyState>();
+        Map<MyState, MyState> map = new HashMap<>();
 
         // copy states and fill auxiliary map along the way
         for (MyState origState : orig.states) {
@@ -81,7 +81,7 @@ public abstract class MyAutomaton {
         this();
 
         // auxiliary map from foreign state to my cloned state
-        Map<rationals.State, MyState> map = new HashMap<rationals.State, MyState>();
+        Map<rationals.State, MyState> map = new HashMap<>();
 
         // copy states, updating auxiliary map on the way
         Set<State> states = automaton.states();
@@ -123,7 +123,7 @@ public abstract class MyAutomaton {
 
     // returns all transitions that lead into the given state, except loops
     Set<MyTransition> getIncomingNoLoop(MyState into) {
-        Set<MyTransition> ret = new HashSet<MyTransition>();
+        Set<MyTransition> ret = new HashSet<>();
         Set<MyTransition> toSet = this.reverseState2trans.get(into);
         if (toSet != null) {
             for (MyTransition trans : toSet) {
@@ -139,7 +139,7 @@ public abstract class MyAutomaton {
 
     // returns all transitions that start at the given state, except loops
     Set<MyTransition> getOutgoingNoLoop(MyState from) {
-        Set<MyTransition> ret = new HashSet<MyTransition>();
+        Set<MyTransition> ret = new HashSet<>();
         Set<MyTransition> fromSet = this.state2trans.get(from);
         if (fromSet != null) {
             for (MyTransition trans : fromSet) {
@@ -157,9 +157,9 @@ public abstract class MyAutomaton {
     Set<MyTransition> getOutgoingTransitions(MyState from) {
         Set<MyTransition> outgoing = this.state2trans.get(from);
         if (outgoing == null) {
-            return new HashSet<MyTransition>();
+            return new HashSet<>();
         } else {
-            return new HashSet<MyTransition>(outgoing);
+            return new HashSet<>(outgoing);
         }
     }
 
@@ -167,7 +167,7 @@ public abstract class MyAutomaton {
 
     // returns all states
     public Set<MyState> getStates() {
-        return new HashSet<MyState>(this.states);
+        return new HashSet<>(this.states);
     }
 
 //  ********************************************************************************
@@ -181,14 +181,14 @@ public abstract class MyAutomaton {
 
     // returns the terminal states
     public Set<MyState> getTerminals() {
-        return new HashSet<MyState>(this.terminals);
+        return new HashSet<>(this.terminals);
     }
 
 //  ********************************************************************************
 
     // returns all transitions
     public Set<MyTransition> getDelta() {
-        Set<MyTransition> s = new HashSet<MyTransition>();
+        Set<MyTransition> s = new HashSet<>();
         for (Set<MyTransition> transSet : this.state2trans.values()) {
             s.addAll(transSet);
         }
@@ -221,7 +221,7 @@ public abstract class MyAutomaton {
 
         // *** TERMINAL STATE ***
 
-        List<MyState> oldTerminals = new LinkedList<MyState>(this.terminals);
+        List<MyState> oldTerminals = new LinkedList<>(this.terminals);
 
         // create a new terminal state
         MyState newTerminal = this.addState(false, true);
@@ -258,7 +258,7 @@ public abstract class MyAutomaton {
 
     // returns the transitions between the given states
     public Set<MyTransition> getTransitions(MyState from, MyState to) {
-        Set<MyTransition> retme = new HashSet<MyTransition>();
+        Set<MyTransition> retme = new HashSet<>();
         Set<MyTransition> fromSet = this.state2trans.get(from);
         if (fromSet != null) {
             for (MyTransition t : fromSet) {
@@ -289,7 +289,7 @@ public abstract class MyAutomaton {
         // add to state2trans
         Set<MyTransition> transSet = state2trans.get(start);
         if (transSet == null) {
-            transSet = new HashSet<MyTransition>();
+            transSet = new HashSet<>();
             transSet.add(transition);
             state2trans.put(start, transSet);
         } else {
@@ -299,7 +299,7 @@ public abstract class MyAutomaton {
         // add to reverseState2trans
         Set<MyTransition> reverseTransSet = reverseState2trans.get(end);
         if (reverseTransSet == null) {
-            reverseTransSet = new HashSet<MyTransition>();
+            reverseTransSet = new HashSet<>();
             reverseTransSet.add(transition);
             reverseState2trans.put(end, reverseTransSet);
         } else {
@@ -314,8 +314,8 @@ public abstract class MyAutomaton {
 
         // remove matching transitions from the out-map
         Set<MyTransition> fromSet = this.state2trans.get(from);
-        for (Iterator iter = fromSet.iterator(); iter.hasNext(); ) {
-            MyTransition trans = (MyTransition) iter.next();
+        for (Iterator<MyTransition> iter = fromSet.iterator(); iter.hasNext(); ) {
+            MyTransition trans = iter.next();
             if (to.equals(trans.getEnd())) {
                 iter.remove();
             }
@@ -323,8 +323,8 @@ public abstract class MyAutomaton {
 
         // remove matching transitions from the in-map
         Set<MyTransition> toSet = this.reverseState2trans.get(to);
-        for (Iterator iter = toSet.iterator(); iter.hasNext(); ) {
-            MyTransition trans = (MyTransition) iter.next();
+        for (Iterator<MyTransition> iter = toSet.iterator(); iter.hasNext(); ) {
+            MyTransition trans = iter.next();
             if (from.equals(trans.getStart())) {
                 iter.remove();
             }
@@ -357,12 +357,12 @@ public abstract class MyAutomaton {
 
         // remove touching transitions:
         // outgoing:
-        Set<MyTransition> fromTransSet = new HashSet<MyTransition>(this.state2trans.get(state));
+        Set<MyTransition> fromTransSet = new HashSet<>(this.state2trans.get(state));
         for (MyTransition t : fromTransSet) {
             this.removeTransitions(t.getStart(), t.getEnd());
         }
         // incoming:
-        Set<MyTransition> toTransSet = new HashSet<MyTransition>(this.reverseState2trans.get(state));
+        Set<MyTransition> toTransSet = new HashSet<>(this.reverseState2trans.get(state));
         for (MyTransition t : toTransSet) {
             this.removeTransitions(t.getStart(), t.getEnd());
         }
@@ -380,17 +380,17 @@ public abstract class MyAutomaton {
     public void mergeTransitions() {
 
         // list view of our original transitions
-        LinkedList<MyTransition> origList = new LinkedList<MyTransition>(this.getDelta());
+        LinkedList<MyTransition> origList = new LinkedList<>(this.getDelta());
 
         // list view of our desired merged transitions
-        LinkedList<MyTransition> newList = new LinkedList<MyTransition>();
+        LinkedList<MyTransition> newList = new LinkedList<>();
 
         // we will shift transitions from orig to new, merging along the way
         while (!origList.isEmpty()) {
 
             // intermediary list holding "competing" transitions
             // (i.e., transitions with the same start and end state)
-            List<MyTransition> competing = new LinkedList<MyTransition>();
+            List<MyTransition> competing = new LinkedList<>();
 
             // shift the first transition from orig to competing,
             // and also all other transitions from orig that "compete"

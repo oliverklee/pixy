@@ -16,12 +16,12 @@ public class TypeLatticeElement
 
     // an empty lattice element (the analysis starts with this one)
     public TypeLatticeElement() {
-        this.var2Type = new HashMap<Variable, Set<Type>>();
+        this.var2Type = new HashMap<>();
     }
 
     // clones the given element
     public TypeLatticeElement(TypeLatticeElement element) {
-        this.var2Type = new HashMap<Variable, Set<Type>>(element.var2Type);
+        this.var2Type = new HashMap<>(element.var2Type);
     }
 
     // lubs the given lattice element over <<this>> lattice element
@@ -45,7 +45,7 @@ public class TypeLatticeElement
     }
 
     public void setTypeString(Variable var, String className) {
-        Set<Type> types = new HashSet<Type>();
+        Set<Type> types = new HashSet<>();
         types.add(Type.getTypeForClass(className));
         this.setType(var, types);
     }
@@ -111,9 +111,9 @@ public class TypeLatticeElement
 
     // resets all variables that belong to the given symbol table
     public void resetVariables(SymbolTable symTab) {
-        for (Iterator iter = this.var2Type.entrySet().iterator(); iter.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            Variable var = (Variable) entry.getKey();
+        for (Iterator<Map.Entry<Variable, Set<Type>>> iter = this.var2Type.entrySet().iterator(); iter.hasNext(); ) {
+            Map.Entry<Variable, Set<Type>> entry = iter.next();
+            Variable var = entry.getKey();
 
             if (var.belongsTo(symTab)) {
                 iter.remove();
@@ -124,9 +124,9 @@ public class TypeLatticeElement
     // resets all temporaries that belong to the given symbol table
     public void resetTemporaries(SymbolTable symTab) {
 
-        for (Iterator iter = this.var2Type.entrySet().iterator(); iter.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            Variable var = (Variable) entry.getKey();
+        for (Iterator<Map.Entry<Variable, Set<Type>>> iter = this.var2Type.entrySet().iterator(); iter.hasNext(); ) {
+            Map.Entry<Variable, Set<Type>> entry = iter.next();
+            Variable var = entry.getKey();
 
             if (!var.isTemp()) {
                 // nothing to do for non-temporaries
@@ -187,7 +187,7 @@ public class TypeLatticeElement
 
         // if the callee is a constructor, return the appropriate class as type
         if (callee.isConstructor()) {
-            types = new HashSet<Type>();
+            types = new HashSet<>();
             types.add(Type.getTypeForClass(callee.getClassName()));
         }
 

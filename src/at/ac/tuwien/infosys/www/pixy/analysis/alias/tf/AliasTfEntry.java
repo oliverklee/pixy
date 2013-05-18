@@ -7,7 +7,6 @@ import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
-import java.util.Iterator;
 import java.util.Map;
 
 /**

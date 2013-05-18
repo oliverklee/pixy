@@ -193,7 +193,7 @@ public class FSAAutomaton {
     // exactly this one string; null otherwise
     List<String> getFiniteString() {
 
-        List<String> retMe = new LinkedList<String>();
+        List<String> retMe = new LinkedList<>();
 
         AutoInfo info = this.parseAutomaton();
         if (info.startStates.size() != 1) {
@@ -316,9 +316,9 @@ public class FSAAutomaton {
         // info to be collected
         Integer numStates = null;
         String sigma = null;
-        List<Integer> startStates = new LinkedList<Integer>();
-        List<Integer> finalStates = new LinkedList<Integer>();
-        Map<Integer, Set<TransitionInfo>> transitions = new HashMap<Integer, Set<TransitionInfo>>();
+        List<Integer> startStates = new LinkedList<>();
+        List<Integer> finalStates = new LinkedList<>();
+        Map<Integer, Set<TransitionInfo>> transitions = new HashMap<>();
 
         StringTokenizer tokenizer = new StringTokenizer(this.str, "\n");
         while (tokenizer.hasMoreTokens()) {
@@ -380,7 +380,7 @@ public class FSAAutomaton {
 
                         Set<TransitionInfo> tt = transitions.get(sourceState);
                         if (tt == null) {
-                            tt = new HashSet<TransitionInfo>();
+                            tt = new HashSet<>();
                             transitions.put(sourceState, tt);
                         }
                         tt.add(new TransitionInfo(label, destState));

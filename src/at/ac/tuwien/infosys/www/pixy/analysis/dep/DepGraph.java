@@ -3,6 +3,7 @@ package at.ac.tuwien.infosys.www.pixy.analysis.dep;
 import at.ac.tuwien.infosys.www.pixy.DepClientInfo;
 import at.ac.tuwien.infosys.www.pixy.Dumper;
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
+import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.Context;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysisInfo;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.ReverseTarget;
@@ -63,10 +64,10 @@ public class DepGraph {
 
     // creates a single-element graph
     public DepGraph(DepGraphNormalNode root) {
-        this.nodes = new LinkedHashMap<DepGraphNode, DepGraphNode>();
+        this.nodes = new LinkedHashMap<>();
         this.addNode(root);
         this.root = root;
-        this.edges = new LinkedHashMap<DepGraphNode, List<DepGraphNode>>();
+        this.edges = new LinkedHashMap<>();
         this.analysisInfo = null;
         this.mainSymTab = null;
         this.depAnalysis = null;
@@ -99,13 +100,13 @@ public class DepGraph {
                                   SymbolTable mainSymTab, DepAnalysis depAnalysis) {
 
         DepGraph depGraph = new DepGraph();
-        depGraph.nodes = new LinkedHashMap<DepGraphNode, DepGraphNode>();
-        depGraph.edges = new LinkedHashMap<DepGraphNode, List<DepGraphNode>>();
+        depGraph.nodes = new LinkedHashMap<>();
+        depGraph.edges = new LinkedHashMap<>();
         depGraph.analysisInfo = analysisInfo;
         depGraph.mainSymTab = mainSymTab;
         depGraph.depAnalysis = depAnalysis;
 
-        List<TacPlace> indices = new LinkedList<TacPlace>();
+        List<TacPlace> indices = new LinkedList<>();
 
         try {
             // start with all contexts of the start node
@@ -126,16 +127,16 @@ public class DepGraph {
     // (nodes are reused)
     public DepGraph(DepGraph orig) {
 
-        this.nodes = new LinkedHashMap<DepGraphNode, DepGraphNode>(orig.nodes);
+        this.nodes = new LinkedHashMap<>(orig.nodes);
         this.root = orig.root;
         // this would not be real cloning due to list reuse:
         //this.edges = new LinkedHashMap<DepGraphNode, List<DepGraphNode>>(orig.edges);
-        this.edges = new LinkedHashMap<DepGraphNode, List<DepGraphNode>>();
+        this.edges = new LinkedHashMap<>();
         for (Map.Entry<DepGraphNode, List<DepGraphNode>> origEntry : orig.edges.entrySet()) {
             DepGraphNode origFrom = origEntry.getKey();
             List<DepGraphNode> origTos = origEntry.getValue();
 
-            List<DepGraphNode> myTos = new LinkedList<DepGraphNode>(origTos);
+            List<DepGraphNode> myTos = new LinkedList<>(origTos);
 
             // we can reuse the nodes from the original graph, but we must
             // not reuse its lists
@@ -254,7 +255,7 @@ public class DepGraph {
                 }
 
                 // used for our increased array-awareness
-                List<TacPlace> newIndices = new LinkedList<TacPlace>();
+                List<TacPlace> newIndices = new LinkedList<>();
 
                 // context and function switching!
                 ContextSwitch cswitch = this.switchContexts(function, contexts, current, targetNode);
@@ -296,7 +297,7 @@ public class DepGraph {
             // apply until we reach the node, or vice versa (apply for the whole
             // table, and fold afterwards)
 
-            Map bbPhi = this.analysisInfo.getAnalysisNode(enclosingX).getPhi();
+            Map<Context, LatticeElement> bbPhi = this.analysisInfo.getAnalysisNode(enclosingX).getPhi();
 
             if (bbPhi.isEmpty()) {
                 throw new NotReachableException();
@@ -316,7 +317,7 @@ public class DepGraph {
                 // if this is a constant, we simply look up the analysis
                 // info in the function's entry node
 
-                Map phi = this.analysisInfo.getAnalysisNode(enclosingX).getPhi();
+                Map<Context, LatticeElement> phi = this.analysisInfo.getAnalysisNode(enclosingX).getPhi();
                 if (phi.isEmpty()) {
                     throw new NotReachableException();
                 }
@@ -335,7 +336,7 @@ public class DepGraph {
                 // use the value at the function's entry node as start value
                 // (since we only have static stuff inside default cfgs, this is
                 // a valid method)
-                Map bbPhi = this.analysisInfo.getAnalysisNode(enclosingX).getPhi();
+                Map<Context, LatticeElement> bbPhi = this.analysisInfo.getAnalysisNode(enclosingX).getPhi();
                 DepLatticeElement latticeElement = this.newFold(bbPhi, contexts);
 
                 DepLatticeElement propagated = this.depAnalysis.applyInsideDefaultCfg(
@@ -346,7 +347,7 @@ public class DepGraph {
             // none of the above applies, so the current node has
             // directly associated analysis info
 
-            Map phi = this.analysisInfo.getAnalysisNode(cfgNode).getPhi();
+            Map<Context, LatticeElement> phi = this.analysisInfo.getAnalysisNode(cfgNode).getPhi();
 
             // if the map is empty, it means that the function containing
             // this node is never called;
@@ -395,7 +396,7 @@ public class DepGraph {
             CfgNodeCall callNode = callRet.getCallNode();
             targetFunction = callNode.getCallee();
             debug("jumping from caller to end of callee: " + function.getName() + " -> " + targetFunction.getName());
-            targetContexts = new HashSet<Context>();
+            targetContexts = new HashSet<>();
             for (Context c : contexts) {
                 targetContexts.add(this.depAnalysis.getPropagationContext(callNode, c));
             }
@@ -410,7 +411,7 @@ public class DepGraph {
             CfgNodeCall callNode = (CfgNodeCall) prep.getSuccessor(0);
             targetFunction = prep.getCaller();
             debug("caller: " + targetFunction.getName());
-            targetContexts = new HashSet<Context>();
+            targetContexts = new HashSet<>();
             for (Context c : contexts) {
                 List<ReverseTarget> revs = this.depAnalysis.getReverseTargets(function, c);
                 for (ReverseTarget rev : revs) {
@@ -525,7 +526,7 @@ public class DepGraph {
         }
         List<DepGraphNode> toList = this.edges.get(from);
         if (toList == null) {
-            toList = new LinkedList<DepGraphNode>();
+            toList = new LinkedList<>();
             this.edges.put(from, toList);
         }
         toList.add(to);
@@ -608,7 +609,7 @@ public class DepGraph {
     private List<TacPlace> getUsedPlaces(CfgNode cfgNodeX, TacPlace victim,
                                          List<TacPlace> oldIndices, List<TacPlace> newIndices) {
 
-        List<TacPlace> retMe = new LinkedList<TacPlace>();
+        List<TacPlace> retMe = new LinkedList<>();
 
         // the node types for which an exception is raised are those
         // that should not even be visited by the algorithm in the first
@@ -855,9 +856,8 @@ public class DepGraph {
         // leftIndices
         // -> the resulting indices of victim correspond to the
         // relation between left and victim
-        ListIterator victimIter = victimIndices.listIterator();
+        ListIterator<TacPlace> victimIter = victimIndices.listIterator();
         for (TacPlace leftIndice : leftIndices) {
-            //System.out.println("i-left-index: " + leftIndices.get(i));
             victimIter.next();
         }
 
@@ -865,7 +865,7 @@ public class DepGraph {
         // try to descend into it as deeply as possible
         Variable retMe = right;
         while (victimIter.hasNext()) {
-            TacPlace victimIndex = (TacPlace) victimIter.next();
+            TacPlace victimIndex = victimIter.next();
             Variable newTarget = retMe.getElement(victimIndex);
             if (newTarget == null) {
                 // the requested element does not exist, so we have
@@ -880,7 +880,7 @@ public class DepGraph {
 
         // write the remaining, unmatched indices into newIndices
         while (victimIter.hasNext()) {
-            TacPlace victimIndex = (TacPlace) victimIter.next();
+            TacPlace victimIndex = victimIter.next();
             newIndices.add(victimIndex);
         }
 
@@ -895,7 +895,7 @@ public class DepGraph {
                                                 TacPlace victim,
                                                 List<TacPlace> oldIndices, List<TacPlace> newIndices) {
 
-        List<TacPlace> retMe = new LinkedList<TacPlace>();
+        List<TacPlace> retMe = new LinkedList<>();
 
         CfgNodeCallPrep prepNode = retNode.getCallPrepNode();
         if (prepNode.getCallee() == null) {
@@ -924,7 +924,7 @@ public class DepGraph {
     // helper function for retrieving the used places for calls to builtin functions
     private List<TacPlace> getUsedPlacesForBuiltin(CfgNodeCallBuiltin cfgNode) {
 
-        List<TacPlace> retMe = new LinkedList<TacPlace>();
+        List<TacPlace> retMe = new LinkedList<>();
         String functionName = cfgNode.getFunctionName();
 
         if (functionName.equals("mysql_query")) {
@@ -945,8 +945,7 @@ public class DepGraph {
 
     // determines the "folded" dep set of the given place by lubbing over
     // the given contexts
-    private DepSet newFold(Map phi, TacPlace place, Set<Context> contexts) {
-
+    private DepSet newFold(Map<Context, LatticeElement> phi, TacPlace place, Set<Context> contexts) {
         DepSet depSet = null;
 
         for (Context context : contexts) {
@@ -972,8 +971,7 @@ public class DepGraph {
 //  *********************************************************************************
 
     // determines the "folded" lattice element by lubbing over the given contexts
-    private DepLatticeElement newFold(Map phi, Set<Context> contexts) {
-
+    private DepLatticeElement newFold(Map<Context, LatticeElement> phi, Set<Context> contexts) {
         DepLatticeElement retMe = null;
 
         for (Context context : contexts) {
@@ -1017,7 +1015,7 @@ public class DepGraph {
     public boolean hasCycles() {
 
         // color map (white 0, grey 1, black 2)
-        HashMap<DepGraphNode, Integer> colorMap = new HashMap<DepGraphNode, Integer>();
+        HashMap<DepGraphNode, Integer> colorMap = new HashMap<>();
 
         // initialize all nodes with white
         for (DepGraphNode node : this.nodes.keySet()) {
@@ -1040,7 +1038,7 @@ public class DepGraph {
         colorMap.put(node, 1);
 
         // visit successors (depth-first)
-        List successors = this.edges.get(node);
+        List<DepGraphNode> successors = this.edges.get(node);
         if (successors != null) {
             for (DepGraphNode succ : this.edges.get(node)) {
                 int color = colorMap.get(succ);
@@ -1065,7 +1063,7 @@ public class DepGraph {
     // returns a map that gives the number of occurrences for each type of
     // operation node
     public Map<String, Integer> getOpMap() {
-        Map<String, Integer> retMe = new HashMap<String, Integer>();
+        Map<String, Integer> retMe = new HashMap<>();
         for (DepGraphNode node : this.nodes.keySet()) {
             if (!(node instanceof DepGraphOpNode)) {
                 continue;
@@ -1109,7 +1107,7 @@ public class DepGraph {
     // returns all the nodes of this graph
     public List<DepGraphNode> getNodes() {
         // return a copy of our node set
-        List<DepGraphNode> retMe = new LinkedList<DepGraphNode>(this.nodes.keySet());
+        List<DepGraphNode> retMe = new LinkedList<>(this.nodes.keySet());
         return retMe;
     }
 
@@ -1117,7 +1115,7 @@ public class DepGraph {
 
     // returns the leaf nodes of this graph
     public Set<DepGraphNode> getLeafNodes() {
-        Set<DepGraphNode> leafCandidates = new HashSet<DepGraphNode>(this.nodes.keySet());
+        Set<DepGraphNode> leafCandidates = new HashSet<>(this.nodes.keySet());
         Set<DepGraphNode> nonLeafs = this.edges.keySet();
         leafCandidates.removeAll(nonLeafs);
         return leafCandidates;
@@ -1127,7 +1125,7 @@ public class DepGraph {
 
     // returns all uninit nodes
     public Set<DepGraphUninitNode> getUninitNodes() {
-        Set<DepGraphUninitNode> uninitNodes = new HashSet<DepGraphUninitNode>();
+        Set<DepGraphUninitNode> uninitNodes = new HashSet<>();
         for (DepGraphNode node : this.nodes.keySet()) {
             if (node instanceof DepGraphUninitNode) {
                 uninitNodes.add((DepGraphUninitNode) node);
@@ -1193,7 +1191,7 @@ public class DepGraph {
 
 //  ********************************************************************************
 
-    public void writeDot(String graphName, Set fillUs, Writer outWriter, DepClientInfo dci)
+    public void writeDot(String graphName, Set<? extends DepGraphNode> fillUs, Writer outWriter, DepClientInfo dci)
         throws IOException {
 
         // distinguish between verbose and normal output
@@ -1205,7 +1203,7 @@ public class DepGraph {
     }
 
     // writes a dot representation of this depgraph to the given writer
-    public void writeDotVerbose(String graphName, Set fillUs, Writer outWriter, DepClientInfo dci)
+    public void writeDotVerbose(String graphName, Set<? extends DepGraphNode> fillUs, Writer outWriter, DepClientInfo dci)
         throws IOException {
 
         outWriter.write("digraph cfg {\n  label=\"");
@@ -1215,7 +1213,7 @@ public class DepGraph {
 
         // print nodes
         int idCounter = 0;
-        HashMap<DepGraphNode, Integer> node2Int = new HashMap<DepGraphNode, Integer>();
+        HashMap<DepGraphNode, Integer> node2Int = new HashMap<>();
         for (DepGraphNode tgn : this.nodes.keySet()) {
             node2Int.put(tgn, ++idCounter);
 
@@ -1267,7 +1265,7 @@ public class DepGraph {
     }
 
     // writes a dot representation of this depgraph to the given writer
-    public void writeDotNormal(String graphName, Set fillUs, Writer outWriter)
+    public void writeDotNormal(String graphName, Set<? extends DepGraphNode> fillUs, Writer outWriter)
         throws IOException {
 
         outWriter.write("digraph cfg {\n  label=\"");
@@ -1277,7 +1275,7 @@ public class DepGraph {
 
         // print nodes
         int idCounter = 0;
-        HashMap<DepGraphNode, Integer> node2Int = new HashMap<DepGraphNode, Integer>();
+        HashMap<DepGraphNode, Integer> node2Int = new HashMap<>();
         for (DepGraphNode tgn : this.nodes.keySet()) {
             node2Int.put(tgn, ++idCounter);
 
@@ -1328,7 +1326,7 @@ public class DepGraph {
 
     // writes a dot representation of this depgraph to the given writer;
     // use this one if you need a UNIQUE representation
-    public void writeDotUnique(String graphName, Set fillUs, boolean shortName, Writer outWriter)
+    public void writeDotUnique(String graphName, Set<? extends DepGraphNode> fillUs, boolean shortName, Writer outWriter)
         throws IOException {
 
         outWriter.write("digraph cfg {\n  label=\"");
@@ -1338,7 +1336,7 @@ public class DepGraph {
 
         // print nodes
         int idCounter = 0;
-        HashMap<DepGraphNode, Integer> node2Int = new HashMap<DepGraphNode, Integer>();
+        HashMap<DepGraphNode, Integer> node2Int = new HashMap<>();
 
         for (DepGraphNode tgn : this.bfIterator()) {
 
@@ -1369,7 +1367,7 @@ public class DepGraph {
         }
 
         // print edges
-        List<String> lines = new LinkedList<String>();
+        List<String> lines = new LinkedList<>();
         for (Map.Entry<DepGraphNode, List<DepGraphNode>> entry : this.edges.entrySet()) {
             DepGraphNode from = entry.getKey();
             List<DepGraphNode> toList = entry.getValue();
@@ -1414,7 +1412,7 @@ public class DepGraph {
             }
 
             // determine edges pointing into this SCC
-            Set<DepGraphNode> sccPredecessors = new HashSet<DepGraphNode>();
+            Set<DepGraphNode> sccPredecessors = new HashSet<>();
             for (DepGraphNode sccMember : scc) {
                 Set<DepGraphNode> predecessors = this.getPredecessors(sccMember);
                 predecessors.removeAll(scc);  // don't take predecessors that are inside the SCC
@@ -1422,7 +1420,7 @@ public class DepGraph {
             }
 
             // determine edges going out of this SCC
-            Set<DepGraphNode> sccSuccessors = new HashSet<DepGraphNode>();
+            Set<DepGraphNode> sccSuccessors = new HashSet<>();
             for (DepGraphNode sccMember : scc) {
                 List<DepGraphNode> successors = this.getSuccessors(sccMember);
                 successors.removeAll(scc);  // don't take predecessors that are inside the SCC
@@ -1444,8 +1442,8 @@ public class DepGraph {
             for (DepGraphNode pre : sccPredecessors) {
                 // remove stale nodes from the out-list
                 List<DepGraphNode> out = this.edges.get(pre);
-                for (Iterator iter = out.iterator(); iter.hasNext(); ) {
-                    DepGraphNode outNode = (DepGraphNode) iter.next();
+                for (Iterator<DepGraphNode> iter = out.iterator(); iter.hasNext(); ) {
+                    DepGraphNode outNode = iter.next();
                     if (!this.nodes.containsKey(outNode)) {
                         iter.remove();
                     }
@@ -1455,7 +1453,7 @@ public class DepGraph {
             }
 
             // adjust nodes going out of the SCC
-            this.edges.put(sccNode, new LinkedList<DepGraphNode>(sccSuccessors));
+            this.edges.put(sccNode, new LinkedList<>(sccSuccessors));
 
             // done!
 
@@ -1469,11 +1467,11 @@ public class DepGraph {
     // (Aho, Hopcroft, Ullman), Chapter 5.5 ("Strong Connectivity")
     public List<List<DepGraphNode>> getSccs() {
         n = 1;
-        List<List<DepGraphNode>> sccs = new LinkedList<List<DepGraphNode>>();
-        List<DepGraphNode> stack = new LinkedList<DepGraphNode>();
-        Map<DepGraphNode, Integer> dfsnum = new HashMap<DepGraphNode, Integer>();
-        Map<DepGraphNode, Integer> low = new HashMap<DepGraphNode, Integer>();
-        Set<DepGraphNode> old = new HashSet<DepGraphNode>();
+        List<List<DepGraphNode>> sccs = new LinkedList<>();
+        List<DepGraphNode> stack = new LinkedList<>();
+        Map<DepGraphNode, Integer> dfsnum = new HashMap<>();
+        Map<DepGraphNode, Integer> low = new HashMap<>();
+        Set<DepGraphNode> old = new HashSet<>();
         sccVisit(this.root, stack, dfsnum, low, old, sccs);
         return sccs;
     }
@@ -1510,7 +1508,7 @@ public class DepGraph {
         }
 
         if (low.get(v).equals(dfsnum.get(v))) {
-            List<DepGraphNode> scc = new LinkedList<DepGraphNode>();
+            List<DepGraphNode> scc = new LinkedList<>();
             DepGraphNode x;
             do {
                 x = stack.remove(stack.size() - 1);
@@ -1525,7 +1523,7 @@ public class DepGraph {
     public List<DepGraphNode> getSuccessors(DepGraphNode node) {
         List<DepGraphNode> retMe = this.edges.get(node);
         if (retMe == null) {
-            retMe = new LinkedList<DepGraphNode>();
+            retMe = new LinkedList<>();
         }
         return retMe;
     }
@@ -1534,7 +1532,7 @@ public class DepGraph {
 
     // EFF: could be much faster
     public Set<DepGraphNode> getPredecessors(DepGraphNode node) {
-        Set<DepGraphNode> retMe = new HashSet<DepGraphNode>();
+        Set<DepGraphNode> retMe = new HashSet<>();
         for (Map.Entry<DepGraphNode, List<DepGraphNode>> entry : this.edges.entrySet()) {
             DepGraphNode from = entry.getKey();
             List<DepGraphNode> toList = entry.getValue();
@@ -1552,18 +1550,18 @@ public class DepGraph {
     public List<DepGraphNode> bfIterator() {
 
         // list for the iterator
-        LinkedList<DepGraphNode> list = new LinkedList<DepGraphNode>();
+        LinkedList<DepGraphNode> list = new LinkedList<>();
 
         // queue for nodes that still have to be visited
-        LinkedList<DepGraphNode> queue = new LinkedList<DepGraphNode>();
+        LinkedList<DepGraphNode> queue = new LinkedList<>();
 
         // already visited
-        Set<DepGraphNode> visited = new HashSet<DepGraphNode>();
+        Set<DepGraphNode> visited = new HashSet<>();
 
         queue.add(this.root);
         visited.add(this.root);
 
-        Comparator<DepGraphNode> comp = new NodeComparator<DepGraphNode>();
+        Comparator<DepGraphNode> comp = new NodeComparator<>();
         this.bfIteratorHelper(list, queue, visited, comp);
 
         return list;
@@ -1620,8 +1618,8 @@ public class DepGraph {
 
         // mark reachable nodes
         // and nodes representing return variables
-        Set<DepGraphNode> reachable = new HashSet<DepGraphNode>();
-        Set<DepGraphNormalNode> retVars = new HashSet<DepGraphNormalNode>();
+        Set<DepGraphNode> reachable = new HashSet<>();
+        Set<DepGraphNormalNode> retVars = new HashSet<>();
         for (DepGraphNode leaf : leaves) {
             reduceWithLeavesHelper(leaf, reachable, retVars);
         }
@@ -1629,9 +1627,9 @@ public class DepGraph {
         // delete all unreachable nodes
 
         // delete from nodes map
-        for (Iterator iter = this.nodes.entrySet().iterator(); iter.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            DepGraphNode node = (DepGraphNode) entry.getKey();
+        for (Iterator<Map.Entry<DepGraphNode, DepGraphNode>> iter = this.nodes.entrySet().iterator(); iter.hasNext(); ) {
+            Map.Entry<DepGraphNode, DepGraphNode> entry = iter.next();
+            DepGraphNode node = entry.getKey();
             if (!reachable.contains(node)) {
                 iter.remove();
             }
@@ -1646,8 +1644,8 @@ public class DepGraph {
                 iter.remove();
                 continue;
             }
-            for (Iterator succIter = successors.iterator(); succIter.hasNext(); ) {
-                DepGraphNode succ = (DepGraphNode) succIter.next();
+            for (Iterator<DepGraphNode> succIter = successors.iterator(); succIter.hasNext(); ) {
+                DepGraphNode succ = succIter.next();
                 if (!reachable.contains(succ)) {
                     succIter.remove();
                 }
@@ -1684,8 +1682,8 @@ public class DepGraph {
             this.edges.remove(tempNode);
             for (Map.Entry<DepGraphNode, List<DepGraphNode>> entry : this.edges.entrySet()) {
                 List<DepGraphNode> successors = entry.getValue();
-                for (Iterator succIter = successors.iterator(); succIter.hasNext(); ) {
-                    DepGraphNode succ = (DepGraphNode) succIter.next();
+                for (Iterator<DepGraphNode> succIter = successors.iterator(); succIter.hasNext(); ) {
+                    DepGraphNode succ = succIter.next();
                     if (succ.equals(tempNode)) {
                         succIter.remove();
                     }
@@ -1733,7 +1731,7 @@ public class DepGraph {
     // removes all uninit nodes and returns their predecessors
     public Set<DepGraphNode> removeUninitNodes() {
 
-        Set<DepGraphNode> retme = new HashSet<DepGraphNode>();
+        Set<DepGraphNode> retme = new HashSet<>();
 
         Set<DepGraphUninitNode> uninitNodes = getUninitNodes();
         for (DepGraphUninitNode uninitNode : uninitNodes) {
@@ -1796,7 +1794,7 @@ public class DepGraph {
 
     // returns all nodes that represent temporary variables
     private Set<DepGraphNormalNode> getTemporaries() {
-        Set<DepGraphNormalNode> retme = new HashSet<DepGraphNormalNode>();
+        Set<DepGraphNormalNode> retme = new HashSet<>();
         for (DepGraphNode node : this.nodes.keySet()) {
             if (node instanceof DepGraphNormalNode) {
                 DepGraphNormalNode nn = (DepGraphNormalNode) node;
@@ -1818,12 +1816,12 @@ public class DepGraph {
                                         SanitAnalysis sanitAnalysis) {
 
         // get the "custom sanitization border"
-        List<DepGraphNode> border = new LinkedList<DepGraphNode>();
-        Set<DepGraphNode> visited = new HashSet<DepGraphNode>();
+        List<DepGraphNode> border = new LinkedList<>();
+        Set<DepGraphNode> visited = new HashSet<>();
         this.getCustomSanitBorder(this.root, visited, border);
 
         // identify ineffective border sanitizations
-        List<DepGraphNode> ineffectiveBorder = new LinkedList<DepGraphNode>();
+        List<DepGraphNode> ineffectiveBorder = new LinkedList<>();
         for (DepGraphNode customSanit : border) {
             if (sanitAnalysis.isIneffective(customSanit, deco)) {
                 ineffectiveBorder.add(customSanit);
@@ -1866,7 +1864,7 @@ public class DepGraph {
 
         // mark reachable nodes (upwards and downwards, starting from
         // the sanitization nodes)
-        Set<DepGraphNode> reachable = new HashSet<DepGraphNode>();
+        Set<DepGraphNode> reachable = new HashSet<>();
         for (DepGraphNode sanitNode : nodes) {
             reduceToInnerHelper(sanitNode, reachable);
         }
@@ -1874,9 +1872,9 @@ public class DepGraph {
         // delete all unreachable nodes
 
         // delete from nodes map
-        for (Iterator iter = this.nodes.entrySet().iterator(); iter.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            DepGraphNode node = (DepGraphNode) entry.getKey();
+        for (Iterator<Map.Entry<DepGraphNode, DepGraphNode>> iter = this.nodes.entrySet().iterator(); iter.hasNext(); ) {
+            Map.Entry<DepGraphNode, DepGraphNode> entry = iter.next();
+            DepGraphNode node = entry.getKey();
             if (!reachable.contains(node)) {
                 iter.remove();
             }
@@ -1891,8 +1889,8 @@ public class DepGraph {
                 iter.remove();
                 continue;
             }
-            for (Iterator succIter = successors.iterator(); succIter.hasNext(); ) {
-                DepGraphNode succ = (DepGraphNode) succIter.next();
+            for (Iterator<DepGraphNode> succIter = successors.iterator(); succIter.hasNext(); ) {
+                DepGraphNode succ = succIter.next();
                 if (!reachable.contains(succ)) {
                     succIter.remove();
                 }
@@ -1967,7 +1965,7 @@ public class DepGraph {
     // BEWARE: eliminates cycles first, so this changes the depgraph
     private int countPathsDestructive() {
         this.eliminateCycles();
-        Map<DepGraphNode, Integer> node2p = new HashMap<DepGraphNode, Integer>();
+        Map<DepGraphNode, Integer> node2p = new HashMap<>();
         pathCounterHelper(this.root, node2p, new HashSet<DepGraphNode>());
         return node2p.get(root);
     }

@@ -141,13 +141,13 @@ public class Automaton
     public boolean hasDangerousIndirectTaint() {
 
         // "data flow analysis information"
-        Map<State, Integer> dfi = new HashMap<State, Integer>();
+        Map<State, Integer> dfi = new HashMap<>();
         int open = 0;
         int closed = 1;
         dfi.put(this.initial, closed);
 
         // initialize worklist with start state
-        LinkedList<State> worklist = new LinkedList<State>();
+        LinkedList<State> worklist = new LinkedList<>();
         worklist.add(this.initial);
 
         while (worklist.size() > 0) {
@@ -265,7 +265,7 @@ public class Automaton
     // returns a map for incoming transitions: to -> fromSet;
     // states: the states of the automaton
     private Map<State, Set<State>> getReverseTransitions(Set<State> states) {
-        Map<State, Set<State>> reverse = new HashMap<State, Set<State>>();
+        Map<State, Set<State>> reverse = new HashMap<>();
         for (State r : states) {
             reverse.put(r, new HashSet<State>());
         }
@@ -292,7 +292,7 @@ public class Automaton
 
         // maps each state to a set of outgoing regex transitions;
         // will be a replacement for "State.getTransitions"
-        Map<State, Set<TransitionRegExp>> state2Tre = new HashMap<State, Set<TransitionRegExp>>();
+        Map<State, Set<TransitionRegExp>> state2Tre = new HashMap<>();
         for (State r : states) {
             state2Tre.put(r, new HashSet<TransitionRegExp>());
         }
@@ -307,7 +307,7 @@ public class Automaton
         if (work.initial.isAccept()) {
             initialState = new State();
             reverse.get(work.initial).add(initialState);
-            Set<TransitionRegExp> tres = new HashSet<TransitionRegExp>();
+            Set<TransitionRegExp> tres = new HashSet<>();
             tres.add(new TransitionRegExp(new RegExp("()"), work.initial));
             state2Tre.put(initialState, tres);
         }
@@ -403,8 +403,8 @@ public class Automaton
             Set<State> preStates = reverse.get(state_s);
             for (State preState : preStates) {
                 Set<TransitionRegExp> preTranss = state2Tre.get(preState);
-                for (Iterator iter = preTranss.iterator(); iter.hasNext(); ) {
-                    TransitionRegExp preTrans = (TransitionRegExp) iter.next();
+                for (Iterator<TransitionRegExp> iter = preTranss.iterator(); iter.hasNext(); ) {
+                    TransitionRegExp preTrans = iter.next();
                     if (preTrans.to.equals(state_s)) {
                         iter.remove();
                     }
@@ -533,8 +533,8 @@ public class Automaton
      */
     public Set<State> getStates() {
         expandSingleton();
-        HashSet<State> visited = new HashSet<State>();
-        LinkedList<State> worklist = new LinkedList<State>();
+        HashSet<State> visited = new HashSet<>();
+        LinkedList<State> worklist = new LinkedList<>();
         worklist.add(initial);
         visited.add(initial);
         while (worklist.size() > 0) {
@@ -555,9 +555,9 @@ public class Automaton
      */
     public Set<State> getAcceptStates() {
         expandSingleton();
-        HashSet<State> accepts = new HashSet<State>();
-        HashSet<State> visited = new HashSet<State>();
-        LinkedList<State> worklist = new LinkedList<State>();
+        HashSet<State> accepts = new HashSet<>();
+        HashSet<State> visited = new HashSet<>();
+        LinkedList<State> worklist = new LinkedList<>();
         worklist.add(initial);
         visited.add(initial);
         while (worklist.size() > 0) {
@@ -586,15 +586,15 @@ public class Automaton
         expandSingleton();
 
         // queue for nodes that still have to be visited
-        LinkedList<State> queue = new LinkedList<State>();
+        LinkedList<State> queue = new LinkedList<>();
 
-        Set<State> visited = new HashSet<State>();
+        Set<State> visited = new HashSet<>();
 
         initial.number = 0;
         queue.add(initial);
         visited.add(initial);
 
-        Comparator<Transition> comp = new TransComparator<Transition>();
+        Comparator<Transition> comp = new TransComparator<>();
         this.bfIteratorHelper(queue, visited, comp);
     }
 
@@ -605,7 +605,7 @@ public class Automaton
         State node = queue.removeFirst();
 
         // handle successors
-        List<Transition> successors = new LinkedList<Transition>(node.transitions);
+        List<Transition> successors = new LinkedList<>(node.transitions);
         Collections.sort(successors, comp);
 
         for (Transition succ : successors) {
@@ -784,7 +784,7 @@ public class Automaton
      * Gets sorted array of all interval start points.
      */
     char[] getStartPoints() {
-        Set<Character> pointset = new HashSet<Character>();
+        Set<Character> pointset = new HashSet<>();
         for (State s : getStates()) {
             pointset.add(Character.MIN_VALUE);
             for (Transition t : s.transitions) {
@@ -812,14 +812,14 @@ public class Automaton
     }
 
     Set<State> getLiveStates(Set<State> states) {
-        HashMap<State, Set<State>> map = new HashMap<State, Set<State>>();
+        HashMap<State, Set<State>> map = new HashMap<>();
         for (State s : states)
             map.put(s, new HashSet<State>());
         for (State s : states)
             for (Transition t : s.transitions)
                 map.get(t.to).add(s);
-        Set<State> live = new HashSet<State>(getAcceptStates());
-        LinkedList<State> worklist = new LinkedList<State>(live);
+        Set<State> live = new HashSet<>(getAcceptStates());
+        LinkedList<State> worklist = new LinkedList<>(live);
         while (worklist.size() > 0) {
             State s = worklist.removeFirst();
             for (State p : map.get(s))
@@ -1067,10 +1067,10 @@ public class Automaton
             by.append('0');
         by.append(y);
         y = by.toString();
-        Collection<State> initials = new ArrayList<State>();
+        Collection<State> initials = new ArrayList<>();
         a.initial = between(x, y, 0, initials, digits <= 0);
         if (digits <= 0) {
-            ArrayList<StatePair> pairs = new ArrayList<StatePair>();
+            ArrayList<StatePair> pairs = new ArrayList<>();
             for (State p : initials)
                 if (a.initial != p)
                     pairs.add(new StatePair(a.initial, p));
@@ -1227,7 +1227,7 @@ public class Automaton
     public Automaton repeat(int min) {
         if (min == 0)
             return repeat();
-        List<Automaton> as = new ArrayList<Automaton>();
+        List<Automaton> as = new ArrayList<>();
         while (min-- > 0)
             as.add(this);
         as.add(repeat());
@@ -1253,7 +1253,7 @@ public class Automaton
         else if (min == 1)
             a = clone();
         else {
-            List<Automaton> as = new ArrayList<Automaton>();
+            List<Automaton> as = new ArrayList<>();
             while (min-- > 0)
                 as.add(this);
             a = concatenate(as);
@@ -1342,8 +1342,8 @@ public class Automaton
         Transition[][] transitions1 = getSortedTransitions(getStates());
         Transition[][] transitions2 = getSortedTransitions(a.getStates());
         Automaton c = new Automaton();
-        LinkedList<StatePair> worklist = new LinkedList<StatePair>();
-        HashMap<StatePair, StatePair> newstates = new HashMap<StatePair, StatePair>();
+        LinkedList<StatePair> worklist = new LinkedList<>();
+        HashMap<StatePair, StatePair> newstates = new HashMap<>();
         State s = new State();
         c.initial = s;
         StatePair p = new StatePair(s, initial, a.initial);
@@ -1417,8 +1417,8 @@ public class Automaton
         Transition[][] a_transitions = getSortedTransitions(a.getStates());
         TransitionComparator tc = new TransitionComparator(false);
         ShuffleConfiguration init = new ShuffleConfiguration(ca, a);
-        LinkedList<ShuffleConfiguration> pending = new LinkedList<ShuffleConfiguration>();
-        Set<ShuffleConfiguration> visited = new HashSet<ShuffleConfiguration>();
+        LinkedList<ShuffleConfiguration> pending = new LinkedList<>();
+        Set<ShuffleConfiguration> visited = new HashSet<>();
         pending.add(init);
         visited.add(init);
         while (!pending.isEmpty()) {
@@ -1448,7 +1448,7 @@ public class Automaton
                     i1 = c.suspended1;
                 loop:
                 for (Transition t1 : ca_transitions[i1][c.ca_states[i1].number]) {
-                    List<Transition> lt = new ArrayList<Transition>();
+                    List<Transition> lt = new ArrayList<>();
                     int j = Arrays.binarySearch(ta2, t1, tc);
                     if (j < 0)
                         j = -j - 1;
@@ -1593,7 +1593,7 @@ public class Automaton
     public void determinize() {
         if (deterministic || isSingleton())
             return;
-        Set<State> initialset = new HashSet<State>();
+        Set<State> initialset = new HashSet<>();
         initialset.add(initial);
         determinize(initialset);
     }
@@ -1604,9 +1604,9 @@ public class Automaton
     private void determinize(Set<State> initialset) {
         char[] points = getStartPoints();
         // subset construction
-        Map<Set<State>, Set<State>> sets = new HashMap<Set<State>, Set<State>>();
-        LinkedList<Set<State>> worklist = new LinkedList<Set<State>>();
-        Map<Set<State>, State> newstate = new HashMap<Set<State>, State>();
+        Map<Set<State>, Set<State>> sets = new HashMap<>();
+        LinkedList<Set<State>> worklist = new LinkedList<>();
+        Map<Set<State>, State> newstate = new HashMap<>();
         sets.put(initialset, initialset);
         worklist.add(initialset);
         initial = new State();
@@ -1620,7 +1620,7 @@ public class Automaton
                     break;
                 }
             for (int n = 0; n < points.length; n++) {
-                Set<State> p = new HashSet<State>();
+                Set<State> p = new HashSet<>();
                 for (State q : s)
                     for (Transition t : q.transitions)
                         if (t.min <= points[n] && points[n] <= t.max)
@@ -1756,9 +1756,9 @@ public class Automaton
         Transition[][] transitions = new Transition[ss.size()][];
         State[] states = ss.toArray(new State[0]);
         boolean[][] mark = new boolean[states.length][states.length];
-        ArrayList<ArrayList<HashSet<IntPair>>> triggers = new ArrayList<ArrayList<HashSet<IntPair>>>();
+        ArrayList<ArrayList<HashSet<IntPair>>> triggers = new ArrayList<>();
         for (State state : states) {
-            ArrayList<HashSet<IntPair>> v = new ArrayList<HashSet<IntPair>>();
+            ArrayList<HashSet<IntPair>> v = new ArrayList<>();
             initialize(v, states.length);
             triggers.add(v);
         }
@@ -1843,25 +1843,25 @@ public class Automaton
         }
         char[] sigma = getStartPoints();
         // initialize data structures
-        ArrayList<ArrayList<LinkedList<State>>> reverse = new ArrayList<ArrayList<LinkedList<State>>>();
+        ArrayList<ArrayList<LinkedList<State>>> reverse = new ArrayList<>();
         for (State state : states) {
-            ArrayList<LinkedList<State>> v = new ArrayList<LinkedList<State>>();
+            ArrayList<LinkedList<State>> v = new ArrayList<>();
             initialize(v, sigma.length);
             reverse.add(v);
         }
         boolean[][] reverse_nonempty = new boolean[states.length][sigma.length];
-        ArrayList<LinkedList<State>> partition = new ArrayList<LinkedList<State>>();
+        ArrayList<LinkedList<State>> partition = new ArrayList<>();
         initialize(partition, states.length);
         int[] block = new int[states.length];
         StateList[][] active = new StateList[states.length][sigma.length];
         StateListNode[][] active2 = new StateListNode[states.length][sigma.length];
-        LinkedList<IntPair> pending = new LinkedList<IntPair>();
+        LinkedList<IntPair> pending = new LinkedList<>();
         boolean[][] pending2 = new boolean[sigma.length][states.length];
-        ArrayList<State> split = new ArrayList<State>();
+        ArrayList<State> split = new ArrayList<>();
         boolean[] split2 = new boolean[states.length];
-        ArrayList<Integer> refine = new ArrayList<Integer>();
+        ArrayList<Integer> refine = new ArrayList<>();
         boolean[] refine2 = new boolean[states.length];
-        ArrayList<ArrayList<State>> splitblock = new ArrayList<ArrayList<State>>();
+        ArrayList<ArrayList<State>> splitblock = new ArrayList<>();
         initialize(splitblock, states.length);
         for (int q = 0; q < states.length; q++) {
             splitblock.set(q, new ArrayList<State>());
@@ -1993,7 +1993,7 @@ public class Automaton
      */
     private Set<State> reverse() {
         // reverse all edges
-        HashMap<State, HashSet<Transition>> m = new HashMap<State, HashSet<Transition>>();
+        HashMap<State, HashSet<Transition>> m = new HashMap<>();
         Set<State> states = getStates();
         Set<State> accept = getAcceptStates();
         for (State r : states) {
@@ -2171,7 +2171,7 @@ public class Automaton
     public Automaton subst(Map<Character, Set<Character>> map) {
         if (map.isEmpty())
             return clone();
-        Set<Character> ckeys = new TreeSet<Character>(map.keySet());
+        Set<Character> ckeys = new TreeSet<>(map.keySet());
         char[] keys = new char[ckeys.size()];
         int j = 0;
         for (Character c : ckeys)
@@ -2231,7 +2231,7 @@ public class Automaton
      */
     public Automaton subst(char c, String s) {
         Automaton a = cloneExpanded();
-        Set<StatePair> epsilons = new HashSet<StatePair>();
+        Set<StatePair> epsilons = new HashSet<>();
         for (State p : a.getStates()) {
             Set<Transition> st = p.transitions;
             p.resetTransitions();
@@ -2332,10 +2332,10 @@ public class Automaton
             }
             return clone();
         } else {
-            HashSet<StatePair> epsilons = new HashSet<StatePair>();
+            HashSet<StatePair> epsilons = new HashSet<>();
             Automaton a = cloneExpanded();
             for (State s : a.getStates()) {
-                HashSet<Transition> new_transitions = new HashSet<Transition>();
+                HashSet<Transition> new_transitions = new HashSet<>();
                 for (Transition t : s.transitions) {
                     boolean addepsilon = false;
                     if (t.min < '\uf900' && t.max > '\udfff') {
@@ -2385,25 +2385,25 @@ public class Automaton
      */
     public void addEpsilons(Collection<StatePair> pairs) {
         expandSingleton();
-        HashMap<State, HashSet<State>> forward = new HashMap<State, HashSet<State>>();
-        HashMap<State, HashSet<State>> back = new HashMap<State, HashSet<State>>();
+        HashMap<State, HashSet<State>> forward = new HashMap<>();
+        HashMap<State, HashSet<State>> back = new HashMap<>();
         for (StatePair p : pairs) {
             HashSet<State> to = forward.get(p.s1);
             if (to == null) {
-                to = new HashSet<State>();
+                to = new HashSet<>();
                 forward.put(p.s1, to);
             }
             to.add(p.s2);
             HashSet<State> from = back.get(p.s2);
             if (from == null) {
-                from = new HashSet<State>();
+                from = new HashSet<>();
                 back.put(p.s2, from);
             }
             from.add(p.s1);
         }
         // calculate epsilon closure
-        LinkedList<StatePair> worklist = new LinkedList<StatePair>(pairs);
-        HashSet<StatePair> workset = new HashSet<StatePair>(pairs);
+        LinkedList<StatePair> worklist = new LinkedList<>(pairs);
+        HashSet<StatePair> workset = new HashSet<>(pairs);
         while (!worklist.isEmpty()) {
             StatePair p = worklist.removeFirst();
             workset.remove(p);
@@ -2529,7 +2529,7 @@ public class Automaton
      * language. If the language is not finite, null is returned.
      */
     public Set<String> getFiniteStrings() {
-        HashSet<String> strings = new HashSet<String>();
+        HashSet<String> strings = new HashSet<>();
         if (isSingleton())
             strings.add(singleton);
         else if (!getFiniteStrings(initial, new HashSet<State>(), strings, new StringBuilder(), -1))
@@ -2544,7 +2544,7 @@ public class Automaton
      * methods works like {@link #getFiniteStrings()}.
      */
     public Set<String> getFiniteStrings(int limit) {
-        HashSet<String> strings = new HashSet<String>();
+        HashSet<String> strings = new HashSet<>();
         if (isSingleton()) {
             if (limit > 0)
                 strings.add(singleton);
@@ -2604,7 +2604,7 @@ public class Automaton
         if (isSingleton())
             return singleton;
         StringBuilder b = new StringBuilder();
-        HashSet<State> visited = new HashSet<State>();
+        HashSet<State> visited = new HashSet<>();
         State s = initial;
         boolean done;
         do {
@@ -2627,7 +2627,7 @@ public class Automaton
         if (isSingleton())
             return singleton;
         StringBuilder b = new StringBuilder();
-        HashSet<State> visited = new HashSet<State>();
+        HashSet<State> visited = new HashSet<>();
 
         Set<State> acceptStates = getAcceptStates();
         if (acceptStates.size() != 1) {
@@ -2752,8 +2752,8 @@ public class Automaton
         Transition[][] transitions1 = getSortedTransitions(getStates());
         Transition[][] transitions2 = getSortedTransitions(a.getStates());
         Automaton c = new Automaton();
-        LinkedList<StatePair> worklist = new LinkedList<StatePair>();
-        HashMap<StatePair, StatePair> newstates = new HashMap<StatePair, StatePair>();
+        LinkedList<StatePair> worklist = new LinkedList<>();
+        HashMap<StatePair, StatePair> newstates = new HashMap<>();
         State s = new State();
         c.initial = s;
         StatePair p = new StatePair(s, initial, a.initial);
@@ -2851,7 +2851,7 @@ public class Automaton
         b.append("  rankdir = LR;\n");
         Set<State> states = getStates();
         setStateNumbersUnique();
-        List<State> stateList = new LinkedList<State>(states);
+        List<State> stateList = new LinkedList<>(states);
         Collections.sort(stateList, new StateComparator<State>());
         for (State s : stateList) {
             b.append("  ").append(s.number);
@@ -2864,7 +2864,7 @@ public class Automaton
                 b.append("  initial [shape=plaintext,label=\"\"];\n");
                 b.append("  initial -> ").append(s.number).append("\n");
             }
-            List<Transition> successors = new LinkedList<Transition>(s.transitions);
+            List<Transition> successors = new LinkedList<>(s.transitions);
             Collections.sort(successors, new TransComparator<Transition>());
             for (Transition t : successors) {
                 b.append("  ").append(s.number);
@@ -2881,9 +2881,9 @@ public class Automaton
         Set<State> states = getStates();
         setStateNumbers(states);
         states.remove(this.initial);
-        List<State> stateList = new LinkedList<State>(states);
+        List<State> stateList = new LinkedList<>(states);
         stateList.add(0, this.initial);     // we want to print the initial state first
-        Set<State> acceptStates = new HashSet<State>();
+        Set<State> acceptStates = new HashSet<>();
         for (State s : stateList) {
             if (s.accept) {
                 acceptStates.add(s);
@@ -2914,10 +2914,10 @@ public class Automaton
             BufferedReader reader = new BufferedReader(new FileReader(filename));
             String line;
 
-            Map<String, State> string2State = new HashMap<String, State>();
+            Map<String, State> string2State = new HashMap<>();
             State initial = null;
 
-            Set<String> acceptStates = new HashSet<String>();
+            Set<String> acceptStates = new HashSet<>();
 
             while ((line = reader.readLine()) != null) {
 
@@ -2988,7 +2988,7 @@ public class Automaton
         try {
             Automaton a = (Automaton) super.clone();
             if (!isSingleton()) {
-                HashMap<State, State> m = new HashMap<State, State>();
+                HashMap<State, State> m = new HashMap<>();
                 Set<State> states = getStates();
                 for (State s : states)
                     m.put(s, new State());
@@ -2997,7 +2997,7 @@ public class Automaton
                     p.accept = s.accept;
                     if (s == initial)
                         a.initial = p;
-                    p.transitions = new HashSet<Transition>();
+                    p.transitions = new HashSet<>();
                     for (Transition t : s.transitions)
                         p.transitions.add(new Transition(t.min, t.max, m.get(t.to), t.taint));
                 }

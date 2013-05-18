@@ -14,11 +14,9 @@ import java.util.ListIterator;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class LiteralTfCallPrep
-    extends TransferFunction {
-
-    private List actualParams;
-    private List formalParams;
+public class LiteralTfCallPrep extends TransferFunction {
+    private List<TacActualParam> actualParams;
+    private List<TacFormalParam> formalParams;
     private TacFunction caller;
     private TacFunction callee;
     private LiteralAnalysis literalAnalysis;
@@ -28,11 +26,10 @@ public class LiteralTfCallPrep
 //  CONSTRUCTORS ********************************************************************
 //  *********************************************************************************
 
-    public LiteralTfCallPrep(List actualParams, List formalParams,
-                             TacFunction caller, TacFunction callee,
-                             LiteralAnalysis literalAnalysis,
-                             CfgNode cfgNode) {
-
+    public LiteralTfCallPrep(
+        List<TacActualParam> actualParams, List<TacFormalParam> formalParams, TacFunction caller, TacFunction callee,
+        LiteralAnalysis literalAnalysis, CfgNode cfgNode
+    ) {
         this.actualParams = actualParams;
         this.formalParams = formalParams;
         this.caller = caller;
@@ -53,24 +50,21 @@ public class LiteralTfCallPrep
         // set formal params...
 
         // use a ListIterator for formals because we might need to step back (see below)
-        ListIterator formalIter = formalParams.listIterator();
-        Iterator actualIter = actualParams.iterator();
+        ListIterator<TacFormalParam> formalIter = formalParams.listIterator();
+        Iterator<TacActualParam> actualIter = actualParams.iterator();
 
         // for each formal parameter...
         while (formalIter.hasNext()) {
-
-            TacFormalParam formalParam = (TacFormalParam) formalIter.next();
+            TacFormalParam formalParam = formalIter.next();
 
             if (actualIter.hasNext()) {
-
                 // there is a corresponding actual parameter
-                TacActualParam actualParam = (TacActualParam) actualIter.next();
+                TacActualParam actualParam = actualIter.next();
                 TacPlace actualPlace = actualParam.getPlace();
 
                 // set the literal of the formal to the literal of the actual
                 out.setFormal(formalParam, actualPlace);
             } else {
-
                 // there is no corresponding actual parameter, use default values
                 // for the remaining formal parameters
 
@@ -78,11 +72,9 @@ public class LiteralTfCallPrep
                 formalIter.previous();
 
                 while (formalIter.hasNext()) {
-
-                    formalParam = (TacFormalParam) formalIter.next();
+                    formalParam = formalIter.next();
 
                     if (formalParam.hasDefault()) {
-
                         Cfg defaultCfg = formalParam.getDefaultCfg();
 
                         // default CFG's have no branches;

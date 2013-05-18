@@ -58,7 +58,7 @@ public class AliasTfCallPrep
 
             SymbolTable placeHolderSymTab = new SymbolTable("_placeHolder");
             // placeholder -> real formal
-            Map<Variable, Variable> replacements = new HashMap<Variable, Variable>();
+            Map<Variable, Variable> replacements = new HashMap<>();
 
             // for all cbr-params...
             for (List<Variable> pairList : this.cbrParams) {

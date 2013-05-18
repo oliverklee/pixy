@@ -49,9 +49,9 @@ public class DepTfIsset
 
         // always results in a boolean, which is always untainted/clean;
         // not so elegant, but working: simply use Literal.FALSE
-        Set<Variable> mustAliases = new HashSet<Variable>();
+        Set<Variable> mustAliases = new HashSet<>();
         mustAliases.add(setMe);
-        Set mayAliases = Collections.EMPTY_SET;
+        Set<Variable> mayAliases = Collections.emptySet();
         out.assign(setMe, mustAliases, mayAliases, cfgNode);
 
         return out;

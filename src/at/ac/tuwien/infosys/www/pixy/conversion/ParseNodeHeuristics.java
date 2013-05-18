@@ -146,7 +146,7 @@ public class ParseNodeHeuristics {
     // - an empty list of no candidates match
     // - a one-element list if exactly one candidate matches
     private static List<String> matchCandidates(Pattern patternObj, Collection<File> candidates) {
-        List<String> winners = new LinkedList<String>();
+        List<String> winners = new LinkedList<>();
         for (File candidate : candidates) {
             // no need to go on if we already have ambiguity
             if (winners.size() > 1) {
@@ -217,7 +217,7 @@ public class ParseNodeHeuristics {
                     }
 
                     default: {
-                        myList = new LinkedList<String>();
+                        myList = new LinkedList<>();
                         myList.add(null);
                     }
                 }
@@ -237,7 +237,7 @@ public class ParseNodeHeuristics {
             }
 
             default: {
-                myList = new LinkedList<String>();
+                myList = new LinkedList<>();
                 myList.add(null);
             }
         }
@@ -264,7 +264,7 @@ public class ParseNodeHeuristics {
             }
 
             default: {
-                myList = new LinkedList<String>();
+                myList = new LinkedList<>();
                 myList.add(null);
             }
         }
@@ -279,7 +279,7 @@ public class ParseNodeHeuristics {
         switch (firstChild.getSymbol()) {
 
             case PhpSymbols.T_CONSTANT_ENCAPSED_STRING: {
-                myList = new LinkedList<String>();
+                myList = new LinkedList<>();
 
                 // use Literal() to peel off quotes,
                 myList.add(new Literal(firstChild.getLexeme()).toString());
@@ -287,7 +287,7 @@ public class ParseNodeHeuristics {
             }
 
             default: {
-                myList = new LinkedList<String>();
+                myList = new LinkedList<>();
                 myList.add(null);
             }
         }
@@ -307,7 +307,7 @@ public class ParseNodeHeuristics {
             myList = cvar_without_objects(node.getChild(0));
         } else {
             // -> cvar_without_objects T_OBJECT_OPERATOR ref_list
-            myList = new LinkedList<String>();
+            myList = new LinkedList<>();
             myList.add(null);
         }
 
@@ -328,7 +328,7 @@ public class ParseNodeHeuristics {
 
             // -> simple_indirect_reference reference_variable
             case PhpSymbols.simple_indirect_reference: {
-                myList = new LinkedList<String>();
+                myList = new LinkedList<>();
                 myList.add(null);
                 break;
             }
@@ -349,7 +349,7 @@ public class ParseNodeHeuristics {
 
             // -> reference_variable ...
             case PhpSymbols.reference_variable: {
-                myList = new LinkedList<String>();
+                myList = new LinkedList<>();
                 myList.add(null);
                 break;
             }
@@ -376,7 +376,7 @@ public class ParseNodeHeuristics {
 
             // -> T_VARIABLE
             case PhpSymbols.T_VARIABLE: {
-                myList = new LinkedList<String>();
+                myList = new LinkedList<>();
 
                 // try to resolve with literal analysis!
                 Literal lit = literalAnalysis.getLiteral(firstChild.getLexeme(), includeNode);
@@ -391,7 +391,7 @@ public class ParseNodeHeuristics {
 
             // -> $ { expr }
             case PhpSymbols.T_DOLLAR: {
-                myList = new LinkedList<String>();
+                myList = new LinkedList<>();
                 myList.add(null);
                 break;
             }
@@ -411,7 +411,7 @@ public class ParseNodeHeuristics {
         if (firstChild.getSymbol() == PhpSymbols.T_EPSILON) {
             // -> empty
 
-            myList = new LinkedList<String>();
+            myList = new LinkedList<>();
             return myList;
         }
 
@@ -478,7 +478,7 @@ public class ParseNodeHeuristics {
 
             // -> encaps_list T_OBJECT_OPERATOR
             case PhpSymbols.T_OBJECT_OPERATOR: {
-                myList = new LinkedList<String>();
+                myList = new LinkedList<>();
                 myList.add(null);
                 break;
             }
@@ -504,7 +504,7 @@ public class ParseNodeHeuristics {
         if (node.getNumChildren() == 1) {
             // -> T_VARIABLE
 
-            myList = new LinkedList<String>();
+            myList = new LinkedList<>();
 
             // try to resolve with literal analysis!
             Literal lit = literalAnalysis.getLiteral(node.getChild(0).getLexeme(), includeNode);
@@ -516,7 +516,7 @@ public class ParseNodeHeuristics {
             return myList;
         }
 
-        myList = new LinkedList<String>();
+        myList = new LinkedList<>();
         myList.add(null);
 
         return myList;

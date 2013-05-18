@@ -20,7 +20,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.LinkedList;
+import java.util.Properties;
+import java.util.StringTokenizer;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
@@ -253,7 +256,7 @@ public final class Checker {
         }
 
         // read PHP include path from the config file
-        MyOptions.includePaths = new LinkedList<File>();
+        MyOptions.includePaths = new LinkedList<>();
         MyOptions.includePaths.add(new File("."));
         String includePath = props.getProperty(InternalStrings.includePath);
         if (includePath != null) {

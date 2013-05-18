@@ -9,9 +9,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterWorkList;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.tf.*;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
+import at.ac.tuwien.infosys.www.pixy.conversion.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.*;
 
 import java.util.Collection;
@@ -37,7 +35,7 @@ public class TypeAnalysis
                         AnalysisType analysisType,
                         InterWorkList workList) {
 
-        this.repos = new GenericRepos<LatticeElement>();
+        this.repos = new GenericRepos<>();
         this.classNames = tac.getUserClasses().keySet();
         this.initGeneral(tac.getAllFunctions(), tac.getMainFunction(),
             analysisType, workList);
@@ -159,8 +157,8 @@ public class TypeAnalysis
         }
 
         // extract actual and formal params
-        List actualParams = cfgNode.getParamList();
-        List formalParams = calledFunction.getParams();
+        List<TacActualParam> actualParams = cfgNode.getParamList();
+        List<TacFormalParam> formalParams = calledFunction.getParams();
 
         // the transfer function to be assigned to this node
         TransferFunction tf = null;

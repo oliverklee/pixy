@@ -18,7 +18,6 @@ import java.util.List;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class GenericTaintAnalysis {
-
     private List<DepClient> depClients;
 
     public DepAnalysis depAnalysis;
@@ -26,7 +25,7 @@ public class GenericTaintAnalysis {
 //  ********************************************************************************
 
     private GenericTaintAnalysis() {
-        this.depClients = new LinkedList<DepClient>();
+        this.depClients = new LinkedList<>();
     }
 
 //  ********************************************************************************
@@ -61,7 +60,7 @@ public class GenericTaintAnalysis {
                     continue;
                 }
                 Class<?> clientDefinition = Class.forName(dci.getClassName());
-                Constructor constructor = clientDefinition.getConstructor(argsClass);
+                Constructor<?> constructor = clientDefinition.getConstructor(argsClass);
                 DepClient depClient = (DepClient) constructor.newInstance(args);
                 gta.addDepClient(depClient);
             }
@@ -84,7 +83,7 @@ public class GenericTaintAnalysis {
 //  ********************************************************************************
 
     List<Integer> detectVulns() {
-        List<Integer> retMe = new LinkedList<Integer>();
+        List<Integer> retMe = new LinkedList<>();
         for (DepClient depClient : this.depClients) {
             retMe.addAll(depClient.detectVulns());
         }

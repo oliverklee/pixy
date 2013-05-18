@@ -2,7 +2,10 @@ package at.ac.tuwien.infosys.www.pixy.analysis.inter;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring.CSContext;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Maps from position to position for a certain call node.
@@ -20,8 +23,8 @@ public class ConnectorFunction {
 
     // creates an empty connector function
     public ConnectorFunction() {
-        this.pos2pos = new HashMap<CSContext, CSContext>();
-        this.reverse = new HashMap<CSContext, Set<CSContext>>();
+        this.pos2pos = new HashMap<>();
+        this.reverse = new HashMap<>();
     }
 
     // adds the given mapping
@@ -38,7 +41,7 @@ public class ConnectorFunction {
         if (reverseSet == null) {
             // there was no such reverse mapping:
             // create it together with a new set
-            reverseSet = new HashSet<CSContext>();
+            reverseSet = new HashSet<>();
             reverseSet.add(fromInt);
             this.reverse.put(toInt, reverseSet);
         } else {
@@ -55,7 +58,7 @@ public class ConnectorFunction {
 
     // reverse application: returns a set of inputs (CSContext's) for the given output
     // (might be null if there is no such output)
-    public Set reverseApply(int output) {
+    public Set<CSContext> reverseApply(int output) {
         return this.reverse.get(new CSContext(output));
     }
 
@@ -65,9 +68,9 @@ public class ConnectorFunction {
         }
         StringBuilder myString = new StringBuilder();
         for (Map.Entry<CSContext, CSContext> csContextCSContextEntry : this.pos2pos.entrySet()) {
-            Map.Entry entry = (Map.Entry) csContextCSContextEntry;
-            CSContext from = (CSContext) entry.getKey();
-            CSContext to = (CSContext) entry.getValue();
+            Map.Entry<CSContext, CSContext> entry = csContextCSContextEntry;
+            CSContext from = entry.getKey();
+            CSContext to = entry.getValue();
             myString.append(from);
             myString.append(" -> ");
             myString.append(to);

@@ -49,7 +49,7 @@ public abstract class CfgNode {
 
     CfgNode(ParseNode parseNode) {
         this.parseNode = parseNode;
-        this.inEdges = new ArrayList<CfgEdge>();
+        this.inEdges = new ArrayList<>();
         this.outEdges = new CfgEdge[2];
         this.outEdges[0] = this.outEdges[1] = null;
         this.reversePostOrder = -1;
@@ -104,7 +104,7 @@ public abstract class CfgNode {
     }
 
     public List<CfgNode> getSuccessors() {
-        List<CfgNode> successors = new LinkedList<CfgNode>();
+        List<CfgNode> successors = new LinkedList<>();
         if (this.outEdges[0] != null) {
             successors.add(this.outEdges[0].getDest());
             if (this.outEdges[1] != null) {
@@ -125,7 +125,7 @@ public abstract class CfgNode {
     }
 
     public List<CfgNode> getPredecessors() {
-        List<CfgNode> predecessors = new LinkedList<CfgNode>();
+        List<CfgNode> predecessors = new LinkedList<>();
         for (CfgEdge inEdge : this.inEdges) {
             predecessors.add(inEdge.getSource());
         }
@@ -242,8 +242,8 @@ public abstract class CfgNode {
 
     // removes the edge coming in from the given predecessor
     public void removeInEdge(CfgNode predecessor) {
-        for (Iterator iter = this.inEdges.iterator(); iter.hasNext(); ) {
-            CfgEdge inEdge = (CfgEdge) iter.next();
+        for (Iterator<CfgEdge> iter = this.inEdges.iterator(); iter.hasNext(); ) {
+            CfgEdge inEdge = iter.next();
             if (inEdge.getSource() == predecessor) {
                 iter.remove();
             }
@@ -251,7 +251,7 @@ public abstract class CfgNode {
     }
 
     public void clearInEdges() {
-        this.inEdges = new LinkedList<CfgEdge>();
+        this.inEdges = new LinkedList<>();
     }
 
     public void clearOutEdges() {

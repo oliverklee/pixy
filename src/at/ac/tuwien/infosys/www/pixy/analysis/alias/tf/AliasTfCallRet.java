@@ -13,7 +13,6 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallPrep;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -76,7 +75,7 @@ public class AliasTfCallRet
         // USING G-SHADOWS AND F-SHADOWS
 
         // contains groups from orig-info that have been tagged as visited
-        Set<MustAliasGroup> visitedGroups = new HashSet<MustAliasGroup>();
+        Set<MustAliasGroup> visitedGroups = new HashSet<>();
 
         // G-SHADOWS, MUST
 
@@ -86,16 +85,15 @@ public class AliasTfCallRet
             Variable someGlobal = group.getArbitraryGlobal();
 
             // get all locals from this group
-            Set groupLocals = group.getLocals();
+            Set<Variable> groupLocals = group.getLocals();
 
             // retrieve the global's g-shadow
             Variable gShadow = this.callee.getSymbolTable().getGShadow(someGlobal);
 
             // if it contains at least one global and at least one local variable
             if (someGlobal != null && !groupLocals.isEmpty()) {
-
                 // pick an arbitrary local
-                Variable someLocal = (Variable) groupLocals.iterator().next();
+                Variable someLocal = groupLocals.iterator().next();
 
                 // mark this group as visited
                 visitedGroups.add(group);
@@ -165,7 +163,7 @@ public class AliasTfCallRet
                 continue;
             }
 
-            Variable formal = (Variable) paramPair.get(1);
+            Variable formal = paramPair.get(1);
             Variable fShadow = this.callee.getSymbolTable().getFShadow(formal);
 
             // the f-shadow's global must-aliases
@@ -179,10 +177,9 @@ public class AliasTfCallRet
 
             // if this group is not marked as visited...
             if (!visitedGroups.contains(actualGroup)) {
-
                 // differentiate between implicit (null) and explicit group;
                 // LATER: maybe you should do this before coming to the if-branch
-                Set<Variable> actualGroupLocals = new HashSet<Variable>();
+                Set<Variable> actualGroupLocals = new HashSet<>();
                 if (actualGroup == null) {
                     actualGroupLocals.add(actual);
                 } else {
@@ -193,9 +190,8 @@ public class AliasTfCallRet
 
                 // if the f-shadow has at least one global must-alias...
                 if (!fShadowGlobalMustAliases.isEmpty()) {
-
                     // pick one
-                    Variable fShadowGlobalMustAlias = (Variable) fShadowGlobalMustAliases.iterator().next();
+                    Variable fShadowGlobalMustAlias = fShadowGlobalMustAliases.iterator().next();
 
                     // in the output-info, merge the actual's group with the group
                     // that contains this global must-alias, considering implicit

@@ -17,14 +17,13 @@ import java.util.Set;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class SccNode {
-
     private Variable label;
     // Map SccNode -> SccEdge (i.e., target node -> edge)
     private Map<SccNode, SccEdge> doubleEdges;
 
     public SccNode(Variable label) {
         this.label = label;
-        this.doubleEdges = new HashMap<SccNode, SccEdge>();
+        this.doubleEdges = new HashMap<>();
     }
 
     public Variable getLabel() {
@@ -32,7 +31,7 @@ public class SccNode {
     }
 
     public Set<SccNode> getDoubleTargets() {
-        return new HashSet<SccNode>(this.doubleEdges.keySet());
+        return new HashSet<>(this.doubleEdges.keySet());
     }
 
     public void addDoubleEdge(SccEdge edge, SccNode target) {

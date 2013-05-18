@@ -26,8 +26,8 @@ public class TacClass {
 
     TacClass(String name, ParseNode parseNode) {
         this.name = name;
-        this.methods = new HashMap<String, TacFunction>();
-        this.members = new HashMap<String, TacMember>();
+        this.methods = new HashMap<>();
+        this.members = new HashMap<>();
         this.parseNode = parseNode;
     }
 

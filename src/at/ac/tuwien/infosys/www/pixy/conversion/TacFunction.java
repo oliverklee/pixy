@@ -59,7 +59,7 @@ public class TacFunction {
 
         this.params = Collections.emptyList();
         this.symbolTable = new SymbolTable(name);
-        this.calledFrom = new LinkedList<CfgNodeCall>();
+        this.calledFrom = new LinkedList<>();
         this.isMain = false;
 
         // this is necessary, even though we use TacFunction's assignFunction()
@@ -136,7 +136,7 @@ public class TacFunction {
     }
 
     // returns a collection containing this function's locals
-    public Collection getLocals() {
+    public Collection<Variable> getLocals() {
         return this.symbolTable.getVariablesColl();
     }
 
