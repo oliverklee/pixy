@@ -29,23 +29,18 @@
 
 package at.ac.tuwien.infosys.www.pixy.automaton;
 
-import java.io.IOException;
-
 /**
  * Automaton provider for <code>RegExp.</code>{@link RegExp#toAutomaton(AutomatonProvider)}
  *
  * @author Anders M&oslash;ller &lt;<a href="mailto:amoeller@brics.dk">amoeller@brics.dk</a>&gt;
  */
 public interface AutomatonProvider {
-
     /**
      * Returns automaton of the given name.
      *
      * @param name automaton name
      *
      * @return automaton
-     *
-     * @throws IOException if errors occur
      */
-    public Automaton getAutomaton(String name) throws IOException;
+    public Automaton getAutomaton(String name);
 }

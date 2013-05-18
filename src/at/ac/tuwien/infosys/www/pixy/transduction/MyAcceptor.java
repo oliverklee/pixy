@@ -25,7 +25,7 @@ public class MyAcceptor
     }
 
     // converts the given automaton into a regular expression
-    public String toRegEx() throws Exception {
+    public String toRegEx() {
 
         MyAcceptor aut = this;
 

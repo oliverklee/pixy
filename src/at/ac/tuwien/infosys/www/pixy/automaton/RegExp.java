@@ -29,7 +29,6 @@
 
 package at.ac.tuwien.infosys.www.pixy.automaton;
 
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -377,11 +376,7 @@ public class RegExp {
                 if (automata != null)
                     aa = automata.get(s);
                 if (aa == null && automaton_provider != null)
-                    try {
-                        aa = automaton_provider.getAutomaton(s);
-                    } catch (IOException e) {
-                        throw new IllegalArgumentException(e);
-                    }
+                    aa = automaton_provider.getAutomaton(s);
                 if (aa == null)
                     throw new IllegalArgumentException(s + " not found");
                 a = aa.clone();
