@@ -157,7 +157,7 @@ public class RunAutomaton implements Serializable {
      * @throws ClassCastException     if the data is not a serialized <code>RunAutomaton</code>
      * @throws ClassNotFoundException if the class of the serialized object cannot be found
      */
-    public static RunAutomaton load(URL url) throws IOException, OptionalDataException, ClassCastException,
+    public static RunAutomaton load(URL url) throws IOException, ClassCastException,
         ClassNotFoundException, InvalidClassException {
         return load(url.openStream());
     }
@@ -173,7 +173,7 @@ public class RunAutomaton implements Serializable {
      * @throws ClassCastException     if the data is not a serialized <code>RunAutomaton</code>
      * @throws ClassNotFoundException if the class of the serialized object cannot be found
      */
-    public static RunAutomaton load(InputStream stream) throws IOException, OptionalDataException, ClassCastException,
+    public static RunAutomaton load(InputStream stream) throws IOException, ClassCastException,
         ClassNotFoundException, InvalidClassException {
         ObjectInputStream s = new ObjectInputStream(stream);
         return (RunAutomaton) s.readObject();

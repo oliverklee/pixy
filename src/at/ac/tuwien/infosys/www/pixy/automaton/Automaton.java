@@ -3015,7 +3015,7 @@ public class Automaton
      * @throws ClassCastException     if the data is not a serialized <code>Automaton</code>
      * @throws ClassNotFoundException if the class of the serialized object cannot be found
      */
-    public static Automaton load(URL url) throws IOException, OptionalDataException, ClassCastException,
+    public static Automaton load(URL url) throws IOException, ClassCastException,
         ClassNotFoundException, InvalidClassException {
         return load(url.openStream());
     }
@@ -3031,7 +3031,7 @@ public class Automaton
      * @throws ClassCastException     if the data is not a serialized <code>Automaton</code>
      * @throws ClassNotFoundException if the class of the serialized object cannot be found
      */
-    public static Automaton load(InputStream stream) throws IOException, OptionalDataException, ClassCastException,
+    public static Automaton load(InputStream stream) throws IOException, ClassCastException,
         ClassNotFoundException, InvalidClassException {
         ObjectInputStream s = new ObjectInputStream(stream);
         return (Automaton) s.readObject();
