@@ -238,6 +238,7 @@ Pixy makes use of the sub-project PhpParser. It already brings the compiled clas
 * Cup: custom license, derived from "Standard ML of New Jersey", GPL-compatible
 * CLI: Apache license
 * Cobertura: GPL V2
+* Java Automata Library (jauto): GPL V2
 * Log4J: Apache license
 * Jakarta: Apache license
 * ASM, ASM-Tree: BSD
