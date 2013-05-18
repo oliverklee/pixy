@@ -32,12 +32,8 @@ public class SccEdge {
         }
         SccEdge comp = (SccEdge) obj;
 
-        if ((this.n1 == comp.getN1() && this.n2 == comp.getN2()) ||
-            (this.n1 == comp.getN2() && this.n2 == comp.getN1())) {
-            return true;
-        } else {
-            return false;
-        }
+        return (this.n1 == comp.getN1() && this.n2 == comp.getN2()) ||
+            (this.n1 == comp.getN2() && this.n2 == comp.getN1());
     }
 
     public int hashCode() {

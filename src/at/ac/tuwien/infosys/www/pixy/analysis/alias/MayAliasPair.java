@@ -151,17 +151,9 @@ public class MayAliasPair {
         Variable firstVar = iter.next();
         Variable secondVar = iter.next();
         if (firstVar.isLocal()) {
-            if (secondVar.isGlobal()) {
-                return true;
-            } else {
-                return false;
-            }
+            return secondVar.isGlobal();
         } else if (firstVar.isGlobal()) {
-            if (secondVar.isLocal()) {
-                return true;
-            } else {
-                return false;
-            }
+            return secondVar.isLocal();
         } else {
             throw new RuntimeException("SNH");
         }
@@ -223,11 +215,7 @@ public class MayAliasPair {
     }
 
     public boolean contains(Variable var) {
-        if (this.pair.contains(var)) {
-            return true;
-        } else {
-            return false;
-        }
+        return this.pair.contains(var);
     }
 
     public boolean equals(Object obj) {

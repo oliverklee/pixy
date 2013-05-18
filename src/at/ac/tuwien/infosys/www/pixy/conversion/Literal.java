@@ -455,11 +455,7 @@ public class Literal extends TacPlace {
 
     // returns true if this is Literal.TRUE or Literal.FALSE, false otherwise
     boolean isBool() {
-        if (this == Literal.TRUE || this == Literal.FALSE) {
-            return true;
-        } else {
-            return false;
-        }
+        return this == Literal.TRUE || this == Literal.FALSE;
     }
 
 // *********************************************************************************

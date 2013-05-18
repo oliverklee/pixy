@@ -634,17 +634,9 @@ public abstract class SanitAnalysis
                     String funcName = callBuiltin.getFunctionName();
 
                     // here is the list of custom sanitization functions
-                    if (
-                        funcName.equals("ereg_replace") ||
-                            funcName.equals("preg_replace") ||
-                            funcName.equals("str_replace")
-                        ) {
-
-                        // found it!
-                        return true;
-                    } else {
-                        return false;
-                    }
+                    return funcName.equals("ereg_replace") ||
+                        funcName.equals("preg_replace") ||
+                        funcName.equals("str_replace");
                 } else {
                     return false;
                 }
@@ -671,11 +663,7 @@ public abstract class SanitAnalysis
 
         // intersect!
         FSAAutomaton intersection = auto.intersect(this.undesir);
-        if (!intersection.isEmpty()) {
-            return true;
-        } else {
-            return false;
-        }
+        return !intersection.isEmpty();
     }
 
 //  ********************************************************************************

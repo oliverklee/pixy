@@ -263,12 +263,8 @@ public class AliasLatticeElement
     // thorough (and slower) structural comparison required by the repository
     public boolean structureEquals(Object compX) {
         AliasLatticeElement comp = (AliasLatticeElement) compX;
-        if (this.mustAliases.structureEquals(comp.getMustAliases()) &&
-            this.mayAliases.structureEquals(comp.getMayAliases())) {
-            return true;
-        } else {
-            return false;
-        }
+        return this.mustAliases.structureEquals(comp.getMustAliases()) &&
+            this.mayAliases.structureEquals(comp.getMayAliases());
     }
 
     public int structureHashCode() {

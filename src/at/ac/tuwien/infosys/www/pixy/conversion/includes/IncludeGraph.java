@@ -199,11 +199,7 @@ public class IncludeGraph {
                 }
             }
         }
-        if (clone.isEmpty()) {
-            return false;
-        } else {
-            return true;
-        }
+        return !clone.isEmpty();
     }
 
 //  getInDegreeZeros **************************************************************

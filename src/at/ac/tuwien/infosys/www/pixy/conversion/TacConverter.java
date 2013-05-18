@@ -722,11 +722,7 @@ public class TacConverter {
 // hasEmptyMain ********************************************************************
 
     public boolean hasEmptyMain() {
-        if (this.mainFunction.isEmpty()) {
-            return true;
-        } else {
-            return false;
-        }
+        return this.mainFunction.isEmpty();
     }
 
 // getSuperSymbolTable *************************************************************

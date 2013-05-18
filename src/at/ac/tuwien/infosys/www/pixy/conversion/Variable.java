@@ -216,11 +216,7 @@ public class Variable
 
     // is this a variable variable (such as "$$x")?
     public boolean isVariableVariable() {
-        if (this.dependsOn == null) {
-            return false;
-        } else {
-            return true;
-        }
+        return this.dependsOn != null;
     }
 
     public boolean isArrayElementOf(Variable array) {

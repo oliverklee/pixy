@@ -87,11 +87,7 @@ public class DepGraphNormalNode
 //  ********************************************************************************
 
     public boolean isString() {
-        if (this.place.isLiteral()) {
-            return true;
-        } else {
-            return false;
-        }
+        return this.place.isLiteral();
     }
 
 //  ********************************************************************************
@@ -127,11 +123,7 @@ public class DepGraphNormalNode
         if (!this.place.equals(comp.place)) {
             return false;
         }
-        if (!this.cfgNode.equals(comp.cfgNode)) {
-            return false;
-        }
-
-        return true;
+        return this.cfgNode.equals(comp.cfgNode);
     }
 
 //  ********************************************************************************

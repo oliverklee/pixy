@@ -410,11 +410,7 @@ public class FSAAutomaton {
     // no transitions
     public boolean isEmpty() {
         AutoInfo info = this.parseAutomaton();
-        if (info.numStates == 1 && info.transitions.isEmpty()) {
-            return true;
-        } else {
-            return false;
-        }
+        return info.numStates == 1 && info.transitions.isEmpty();
     }
 
     // converts a PHP regex (perl-compatible or posix extended) into an FSAAutomaton;

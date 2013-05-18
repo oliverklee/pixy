@@ -768,14 +768,10 @@ public final class Dumper {
         // EFF: "endsWith" technique not too elegant; might also lead
         // to "rootkit effects"...; alternative would be: save additional
         // field for variables
-        if (var.isTemp() ||
+        return var.isTemp() ||
             var.getName().endsWith(InternalStrings.gShadowSuffix) ||
             var.getName().endsWith(InternalStrings.gShadowSuffix) ||
-            BuiltinFunctions.isBuiltinFunction(var.getSymbolTable().getName())) {
-            return true;
-        } else {
-            return false;
-        }
+            BuiltinFunctions.isBuiltinFunction(var.getSymbolTable().getName());
     }
 
 //  ********************************************************************************

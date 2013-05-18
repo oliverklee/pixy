@@ -83,11 +83,7 @@ public class MyOptions {
         }
 
         // compare index name
-        if (harmlessServerIndices.contains(index)) {
-            return true;
-        } else {
-            return false;
-        }
+        return harmlessServerIndices.contains(index);
     }
 
     public static void addHarmlessServerIndex(String indexName) {

@@ -111,11 +111,7 @@ public class DepSet
         DepSet comp = (DepSet) compX;
 
         // the enclosed sets have to be equal
-        if (!this.depSet.equals(comp.depSet)) {
-            return false;
-        }
-
-        return true;
+        return this.depSet.equals(comp.depSet);
     }
 
 //  ********************************************************************************

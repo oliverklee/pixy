@@ -29,11 +29,7 @@ public class DepTfAssignArray
         this.cfgNode = cfgNode;
 
         // note that we DO support such statements for arrays and array elements
-        if (this.left.isVariableVariable() || this.left.isMember()) {
-            this.supported = false;
-        } else {
-            this.supported = true;
-        }
+        this.supported = !(this.left.isVariableVariable() || this.left.isMember());
     }
 
 // *********************************************************************************

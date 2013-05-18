@@ -47,10 +47,6 @@ public final class InterWorkListBetter implements InterWorkList {
     }
 
     public boolean hasNext() {
-        if (this.sortedWorkList.isEmpty()) {
-            return false;
-        } else {
-            return true;
-        }
+        return !this.sortedWorkList.isEmpty();
     }
 }

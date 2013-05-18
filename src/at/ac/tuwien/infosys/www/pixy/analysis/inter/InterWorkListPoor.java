@@ -58,10 +58,6 @@ public final class InterWorkListPoor implements InterWorkList {
     }
 
     public boolean hasNext() {
-        if (this.unsortedWorkList.isEmpty() && this.sortedWorkList.isEmpty()) {
-            return false;
-        } else {
-            return true;
-        }
+        return !(this.unsortedWorkList.isEmpty() && this.sortedWorkList.isEmpty());
     }
 }

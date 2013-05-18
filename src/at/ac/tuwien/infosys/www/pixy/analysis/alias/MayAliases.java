@@ -193,11 +193,7 @@ public class MayAliases {
     }
 
     public boolean structureEquals(MayAliases comp) {
-        if (this.pairs.equals(comp.getPairs())) {
-            return true;
-        } else {
-            return false;
-        }
+        return this.pairs.equals(comp.getPairs());
     }
 
     public int structureHashCode() {

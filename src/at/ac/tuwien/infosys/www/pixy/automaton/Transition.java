@@ -235,11 +235,7 @@ public class Transition implements Serializable, Cloneable {
 
     // returns true if this transition represents a ".*" transition (@)
     boolean isDotStar() {
-        if (min == Character.MIN_VALUE && max == Character.MAX_VALUE) {
-            return true;
-        } else {
-            return false;
-        }
+        return min == Character.MIN_VALUE && max == Character.MAX_VALUE;
     }
 }
 

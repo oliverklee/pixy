@@ -85,11 +85,7 @@ public class MustAliases {
             return false;
         }
 
-        if (groupX.contains(y)) {
-            return true;
-        } else {
-            return false;
-        }
+        return groupX.contains(y);
     }
 
 //  ********************************************************************************

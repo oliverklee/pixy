@@ -44,11 +44,7 @@ public class CfgNodeIncludeEnd
     }
 
     public boolean isPeer(CfgNode node) {
-        if (node == this.peer) {
-            return true;
-        } else {
-            return false;
-        }
+        return node == this.peer;
     }
 
 //  SET ****************************************************************************

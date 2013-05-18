@@ -1211,11 +1211,7 @@ public class DepLatticeElement extends LatticeElement {
         if (!this.placeToDep.equals(comp.getPlaceToDep())) {
             return false;
         }
-        if (!this.arrayLabels.equals(comp.getArrayLabels())) {
-            return false;
-        }
-
-        return true;
+        return this.arrayLabels.equals(comp.getArrayLabels());
     }
 
 //  ********************************************************************************

@@ -238,11 +238,7 @@ public class TypeLatticeElement
         }
         TypeLatticeElement comp = (TypeLatticeElement) compX;
 
-        if (!this.var2Type.equals(comp.var2Type)) {
-            return false;
-        }
-
-        return true;
+        return this.var2Type.equals(comp.var2Type);
     }
 
     public int structureHashCode() {

@@ -82,11 +82,7 @@ public class IncDomLatticeElement
     // thorough (and slower) structural comparison required by the repository
     public boolean structureEquals(Object compX) {
         IncDomLatticeElement comp = (IncDomLatticeElement) compX;
-        if (this.dominators.equals(comp.getDominators())) {
-            return true;
-        } else {
-            return false;
-        }
+        return this.dominators.equals(comp.getDominators());
     }
 
     public int structureHashCode() {

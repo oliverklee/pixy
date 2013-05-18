@@ -53,11 +53,7 @@ public final class InterWorkListElement {
         if (!this.cfgNode.equals(comp.cfgNode)) {
             return false;
         }
-        if (!this.context.equals(comp.context)) {
-            return false;
-        }
-
-        return true;
+        return this.context.equals(comp.context);
     }
 
 //  hashCode ***********************************************************************

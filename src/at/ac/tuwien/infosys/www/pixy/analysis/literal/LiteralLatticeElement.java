@@ -1036,11 +1036,7 @@ public class LiteralLatticeElement
         LiteralLatticeElement comp = (LiteralLatticeElement) obj;
 
         // the literal maps have to be equal
-        if (!this.placeToLit.equals(comp.getPlaceToLit())) {
-            return false;
-        }
-
-        return true;
+        return this.placeToLit.equals(comp.getPlaceToLit());
     }
 
 //  equals *************************************************************************
@@ -1056,11 +1052,7 @@ public class LiteralLatticeElement
         LiteralLatticeElement comp = (LiteralLatticeElement) obj;
 
         // the literal maps have to be equal
-        if (!this.placeToLit.equals(comp.getPlaceToLit())) {
-            return false;
-        }
-
-        return true;
+        return this.placeToLit.equals(comp.getPlaceToLit());
     }
 
 //  hashCode ***********************************************************************

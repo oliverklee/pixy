@@ -130,10 +130,6 @@ public class DepGraphOpNode
         }
         DepGraphOpNode comp = (DepGraphOpNode) compX;
 
-        if (!this.cfgNode.equals(comp.cfgNode)) {
-            return false;
-        }
-
-        return true;
+        return this.cfgNode.equals(comp.cfgNode);
     }
 }

@@ -128,11 +128,7 @@ public class TacFunction {
     // returns true if this function's CFG has only 2 nodes (entry and exit
     // node), and false otherwise
     boolean isEmpty() {
-        if (this.cfg.size() == 2) {
-            return true;
-        } else {
-            return false;
-        }
+        return this.cfg.size() == 2;
     }
 
     // returns a collection containing this function's locals
@@ -198,9 +194,6 @@ public class TacFunction {
         if (!this.name.equals(comp.name)) {
             return false;
         }
-        if (!this.className.equals(comp.className)) {
-            return false;
-        }
-        return true;
+        return this.className.equals(comp.className);
     }
 }

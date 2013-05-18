@@ -1002,11 +1002,7 @@ public class DepGraph {
         System.out.println("nodes size: " + this.nodes.size());
         System.out.println("edges size: " + edgeCount);
 
-        if (this.nodes.size() == edgeCount + 1) {
-            return true;
-        } else {
-            return false;
-        }
+        return this.nodes.size() == edgeCount + 1;
     }
 
 //  ********************************************************************************
