@@ -1995,9 +1995,8 @@ public class DepGraph {
 //  ********************************************************************************
 //  ********************************************************************************
 
-    private class NotReachableException
-        extends Exception {
-
+    private class NotReachableException extends Exception {
+        private static final long serialVersionUID = 1L;
     }
 
     private class NodeComparator<T>

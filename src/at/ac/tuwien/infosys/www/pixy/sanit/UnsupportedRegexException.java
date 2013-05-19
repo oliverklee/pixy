@@ -5,6 +5,6 @@ package at.ac.tuwien.infosys.www.pixy.sanit;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class UnsupportedRegexException
-    extends RuntimeException {
+public class UnsupportedRegexException extends RuntimeException {
+    private static final long serialVersionUID = 1L;
 }
