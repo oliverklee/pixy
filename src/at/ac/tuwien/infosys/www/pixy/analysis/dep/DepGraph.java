@@ -9,8 +9,8 @@ import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysisInfo;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.ReverseTarget;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.*;
-import at.ac.tuwien.infosys.www.pixy.sanit.FSAAutomaton;
-import at.ac.tuwien.infosys.www.pixy.sanit.SanitAnalysis;
+import at.ac.tuwien.infosys.www.pixy.sanitation.FSAAutomaton;
+import at.ac.tuwien.infosys.www.pixy.sanitation.SanitAnalysis;
 
 import java.io.*;
 import java.util.*;

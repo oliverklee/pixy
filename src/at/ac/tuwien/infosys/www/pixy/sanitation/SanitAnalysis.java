@@ -1,4 +1,4 @@
-package at.ac.tuwien.infosys.www.pixy.sanit;
+package at.ac.tuwien.infosys.www.pixy.sanitation;
 
 import at.ac.tuwien.infosys.www.pixy.DepClient;
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
@@ -80,8 +80,8 @@ public abstract class SanitAnalysis extends DepClient {
             DepGraph minGraph = minIter.next();
 
             // in any case, dump the vulnerable depgraphs
-            depGraph.dumpDot(name + "sanit" + graphcount + "i", MyOptions.graphPath, depGraph.getUninitNodes(), this.dci);
-            minGraph.dumpDot(name + "sanit" + graphcount + "m", MyOptions.graphPath, depGraph.getUninitNodes(), this.dci);
+            depGraph.dumpDot(name + "sanitation" + graphcount + "i", MyOptions.graphPath, depGraph.getUninitNodes(), this.dci);
+            minGraph.dumpDot(name + "sanitation" + graphcount + "m", MyOptions.graphPath, depGraph.getUninitNodes(), this.dci);
 
             CfgNode cfgNode = depGraph.getRoot().getCfgNode();
 
@@ -93,7 +93,7 @@ public abstract class SanitAnalysis extends DepClient {
                 // if no custom sanitization is performed
                 System.out.println("No Sanitization!");
                 System.out.println("- " + cfgNode.getLoc());
-                System.out.println("- Graphs: " + name + "sanit" + graphcount);
+                System.out.println("- Graphs: " + name + "sanitation" + graphcount);
                 sure_vuln_1++;
                 no_sanit++;
                 continue;
@@ -112,7 +112,7 @@ public abstract class SanitAnalysis extends DepClient {
 
                 // dump the intersection automaton:
                 // represents counterexamples!
-                this.dumpDotAuto(intersection, name + "sanit" + graphcount + "intersect", MyOptions.graphPath);
+                this.dumpDotAuto(intersection, name + "sanitation" + graphcount + "intersect", MyOptions.graphPath);
 
                 // create a graph that is further minimized to the sanitization routines
                 // (regardless of the effectiveness of the applied sanitization)
@@ -126,11 +126,11 @@ public abstract class SanitAnalysis extends DepClient {
 
                     System.out.println("Ineffective Sanitization!");
                     System.out.println("- " + cfgNode.getLoc());
-                    System.out.println("- Graphs: " + name + "sanit" + graphcount);
+                    System.out.println("- Graphs: " + name + "sanitation" + graphcount);
                     possible_vuln++;
 
                     // dump the minimized graph
-                    sanitMinGraph.dumpDot(name + "sanit" + graphcount + "mm", MyOptions.graphPath, depGraph.getUninitNodes(), this.dci);
+                    sanitMinGraph.dumpDot(name + "sanitation" + graphcount + "mm", MyOptions.graphPath, depGraph.getUninitNodes(), this.dci);
 
                     dynInfo.append("SINK:\n");
                     dynInfo.append(sanitMinGraph.getRoot().toString());
@@ -153,7 +153,7 @@ public abstract class SanitAnalysis extends DepClient {
                     // but they are not responsible for the vulnerability
                     System.out.println("No Sanitization!");
                     System.out.println("- " + cfgNode.getLoc());
-                    System.out.println("- Graphs: " + name + "sanit" + graphcount);
+                    System.out.println("- Graphs: " + name + "sanitation" + graphcount);
                     sure_vuln_2++;
                 }
             } else {
@@ -161,7 +161,7 @@ public abstract class SanitAnalysis extends DepClient {
                 eliminated++;
             }
 
-            this.dumpDotAuto(auto, name + "sanit" + graphcount + "auto", MyOptions.graphPath);
+            this.dumpDotAuto(auto, name + "sanitation" + graphcount + "auto", MyOptions.graphPath);
         }
 
         Utils.writeToFile(dynInfo.toString(), MyOptions.graphPath + "/" + name + "info.txt");

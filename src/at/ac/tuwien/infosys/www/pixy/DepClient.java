@@ -194,7 +194,7 @@ public abstract class DepClient {
     // extracts the "relevant subgraph", using models for builtin functions;
     // here is how it works:
     // - for operation nodes representing sanitization functions, the top-down algorithm
-    //   doesn't follow its successors; instead, a single new successor ("<sanit>")
+    //   doesn't follow its successors; instead, a single new successor ("<sanitation>")
     //   is created
     // - evil functions: a single <uninit> successor is created
     // - multi-dependency: the algorithm only follows those successors that are

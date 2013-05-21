@@ -1,4 +1,4 @@
-package at.ac.tuwien.infosys.www.pixy.sanit;
+package at.ac.tuwien.infosys.www.pixy.sanitation;
 
 import java.util.LinkedList;
 import java.util.List;

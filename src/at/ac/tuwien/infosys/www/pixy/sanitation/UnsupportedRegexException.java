@@ -1,4 +1,4 @@
-package at.ac.tuwien.infosys.www.pixy.sanit;
+package at.ac.tuwien.infosys.www.pixy.sanitation;
 
 /**
  * Thrown for unsupported regular expressions.

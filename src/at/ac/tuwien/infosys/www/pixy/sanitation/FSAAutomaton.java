@@ -1,4 +1,4 @@
-package at.ac.tuwien.infosys.www.pixy.sanit;
+package at.ac.tuwien.infosys.www.pixy.sanitation;
 
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.Utils;

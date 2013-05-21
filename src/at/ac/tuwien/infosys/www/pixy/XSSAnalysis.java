@@ -7,7 +7,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallBuiltin;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallPrep;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeEcho;
-import at.ac.tuwien.infosys.www.pixy.sanit.SanitAnalysis;
+import at.ac.tuwien.infosys.www.pixy.sanitation.SanitAnalysis;
 
 import java.util.*;
 

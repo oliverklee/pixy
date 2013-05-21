@@ -80,7 +80,7 @@ public final class Checker {
         cliOptions.addOption("p", "parsetree", false, "print the parse tree in dot syntax");
         cliOptions.addOption("P", "prefixes", false, "print prefixes and suffixes");
         cliOptions.addOption("q", "query", false, "enable interactive queries");
-        cliOptions.addOption("r", "notrim", false, "do NOT trim untained stuff (during sanit analysis)");
+        cliOptions.addOption("r", "notrim", false, "do NOT trim untained stuff (during sanitation analysis)");
         cliOptions.addOption("s", "sinks", true, "provide config files for custom sinks");
         cliOptions.addOption("t", "table", false, "print symbol tables");
         cliOptions.addOption("w", "web", false, "web interface mode");
