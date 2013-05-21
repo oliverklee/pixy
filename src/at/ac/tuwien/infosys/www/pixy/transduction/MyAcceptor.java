@@ -1,5 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.transduction;
 
+import rationals.Transition;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -18,7 +20,7 @@ public class MyAcceptor extends MyAutomaton {
         super(orig);
     }
 
-    public MyAcceptor(rationals.Automaton orig) {
+    public MyAcceptor(rationals.Automaton<Transition, ?> orig) {
         super(orig);
     }
 

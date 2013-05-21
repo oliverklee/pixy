@@ -1,5 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.transduction;
 
+import rationals.Builder;
 import rationals.State;
 import rationals.Transition;
 
@@ -76,7 +77,7 @@ public abstract class MyAutomaton {
 //  ********************************************************************************
 
     // conversion from rationals.Automaton
-    public MyAutomaton(rationals.Automaton automaton) {
+    public MyAutomaton(rationals.Automaton<Transition, ?> automaton) {
         this();
 
         // auxiliary map from foreign state to my cloned state
