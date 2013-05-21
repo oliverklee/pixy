@@ -3,7 +3,7 @@ package at.ac.tuwien.infosys.www.pixy.sanit;
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.SQLAnalysis;
 import at.ac.tuwien.infosys.www.pixy.Utils;
-import at.ac.tuwien.infosys.www.pixy.VulnInfo;
+import at.ac.tuwien.infosys.www.pixy.VulnerabilityInformation;
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.Sink;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParam;
@@ -39,7 +39,7 @@ public class SQLSanitAnalysis extends SanitAnalysis {
         return detectVulns(new SQLAnalysis(this.depAnalysis));
     }
 
-    public VulnInfo detectAlternative() {
+    public VulnerabilityInformation detectAlternative() {
         throw new RuntimeException("not yet");
     }
 

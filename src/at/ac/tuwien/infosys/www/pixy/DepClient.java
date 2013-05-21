@@ -44,7 +44,7 @@ public abstract class DepClient {
     // (the return value is used for testing)
     public abstract List<Integer> detectVulns();
 
-    public abstract VulnInfo detectAlternative();
+    public abstract VulnerabilityInformation detectAlternative();
 
     // checks if the given node (inside the given function) is a sensitive sink;
     // adds an appropriate sink object to the given list if it is a sink

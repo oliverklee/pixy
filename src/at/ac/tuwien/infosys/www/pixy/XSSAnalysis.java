@@ -163,10 +163,10 @@ public class XSSAnalysis extends DepClient {
 
     // alternative to detectVulns;
     // returns those depgraphs for which a vulnerability was detected
-    public VulnInfo detectAlternative() {
+    public VulnerabilityInformation detectAlternative() {
 
         // will contain depgraphs for which a vulnerability was detected
-        VulnInfo retMe = new VulnInfo();
+        VulnerabilityInformation retMe = new VulnerabilityInformation();
 
         // collect sinks
         List<Sink> sinks = this.collectSinks();

@@ -3,7 +3,7 @@ package at.ac.tuwien.infosys.www.pixy.sanit;
 import at.ac.tuwien.infosys.www.pixy.DepClient;
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.Utils;
-import at.ac.tuwien.infosys.www.pixy.VulnInfo;
+import at.ac.tuwien.infosys.www.pixy.VulnerabilityInformation;
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
@@ -46,12 +46,12 @@ public abstract class SanitAnalysis extends DepClient {
         System.out.println();
 
         // let the basic analysis do the preliminary work
-        VulnInfo vulnInfo = depClient.detectAlternative();
-        List<DepGraph> vulnDepGraphs = vulnInfo.getDepGraphs();
-        List<DepGraph> minDepGraphs = vulnInfo.getDepGraphsMin();
+        VulnerabilityInformation vulnerabilityInformation = depClient.detectAlternative();
+        List<DepGraph> vulnDepGraphs = vulnerabilityInformation.getDepGraphs();
+        List<DepGraph> minDepGraphs = vulnerabilityInformation.getDepGraphsMin();
 
         // stats
-        int scanned = vulnInfo.getInitialGraphCount();
+        int scanned = vulnerabilityInformation.getInitialGraphCount();
         int reported_by_basic = vulnDepGraphs.size();
         int have_sanit = 0;
         int no_sanit = 0;
@@ -171,14 +171,14 @@ public abstract class SanitAnalysis extends DepClient {
         System.out.println("Depgraphs reported by basic analysis: " + reported_by_basic);
         System.out.println();
         if (MyOptions.countPaths) {
-            System.out.println("Total initial paths: " + vulnInfo.getTotalPathCount());
-            System.out.println("Total basic paths: " + vulnInfo.getBasicPathCount());
+            System.out.println("Total initial paths: " + vulnerabilityInformation.getTotalPathCount());
+            System.out.println("Total basic paths: " + vulnerabilityInformation.getBasicPathCount());
             System.out.println("Paths for dynamic analysis: " + dynpathcount);
             System.out.println();
         }
-        System.out.println("Total DepGraphs with custom sanitization: " + vulnInfo.getCustomSanitCount());
+        System.out.println("Total DepGraphs with custom sanitization: " + vulnerabilityInformation.getCustomSanitCount());
         System.out.println("DepGraphs with custom sanitization thrown away by basic analysis: " +
-            vulnInfo.getCustomSanitThrownAwayCount());
+            vulnerabilityInformation.getCustomSanitThrownAwayCount());
         System.out.println();
         System.out.println("Eliminated false positives: " + eliminated);
         System.out.println();

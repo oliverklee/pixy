@@ -84,7 +84,7 @@ public class FileAnalysis extends DepClient {
         return retMe;
     }
 
-    public VulnInfo detectAlternative() {
+    public VulnerabilityInformation detectAlternative() {
         throw new RuntimeException("not yet");
     }
 
