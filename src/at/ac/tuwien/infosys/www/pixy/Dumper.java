@@ -252,9 +252,7 @@ public final class Dumper {
 
     // creates a string representation for the given cfg node
     public static String makeCfgNodeName(CfgNode cfgNodeX) {
-
         if (cfgNodeX instanceof CfgNodeBasicBlock) {
-
             CfgNodeBasicBlock cfgNode = (CfgNodeBasicBlock) cfgNodeX;
             StringBuilder label = new StringBuilder("basic block\\n");
             for (CfgNode containedNode : cfgNode.getContainedNodes()) {
@@ -263,13 +261,11 @@ public final class Dumper {
             }
             return label.toString();
         } else if (cfgNodeX instanceof CfgNodeAssignSimple) {
-
             CfgNodeAssignSimple cfgNode = (CfgNodeAssignSimple) cfgNodeX;
             String leftString = getPlaceString(cfgNode.getLeft());
             String rightString = getPlaceString(cfgNode.getRight());
             return (leftString + " = " + rightString);
         } else if (cfgNodeX instanceof CfgNodeAssignBinary) {
-
             CfgNodeAssignBinary cfgNode = (CfgNodeAssignBinary) cfgNodeX;
             String leftString = getPlaceString(cfgNode.getLeft());
             String leftOperandString = getPlaceString(cfgNode.getLeftOperand());
@@ -283,7 +279,6 @@ public final class Dumper {
                     " " + TacOperators.opToName(op) + " " +
                     rightOperandString);
         } else if (cfgNodeX instanceof CfgNodeAssignUnary) {
-
             CfgNodeAssignUnary cfgNode = (CfgNodeAssignUnary) cfgNodeX;
             String leftString = getPlaceString(cfgNode.getLeft());
             String rightString = getPlaceString(cfgNode.getRight());
@@ -295,13 +290,11 @@ public final class Dumper {
                     " " + TacOperators.opToName(op) + " " +
                     rightString);
         } else if (cfgNodeX instanceof CfgNodeAssignRef) {
-
             CfgNodeAssignRef cfgNode = (CfgNodeAssignRef) cfgNodeX;
             String leftString = getPlaceString(cfgNode.getLeft());
             String rightString = getPlaceString(cfgNode.getRight());
             return (leftString + " =& " + rightString);
         } else if (cfgNodeX instanceof CfgNodeIf) {
-
             CfgNodeIf cfgNode = (CfgNodeIf) cfgNodeX;
             String leftOperandString = getPlaceString(cfgNode.getLeftOperand());
             String rightOperandString = getPlaceString(cfgNode.getRightOperand());
@@ -328,13 +321,11 @@ public final class Dumper {
             }
             return (objectString + cfgNode.getFunctionNamePlace().toString() + "(...)");
         } else if (cfgNodeX instanceof CfgNodeCallPrep) {
-
             CfgNodeCallPrep cfgNode = (CfgNodeCallPrep) cfgNodeX;
 
             // construct parameter list
-            List<TacActualParam> paramList = cfgNode.getParamList();
             StringBuilder paramListStringBuf = new StringBuilder();
-            for (Iterator<TacActualParam> iter = paramList.iterator(); iter.hasNext(); ) {
+            for (Iterator<TacActualParam> iter = cfgNode.getParamList().iterator(); iter.hasNext(); ) {
                 TacActualParam param = iter.next();
                 if (param.isReference()) {
                     paramListStringBuf.append("&");
@@ -350,17 +341,14 @@ public final class Dumper {
                     cfgNode.getFunctionNamePlace().toString() + "(" +
                     paramListStringBuf.toString() + ")");
         } else if (cfgNodeX instanceof CfgNodeCallRet) {
-
             CfgNodeCallRet cfgNode = (CfgNodeCallRet) cfgNodeX;
             return ("call-return (" + cfgNode.getTempVar() + ")");
         } else if (cfgNodeX instanceof CfgNodeCallBuiltin) {
-
             CfgNodeCallBuiltin cfgNode = (CfgNodeCallBuiltin) cfgNodeX;
 
             // construct parameter list
-            List<TacActualParam> paramList = cfgNode.getParamList();
             StringBuilder paramListStringBuf = new StringBuilder();
-            for (Iterator<TacActualParam> iter = paramList.iterator(); iter.hasNext(); ) {
+            for (Iterator<TacActualParam> iter = cfgNode.getParamList().iterator(); iter.hasNext(); ) {
                 TacActualParam param = iter.next();
                 if (param.isReference()) {
                     paramListStringBuf.append("&");
@@ -376,13 +364,11 @@ public final class Dumper {
                     paramListStringBuf.toString() + ") " + "<" +
                     getPlaceString(cfgNode.getTempVar()) + ">");
         } else if (cfgNodeX instanceof CfgNodeCallUnknown) {
-
             CfgNodeCallUnknown cfgNode = (CfgNodeCallUnknown) cfgNodeX;
 
             // construct parameter list
-            List<TacActualParam> paramList = cfgNode.getParamList();
             StringBuilder paramListStringBuf = new StringBuilder();
-            for (Iterator<TacActualParam> iter = paramList.iterator(); iter.hasNext(); ) {
+            for (Iterator<TacActualParam> iter = cfgNode.getParamList().iterator(); iter.hasNext(); ) {
                 TacActualParam param = iter.next();
                 if (param.isReference()) {
                     paramListStringBuf.append("&");
@@ -398,27 +384,22 @@ public final class Dumper {
                 paramListStringBuf.toString() + ") " + "<" +
                 getPlaceString(cfgNode.getTempVar()) + ">");
         } else if (cfgNodeX instanceof CfgNodeAssignArray) {
-
             CfgNodeAssignArray cfgNode = (CfgNodeAssignArray) cfgNodeX;
             String leftString = getPlaceString(cfgNode.getLeft());
             return (leftString + " = array()");
         } else if (cfgNodeX instanceof CfgNodeUnset) {
-
             CfgNodeUnset cfgNode = (CfgNodeUnset) cfgNodeX;
             String unsetMe = cfgNode.getOperand().getVariable().toString();
             return ("unset(" + unsetMe + ")");
         } else if (cfgNodeX instanceof CfgNodeEcho) {
-
             CfgNodeEcho cfgNode = (CfgNodeEcho) cfgNodeX;
             String echoMe = getPlaceString(cfgNode.getPlace());
             return ("echo(" + echoMe + ")");
         } else if (cfgNodeX instanceof CfgNodeGlobal) {
-
             CfgNodeGlobal cfgNode = (CfgNodeGlobal) cfgNodeX;
             String globMe = cfgNode.getOperand().toString();
             return ("global " + globMe);
         } else if (cfgNodeX instanceof CfgNodeStatic) {
-
             CfgNodeStatic cfgNode = (CfgNodeStatic) cfgNodeX;
             String statMe = cfgNode.getOperand().getVariable().toString();
             String initial;
@@ -429,32 +410,27 @@ public final class Dumper {
             }
             return ("static " + statMe + initial);
         } else if (cfgNodeX instanceof CfgNodeIsset) {
-
             CfgNodeIsset cfgNode = (CfgNodeIsset) cfgNodeX;
             String checkMe = cfgNode.getRight().getVariable().toString();
             String leftString = cfgNode.getLeft().getVariable().toString();
             return (leftString + " = " + "isset(" + checkMe + ")");
         } else if (cfgNodeX instanceof CfgNodeEmptyTest) {
-
             CfgNodeEmptyTest cfgNode = (CfgNodeEmptyTest) cfgNodeX;
             String checkMe = cfgNode.getRight().getVariable().toString();
             String leftString = cfgNode.getLeft().getVariable().toString();
             return (leftString + " = " + "empty(" + checkMe + ")");
         } else if (cfgNodeX instanceof CfgNodeEval) {
-
             CfgNodeEval cfgNode = (CfgNodeEval) cfgNodeX;
             String evalMe = cfgNode.getRight().getVariable().toString();
             String leftString = cfgNode.getLeft().getVariable().toString();
             return (leftString + " = " + "eval(" + evalMe + ")");
         } else if (cfgNodeX instanceof CfgNodeDefine) {
-
             CfgNodeDefine cfgNode = (CfgNodeDefine) cfgNodeX;
             return ("define(" +
                 cfgNode.getSetMe() + ", " +
                 cfgNode.getSetTo() + ", " +
                 cfgNode.getCaseInsensitive() + ")");
         } else if (cfgNodeX instanceof CfgNodeInclude) {
-
             CfgNodeInclude cfgNode = (CfgNodeInclude) cfgNodeX;
             String leftString = getPlaceString(cfgNode.getTemp());
             String rightString = getPlaceString(cfgNode.getIncludeMe());

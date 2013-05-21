@@ -75,7 +75,6 @@ public abstract class SanitAnalysis extends DepClient {
         int graphcount = 0;
         Iterator<DepGraph> minIter = minDepGraphs.iterator();
         for (DepGraph depGraph : vulnDepGraphs) {
-
             graphcount++;
 
             DepGraph minGraph = minIter.next();
