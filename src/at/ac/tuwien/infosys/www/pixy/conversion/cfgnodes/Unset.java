@@ -4,37 +4,36 @@ import at.ac.tuwien.infosys.www.phpparser.ParseNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeEcho extends AbstractCfgNode {
-    private TacPlace place;
+public class Unset extends AbstractCfgNode {
+    private Variable operand;
 
 // CONSTRUCTORS ********************************************************************
 
-    public CfgNodeEcho(TacPlace place, ParseNode node) {
+    public Unset(TacPlace operand, ParseNode node) {
         super(node);
-        this.place = place;
+        this.operand = (Variable) operand;  // must be a variable
     }
 
-//  GET *****************************************************************************
+// GET *****************************************************************************
 
-    public TacPlace getPlace() {
-        return this.place;
+    public Variable getOperand() {
+        return this.operand;
     }
 
     public List<Variable> getVariables() {
-        if (this.place instanceof Variable) {
-            List<Variable> retMe = new LinkedList<>();
-            retMe.add((Variable) this.place);
-            return retMe;
+        List<Variable> retMe = new LinkedList<>();
+        if (this.operand != null) {
+            retMe.add(this.operand);
         } else {
-            return Collections.emptyList();
+            retMe.add(null);
         }
+        return retMe;
     }
 
 //  SET ****************************************************************************
@@ -42,7 +41,7 @@ public class CfgNodeEcho extends AbstractCfgNode {
     public void replaceVariable(int index, Variable replacement) {
         switch (index) {
             case 0:
-                this.place = replacement;
+                this.operand = replacement;
                 break;
             default:
                 throw new RuntimeException("SNH");

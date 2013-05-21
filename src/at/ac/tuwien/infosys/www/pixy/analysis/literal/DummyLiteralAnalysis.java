@@ -3,7 +3,7 @@ package at.ac.tuwien.infosys.www.pixy.analysis.literal;
 import at.ac.tuwien.infosys.www.pixy.conversion.Literal;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeIf;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.If;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
@@ -23,7 +23,7 @@ public class DummyLiteralAnalysis extends LiteralAnalysis {
     }
 
     // best-effort evaluation
-    public Boolean evalIf(CfgNodeIf ifNode) {
+    public Boolean evalIf(If ifNode) {
         // be careful...
         return null;
     }

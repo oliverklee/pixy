@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeCallUnknown extends AbstractCfgNode {
+public class CallOfUnknownFunction extends AbstractCfgNode {
     // name of the called unknown function
     private String functionName;
 
@@ -28,8 +28,8 @@ public class CfgNodeCallUnknown extends AbstractCfgNode {
 
 // CONSTRUCTORS ********************************************************************
 
-    public CfgNodeCallUnknown(String functionName, List<TacActualParam> paramList,
-                              TacPlace tempPlace, ParseNode node, boolean isMethod) {
+    public CallOfUnknownFunction(String functionName, List<TacActualParam> paramList,
+                                 TacPlace tempPlace, ParseNode node, boolean isMethod) {
 
         super(node);
         this.functionName = functionName.toLowerCase();

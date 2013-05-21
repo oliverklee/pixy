@@ -12,13 +12,13 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeIncludeStart extends AbstractCfgNode {
+public class IncludeStart extends AbstractCfgNode {
     private File containingFile;  // file in which this node occurs
-    private CfgNodeIncludeEnd peer;
+    private IncludeEnd peer;
 
 //  CONSTRUCTORS *******************************************************************
 
-    public CfgNodeIncludeStart(File file, ParseNode parseNode) {
+    public IncludeStart(File file, ParseNode parseNode) {
         super(parseNode);
         this.containingFile = file;
         this.peer = null;
@@ -34,7 +34,7 @@ public class CfgNodeIncludeStart extends AbstractCfgNode {
         return Collections.emptyList();
     }
 
-    public CfgNodeIncludeEnd getPeer() {
+    public IncludeEnd getPeer() {
         return this.peer;
     }
 
@@ -43,7 +43,7 @@ public class CfgNodeIncludeStart extends AbstractCfgNode {
     public void replaceVariable(int index, Variable replacement) {
     }
 
-    public void setPeer(CfgNodeIncludeEnd peer) {
+    public void setPeer(IncludeEnd peer) {
         this.peer = peer;
     }
 }

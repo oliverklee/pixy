@@ -7,7 +7,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.TypeLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCall;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Call;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
@@ -16,7 +16,7 @@ public class TypeTfCallRet extends TransferFunction {
     private InterAnalysisNode analysisNodeAtCallPrep;
     private TacFunction caller;
     private TacFunction callee;
-    private CfgNodeCall callNode;
+    private Call callNode;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
@@ -26,7 +26,7 @@ public class TypeTfCallRet extends TransferFunction {
         InterAnalysisNode analysisNodeAtCallPrep,
         TacFunction caller,
         TacFunction callee,
-        CfgNodeCall retNode) {
+        Call retNode) {
 
         this.analysisNodeAtCallPrep = analysisNodeAtCallPrep;
         this.caller = caller;

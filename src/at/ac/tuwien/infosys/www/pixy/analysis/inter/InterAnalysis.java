@@ -108,7 +108,7 @@ public abstract class InterAnalysis extends Analysis {
                 // if this param has a default value, it also has a small CFG;
                 // traverse it as well...;
                 // NOTE: default CFGs will not be associated with analysis information,
-                // see transfer functions for CfgNodeCallPrep; analogous to the
+                // see transfer functions for CallPreperation; analogous to the
                 // contents of basic blocks
                 if (param.hasDefault()) {
                     ControlFlowGraph defaultControlFlowGraph = param.getDefaultControlFlowGraph();
@@ -133,7 +133,7 @@ public abstract class InterAnalysis extends Analysis {
 
     // returns the context to which interprocedural propagation shall
     // be conducted (used at call nodes)
-    public Context getPropagationContext(CfgNodeCall callNode, Context context) {
+    public Context getPropagationContext(Call callNode, Context context) {
         return this.analysisType.getPropagationContext(callNode, context);
     }
 
@@ -178,7 +178,7 @@ public abstract class InterAnalysis extends Analysis {
 //  evalIf **************************************************************************
 
     // returns Boolean.TRUE, Boolean.FALSE, or null if it can't be evaluated
-    protected abstract Boolean evalIf(CfgNodeIf ifNode, LatticeElement inValue);
+    protected abstract Boolean evalIf(If ifNode, LatticeElement inValue);
 
 //  useSummaries *******************************************************************
 
@@ -226,13 +226,13 @@ public abstract class InterAnalysis extends Analysis {
             try {
 
                 // distinguish between various types of CFG nodes
-                if (node instanceof CfgNodeCall) {
+                if (node instanceof Call) {
 
-                    CfgNodeCall callNode = (CfgNodeCall) node;
+                    Call callNode = (Call) node;
 
                     // get necessary function information (= called function)
                     TacFunction function = callNode.getCallee();
-                    CfgNodeCallRet callRet = (CfgNodeCallRet) node.getOutEdge(0).getDest();
+                    ReturnFromCall callRet = (ReturnFromCall) node.getOutEdge(0).getDest();
 
                     if (function == null) {
                         // callee could not be determined yet;
@@ -255,7 +255,7 @@ public abstract class InterAnalysis extends Analysis {
 
                     AbstractCfgNode exitNode = functionControlFlowGraph.getTail();
                     // the tail of the function's CFG has to be an exit node
-                    if (!(exitNode instanceof CfgNodeExit)) {
+                    if (!(exitNode instanceof CfgExit)) {
                         throw new RuntimeException("SNH");
                     }
 
@@ -304,11 +304,11 @@ public abstract class InterAnalysis extends Analysis {
 
                     // calls to a builtin function are simply treated by invoking
                     // the corresponding transfer function; covered by the catch-all below
-                    //} else if (node instanceof CfgNodeCallBuiltin) {
+                    //} else if (node instanceof CallOfBuiltinFunction) {
 
-                } else if (node instanceof CfgNodeExit) {
+                } else if (node instanceof CfgExit) {
 
-                    CfgNodeExit exitNode = (CfgNodeExit) node;
+                    CfgExit exitNode = (CfgExit) node;
 
                     // the function to this exit node
                     TacFunction function = exitNode.getEnclosingFunction();
@@ -327,14 +327,14 @@ public abstract class InterAnalysis extends Analysis {
                     // get targets that we have to return to
                     for (ReverseTarget reverseTarget : this.getReverseTargets(function, context)) {
                         // extract target call node
-                        CfgNodeCall callNode = reverseTarget.getCallNode();
+                        Call callNode = reverseTarget.getCallNode();
 
                         // determine successor node (unique) of the call node
                         CfgEdge[] outEdges = callNode.getOutEdges();
-                        CfgNodeCallRet callRetNode = (CfgNodeCallRet) outEdges[0].getDest();
+                        ReturnFromCall callRetNode = (ReturnFromCall) outEdges[0].getDest();
 
                         // determine predecessor node (unique) of the call node
-                        CfgNodeCallPrep callPrepNode = callRetNode.getCallPrepNode();
+                        CallPreperation callPrepNode = callRetNode.getCallPrepNode();
 
                         for (Context targetContext : reverseTarget.getContexts()) {
                             // if the incoming value at the callprep node is undefined, this means
@@ -351,9 +351,9 @@ public abstract class InterAnalysis extends Analysis {
                             }
                         }
                     }
-                } else if (node instanceof CfgNodeIf) {
+                } else if (node instanceof If) {
 
-                    CfgNodeIf ifNode = (CfgNodeIf) node;
+                    If ifNode = (If) node;
 
                     LatticeElement outValue = this.interAnalysisInfo.getAnalysisNode(node).transfer(inValue);
                     CfgEdge[] outEdges = node.getOutEdges();
@@ -374,7 +374,7 @@ public abstract class InterAnalysis extends Analysis {
                         // continue analysis along false edge
                         propagate(context, outValue, outEdges[0].getDest());
                     }
-                } else if (node instanceof CfgNodeCallRet) {
+                } else if (node instanceof ReturnFromCall) {
 
                     // a call return node is to be handled just as a normal node,
                     // with the exception that it also needs to know about the

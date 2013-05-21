@@ -5,7 +5,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring.CSContext;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring.CallString;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring.ECS;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCall;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Call;
 
 import java.util.*;
 
@@ -32,15 +32,15 @@ public class ConnectorComputation {
     // the main procedure has only the empty call string
     Map<TacFunction, ECS> function2ECS;
 
-    // CfgNodeCall -> ConnectorFunction;
+    // Call -> ConnectorFunction;
     // a connector function maps the context of the caller to the target
     // context in the callee;
     // a call node must never have an empty connector function
-    Map<CfgNodeCall, ConnectorFunction> call2ConnectorFunction;
+    Map<Call, ConnectorFunction> call2ConnectorFunction;
 
     // useful by-product of the computation;
     // associates every function with a list of contained calls
-    Map<TacFunction, List<CfgNodeCall>> containedCalls;
+    Map<TacFunction, List<Call>> containedCalls;
 
     private CallGraph callGraph;
 
@@ -57,14 +57,14 @@ public class ConnectorComputation {
         // by the way, build list with call nodes
         // and the call graph
 
-        List<CfgNodeCall> callNodes = new LinkedList<>();
+        List<Call> callNodes = new LinkedList<>();
         this.function2ECS = new HashMap<>();
         this.containedCalls = new HashMap<>();
 
         for (TacFunction function : functions) {
             this.function2ECS.put(function, new ECS());
 
-            List<CfgNodeCall> calls = function.getContainedCalls();
+            List<Call> calls = function.getContainedCalls();
             callNodes.addAll(calls);
 
             this.containedCalls.put(function, calls);
@@ -80,7 +80,7 @@ public class ConnectorComputation {
 
         // initialize connector functions
         this.call2ConnectorFunction = new HashMap<>();
-        for (CfgNodeCall callNode : callNodes) {
+        for (Call callNode : callNodes) {
             this.call2ConnectorFunction.put(callNode, new ConnectorFunction());
         }
     }
@@ -105,11 +105,11 @@ public class ConnectorComputation {
         //   - if the callee has not been visited yet:
         //     - add the callee's contained call nodes to the queue
         //     - mark the callee as visited
-        List<CfgNodeCall> processUs = this.containedCalls.get(this.mainFunction);
+        List<Call> processUs = this.containedCalls.get(this.mainFunction);
         Set<TacFunction> visited = new HashSet<>();
         visited.add(this.mainFunction);
         while (!processUs.isEmpty()) {
-            CfgNodeCall callNode = processUs.remove(0);
+            Call callNode = processUs.remove(0);
             TacFunction caller = callNode.getEnclosingFunction();
             TacFunction callee = callNode.getCallee();
             if (callee != null) {
@@ -139,7 +139,7 @@ public class ConnectorComputation {
             }
 
             // for all calls in function p...
-            for (CfgNodeCall callNode : this.containedCalls.get(p)) {
+            for (Call callNode : this.containedCalls.get(p)) {
                 TacFunction q = callNode.getCallee();
                 if (q == null) {
                     // callee is still unknown
@@ -167,7 +167,7 @@ public class ConnectorComputation {
         this.makeCallGraph();
     }
 
-    public CSContext getTargetContext(CfgNodeCall callNode, int sourcePosition) {
+    public CSContext getTargetContext(Call callNode, int sourcePosition) {
 
         // retrieve connector function for the given call node
         ConnectorFunction conFunc = this.getConFunc(callNode);
@@ -204,8 +204,8 @@ public class ConnectorComputation {
             contextSet.add(new CSContext(0));
 
             // for each call to this function...
-            Set<CfgNodeCall> callNodes = this.callGraph.getCallsTo(exitedFunction);
-            for (CfgNodeCall callNode : callNodes) {
+            Set<Call> callNodes = this.callGraph.getCallsTo(exitedFunction);
+            for (Call callNode : callNodes) {
                 reverseTargets.add(new ReverseTarget(callNode, contextSet));
             }
         } else {
@@ -214,7 +214,7 @@ public class ConnectorComputation {
             // exit node and source position)
             ECS exitedECS = this.function2ECS.get(exitedFunction);
             CallString exitedCallString = exitedECS.getCallString(sourcePosition);
-            CfgNodeCall returnToMe = exitedCallString.getLast();
+            Call returnToMe = exitedCallString.getLast();
             ConnectorFunction returnToMeCF = this.getConFunc(returnToMe);
             Set<CSContext> returnToMePositions = returnToMeCF.reverseApply(sourcePosition);
 
@@ -224,7 +224,7 @@ public class ConnectorComputation {
         return reverseTargets;
     }
 
-    private ConnectorFunction getConFunc(CfgNodeCall callNode) {
+    private ConnectorFunction getConFunc(Call callNode) {
         return this.call2ConnectorFunction.get(callNode);
     }
 
@@ -237,7 +237,7 @@ public class ConnectorComputation {
         return this.function2ECS.get(f).size();
     }
 
-    public Map<CfgNodeCall, ConnectorFunction> getCall2ConnectorFunction() {
+    public Map<Call, ConnectorFunction> getCall2ConnectorFunction() {
         return this.call2ConnectorFunction;
     }
 

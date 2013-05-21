@@ -29,8 +29,8 @@ public abstract class AbstractCfgNode {
     private int reversePostOrder;
 
     // this can be one of the following:
-    // - the enclosing basic block, if there is one (CfgNodeBasicBlock)
-    // - a function's CfgNodeEntry, if this cfg node is member of one of this
+    // - the enclosing basic block, if there is one (BasicBlock)
+    // - a function's CfgEntry, if this cfg node is member of one of this
     //   function's default param cfgs
     // - null, if neither of the above applies
     private AbstractCfgNode enclosingNode;
@@ -180,12 +180,12 @@ public abstract class AbstractCfgNode {
     }
 
     // returns either null or the enclosing basic block
-    public CfgNodeBasicBlock getEnclosingBasicBlock() {
+    public BasicBlock getEnclosingBasicBlock() {
         if (this.enclosingNode == null) {
             return null;
         }
-        if (this.enclosingNode instanceof CfgNodeBasicBlock) {
-            return (CfgNodeBasicBlock) this.enclosingNode;
+        if (this.enclosingNode instanceof BasicBlock) {
+            return (BasicBlock) this.enclosingNode;
         } else {
             return null;
         }
@@ -193,12 +193,12 @@ public abstract class AbstractCfgNode {
 
     // returns either null or the entry node of the corresponding function
     // (if this node belongs to the default cfg of a function's formal parameter)
-    public CfgNodeEntry getDefaultParamEntry() {
+    public CfgEntry getDefaultParamEntry() {
         if (this.enclosingNode == null) {
             return null;
         }
-        if (this.enclosingNode instanceof CfgNodeEntry) {
-            return (CfgNodeEntry) this.enclosingNode;
+        if (this.enclosingNode instanceof CfgEntry) {
+            return (CfgEntry) this.enclosingNode;
         } else {
             return null;
         }
@@ -221,11 +221,11 @@ public abstract class AbstractCfgNode {
         this.reversePostOrder = i;
     }
 
-    public void setEnclosingBasicBlock(CfgNodeBasicBlock basicBlock) {
+    public void setEnclosingBasicBlock(BasicBlock basicBlock) {
         this.enclosingNode = basicBlock;
     }
 
-    public void setDefaultParamPrep(CfgNodeEntry callPrep) {
+    public void setDefaultParamPrep(CfgEntry callPrep) {
         this.enclosingNode = callPrep;
     }
 

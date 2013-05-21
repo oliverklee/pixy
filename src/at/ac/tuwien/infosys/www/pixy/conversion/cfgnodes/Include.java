@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeInclude extends AbstractCfgNode implements Comparable<CfgNodeInclude> {
+public class Include extends AbstractCfgNode implements Comparable<Include> {
     private Variable temp;
     private TacPlace includeMe;
     private File file;  // file in which this node occurs
@@ -22,8 +22,8 @@ public class CfgNodeInclude extends AbstractCfgNode implements Comparable<CfgNod
 
 //  CONSTRUCTORS *******************************************************************
 
-    public CfgNodeInclude(TacPlace temp, TacPlace includeMe,
-                          File file, TacFunction includeFunction, ParseNode parseNode) {
+    public Include(TacPlace temp, TacPlace includeMe,
+                   File file, TacFunction includeFunction, ParseNode parseNode) {
         super(parseNode);
         this.temp = (Variable) temp;
         this.includeMe = includeMe;
@@ -86,11 +86,11 @@ public class CfgNodeInclude extends AbstractCfgNode implements Comparable<CfgNod
         }
     }
 
-    public int compareTo(CfgNodeInclude o) {
+    public int compareTo(Include o) {
         if (o == this) {
             return 0;
         }
-        CfgNodeInclude comp = o;
+        Include comp = o;
         int fileComp = this.file.compareTo(comp.file);
         if (fileComp != 0) {
             return fileComp;

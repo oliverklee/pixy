@@ -7,9 +7,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParam;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCallBuiltin;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCallPrep;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCallUnknown;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallOfBuiltinFunction;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallOfUnknownFunction;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreperation;
 import at.ac.tuwien.infosys.www.pixy.sanitation.SanitationAnalysis;
 import at.ac.tuwien.infosys.www.pixy.transduction.MyTransductions;
 
@@ -418,8 +418,8 @@ public class SQLAnalysis extends DepClient {
             // could be found
 
             AbstractCfgNode cfgNodeX = node.getCfgNode();
-            if (cfgNodeX instanceof CfgNodeCallUnknown) {
-                CfgNodeCallUnknown cfgNode = (CfgNodeCallUnknown) cfgNodeX;
+            if (cfgNodeX instanceof CallOfUnknownFunction) {
+                CallOfUnknownFunction cfgNode = (CallOfUnknownFunction) cfgNodeX;
                 if (cfgNode.isMethod()) {
                     retMe = Automaton.makeAnyString(Transition.Taint.Untainted);
                 } else {
@@ -521,17 +521,17 @@ public class SQLAnalysis extends DepClient {
     protected void checkForSink(AbstractCfgNode cfgNodeX, TacFunction traversedFunction,
                                 List<Sink> sinks) {
 
-        if (cfgNodeX instanceof CfgNodeCallBuiltin) {
+        if (cfgNodeX instanceof CallOfBuiltinFunction) {
 
             // builtin function sinks
 
-            CfgNodeCallBuiltin cfgNode = (CfgNodeCallBuiltin) cfgNodeX;
+            CallOfBuiltinFunction cfgNode = (CallOfBuiltinFunction) cfgNodeX;
             String functionName = cfgNode.getFunctionName();
 
             checkForSinkHelper(functionName, cfgNode, cfgNode.getParamList(), traversedFunction, sinks);
-        } else if (cfgNodeX instanceof CfgNodeCallPrep) {
+        } else if (cfgNodeX instanceof CallPreperation) {
 
-            CfgNodeCallPrep cfgNode = (CfgNodeCallPrep) cfgNodeX;
+            CallPreperation cfgNode = (CallPreperation) cfgNodeX;
             String functionName = cfgNode.getFunctionNamePlace().toString();
 
             // user-defined custom sinks

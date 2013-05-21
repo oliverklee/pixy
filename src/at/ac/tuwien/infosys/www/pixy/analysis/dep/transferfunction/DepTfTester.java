@@ -7,7 +7,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepSet;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFormalParam;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeTester;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Tester;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -22,7 +22,7 @@ public class DepTfTester extends TransferFunction {
     // this ~_test_ node
     private Variable retVar;
 
-    // test taint or array label? corresponds to the final fields in CfgNodeTester
+    // test taint or array label? corresponds to the final fields in Tester
     private int whatToTest;
 
     // List of Variables (formal params) that are to be tested
@@ -32,7 +32,7 @@ public class DepTfTester extends TransferFunction {
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public DepTfTester(CfgNodeTester cfgNode) {
+    public DepTfTester(Tester cfgNode) {
 
         TacFunction function = cfgNode.getEnclosingFunction();
         this.retVar = function.getRetVar();
@@ -61,7 +61,7 @@ public class DepTfTester extends TransferFunction {
         DepLatticeElement in = (DepLatticeElement) inX;
         DepLatticeElement out = new DepLatticeElement(in);
 
-        if (whatToTest == CfgNodeTester.TEST_TAINT) {
+        if (whatToTest == Tester.TEST_TAINT) {
 
             // test taint
 
@@ -78,7 +78,7 @@ public class DepTfTester extends TransferFunction {
 
             out.setRetVar(this.retVar, useMe, useMe);
             return out;
-        } else if (whatToTest == CfgNodeTester.TEST_ARRAYLABEL) {
+        } else if (whatToTest == Tester.TEST_ARRAYLABEL) {
             throw new RuntimeException("not yet");
         } else {
             throw new RuntimeException("SNH");

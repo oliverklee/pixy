@@ -10,16 +10,16 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Almost identical to CfgNodeCall.
+ * Almost identical to Call.
  *
  * Doesn't do 'function.addCall(this)' in the constructor and in setFunction, and has cbrPairs.
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeCallPrep extends AbstractCfgNode {
+public class CallPreperation extends AbstractCfgNode {
 // CONSTRUCTORS ********************************************************************
 
-    public CfgNodeCallPrep(ParseNode node) {
+    public CallPreperation(ParseNode node) {
         super(node);
     }
 
@@ -41,12 +41,12 @@ public class CfgNodeCallPrep extends AbstractCfgNode {
         return this.getCallNode().getParamList();
     }
 
-    public CfgNodeCallRet getCallRetNode() {
-        return (CfgNodeCallRet) this.getSuccessor(0).getSuccessor(0);
+    public ReturnFromCall getCallRetNode() {
+        return (ReturnFromCall) this.getSuccessor(0).getSuccessor(0);
     }
 
-    public CfgNodeCall getCallNode() {
-        return (CfgNodeCall) this.getSuccessor(0);
+    public Call getCallNode() {
+        return (Call) this.getSuccessor(0);
     }
 
     public List<Variable> getVariables() {

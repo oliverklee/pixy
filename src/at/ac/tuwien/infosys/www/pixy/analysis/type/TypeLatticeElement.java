@@ -2,7 +2,7 @@ package at.ac.tuwien.infosys.www.pixy.analysis.type;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCall;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Call;
 
 import java.util.*;
 
@@ -170,7 +170,7 @@ public class TypeLatticeElement extends LatticeElement {
 
     // sets the temporary responsible for catching the return value
     // and resets the return variable
-    public void handleReturnValue(CfgNodeCall callNode,
+    public void handleReturnValue(Call callNode,
                                   TypeLatticeElement calleeIn, TacFunction callee) {
 
         Variable tempVar = callNode.getTempVar();

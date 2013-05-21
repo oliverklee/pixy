@@ -5,7 +5,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.Literal;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeTester;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Tester;
 
 /**
  * Transfer function for special ~_test_ node.
@@ -21,7 +21,7 @@ public class LiteralTfTester extends TransferFunction {
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public LiteralTfTester(CfgNodeTester cfgNode) {
+    public LiteralTfTester(Tester cfgNode) {
         this.retVar = cfgNode.getEnclosingFunction().getRetVar();
     }
 

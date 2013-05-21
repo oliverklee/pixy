@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.inter;
 
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCall;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Call;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -15,10 +15,10 @@ public class CallGraphNode {
     private TacFunction function;
 
     // contained call nodes -> target call graph node
-    private Map<CfgNodeCall, CallGraphNode> outEdges;
+    private Map<Call, CallGraphNode> outEdges;
 
     // call nodes from callers -> caller's call graph node
-    private Map<CfgNodeCall, CallGraphNode> inEdges;
+    private Map<Call, CallGraphNode> inEdges;
 
 //  ********************************************************************************
 
@@ -42,7 +42,7 @@ public class CallGraphNode {
         return this.inEdges.values();
     }
 
-    Set<CfgNodeCall> getCallsTo() {
+    Set<Call> getCallsTo() {
         return this.inEdges.keySet();
     }
 
@@ -67,12 +67,12 @@ public class CallGraphNode {
         return this.function.hashCode();
     }
 
-    public void addCallee(CfgNodeCall callNode, CallGraphNode calleeNode) {
+    public void addCallee(Call callNode, CallGraphNode calleeNode) {
         //this.successors.add(calleeNode);
         this.outEdges.put(callNode, calleeNode);
     }
 
-    public void addCaller(CfgNodeCall callNode, CallGraphNode callerNode) {
+    public void addCaller(Call callNode, CallGraphNode callerNode) {
         //this.predecessors.add(callerNode);
         this.inEdges.put(callNode, callerNode);
     }

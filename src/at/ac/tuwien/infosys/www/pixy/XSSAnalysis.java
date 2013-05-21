@@ -4,9 +4,9 @@ import at.ac.tuwien.infosys.www.pixy.analysis.dep.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParam;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCallBuiltin;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCallPrep;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeEcho;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallOfBuiltinFunction;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreperation;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Echo;
 import at.ac.tuwien.infosys.www.pixy.sanitation.SanitationAnalysis;
 
 import java.util.*;
@@ -234,10 +234,10 @@ public class XSSAnalysis extends DepClient {
     protected void checkForSink(AbstractCfgNode cfgNodeX, TacFunction traversedFunction,
                                 List<Sink> sinks) {
 
-        if (cfgNodeX instanceof CfgNodeEcho) {
+        if (cfgNodeX instanceof Echo) {
 
             // echo() or print()
-            CfgNodeEcho cfgNode = (CfgNodeEcho) cfgNodeX;
+            Echo cfgNode = (Echo) cfgNodeX;
 
             // create sink object for this node
             Sink sink = new Sink(cfgNode, traversedFunction);
@@ -245,17 +245,17 @@ public class XSSAnalysis extends DepClient {
 
             // add it to the list of sensitive sinks
             sinks.add(sink);
-        } else if (cfgNodeX instanceof CfgNodeCallBuiltin) {
+        } else if (cfgNodeX instanceof CallOfBuiltinFunction) {
 
             // builtin function sinks
 
-            CfgNodeCallBuiltin cfgNode = (CfgNodeCallBuiltin) cfgNodeX;
+            CallOfBuiltinFunction cfgNode = (CallOfBuiltinFunction) cfgNodeX;
             String functionName = cfgNode.getFunctionName();
 
             checkForSinkHelper(functionName, cfgNode, cfgNode.getParamList(), traversedFunction, sinks);
-        } else if (cfgNodeX instanceof CfgNodeCallPrep) {
+        } else if (cfgNodeX instanceof CallPreperation) {
 
-            CfgNodeCallPrep cfgNode = (CfgNodeCallPrep) cfgNodeX;
+            CallPreperation cfgNode = (CallPreperation) cfgNodeX;
             String functionName = cfgNode.getFunctionNamePlace().toString();
 
             // user-defined custom sinks

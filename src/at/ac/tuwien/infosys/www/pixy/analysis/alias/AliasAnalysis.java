@@ -48,7 +48,7 @@ public class AliasAnalysis extends InterAnalysis {
 
 //  makeBasicBlockTf ***************************************************************
 
-    protected TransferFunction makeBasicBlockTf(CfgNodeBasicBlock basicBlock, TacFunction traversedFunction) {
+    protected TransferFunction makeBasicBlockTf(BasicBlock basicBlock, TacFunction traversedFunction) {
         // we can override the general method from Analysis with this, because
         // alias information must not change inside basic blocks
         // (all nodes inside a basic block should have an ID transfer function,
@@ -61,7 +61,7 @@ public class AliasAnalysis extends InterAnalysis {
 //  ********************************************************************************
 
     protected TransferFunction assignRef(AbstractCfgNode cfgNodeX) {
-        CfgNodeAssignRef cfgNode = (CfgNodeAssignRef) cfgNodeX;
+        AssignReference cfgNode = (AssignReference) cfgNodeX;
         return new AliasTfAssignRef(
             cfgNode.getLeft(),
             cfgNode.getRight(),
@@ -74,7 +74,7 @@ public class AliasAnalysis extends InterAnalysis {
         // "global <var>";
         // equivalent to creating a reference to the variable in the main function with
         // the same name
-        CfgNodeGlobal cfgNode = (CfgNodeGlobal) cfgNodeX;
+        Global cfgNode = (Global) cfgNodeX;
 
         // operand variable of the "global" statement (= local variable)
         Variable globalOp = cfgNode.getOperand();
@@ -100,7 +100,7 @@ public class AliasAnalysis extends InterAnalysis {
     }
 
     protected TransferFunction unset(AbstractCfgNode cfgNodeX) {
-        CfgNodeUnset cfgNode = (CfgNodeUnset) cfgNodeX;
+        Unset cfgNode = (Unset) cfgNodeX;
         return new AliasTfUnset(cfgNode.getOperand(), this);
     }
 
@@ -111,7 +111,7 @@ public class AliasAnalysis extends InterAnalysis {
 
     protected TransferFunction callPrep(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
 
-        CfgNodeCallPrep cfgNode = (CfgNodeCallPrep) cfgNodeX;
+        CallPreperation cfgNode = (CallPreperation) cfgNodeX;
         TacFunction calledFunction = cfgNode.getCallee();
         TacFunction callingFunction = traversedFunction;
 
@@ -127,10 +127,10 @@ public class AliasAnalysis extends InterAnalysis {
             throw new RuntimeException("SNH");
 
             // how this works:
-            // - propagate with ID transfer function to CfgNodeCall
-            // - the analysis algorithm propagates from CfgNodeCall
-            //   to CfgNodeCallRet with ID transfer function
-            // - we propagate from CfgNodeCallRet to the following node
+            // - propagate with ID transfer function to Call
+            // - the analysis algorithm propagates from Call
+            //   to ReturnFromCall with ID transfer function
+            // - we propagate from ReturnFromCall to the following node
             //   with ID
             //return TransferFunctionId.INSTANCE;
         }
@@ -164,12 +164,12 @@ public class AliasAnalysis extends InterAnalysis {
 
     protected TransferFunction callRet(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
 
-        CfgNodeCallRet cfgNode = (CfgNodeCallRet) cfgNodeX;
-        CfgNodeCallPrep cfgNodePrep = cfgNode.getCallPrepNode();
+        ReturnFromCall cfgNode = (ReturnFromCall) cfgNodeX;
+        CallPreperation cfgNodePrep = cfgNode.getCallPrepNode();
         TacFunction calledFunction = cfgNodePrep.getCallee();
 
         // call to an unknown function;
-        // for explanations see above (handling CfgNodeCallPrep)
+        // for explanations see above (handling CallPreperation)
         if (calledFunction == null) {
             throw new RuntimeException("SNH");
             // return TransferFunctionId.INSTANCE;
@@ -374,7 +374,7 @@ public class AliasAnalysis extends InterAnalysis {
 
 //  evalIf *************************************************************************
 
-    protected Boolean evalIf(CfgNodeIf ifNode, LatticeElement inValue) {
+    protected Boolean evalIf(If ifNode, LatticeElement inValue) {
         // alias analysis doesn't have the necessary information for
         // evaluating conditions; hence, it must always return "I don't know"
         return null;

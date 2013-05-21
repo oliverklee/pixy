@@ -8,23 +8,25 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * "left = right"
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeEmptyTest extends AbstractCfgNode {
-    private TacPlace left;
+public class AssignSimple extends AbstractCfgNode {
+    private Variable left;
     private TacPlace right;
 
-// CONSTRUCTORS ********************************************************************
+//  CONSTRUCTORS *******************************************************************
 
-    public CfgNodeEmptyTest(TacPlace left, TacPlace right, ParseNode node) {
-        super(node);
+    public AssignSimple(Variable left, TacPlace right, ParseNode parseNode) {
+        super(parseNode);
         this.left = left;
         this.right = right;
     }
 
-// GET *****************************************************************************
+//  GET ****************************************************************************
 
-    public TacPlace getLeft() {
+    public Variable getLeft() {
         return this.left;
     }
 
@@ -34,11 +36,7 @@ public class CfgNodeEmptyTest extends AbstractCfgNode {
 
     public List<Variable> getVariables() {
         List<Variable> retMe = new LinkedList<>();
-        if (this.left instanceof Variable) {
-            retMe.add((Variable) this.left);
-        } else {
-            retMe.add(null);
-        }
+        retMe.add(this.left);
         if (this.right instanceof Variable) {
             retMe.add((Variable) this.right);
         } else {

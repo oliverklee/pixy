@@ -27,8 +27,8 @@ public class LiteralAnalysis extends InterAnalysis {
     // preceding alias analysis (required for correct results)
     private AliasAnalysis aliasAnalysis;
 
-    // list of CfgNodeInclude's
-    private List<CfgNodeInclude> includeNodes;
+    // list of Include's
+    private List<Include> includeNodes;
 
 //  ********************************************************************************
 //  CONSTRUCTORS *******************************************************************
@@ -76,7 +76,7 @@ public class LiteralAnalysis extends InterAnalysis {
     // - else: the basic block
     protected TransferFunction assignSimple(AbstractCfgNode cfgNodeX, AbstractCfgNode aliasInNode) {
 
-        CfgNodeAssignSimple cfgNode = (CfgNodeAssignSimple) cfgNodeX;
+        AssignSimple cfgNode = (AssignSimple) cfgNodeX;
         Variable left = cfgNode.getLeft();
         Set<Variable> mustAliases = this.aliasAnalysis.getMustAliases(left, aliasInNode);
         Set<Variable> mayAliases = this.aliasAnalysis.getMayAliases(left, aliasInNode);
@@ -90,7 +90,7 @@ public class LiteralAnalysis extends InterAnalysis {
 
     protected TransferFunction assignUnary(AbstractCfgNode cfgNodeX, AbstractCfgNode aliasInNode) {
 
-        CfgNodeAssignUnary cfgNode = (CfgNodeAssignUnary) cfgNodeX;
+        AssignUnary cfgNode = (AssignUnary) cfgNodeX;
         Variable left = cfgNode.getLeft();
         Set<Variable> mustAliases = this.aliasAnalysis.getMustAliases(left, aliasInNode);
         Set<Variable> mayAliases = this.aliasAnalysis.getMayAliases(left, aliasInNode);
@@ -105,7 +105,7 @@ public class LiteralAnalysis extends InterAnalysis {
 
     protected TransferFunction assignBinary(AbstractCfgNode cfgNodeX, AbstractCfgNode aliasInNode) {
 
-        CfgNodeAssignBinary cfgNode = (CfgNodeAssignBinary) cfgNodeX;
+        AssignBinary cfgNode = (AssignBinary) cfgNodeX;
         Variable left = cfgNode.getLeft();
         Set<Variable> mustAliases = this.aliasAnalysis.getMustAliases(left, aliasInNode);
         Set<Variable> mayAliases = this.aliasAnalysis.getMayAliases(left, aliasInNode);
@@ -121,25 +121,25 @@ public class LiteralAnalysis extends InterAnalysis {
     }
 
     protected TransferFunction assignRef(AbstractCfgNode cfgNodeX) {
-        CfgNodeAssignRef cfgNode = (CfgNodeAssignRef) cfgNodeX;
+        AssignReference cfgNode = (AssignReference) cfgNodeX;
         return new LiteralTfAssignRef(
             cfgNode.getLeft(),
             cfgNode.getRight());
     }
 
     protected TransferFunction unset(AbstractCfgNode cfgNodeX) {
-        CfgNodeUnset cfgNode = (CfgNodeUnset) cfgNodeX;
+        Unset cfgNode = (Unset) cfgNodeX;
         return new LiteralTfUnset(cfgNode.getOperand());
     }
 
     protected TransferFunction assignArray(AbstractCfgNode cfgNodeX) {
-        CfgNodeAssignArray cfgNode = (CfgNodeAssignArray) cfgNodeX;
+        AssignArray cfgNode = (AssignArray) cfgNodeX;
         return new LiteralTfAssignArray(cfgNode.getLeft());
     }
 
     protected TransferFunction callPrep(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
 
-        CfgNodeCallPrep cfgNode = (CfgNodeCallPrep) cfgNodeX;
+        CallPreperation cfgNode = (CallPreperation) cfgNodeX;
         TacFunction calledFunction = cfgNode.getCallee();
         TacFunction callingFunction = traversedFunction;
 
@@ -150,10 +150,10 @@ public class LiteralAnalysis extends InterAnalysis {
         // literal information
         if (calledFunction == null) {
             // how this works:
-            // - propagate with ID transfer function to CfgNodeCall
-            // - the analysis algorithm propagates from CfgNodeCall
-            //   to CfgNodeCallRet with ID transfer function
-            // - we propagate from CfgNodeCallRet to the following node
+            // - propagate with ID transfer function to Call
+            // - the analysis algorithm propagates from Call
+            //   to ReturnFromCall with ID transfer function
+            // - we propagate from ReturnFromCall to the following node
             //   with a special transfer function that only assigns the
             //   literal of the unknown function's return variable to
             //   the temporary catching the function's return value
@@ -191,15 +191,15 @@ public class LiteralAnalysis extends InterAnalysis {
 
     protected TransferFunction callRet(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
 
-        CfgNodeCallRet cfgNodeRet = (CfgNodeCallRet) cfgNodeX;
-        CfgNodeCallPrep cfgNodePrep = cfgNodeRet.getCallPrepNode();
+        ReturnFromCall cfgNodeRet = (ReturnFromCall) cfgNodeX;
+        CallPreperation cfgNodePrep = cfgNodeRet.getCallPrepNode();
         TacFunction callingFunction = traversedFunction;
         TacFunction calledFunction = cfgNodePrep.getCallee();
 
         //System.out.println("rcall: " + callingFunction.getName() + " <- " + calledFunction.getName());
 
         // call to an unknown function;
-        // for explanations see above (handling CfgNodeCallPrep)
+        // for explanations see above (handling CallPreperation)
         TransferFunction tf;
         if (calledFunction == null) {
             tf = new LiteralTfCallRetUnknown(cfgNodeRet);
@@ -220,12 +220,12 @@ public class LiteralAnalysis extends InterAnalysis {
     }
 
     protected TransferFunction callBuiltin(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
-        CfgNodeCallBuiltin cfgNode = (CfgNodeCallBuiltin) cfgNodeX;
+        CallOfBuiltinFunction cfgNode = (CallOfBuiltinFunction) cfgNodeX;
         return new LiteralTfCallBuiltin(cfgNode);
     }
 
     protected TransferFunction callUnknown(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
-        CfgNodeCallUnknown cfgNode = (CfgNodeCallUnknown) cfgNodeX;
+        CallOfUnknownFunction cfgNode = (CallOfUnknownFunction) cfgNodeX;
         return new LiteralTfCallUnknown(cfgNode);
     }
 
@@ -234,7 +234,7 @@ public class LiteralAnalysis extends InterAnalysis {
         // "global <var>";
         // equivalent to: creating a reference to the variable in the main function with
         // the same name
-        CfgNodeGlobal cfgNode = (CfgNodeGlobal) cfgNodeX;
+        Global cfgNode = (Global) cfgNodeX;
 
         // operand variable of the "global" statement
         Variable globalOp = cfgNode.getOperand();
@@ -265,25 +265,25 @@ public class LiteralAnalysis extends InterAnalysis {
 
     protected TransferFunction isset(AbstractCfgNode cfgNodeX) {
 
-        CfgNodeIsset cfgNode = (CfgNodeIsset) cfgNodeX;
+        Isset cfgNode = (Isset) cfgNodeX;
         return new LiteralTfIsset(
             cfgNode.getLeft(),
             cfgNode.getRight());
     }
 
     protected TransferFunction define(AbstractCfgNode cfgNodeX) {
-        CfgNodeDefine cfgNode = (CfgNodeDefine) cfgNodeX;
+        Define cfgNode = (Define) cfgNodeX;
         return new LiteralTfDefine(this.tac.getConstantsTable(), cfgNode);
     }
 
     protected TransferFunction tester(AbstractCfgNode cfgNodeX) {
         // special node that only occurs inside the builtin functions file
-        CfgNodeTester cfgNode = (CfgNodeTester) cfgNodeX;
+        Tester cfgNode = (Tester) cfgNodeX;
         return new LiteralTfTester(cfgNode);
     }
 
     protected TransferFunction include(AbstractCfgNode cfgNodeX) {
-        this.includeNodes.add((CfgNodeInclude) cfgNodeX);
+        this.includeNodes.add((Include) cfgNodeX);
         return TransferFunctionId.INSTANCE;
     }
 
@@ -314,7 +314,7 @@ public class LiteralAnalysis extends InterAnalysis {
         return this.getLiteral(var, cfgNode);
     }
 
-    public List<CfgNodeInclude> getIncludeNodes() {
+    public List<Include> getIncludeNodes() {
         return this.includeNodes;
     }
 
@@ -329,13 +329,13 @@ public class LiteralAnalysis extends InterAnalysis {
     // of an analysis bug: it only means that under the current analysis state,
     // the condition clearly evaluates to a known boolean; further iterations
     // might change this
-    protected Boolean evalIf(CfgNodeIf ifNode, LatticeElement inValueX) {
+    protected Boolean evalIf(If ifNode, LatticeElement inValueX) {
         return null;
     }
 
     // evaluates the given if-condition using the folded incoming values
     // (don't call this before literal analysis hasn't finished its work)
-    public Boolean evalIf(CfgNodeIf ifNode) {
+    public Boolean evalIf(If ifNode) {
 
         // incoming value at if node (folded)
         LiteralLatticeElement folded =

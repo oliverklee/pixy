@@ -1,8 +1,8 @@
 package at.ac.tuwien.infosys.www.pixy.conversion;
 
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeHotspot;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeTester;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Hotspot;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Tester;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -42,10 +42,10 @@ class SpecialNodes {
             int whatToTestInt;
             switch (whatToTest) {
                 case "taint":
-                    whatToTestInt = CfgNodeTester.TEST_TAINT;
+                    whatToTestInt = Tester.TEST_TAINT;
                     break;
                 case "arrayLabel":
-                    whatToTestInt = CfgNodeTester.TEST_ARRAYLABEL;
+                    whatToTestInt = Tester.TEST_ARRAYLABEL;
                     break;
                 default:
                     throw new RuntimeException("Error: Invalid '~_test_' marker in builtin functions file");
@@ -58,13 +58,13 @@ class SpecialNodes {
                 throw new RuntimeException("Error: Invalid '~_test_' marker in builtin functions file");
             }
 
-            retMe = new CfgNodeTester(whatToTestInt, numSet);
+            retMe = new Tester(whatToTestInt, numSet);
         } else if (marker.startsWith("_hotspot")) {
             // hotspots are only used for JUnit tests
             try {
                 Integer hotspotId = Integer.valueOf(marker.substring(8));
-                retMe = new CfgNodeHotspot(hotspotId);
-                tac.addHotspot((CfgNodeHotspot) retMe);
+                retMe = new Hotspot(hotspotId);
+                tac.addHotspot((Hotspot) retMe);
             } catch (IndexOutOfBoundsException ex) {
                 throw new RuntimeException("Illegal hotspot marker: no ID suffix");
             } catch (NumberFormatException ex) {

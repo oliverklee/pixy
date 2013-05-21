@@ -2,9 +2,9 @@ package at.ac.tuwien.infosys.www.pixy.conversion;
 
 import at.ac.tuwien.infosys.www.phpparser.ParseNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeAssignBinary;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeAssignSimple;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeEmpty;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AssignBinary;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AssignSimple;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Empty;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -45,7 +45,7 @@ public class EncapsList {
     TacAttributes makeAtts(Variable temp, ParseNode node) {
         TacAttributes myAtts = new TacAttributes();
 
-        AbstractCfgNode head = new CfgNodeEmpty();
+        AbstractCfgNode head = new Empty();
         AbstractCfgNode contd = head;
 
         // is the temporary variable still empty?
@@ -74,12 +74,12 @@ public class EncapsList {
                     if (tempEmpty) {
                         // if the temporary is still empty, we can simply
                         // assign the literal to it
-                        cfgNode = new CfgNodeAssignSimple(
+                        cfgNode = new AssignSimple(
                             temp, lastLiteral, node);
                         tempEmpty = false;
                     } else {
                         // if the temporary is non-empty, we have to concat
-                        cfgNode = new CfgNodeAssignBinary(
+                        cfgNode = new AssignBinary(
                             temp, temp, lastLiteral, TacOperators.CONCAT, node);
                     }
                     TacConverter.connect(contd, cfgNode);
@@ -92,11 +92,11 @@ public class EncapsList {
 
                 AbstractCfgNode cfgNode;
                 if (tempEmpty) {
-                    cfgNode = new CfgNodeAssignSimple(
+                    cfgNode = new AssignSimple(
                         temp, (TacPlace) obj, node);
                     tempEmpty = false;
                 } else {
-                    cfgNode = new CfgNodeAssignBinary(
+                    cfgNode = new AssignBinary(
                         temp, temp, (TacPlace) obj, TacOperators.CONCAT, node);
                 }
                 TacConverter.connect(contd, nextControlFlowGraph);
@@ -111,11 +111,11 @@ public class EncapsList {
             // some literal is hanging around at the end...
             AbstractCfgNode cfgNode;
             if (tempEmpty) {
-                cfgNode = new CfgNodeAssignSimple(
+                cfgNode = new AssignSimple(
                     temp, lastLiteral, node);
                 tempEmpty = false;
             } else {
-                cfgNode = new CfgNodeAssignBinary(
+                cfgNode = new AssignBinary(
                     temp, temp, lastLiteral, TacOperators.CONCAT, node);
             }
             TacConverter.connect(contd, cfgNode);

@@ -3,19 +3,19 @@ package at.ac.tuwien.infosys.www.pixy.analysis.type.tf;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.TypeLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCallBuiltin;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallOfBuiltinFunction;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class TypeTfCallBuiltin extends TransferFunction {
-    private CfgNodeCallBuiltin cfgNode;
+    private CallOfBuiltinFunction cfgNode;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public TypeTfCallBuiltin(CfgNodeCallBuiltin cfgNode) {
+    public TypeTfCallBuiltin(CallOfBuiltinFunction cfgNode) {
         this.cfgNode = cfgNode;
     }
 

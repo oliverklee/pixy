@@ -5,7 +5,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCall;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Call;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -24,7 +24,7 @@ public class FunctionalAnalysis extends AnalysisType {
 
 //  getPropagationContext ***********************************************************
 
-    public Context getPropagationContext(CfgNodeCall callNode, Context context) {
+    public Context getPropagationContext(Call callNode, Context context) {
         // propagation context = incoming value at the call node under the
         // current context
         LatticeElement inValue = this.enclosedAnalysis.getInterAnalysisInfo().getAnalysisNode(callNode).getPhiValue(context);
@@ -42,7 +42,7 @@ public class FunctionalAnalysis extends AnalysisType {
         FunctionalContext context = (FunctionalContext) contextX;
 
         // for each call to this function...
-        for (CfgNodeCall callNode : exitedFunction.getCalledFrom()) {
+        for (Call callNode : exitedFunction.getCalledFrom()) {
             // find out possible contexts of the callee;
             // example: caller has two contexts c1 and c2; under both contexts,
             // the incoming value at the call node is e1; for the callee,

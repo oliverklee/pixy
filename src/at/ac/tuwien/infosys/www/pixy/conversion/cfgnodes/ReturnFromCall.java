@@ -13,10 +13,10 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeCallRet extends AbstractCfgNode {
+public class ReturnFromCall extends AbstractCfgNode {
 // CONSTRUCTORS ********************************************************************
 
-    public CfgNodeCallRet(ParseNode parseNode) {
+    public ReturnFromCall(ParseNode parseNode) {
         super(parseNode);
     }
 
@@ -30,12 +30,12 @@ public class CfgNodeCallRet extends AbstractCfgNode {
         return this.getCallNode().getTempVar();
     }
 
-    public CfgNodeCallPrep getCallPrepNode() {
-        return (CfgNodeCallPrep) this.getPredecessor().getPredecessor();
+    public CallPreperation getCallPrepNode() {
+        return (CallPreperation) this.getPredecessor().getPredecessor();
     }
 
-    public CfgNodeCall getCallNode() {
-        return (CfgNodeCall) this.getPredecessor();
+    public Call getCallNode() {
+        return (Call) this.getPredecessor();
     }
 
     List<TacActualParam> getParamsList() {

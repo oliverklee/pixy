@@ -4,7 +4,7 @@ import at.ac.tuwien.infosys.www.phpparser.ParseNode;
 import at.ac.tuwien.infosys.www.phpparser.PhpSymbols;
 import at.ac.tuwien.infosys.www.pixy.Utils;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralAnalysis;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeInclude;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Include;
 
 import java.io.File;
 import java.util.Collection;
@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
  */
 public class ParseNodeHeuristics {
     private static LiteralAnalysis literalAnalysis;
-    private static CfgNodeInclude includeNode;
+    private static Include includeNode;
 
     // tries to find the name of an included file even if literal analysis
     // computed "top" by matching the known parts of the file name against
@@ -28,8 +28,8 @@ public class ParseNodeHeuristics {
     // - an empty list if there is no possibility
     // - a one-element list if there is exactly one possibility
     public static List<String> getPossibleIncludeTargets(
-        CfgNodeInclude includeNode, LiteralAnalysis literalAnalysis,
-        Map<CfgNodeInclude, String> include2String,
+        Include includeNode, LiteralAnalysis literalAnalysis,
+        Map<Include, String> include2String,
         String workingDirectory) {
 
         ParseNodeHeuristics.literalAnalysis = literalAnalysis;

@@ -8,9 +8,9 @@ import at.ac.tuwien.infosys.www.pixy.analysis.incdom.tf.IncDomTfAdd;
 import at.ac.tuwien.infosys.www.pixy.analysis.intra.IntraAnalysis;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeBasicBlock;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeIncludeEnd;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeIncludeStart;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.BasicBlock;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.IncludeEnd;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.IncludeStart;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -48,7 +48,7 @@ public class IncDomAnalysis extends IntraAnalysis {
 
 //  makeBasicBlockTf ***************************************************************
 
-    protected TransferFunction makeBasicBlockTf(CfgNodeBasicBlock basicBlock, TacFunction traversedFunction) {
+    protected TransferFunction makeBasicBlockTf(BasicBlock basicBlock, TacFunction traversedFunction) {
         // we can override the general method from Analysis with this, because
         // analysis information must not change inside basic blocks
         // (all nodes inside a basic block should have an ID transfer function,
@@ -79,10 +79,10 @@ public class IncDomAnalysis extends IntraAnalysis {
         // * output: a chain of unclosed includeStart nodes
         LinkedList<AbstractCfgNode> chain = new LinkedList<>();
         for (AbstractCfgNode dominator : dominators) {
-            if (dominator instanceof CfgNodeIncludeStart) {
+            if (dominator instanceof IncludeStart) {
                 chain.add(dominator);
-            } else if (dominator instanceof CfgNodeIncludeEnd) {
-                CfgNodeIncludeEnd incEnd = (CfgNodeIncludeEnd) dominator;
+            } else if (dominator instanceof IncludeEnd) {
+                IncludeEnd incEnd = (IncludeEnd) dominator;
                 if (incEnd.isPeer(chain.getLast())) {
                     chain.removeLast();
                 } else {

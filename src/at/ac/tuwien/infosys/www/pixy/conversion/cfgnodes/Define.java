@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeDefine extends AbstractCfgNode {
+public class Define extends AbstractCfgNode {
     // the first parameter (the name of the constant to be set)
     private TacPlace setMe;
 
@@ -22,8 +22,8 @@ public class CfgNodeDefine extends AbstractCfgNode {
 
 // CONSTRUCTORS ********************************************************************
 
-    public CfgNodeDefine(TacPlace setMe, TacPlace setTo, TacPlace caseInsensitive,
-                         ParseNode node) {
+    public Define(TacPlace setMe, TacPlace setTo, TacPlace caseInsensitive,
+                  ParseNode node) {
 
         super(node);
         this.setMe = setMe;

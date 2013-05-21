@@ -12,8 +12,8 @@ import at.ac.tuwien.infosys.www.pixy.analysis.inter.*;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring.CSAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.TypeAnalysis;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Include;
 import at.ac.tuwien.infosys.www.pixy.conversion.includes.IncludeGraph;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeInclude;
 
 import java.io.*;
 import java.util.*;
@@ -52,7 +52,7 @@ public class ProgramConverter {
     private Set<File> allFiles;
 
     // set of include nodes that should be skipped (don't try to include them)
-    private Set<CfgNodeInclude> skipUs;
+    private Set<Include> skipUs;
 
     private SymbolTable superSymbolTable;
 
@@ -144,19 +144,19 @@ public class ProgramConverter {
             MyOptions.entryFile, this);
         baseTac.convert();
 
-        List<CfgNodeInclude> processUs = baseTac.getIncludeNodes();
+        List<Include> processUs = baseTac.getIncludeNodes();
         boolean goOn = true;  // start a new iteration?
 
         // STATS
         //
         // include nodes that could not be resolved
-        Set<CfgNodeInclude> topIncludes = new HashSet<>();
+        Set<Include> topIncludes = new HashSet<>();
         //
         // literal includes for which the target file could not be found
-        SortedMap<CfgNodeInclude, String> notFoundLiteralIncludes = new TreeMap<>();
+        SortedMap<Include, String> notFoundLiteralIncludes = new TreeMap<>();
         //
         // dynamic includes for which the target file could not be found
-        SortedMap<CfgNodeInclude, String> notFoundDynamicIncludes = new TreeMap<>();
+        SortedMap<Include, String> notFoundDynamicIncludes = new TreeMap<>();
         //
         // number of included literal includes
         int resolvedLit = 0;
@@ -179,7 +179,7 @@ public class ProgramConverter {
 
             goOn = false;
             boolean nonLiteralIncludes = false; // are there non-literal includes?
-            List<CfgNodeInclude> weComeAfterwards;
+            List<Include> weComeAfterwards;
 
             // resolution of literal includes *****************************
 
@@ -194,7 +194,7 @@ public class ProgramConverter {
                 weComeAfterwards = new LinkedList<>();
 
                 // process all literal include nodes in "processUs"
-                for (CfgNodeInclude includeNode : processUs) {
+                for (Include includeNode : processUs) {
                     if (this.skipUs.contains(includeNode)) {
                         continue;
                     }
@@ -266,7 +266,7 @@ public class ProgramConverter {
             notFoundDynamicIncludes = new TreeMap<>();
             topIncludes = new HashSet<>();
 
-            for (CfgNodeInclude includeNode : processUs) {
+            for (Include includeNode : processUs) {
 
                 if (this.skipUs.contains(includeNode)) {
                     continue;
@@ -397,18 +397,18 @@ public class ProgramConverter {
             System.out.println("cyclic includes:                 " + cyclic);
             System.out.println("not found includes:              " +
                 (notFoundLiteralIncludes.size() + notFoundDynamicIncludes.size()));
-            for (Map.Entry<CfgNodeInclude, String> entry : notFoundLiteralIncludes.entrySet()) {
+            for (Map.Entry<Include, String> entry : notFoundLiteralIncludes.entrySet()) {
                 System.out.println("- " + entry.getKey().getLoc());
                 System.out.println("   [" + entry.getValue() + "]");
             }
-            for (Map.Entry<CfgNodeInclude, String> entry : notFoundDynamicIncludes.entrySet()) {
+            for (Map.Entry<Include, String> entry : notFoundDynamicIncludes.entrySet()) {
                 System.out.println("- " + entry.getKey().getLoc());
                 System.out.println("   [" + entry.getValue() + "]");
             }
             System.out.println("unresolved non-literal includes: " + topIncludes.size());
-            List<CfgNodeInclude> topIncludesList = new LinkedList<>(topIncludes);
+            List<Include> topIncludesList = new LinkedList<>(topIncludes);
             Collections.sort(topIncludesList);
-            for (CfgNodeInclude includeNode : topIncludesList) {
+            for (Include includeNode : topIncludesList) {
                 System.out.println("- " + includeNode.getLoc());
             }
             System.out.println();
@@ -440,18 +440,18 @@ public class ProgramConverter {
     // - input: a set of unresolved or not found includes
     // - output: the same set, but without those that are inside functions
     //   that are never called
-    private void removeUnreachables(Set<CfgNodeInclude> includeSet, Map<CfgNodeInclude, String> includeMap) {
-        for (Iterator<CfgNodeInclude> iter = includeSet.iterator(); iter.hasNext(); ) {
-            CfgNodeInclude includeNode = iter.next();
+    private void removeUnreachables(Set<Include> includeSet, Map<Include, String> includeMap) {
+        for (Iterator<Include> iter = includeSet.iterator(); iter.hasNext(); ) {
+            Include includeNode = iter.next();
             InterAnalysisNode incAnNode = literalAnalysis.getAnalysisNode(includeNode);
             if (incAnNode.getPhi().isEmpty()) {
                 iter.remove();
             }
         }
 
-        for (Iterator<Map.Entry<CfgNodeInclude, String>> iter = includeMap.entrySet().iterator(); iter.hasNext(); ) {
-            Map.Entry<CfgNodeInclude, String> entry = iter.next();
-            CfgNodeInclude includeNode = entry.getKey();
+        for (Iterator<Map.Entry<Include, String>> iter = includeMap.entrySet().iterator(); iter.hasNext(); ) {
+            Map.Entry<Include, String> entry = iter.next();
+            Include includeNode = entry.getKey();
             InterAnalysisNode incAnNode = literalAnalysis.getAnalysisNode(includeNode);
             if (incAnNode.getPhi().isEmpty()) {
                 iter.remove();
@@ -560,8 +560,8 @@ public class ProgramConverter {
 //  include ************************************************************************
 
     // function: the one that contains the given include node;
-    public IncStatus include(String includedFileName, CfgNodeInclude includeNode, TacFunction function,
-                             List<CfgNodeInclude> includeNodes) {
+    public IncStatus include(String includedFileName, Include includeNode, TacFunction function,
+                             List<Include> includeNodes) {
 
         File includingFile = includeNode.getFile();
         File includedFile = this.makeFile(includedFileName, includingFile);

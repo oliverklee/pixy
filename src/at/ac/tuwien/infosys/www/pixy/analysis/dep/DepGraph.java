@@ -285,7 +285,7 @@ public class DepGraph {
 
         DepSet depSet = null;
         AbstractCfgNode enclosingX = cfgNode.getSpecial();
-        if (enclosingX instanceof CfgNodeBasicBlock) {
+        if (enclosingX instanceof BasicBlock) {
             // the current node is enclosed by a basic block
 
             // we have to apply the transfer functions inside this basic block
@@ -304,9 +304,9 @@ public class DepGraph {
             DepLatticeElement latticeElement = this.newFold(bbPhi, contexts);
 
             DepLatticeElement propagated = this.depAnalysis.applyInsideBasicBlock(
-                (CfgNodeBasicBlock) enclosingX, cfgNode, latticeElement);
+                (BasicBlock) enclosingX, cfgNode, latticeElement);
             depSet = propagated.getDep(place);
-        } else if (enclosingX instanceof CfgNodeEntry) {
+        } else if (enclosingX instanceof CfgEntry) {
             // the current node is inside a function's default cfg
             // (i.e., we want to retrieve the value of a default parameter)
 
@@ -386,12 +386,12 @@ public class DepGraph {
         // jumping from the function call to the end of the callee);
         // adjust targetFunction and targetContexts accordingly
 
-        if (current instanceof CfgNodeCallRet) {
+        if (current instanceof ReturnFromCall) {
 
             // determine callee and context inside the callee;
 
-            CfgNodeCallRet callRet = (CfgNodeCallRet) current;
-            CfgNodeCall callNode = callRet.getCallNode();
+            ReturnFromCall callRet = (ReturnFromCall) current;
+            Call callNode = callRet.getCallNode();
             targetFunction = callNode.getCallee();
             debug("jumping from caller to end of callee: " + function.getName() + " -> " + targetFunction.getName());
             targetContexts = new HashSet<>();
@@ -403,10 +403,10 @@ public class DepGraph {
 
         // check whether we are jumping from callee to caller
         // (i.e., from the callee's start to the call node)
-        else if (targetNode instanceof CfgNodeCallPrep) {
+        else if (targetNode instanceof CallPreperation) {
             debug("jumping from start of callee to caller!");
-            CfgNodeCallPrep prep = (CfgNodeCallPrep) targetNode;
-            CfgNodeCall callNode = (CfgNodeCall) prep.getSuccessor(0);
+            CallPreperation prep = (CallPreperation) targetNode;
+            Call callNode = (Call) prep.getSuccessor(0);
             targetFunction = prep.getCaller();
             debug("caller: " + targetFunction.getName());
             targetContexts = new HashSet<>();
@@ -430,7 +430,7 @@ public class DepGraph {
         // up might have been defined in a completely different function;
         // here, we make a reasonable conservative decision, and use
         // *all* available contexts
-        else if (targetNode instanceof CfgNodeDefine) {
+        else if (targetNode instanceof Define) {
             targetFunction = ControlFlowGraph.getFunction(targetNode);
             targetContexts = this.analysisInfo.getAnalysisNode(targetNode.getSpecial()).getContexts();
             if (targetContexts.isEmpty()) {
@@ -464,16 +464,16 @@ public class DepGraph {
     // it returns null
     private DepGraphNode checkOp(AbstractCfgNode targetNode) {
 
-        if (targetNode instanceof CfgNodeAssignBinary) {
-            CfgNodeAssignBinary inspectMe = (CfgNodeAssignBinary) targetNode;
+        if (targetNode instanceof AssignBinary) {
+            AssignBinary inspectMe = (AssignBinary) targetNode;
             return new DepGraphOpNode(targetNode, TacOperators.opToName(inspectMe.getOperator()), true);
-        } else if (targetNode instanceof CfgNodeAssignUnary) {
-            CfgNodeAssignUnary inspectMe = (CfgNodeAssignUnary) targetNode;
+        } else if (targetNode instanceof AssignUnary) {
+            AssignUnary inspectMe = (AssignUnary) targetNode;
             return new DepGraphOpNode(targetNode, TacOperators.opToName(inspectMe.getOperator()), true);
-        } else if (targetNode instanceof CfgNodeCallRet) {
+        } else if (targetNode instanceof ReturnFromCall) {
 
-            CfgNodeCallRet inspectMe = (CfgNodeCallRet) targetNode;
-            CfgNodeCallPrep prepNode = inspectMe.getCallPrepNode();
+            ReturnFromCall inspectMe = (ReturnFromCall) targetNode;
+            CallPreperation prepNode = inspectMe.getCallPrepNode();
 
             if (prepNode.getCallee() == null) {
                 throw new RuntimeException("SNH");
@@ -482,14 +482,14 @@ public class DepGraph {
                 // the depgraph with nodes for these calls
                 return null;
             }
-        } else if (targetNode instanceof CfgNodeCallBuiltin) {
+        } else if (targetNode instanceof CallOfBuiltinFunction) {
             // a builtin function
-            CfgNodeCallBuiltin cfgNode = (CfgNodeCallBuiltin) targetNode;
+            CallOfBuiltinFunction cfgNode = (CallOfBuiltinFunction) targetNode;
             String functionName = cfgNode.getFunctionName();
             return new DepGraphOpNode(targetNode, functionName, true);
-        } else if (targetNode instanceof CfgNodeCallUnknown) {
+        } else if (targetNode instanceof CallOfUnknownFunction) {
             // a function / method for which no definition could be found
-            CfgNodeCallUnknown callNode = (CfgNodeCallUnknown) targetNode;
+            CallOfUnknownFunction callNode = (CallOfUnknownFunction) targetNode;
             String functionName = callNode.getFunctionName();
             boolean builtin = false;
             return new DepGraphOpNode(targetNode, functionName, builtin);
@@ -534,7 +534,7 @@ public class DepGraph {
 
     // returns the places *used* in this node (e.g., those on the *right*
     // side of an assignment); if there are no such places (e.g., in the case
-    // of CfgNodeEmpty), returns a
+    // of Empty), returns a
     // set containing an appropriate dummy placeholder literal (necessary for the
     // graph construction algorithm to work properly);
     // for concat nodes: returns the places in the right order
@@ -542,7 +542,7 @@ public class DepGraph {
     /**
      * This function is quite straightforward in most cases, but the handling of arrays might be a bit confusing. For
      * this reason, here is an explanation of what is going on when the inspected cfg node is either AssignSimple or
-     * CfgNodeCallPrep.
+     * CallPreperation.
      *
      * AssignSimple:
      * left = right;
@@ -575,7 +575,7 @@ public class DepGraph {
      * the method responsible for correctly resolving old indices is called "getCorresponding()";
      * look at its description below to get a better feeling for what is going on
      *
-     * CfgNodeCallPrep:
+     * CallPreperation:
      * * "victim" is a formal param here;
      * we want to return the corresponding actual parameter
      * - for each formal parameter:
@@ -616,18 +616,18 @@ public class DepGraph {
         // LATER: you should treat this analogously to a builtin function
         // without any parameters; also take care that it is correctly modeled
         // by client analyses
-        if (cfgNodeX instanceof CfgNodeAssignArray) {
+        if (cfgNodeX instanceof AssignArray) {
             retMe.add(new Literal(""));
-        } else if (cfgNodeX instanceof CfgNodeAssignBinary) {
-            CfgNodeAssignBinary cfgNode = (CfgNodeAssignBinary) cfgNodeX;
+        } else if (cfgNodeX instanceof AssignBinary) {
+            AssignBinary cfgNode = (AssignBinary) cfgNodeX;
             retMe.add(cfgNode.getLeftOperand());
             retMe.add(cfgNode.getRightOperand());
-        } else if (cfgNodeX instanceof CfgNodeAssignRef) {
-            CfgNodeAssignRef cfgNode = (CfgNodeAssignRef) cfgNodeX;
+        } else if (cfgNodeX instanceof AssignReference) {
+            AssignReference cfgNode = (AssignReference) cfgNodeX;
             retMe.add(cfgNode.getRight());
-        } else if (cfgNodeX instanceof CfgNodeAssignSimple) {
+        } else if (cfgNodeX instanceof AssignSimple) {
 
-            CfgNodeAssignSimple cfgNode = (CfgNodeAssignSimple) cfgNodeX;
+            AssignSimple cfgNode = (AssignSimple) cfgNodeX;
             Variable left = cfgNode.getLeft();
             TacPlace right = cfgNode.getRight();
 
@@ -671,18 +671,18 @@ public class DepGraph {
             } else {
                 retMe.add(right);
             }
-        } else if (cfgNodeX instanceof CfgNodeAssignUnary) {
-            CfgNodeAssignUnary cfgNode = (CfgNodeAssignUnary) cfgNodeX;
+        } else if (cfgNodeX instanceof AssignUnary) {
+            AssignUnary cfgNode = (AssignUnary) cfgNodeX;
             retMe.add(cfgNode.getRight());
-        } else if (cfgNodeX instanceof CfgNodeBasicBlock) {
+        } else if (cfgNodeX instanceof BasicBlock) {
             // should be handled by the caller
             throw new RuntimeException("SNH");
-        } else if (cfgNodeX instanceof CfgNodeCall) {
+        } else if (cfgNodeX instanceof Call) {
             throw new RuntimeException("SNH");
-        } else if (cfgNodeX instanceof CfgNodeCallPrep) {
+        } else if (cfgNodeX instanceof CallPreperation) {
 
             // return corresponding actual param ("victim" is the formal param here)
-            CfgNodeCallPrep cfgNode = (CfgNodeCallPrep) cfgNodeX;
+            CallPreperation cfgNode = (CallPreperation) cfgNodeX;
             List<TacActualParam> actualParams = cfgNode.getParamList();
             List<TacFormalParam> formalParams = cfgNode.getCallee().getParams();
             int index = -1;
@@ -743,37 +743,37 @@ public class DepGraph {
                 System.out.println("victim: " + victim);
                 throw new RuntimeException("SNH");
             }
-        } else if (cfgNodeX instanceof CfgNodeCallRet) {
+        } else if (cfgNodeX instanceof ReturnFromCall) {
 
             // either a call to a user-defined function
-            return this.getUsedPlacesForCall((CfgNodeCallRet) cfgNodeX, victim, oldIndices, newIndices);
-        } else if (cfgNodeX instanceof CfgNodeCallBuiltin) {
-            return this.getUsedPlacesForBuiltin((CfgNodeCallBuiltin) cfgNodeX);
-        } else if (cfgNodeX instanceof CfgNodeCallUnknown) {
+            return this.getUsedPlacesForCall((ReturnFromCall) cfgNodeX, victim, oldIndices, newIndices);
+        } else if (cfgNodeX instanceof CallOfBuiltinFunction) {
+            return this.getUsedPlacesForBuiltin((CallOfBuiltinFunction) cfgNodeX);
+        } else if (cfgNodeX instanceof CallOfUnknownFunction) {
             // call to an unknown function;
             // simply add all parameters;
-            CfgNodeCallUnknown cfgNode = (CfgNodeCallUnknown) cfgNodeX;
+            CallOfUnknownFunction cfgNode = (CallOfUnknownFunction) cfgNodeX;
             for (TacActualParam param : cfgNode.getParamList()) {
                 retMe.add(param.getPlace());
             }
-        } else if (cfgNodeX instanceof CfgNodeDefine) {
-            CfgNodeDefine cfgNode = (CfgNodeDefine) cfgNodeX;
+        } else if (cfgNodeX instanceof Define) {
+            Define cfgNode = (Define) cfgNodeX;
             retMe.add(cfgNode.getSetTo());
-        } else if (cfgNodeX instanceof CfgNodeEcho) {
+        } else if (cfgNodeX instanceof Echo) {
             throw new RuntimeException("SNH");
-        } else if (cfgNodeX instanceof CfgNodeEmpty) {
+        } else if (cfgNodeX instanceof Empty) {
             throw new RuntimeException("SNH");
-        } else if (cfgNodeX instanceof CfgNodeExit) {
+        } else if (cfgNodeX instanceof CfgExit) {
             throw new RuntimeException("SNH");
             // this belonged to the quick hack in DepLatticeElement.handleReturnValue
             // retMe.add(new Literal("<null>"));
-        } else if (cfgNodeX instanceof CfgNodeEmptyTest) {
+        } else if (cfgNodeX instanceof EmptyTest) {
             throw new RuntimeException("SNH");
-        } else if (cfgNodeX instanceof CfgNodeEval) {
+        } else if (cfgNodeX instanceof Eval) {
             // still modeled with ID transfer function
             throw new RuntimeException("SNH");
-        } else if (cfgNodeX instanceof CfgNodeGlobal) {
-            CfgNodeGlobal cfgNode = (CfgNodeGlobal) cfgNodeX;
+        } else if (cfgNodeX instanceof Global) {
+            Global cfgNode = (Global) cfgNodeX;
             // "global($x)" is analogous to "$x =& main.$x";
             // hence, the used variable is main.$x, which we can
             // retrieve like this:
@@ -782,23 +782,23 @@ public class DepGraph {
                 throw new RuntimeException("SNH");
             }
             retMe.add(realGlobal);
-        } else if (cfgNodeX instanceof CfgNodeHotspot) {
+        } else if (cfgNodeX instanceof Hotspot) {
             throw new RuntimeException("SNH");
-        } else if (cfgNodeX instanceof CfgNodeIf) {
+        } else if (cfgNodeX instanceof If) {
             throw new RuntimeException("SNH");
-        } else if (cfgNodeX instanceof CfgNodeInclude) {
+        } else if (cfgNodeX instanceof Include) {
             throw new RuntimeException("SNH");
-        } else if (cfgNodeX instanceof CfgNodeIncludeEnd) {
+        } else if (cfgNodeX instanceof IncludeEnd) {
             throw new RuntimeException("SNH");
-        } else if (cfgNodeX instanceof CfgNodeIncludeStart) {
+        } else if (cfgNodeX instanceof IncludeStart) {
             throw new RuntimeException("SNH");
-        } else if (cfgNodeX instanceof CfgNodeIsset) {
+        } else if (cfgNodeX instanceof Isset) {
             throw new RuntimeException("SNH");
-        } else if (cfgNodeX instanceof CfgNodeStatic) {
+        } else if (cfgNodeX instanceof Static) {
             throw new RuntimeException("SNH");
-        } else if (cfgNodeX instanceof CfgNodeTester) {
+        } else if (cfgNodeX instanceof Tester) {
             throw new RuntimeException("SNH");
-        } else if (cfgNodeX instanceof CfgNodeUnset) {
+        } else if (cfgNodeX instanceof Unset) {
             // LATER: you should treat this as a built-in sanitization function
             // (analogously to what you should do with array())
             retMe.add(new Literal("")); // the empty string
@@ -887,13 +887,13 @@ public class DepGraph {
 
     // helper function for retrieving the used places for calls to
     // user-defined functions / methods
-    private List<TacPlace> getUsedPlacesForCall(CfgNodeCallRet retNode,
+    private List<TacPlace> getUsedPlacesForCall(ReturnFromCall retNode,
                                                 TacPlace victim,
                                                 List<TacPlace> oldIndices, List<TacPlace> newIndices) {
 
         List<TacPlace> retMe = new LinkedList<>();
 
-        CfgNodeCallPrep prepNode = retNode.getCallPrepNode();
+        CallPreperation prepNode = retNode.getCallPrepNode();
         if (prepNode.getCallee() == null) {
             throw new RuntimeException("SNH");
         }
@@ -918,7 +918,7 @@ public class DepGraph {
 //  ********************************************************************************
 
     // helper function for retrieving the used places for calls to builtin functions
-    private List<TacPlace> getUsedPlacesForBuiltin(CfgNodeCallBuiltin cfgNode) {
+    private List<TacPlace> getUsedPlacesForBuiltin(CallOfBuiltinFunction cfgNode) {
 
         List<TacPlace> retMe = new LinkedList<>();
         String functionName = cfgNode.getFunctionName();

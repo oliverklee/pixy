@@ -104,50 +104,50 @@ public class ModAnalysis {
     // adjusts the given modSet accordingly (i.e., it adds variables to it)
     private void processNode(AbstractCfgNode cfgNodeX, Set<TacPlace> modSet) {
 
-        if (cfgNodeX instanceof CfgNodeBasicBlock) {
+        if (cfgNodeX instanceof BasicBlock) {
 
-            CfgNodeBasicBlock basicBlock = (CfgNodeBasicBlock) cfgNodeX;
+            BasicBlock basicBlock = (BasicBlock) cfgNodeX;
             for (AbstractCfgNode cfgNode : basicBlock.getContainedNodes()) {
                 processNode(cfgNode, modSet);
             }
-        } else if (cfgNodeX instanceof CfgNodeAssignSimple) {
+        } else if (cfgNodeX instanceof AssignSimple) {
 
-            CfgNodeAssignSimple cfgNode = (CfgNodeAssignSimple) cfgNodeX;
+            AssignSimple cfgNode = (AssignSimple) cfgNodeX;
             Variable modVar = cfgNode.getLeft();
             if (modVar.isGlobal() || modVar.isSuperGlobal()) {
                 this.modify(modVar, modSet);
             }
-        } else if (cfgNodeX instanceof CfgNodeAssignUnary) {
+        } else if (cfgNodeX instanceof AssignUnary) {
 
-            CfgNodeAssignUnary cfgNode = (CfgNodeAssignUnary) cfgNodeX;
+            AssignUnary cfgNode = (AssignUnary) cfgNodeX;
             Variable modVar = cfgNode.getLeft();
             if (modVar.isGlobal() || modVar.isSuperGlobal()) {
                 this.modify(modVar, modSet);
             }
-        } else if (cfgNodeX instanceof CfgNodeAssignBinary) {
+        } else if (cfgNodeX instanceof AssignBinary) {
 
-            CfgNodeAssignBinary cfgNode = (CfgNodeAssignBinary) cfgNodeX;
+            AssignBinary cfgNode = (AssignBinary) cfgNodeX;
             Variable modVar = cfgNode.getLeft();
             if (modVar.isGlobal() || modVar.isSuperGlobal()) {
                 this.modify(modVar, modSet);
             }
-        } else if (cfgNodeX instanceof CfgNodeAssignArray) {
+        } else if (cfgNodeX instanceof AssignArray) {
 
-            CfgNodeAssignArray cfgNode = (CfgNodeAssignArray) cfgNodeX;
+            AssignArray cfgNode = (AssignArray) cfgNodeX;
             Variable modVar = cfgNode.getLeft();
             if (modVar.isGlobal() || modVar.isSuperGlobal()) {
                 this.modify(modVar, modSet);
             }
-        } else if (cfgNodeX instanceof CfgNodeAssignRef) {
+        } else if (cfgNodeX instanceof AssignReference) {
 
-            CfgNodeAssignRef cfgNode = (CfgNodeAssignRef) cfgNodeX;
+            AssignReference cfgNode = (AssignReference) cfgNodeX;
             Variable modVar = cfgNode.getLeft();
             if (modVar.isGlobal() || modVar.isSuperGlobal()) {
                 this.modify(modVar, modSet);
             }
-        } else if (cfgNodeX instanceof CfgNodeUnset) {
+        } else if (cfgNodeX instanceof Unset) {
 
-            CfgNodeUnset cfgNode = (CfgNodeUnset) cfgNodeX;
+            Unset cfgNode = (Unset) cfgNodeX;
             Variable modVar = cfgNode.getOperand();
             if (modVar.isGlobal() || modVar.isSuperGlobal()) {
                 this.modify(modVar, modSet);

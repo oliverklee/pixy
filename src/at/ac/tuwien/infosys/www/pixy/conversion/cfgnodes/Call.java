@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeCall extends AbstractCfgNode {
+public class Call extends AbstractCfgNode {
     // can also be a variable
     private TacPlace functionNamePlace;
 
@@ -45,7 +45,7 @@ public class CfgNodeCall extends AbstractCfgNode {
 // CONSTRUCTORS ********************************************************************
 
     // if you pass "null" for "function", don't forget to call "setFunction" later
-    public CfgNodeCall(
+    public Call(
         TacPlace functionNamePlace, TacFunction calledFunction, ParseNode node,
         TacFunction enclosingFunction, Variable retVar, TacPlace tempPlace,
         List<TacActualParam> paramList, Variable object) {

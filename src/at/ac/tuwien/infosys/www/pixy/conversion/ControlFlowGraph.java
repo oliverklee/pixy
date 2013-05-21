@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.conversion;
 
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCall;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Call;
 
 import java.util.*;
 
@@ -55,11 +55,11 @@ public final class ControlFlowGraph {
 
     // EFF: this function should be called only once, and the result cached;
     // this is what currently happens in ConnectorComputation
-    public List<CfgNodeCall> getContainedCalls() {
-        List<CfgNodeCall> retMe = new LinkedList<>();
+    public List<Call> getContainedCalls() {
+        List<Call> retMe = new LinkedList<>();
         for (AbstractCfgNode cfgNode : this.dfPreOrder()) {
-            if (cfgNode instanceof CfgNodeCall) {
-                retMe.add((CfgNodeCall) cfgNode);
+            if (cfgNode instanceof Call) {
+                retMe.add((Call) cfgNode);
             }
         }
         return retMe;

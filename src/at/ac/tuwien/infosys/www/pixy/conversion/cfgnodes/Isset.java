@@ -8,30 +8,23 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * "left = op right"
- *
- * "op" can be:
- * + - ! ~ (int) (double) (string) (array) (object) (bool) (unset)
- *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeAssignUnary extends AbstractCfgNode {
-    private Variable left;
+public class Isset extends AbstractCfgNode {
+    private TacPlace left;
     private TacPlace right;
-    private int op;
 
 // CONSTRUCTORS ********************************************************************
 
-    public CfgNodeAssignUnary(Variable left, TacPlace right, int op, ParseNode node) {
+    public Isset(TacPlace left, TacPlace right, ParseNode node) {
         super(node);
         this.left = left;
         this.right = right;
-        this.op = op;
     }
 
-//  GET ****************************************************************************
+// GET *****************************************************************************
 
-    public Variable getLeft() {
+    public TacPlace getLeft() {
         return this.left;
     }
 
@@ -39,13 +32,13 @@ public class CfgNodeAssignUnary extends AbstractCfgNode {
         return this.right;
     }
 
-    public int getOperator() {
-        return this.op;
-    }
-
     public List<Variable> getVariables() {
         List<Variable> retMe = new LinkedList<>();
-        retMe.add(this.left);
+        if (this.left instanceof Variable) {
+            retMe.add((Variable) this.left);
+        } else {
+            retMe.add(null);
+        }
         if (this.right instanceof Variable) {
             retMe.add((Variable) this.right);
         } else {

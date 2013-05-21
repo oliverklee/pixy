@@ -8,7 +8,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.ConstantsTable;
 import at.ac.tuwien.infosys.www.pixy.conversion.Literal;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeDefine;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Define;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ public class LiteralTfDefine extends TransferFunction {
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public LiteralTfDefine(ConstantsTable table, CfgNodeDefine cfgNode) {
+    public LiteralTfDefine(ConstantsTable table, Define cfgNode) {
         this.setMe = cfgNode.getSetMe();
         this.setTo = cfgNode.getSetTo();
         this.caseInsensitive = cfgNode.getCaseInsensitive();

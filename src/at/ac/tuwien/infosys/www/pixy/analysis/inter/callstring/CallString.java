@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring;
 
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCall;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Call;
 
 import java.util.LinkedList;
 
@@ -8,8 +8,8 @@ import java.util.LinkedList;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class CallString {
-    // a list of CfgNodeCall's; never longer than the k-size of the analysis
-    private LinkedList<CfgNodeCall> callNodeList;
+    // a list of Call's; never longer than the k-size of the analysis
+    private LinkedList<Call> callNodeList;
 
     // creates the empty call string
     public CallString() {
@@ -17,12 +17,12 @@ public class CallString {
     }
 
     // shall only be used by CallString.append
-    private CallString(LinkedList<CfgNodeCall> callNodeList) {
+    private CallString(LinkedList<Call> callNodeList) {
         this.callNodeList = callNodeList;
     }
 
-    public CallString append(CfgNodeCall callNode, int kSize) {
-        LinkedList<CfgNodeCall> newList = new LinkedList<>(this.callNodeList);
+    public CallString append(Call callNode, int kSize) {
+        LinkedList<Call> newList = new LinkedList<>(this.callNodeList);
         newList.add(callNode);
         if (newList.size() > kSize) {
             newList.remove(0);
@@ -31,11 +31,11 @@ public class CallString {
     }
 
     // returns the last (rightmost) call node
-    public CfgNodeCall getLast() {
+    public Call getLast() {
         return this.callNodeList.getLast();
     }
 
-    public LinkedList<CfgNodeCall> getCallNodeList() {
+    public LinkedList<Call> getCallNodeList() {
         return this.callNodeList;
     }
 
@@ -59,7 +59,7 @@ public class CallString {
 
     public String dump() {
         StringBuilder b = new StringBuilder();
-        for (CfgNodeCall callNode : this.callNodeList) {
+        for (Call callNode : this.callNodeList) {
             b.append(callNode.getFileName());
             b.append(":");
             b.append(callNode.getOrigLineno());

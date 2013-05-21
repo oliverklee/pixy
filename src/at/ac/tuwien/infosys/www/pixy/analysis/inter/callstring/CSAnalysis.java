@@ -4,7 +4,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCall;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Call;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ public class CSAnalysis extends AnalysisType {
 
 //  getPropagationContext ***********************************************************
 
-    public Context getPropagationContext(CfgNodeCall callNode, Context contextX) {
+    public Context getPropagationContext(Call callNode, Context contextX) {
 
         CSContext context = (CSContext) contextX;
         return this.connectorComp.getTargetContext(callNode, context.getPosition());

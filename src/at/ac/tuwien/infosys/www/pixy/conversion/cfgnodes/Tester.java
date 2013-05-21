@@ -11,7 +11,7 @@ import java.util.Set;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeTester extends AbstractCfgNode {
+public class Tester extends AbstractCfgNode {
     // Set of Integer's indicating the positions of the parameters that
     // are to be tested
     private Set<Integer> paramNumbers;
@@ -24,7 +24,7 @@ public class CfgNodeTester extends AbstractCfgNode {
 
 // CONSTRUCTORS ********************************************************************
 
-    public CfgNodeTester(int whatToTest, Set<Integer> paramNumbers) {
+    public Tester(int whatToTest, Set<Integer> paramNumbers) {
         super();
         this.whatToTest = whatToTest;
         this.paramNumbers = paramNumbers;

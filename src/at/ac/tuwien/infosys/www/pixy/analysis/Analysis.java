@@ -52,68 +52,68 @@ public abstract class Analysis {
         // EFF: more efficient implementation (hashmap?)
 
         // CAUTION: check for basic block first!
-        if (cfgNodeX instanceof CfgNodeBasicBlock) {
+        if (cfgNodeX instanceof BasicBlock) {
 
-            CfgNodeBasicBlock cfgNode = (CfgNodeBasicBlock) cfgNodeX;
+            BasicBlock cfgNode = (BasicBlock) cfgNodeX;
             return this.makeBasicBlockTf(cfgNode, traversedFunction);
-        } else if (cfgNodeX instanceof CfgNodeAssignSimple) {
+        } else if (cfgNodeX instanceof AssignSimple) {
 
             return this.assignSimple(cfgNodeX, enclosingNode);
-        } else if (cfgNodeX instanceof CfgNodeAssignUnary) {
+        } else if (cfgNodeX instanceof AssignUnary) {
 
             return this.assignUnary(cfgNodeX, enclosingNode);
-        } else if (cfgNodeX instanceof CfgNodeAssignBinary) {
+        } else if (cfgNodeX instanceof AssignBinary) {
 
             return this.assignBinary(cfgNodeX, enclosingNode);
-        } else if (cfgNodeX instanceof CfgNodeAssignRef) {
+        } else if (cfgNodeX instanceof AssignReference) {
 
             return this.assignRef(cfgNodeX);
-        } else if (cfgNodeX instanceof CfgNodeUnset) {
+        } else if (cfgNodeX instanceof Unset) {
 
             return this.unset(cfgNodeX);
-        } else if (cfgNodeX instanceof CfgNodeAssignArray) {
+        } else if (cfgNodeX instanceof AssignArray) {
 
             return this.assignArray(cfgNodeX);
-        } else if (cfgNodeX instanceof CfgNodeIsset) {
+        } else if (cfgNodeX instanceof Isset) {
 
             return this.isset(cfgNodeX);
-        } else if (cfgNodeX instanceof CfgNodeCallPrep) {
+        } else if (cfgNodeX instanceof CallPreperation) {
 
             return this.callPrep(cfgNodeX, traversedFunction);
-        } else if (cfgNodeX instanceof CfgNodeEntry) {
+        } else if (cfgNodeX instanceof CfgEntry) {
 
             return this.entry(traversedFunction);
-        } else if (cfgNodeX instanceof CfgNodeCallRet) {
+        } else if (cfgNodeX instanceof ReturnFromCall) {
 
             return this.callRet(cfgNodeX, traversedFunction);
-        } else if (cfgNodeX instanceof CfgNodeCallBuiltin) {
+        } else if (cfgNodeX instanceof CallOfBuiltinFunction) {
 
             return this.callBuiltin(cfgNodeX, traversedFunction);
-        } else if (cfgNodeX instanceof CfgNodeCallUnknown) {
+        } else if (cfgNodeX instanceof CallOfUnknownFunction) {
 
             return this.callUnknown(cfgNodeX, traversedFunction);
-        } else if (cfgNodeX instanceof CfgNodeGlobal) {
+        } else if (cfgNodeX instanceof Global) {
 
             return this.global(cfgNodeX);
-        } else if (cfgNodeX instanceof CfgNodeDefine) {
+        } else if (cfgNodeX instanceof Define) {
 
             return this.define(cfgNodeX);
-        } else if (cfgNodeX instanceof CfgNodeTester) {
+        } else if (cfgNodeX instanceof Tester) {
 
             return this.tester(cfgNodeX);
-        } else if (cfgNodeX instanceof CfgNodeEcho) {
+        } else if (cfgNodeX instanceof Echo) {
 
             return this.echo(cfgNodeX, traversedFunction);
-        } else if (cfgNodeX instanceof CfgNodeStatic) {
+        } else if (cfgNodeX instanceof Static) {
 
             return this.staticNode();
-        } else if (cfgNodeX instanceof CfgNodeInclude) {
+        } else if (cfgNodeX instanceof Include) {
 
             return this.include(cfgNodeX);
-        } else if (cfgNodeX instanceof CfgNodeIncludeStart) {
+        } else if (cfgNodeX instanceof IncludeStart) {
 
             return this.includeStart(cfgNodeX);
-        } else if (cfgNodeX instanceof CfgNodeIncludeEnd) {
+        } else if (cfgNodeX instanceof IncludeEnd) {
 
             return this.includeEnd(cfgNodeX);
         } else {
@@ -174,7 +174,7 @@ public abstract class Analysis {
 //  makeBasicBlockTf ***************************************************************
 
     // creates a transfer function for a whole basic block
-    protected TransferFunction makeBasicBlockTf(CfgNodeBasicBlock basicBlock, TacFunction traversedFunction) {
+    protected TransferFunction makeBasicBlockTf(BasicBlock basicBlock, TacFunction traversedFunction) {
 
         CompositeTransferFunction ctf = new CompositeTransferFunction();
 

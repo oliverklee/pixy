@@ -3,7 +3,7 @@ package at.ac.tuwien.infosys.www.pixy.analysis.inter;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCall;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Call;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ public abstract class AnalysisType {
 
     // returns the context to which interprocedural propagation shall
     // be conducted (used at call nodes)
-    public abstract Context getPropagationContext(CfgNodeCall callNode, Context context);
+    public abstract Context getPropagationContext(Call callNode, Context context);
 
     // returns a set of ReverseTarget objects to which interprocedural
     // propagation shall be conducted (used at exit nodes)

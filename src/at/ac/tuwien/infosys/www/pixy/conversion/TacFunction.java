@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.conversion;
 
 import at.ac.tuwien.infosys.www.phpparser.ParseNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCall;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Call;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -20,8 +20,8 @@ public class TacFunction {
 
     private SymbolTable symbolTable;
 
-    // a list of CFG nodes calling this function (CfgNodeCall)
-    private List<CfgNodeCall> calledFrom;
+    // a list of CFG nodes calling this function (Call)
+    private List<Call> calledFrom;
 
     // is this the main function?
     private boolean isMain;
@@ -108,11 +108,11 @@ public class TacFunction {
         return this.symbolTable.getVariable(varName);
     }
 
-    public List<CfgNodeCall> getCalledFrom() {
+    public List<Call> getCalledFrom() {
         return this.calledFrom;
     }
 
-    public List<CfgNodeCall> getContainedCalls() {
+    public List<Call> getContainedCalls() {
         return this.controlFlowGraph.getContainedCalls();
     }
 
@@ -169,7 +169,7 @@ public class TacFunction {
         this.isMain = isMain;
     }
 
-    public void addCalledFrom(CfgNodeCall callNode) {
+    public void addCalledFrom(Call callNode) {
         this.calledFrom.add(callNode);
     }
 

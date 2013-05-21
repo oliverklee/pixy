@@ -10,37 +10,50 @@ import java.util.List;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeIsset extends AbstractCfgNode {
-    private TacPlace left;
-    private TacPlace right;
+public class Static extends AbstractCfgNode {
+    private TacPlace operand;
+    private TacPlace initialPlace;
+    private boolean hasInitialPlace;
 
 // CONSTRUCTORS ********************************************************************
 
-    public CfgNodeIsset(TacPlace left, TacPlace right, ParseNode node) {
+    public Static(TacPlace operand, ParseNode node) {
         super(node);
-        this.left = left;
-        this.right = right;
+        this.operand = operand;
+        this.hasInitialPlace = false;
+        this.initialPlace = null;
+    }
+
+    public Static(TacPlace operand, TacPlace initialPlace, ParseNode node) {
+        super(node);
+        this.operand = operand;
+        this.hasInitialPlace = true;
+        this.initialPlace = initialPlace;
     }
 
 // GET *****************************************************************************
 
-    public TacPlace getLeft() {
-        return this.left;
+    public boolean hasInitialPlace() {
+        return this.hasInitialPlace;
     }
 
-    public TacPlace getRight() {
-        return this.right;
+    public TacPlace getOperand() {
+        return this.operand;
+    }
+
+    public TacPlace getInitialPlace() {
+        return this.initialPlace;
     }
 
     public List<Variable> getVariables() {
         List<Variable> retMe = new LinkedList<>();
-        if (this.left instanceof Variable) {
-            retMe.add((Variable) this.left);
+        if (this.operand instanceof Variable) {
+            retMe.add((Variable) this.operand);
         } else {
             retMe.add(null);
         }
-        if (this.right instanceof Variable) {
-            retMe.add((Variable) this.right);
+        if (this.initialPlace instanceof Variable) {
+            retMe.add((Variable) this.initialPlace);
         } else {
             retMe.add(null);
         }
@@ -52,10 +65,10 @@ public class CfgNodeIsset extends AbstractCfgNode {
     public void replaceVariable(int index, Variable replacement) {
         switch (index) {
             case 0:
-                this.left = replacement;
+                this.operand = replacement;
                 break;
             case 1:
-                this.right = replacement;
+                this.initialPlace = replacement;
                 break;
             default:
                 throw new RuntimeException("SNH");

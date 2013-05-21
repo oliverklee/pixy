@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.inter;
 
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCall;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Call;
 
 import java.util.Set;
 
@@ -8,7 +8,7 @@ import java.util.Set;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class ReverseTarget {
-    private CfgNodeCall callNode;
+    private Call callNode;
 
     // a set of Contexts
     private Set<? extends Context> contexts;
@@ -17,7 +17,7 @@ public class ReverseTarget {
 //  CONSTRUCTORS ********************************************************************
 //  *********************************************************************************
 
-    public ReverseTarget(CfgNodeCall callNode, Set<? extends Context> contexts) {
+    public ReverseTarget(Call callNode, Set<? extends Context> contexts) {
         this.callNode = callNode;
         this.contexts = contexts;
     }
@@ -26,7 +26,7 @@ public class ReverseTarget {
 //  GET *****************************************************************************
 //  *********************************************************************************
 
-    public CfgNodeCall getCallNode() {
+    public Call getCallNode() {
         return this.callNode;
     }
 

@@ -4,7 +4,7 @@ import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCallRet;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.ReturnFromCall;
 
 import java.util.*;
 
@@ -1121,7 +1121,7 @@ public class DepLatticeElement extends LatticeElement {
 
     // sets the temporary responsible for catching the return value
     // to the retNode and does NOT reset the return variable
-    public void handleReturnValue(CfgNodeCallRet retNode/*, DepLatticeElement calleeIn*/) {
+    public void handleReturnValue(ReturnFromCall retNode/*, DepLatticeElement calleeIn*/) {
 
         Variable tempVar = retNode.getTempVar();
         Dep dep = Dep.create(retNode);

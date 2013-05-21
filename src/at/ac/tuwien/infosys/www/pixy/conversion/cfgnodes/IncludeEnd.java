@@ -11,16 +11,16 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeIncludeEnd extends AbstractCfgNode {
+public class IncludeEnd extends AbstractCfgNode {
     private File file;  // file in which this node occurs
-    private CfgNodeIncludeStart peer;
+    private IncludeStart peer;
 
 //  CONSTRUCTORS *******************************************************************
 
-    // - instantiate CfgNodeIncludeStart
-    // - instantiate CfgNodeIncludeEnd with the following constructor
+    // - instantiate IncludeStart
+    // - instantiate IncludeEnd with the following constructor
     // this way, you don't have to call setPeer yourself
-    public CfgNodeIncludeEnd(CfgNodeIncludeStart start) {
+    public IncludeEnd(IncludeStart start) {
         super(start.getParseNode());
         start.setPeer(this);
         this.file = start.getContainingFile();
@@ -37,7 +37,7 @@ public class CfgNodeIncludeEnd extends AbstractCfgNode {
         return Collections.emptyList();
     }
 
-    public CfgNodeIncludeStart getPeer() {
+    public IncludeStart getPeer() {
         return this.peer;
     }
 
@@ -50,7 +50,7 @@ public class CfgNodeIncludeEnd extends AbstractCfgNode {
     public void replaceVariable(int index, Variable replacement) {
     }
 
-    public void setPeer(CfgNodeIncludeStart peer) {
+    public void setPeer(IncludeStart peer) {
         this.peer = peer;
     }
 }

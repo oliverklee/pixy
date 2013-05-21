@@ -1,25 +1,29 @@
 package at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes;
 
-import at.ac.tuwien.infosys.www.phpparser.ParseNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 import java.util.Collections;
 import java.util.List;
 
 /**
+ * Hotspots are only used for JUnit tests.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeEntry extends AbstractCfgNode {
-// CONSTRUCTORS ********************************************************************
+public class Hotspot extends AbstractCfgNode {
+    private Integer hotspotId;
 
-    // necessary constructor for special functions (have no associated
-    // parse node)
-    public CfgNodeEntry() {
+//  CONSTRUCTORS *******************************************************************
+
+    public Hotspot(Integer hotspotId) {
         super();
+        this.hotspotId = hotspotId;
     }
 
-    public CfgNodeEntry(ParseNode node) {
-        super(node);
+//  GET ****************************************************************************
+
+    public Integer getHotspotId() {
+        return this.hotspotId;
     }
 
     public List<Variable> getVariables() {

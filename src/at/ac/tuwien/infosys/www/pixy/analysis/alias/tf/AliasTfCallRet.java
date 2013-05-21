@@ -10,7 +10,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.inter.Context;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCallPrep;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreperation;
 
 import java.util.HashSet;
 import java.util.List;
@@ -32,7 +32,7 @@ public class AliasTfCallRet extends TransferFunction {
     public AliasTfCallRet(
         InterAnalysisNode analysisNodeAtCallPrep,
         TacFunction callee, AliasAnalysis aliasAnalysis,
-        CfgNodeCallPrep cfgNode) {
+        CallPreperation cfgNode) {
 
         this.analysisNodeAtCallPrep = analysisNodeAtCallPrep;
         this.callee = callee;

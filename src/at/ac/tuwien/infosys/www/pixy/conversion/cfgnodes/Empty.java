@@ -9,17 +9,17 @@ import java.util.List;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeEmpty extends AbstractCfgNode {
+public class Empty extends AbstractCfgNode {
 // CONSTRUCTORS ********************************************************************
 
-    public CfgNodeEmpty() {
+    public Empty() {
         super();
         // empty CFG nodes will be deleted from the CFG, so their ID's can be
         // recycled; TOO DANGEROUS TO DO IT HERE! better: additional pass over
         // all CFGs
     }
 
-    public CfgNodeEmpty(ParseNode parseNode) {
+    public Empty(ParseNode parseNode) {
         super(parseNode);
     }
 

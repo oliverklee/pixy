@@ -3,19 +3,19 @@ package at.ac.tuwien.infosys.www.pixy.analysis.literal.tf;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCallUnknown;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallOfUnknownFunction;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class LiteralTfCallUnknown extends TransferFunction {
-    private CfgNodeCallUnknown cfgNode;
+    private CallOfUnknownFunction cfgNode;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public LiteralTfCallUnknown(CfgNodeCallUnknown cfgNode) {
+    public LiteralTfCallUnknown(CallOfUnknownFunction cfgNode) {
         this.cfgNode = cfgNode;
     }
 

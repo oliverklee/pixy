@@ -7,7 +7,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.inter.functional.FunctionalAnalysi
 import at.ac.tuwien.infosys.www.pixy.conversion.InternalStrings;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeHotspot;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Hotspot;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -48,7 +48,7 @@ public class AliasTestCase extends TestCase {
         for (int i = 0; i < numHotspots; i++) {
             this.elements[i] = (AliasLatticeElement) this.getHotspotInfo(i).getUnrecycledFoldedValue();
             if (this.elements[i] == null) {
-                CfgNodeHotspot hot = this.tac.getHotspot(i);
+                Hotspot hot = this.tac.getHotspot(i);
                 System.out.println("thenode: " + hot.toString() + ", " + hot.getOrigLineno());
                 System.out.println("enclosing: " + hot.getEnclosingBasicBlock());
                 throw new RuntimeException("SNH");
@@ -63,7 +63,7 @@ public class AliasTestCase extends TestCase {
     // returns the analysis node associated with the hotspot given by its ID
     private FunctionalAnalysisNode getHotspotInfo(int hotspotId) {
 
-        CfgNodeHotspot hot = this.tac.getHotspot(hotspotId);
+        Hotspot hot = this.tac.getHotspot(hotspotId);
         if (hot == null) {
             Assert.fail("Tried to retrieve non-existent hotspot with ID " + hotspotId);
         }

@@ -8,12 +8,12 @@ import java.util.List;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeBasicBlock extends AbstractCfgNode {
+public class BasicBlock extends AbstractCfgNode {
     List<AbstractCfgNode> containedNodes;
 
     // associate parse node of the basic block's initial node
     // with this basic block node (important for line number)
-    public CfgNodeBasicBlock(AbstractCfgNode initialNode) {
+    public BasicBlock(AbstractCfgNode initialNode) {
         super(initialNode.getParseNode());
         this.containedNodes = new LinkedList<>();
         this.containedNodes.add(initialNode);

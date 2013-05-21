@@ -9,8 +9,8 @@ import at.ac.tuwien.infosys.www.pixy.analysis.dep.Sink;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParam;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCallBuiltin;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCallPrep;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallOfBuiltinFunction;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreperation;
 
 import java.util.List;
 
@@ -50,17 +50,17 @@ public class SQLSanitationAnalysis extends SanitationAnalysis {
     protected void checkForSink(AbstractCfgNode cfgNodeX, TacFunction traversedFunction,
                                 List<Sink> sinks) {
 
-        if (cfgNodeX instanceof CfgNodeCallBuiltin) {
+        if (cfgNodeX instanceof CallOfBuiltinFunction) {
 
             // builtin function sinks
 
-            CfgNodeCallBuiltin cfgNode = (CfgNodeCallBuiltin) cfgNodeX;
+            CallOfBuiltinFunction cfgNode = (CallOfBuiltinFunction) cfgNodeX;
             String functionName = cfgNode.getFunctionName();
 
             checkForSinkHelper(functionName, cfgNode, cfgNode.getParamList(), traversedFunction, sinks);
-        } else if (cfgNodeX instanceof CfgNodeCallPrep) {
+        } else if (cfgNodeX instanceof CallPreperation) {
 
-            CfgNodeCallPrep cfgNode = (CfgNodeCallPrep) cfgNodeX;
+            CallPreperation cfgNode = (CallPreperation) cfgNodeX;
             String functionName = cfgNode.getFunctionNamePlace().toString();
 
             // user-defined custom sinks

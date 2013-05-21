@@ -306,7 +306,7 @@ public class MyOptions {
         return sinkType;
     }
 
-    // add builtin function sinks (represented by CfgNodeCallBuiltin)
+    // add builtin function sinks (represented by CallOfBuiltinFunction)
     public static void initSinks() {
         for (DepClientInfo dci : analyses) {
             String sinkFileName = "sinks_" + dci.getName() + ".txt";

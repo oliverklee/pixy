@@ -5,7 +5,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.Dep;
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepSet;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCallUnknown;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallOfUnknownFunction;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -14,13 +14,13 @@ import java.util.Set;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class DepTfCallUnknown extends TransferFunction {
-    private CfgNodeCallUnknown cfgNode;
+    private CallOfUnknownFunction cfgNode;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public DepTfCallUnknown(CfgNodeCallUnknown cfgNode) {
+    public DepTfCallUnknown(CallOfUnknownFunction cfgNode) {
         this.cfgNode = cfgNode;
     }
 

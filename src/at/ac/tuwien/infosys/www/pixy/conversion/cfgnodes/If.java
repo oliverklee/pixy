@@ -11,14 +11,14 @@ import java.util.List;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeIf extends AbstractCfgNode {
+public class If extends AbstractCfgNode {
     private TacPlace leftOperand;
     private TacPlace rightOperand;  // may only be Constant.TRUE or Constant.FALSE
     private int op;
 
 //CONSTRUCTORS ********************************************************************
 
-    public CfgNodeIf(TacPlace leftOperand, TacPlace rightOperand, int op, ParseNode node) {
+    public If(TacPlace leftOperand, TacPlace rightOperand, int op, ParseNode node) {
         super(node);
         // make sure that right operand is valid (i.e. true or false)
         if (!(rightOperand == Constant.TRUE || rightOperand == Constant.FALSE)) {

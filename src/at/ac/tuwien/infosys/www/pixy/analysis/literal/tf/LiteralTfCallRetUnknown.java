@@ -4,19 +4,19 @@ import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.Context;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCallRet;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.ReturnFromCall;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class LiteralTfCallRetUnknown extends TransferFunction {
-    private CfgNodeCallRet retNode;
+    private ReturnFromCall retNode;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public LiteralTfCallRetUnknown(CfgNodeCallRet retNode) {
+    public LiteralTfCallRetUnknown(ReturnFromCall retNode) {
         this.retNode = retNode;
     }
 

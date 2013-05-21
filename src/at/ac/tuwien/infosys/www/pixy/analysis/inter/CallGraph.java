@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.inter;
 
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCall;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Call;
 
 import java.util.*;
 
@@ -21,7 +21,7 @@ public class CallGraph {
         this.nodes.put(mainFunction, new CallGraphNode(mainFunction));
     }
 
-    public void add(TacFunction caller, TacFunction callee, CfgNodeCall callNode) {
+    public void add(TacFunction caller, TacFunction callee, Call callNode) {
 
         // add caller node (if necessary)
         CallGraphNode callerNode = this.nodes.get(caller);
@@ -93,7 +93,7 @@ public class CallGraph {
         return this.nodes.get(f).getPredecessors();
     }
 
-    public Set<CfgNodeCall> getCallsTo(TacFunction f) {
+    public Set<Call> getCallsTo(TacFunction f) {
         return this.nodes.get(f).getCallsTo();
     }
 

@@ -6,9 +6,9 @@ import at.ac.tuwien.infosys.www.pixy.conversion.CfgEdge;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCall;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeEntry;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeExit;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Call;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgEntry;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgExit;
 
 import java.util.*;
 
@@ -86,12 +86,12 @@ public class InterWorkListOrder {
             // we will try to get an unvisited successor element
             InterWorkListElement nextElement = null;
 
-            if (cfgNode instanceof CfgNodeCall) {
+            if (cfgNode instanceof Call) {
 
                 // in case of a call node, we have to distinguish between
                 // unknown calls (no callee available) and known calls
 
-                CfgNodeCall callNode = (CfgNodeCall) cfgNode;
+                Call callNode = (Call) cfgNode;
                 TacFunction callee = callNode.getCallee();
                 if (callee == null) {
                     // for unknown calls:
@@ -107,7 +107,7 @@ public class InterWorkListOrder {
                     // for normal calls:
                     // enter function under corresponding context
 
-                    CfgNodeEntry entryNode = (CfgNodeEntry) callee.getControlFlowGraph().getHead();
+                    CfgEntry entryNode = (CfgEntry) callee.getControlFlowGraph().getHead();
                     Context propagationContext = cc.getTargetContext(callNode, context.getPosition());
                     if (propagationContext == null) {
                         throw new RuntimeException("SNH: " + callNode.getLoc());
@@ -118,8 +118,8 @@ public class InterWorkListOrder {
                         nextElement = null;
                     }
                 }
-            } else if (cfgNode instanceof CfgNodeExit) {
-                CfgNodeExit exitNode = (CfgNodeExit) cfgNode;
+            } else if (cfgNode instanceof CfgExit) {
+                CfgExit exitNode = (CfgExit) cfgNode;
                 TacFunction exitedFunction = exitNode.getEnclosingFunction();
 
                 // only proceed if this is not the exit node of the main function
@@ -132,7 +132,7 @@ public class InterWorkListOrder {
                     while ((nextElement == null) && revTargetsIter.hasNext()) {
 
                         ReverseTarget revTarget = revTargetsIter.next();
-                        CfgNodeCall revCall = revTarget.getCallNode();
+                        Call revCall = revTarget.getCallNode();
                         AbstractCfgNode revRet = revCall.getSuccessor(0);
                         Iterator<? extends Context> reverseContextsIter = revTarget.getContexts().iterator();
 

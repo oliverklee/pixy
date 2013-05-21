@@ -10,29 +10,32 @@ import java.util.List;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeGlobal extends AbstractCfgNode {
-    private Variable operand;
+public class AssignReference extends AbstractCfgNode {
+    private Variable left;
+    private Variable right;
 
-// CONSTRUCTORS ********************************************************************
+//  CONSTRUCTORS *******************************************************************
 
-    public CfgNodeGlobal(TacPlace operand, ParseNode node) {
+    public AssignReference(Variable left, Variable right, ParseNode node) {
         super(node);
-        this.operand = (Variable) operand;  // must be a variable
+        this.left = left;
+        this.right = right;
     }
 
-//  GET *****************************************************************************
+//  GET ****************************************************************************
 
-    public Variable getOperand() {
-        return this.operand;
+    public Variable getLeft() {
+        return this.left;
+    }
+
+    public TacPlace getRight() {
+        return this.right;
     }
 
     public List<Variable> getVariables() {
         List<Variable> retMe = new LinkedList<>();
-        if (this.operand != null) {
-            retMe.add(this.operand);
-        } else {
-            retMe.add(null);
-        }
+        retMe.add(this.left);
+        retMe.add(this.right);
         return retMe;
     }
 
@@ -41,7 +44,10 @@ public class CfgNodeGlobal extends AbstractCfgNode {
     public void replaceVariable(int index, Variable replacement) {
         switch (index) {
             case 0:
-                this.operand = replacement;
+                this.left = replacement;
+                break;
+            case 1:
+                this.right = replacement;
                 break;
             default:
                 throw new RuntimeException("SNH");

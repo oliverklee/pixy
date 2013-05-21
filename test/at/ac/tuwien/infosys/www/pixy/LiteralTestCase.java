@@ -7,7 +7,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.InternalStrings;
 import at.ac.tuwien.infosys.www.pixy.conversion.Literal;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeHotspot;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Hotspot;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -60,7 +60,7 @@ public class LiteralTestCase extends TestCase {
     // returns the analysis node associated with the hotspot given by its ID
     private InterAnalysisNode getHotspotInfo(int hotspotId) {
 
-        CfgNodeHotspot hot = this.tac.getHotspot(hotspotId);
+        Hotspot hot = this.tac.getHotspot(hotspotId);
         if (hot == null) {
             Assert.fail("Tried to retrieve non-existent hotspot with ID " + hotspotId);
         }

@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeCallBuiltin extends AbstractCfgNode {
+public class CallOfBuiltinFunction extends AbstractCfgNode {
     // name of the called builtin function
     private String functionName;
 
@@ -25,8 +25,8 @@ public class CfgNodeCallBuiltin extends AbstractCfgNode {
 
 // CONSTRUCTORS ********************************************************************
 
-    public CfgNodeCallBuiltin(String functionName,
-                              List<TacActualParam> paramList, TacPlace tempPlace, ParseNode node) {
+    public CallOfBuiltinFunction(String functionName,
+                                 List<TacActualParam> paramList, TacPlace tempPlace, ParseNode node) {
 
         super(node);
         this.functionName = functionName.toLowerCase();

@@ -9,7 +9,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.ConstantsTable;
 import at.ac.tuwien.infosys.www.pixy.conversion.Literal;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeDefine;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Define;
 
 import java.util.List;
 
@@ -29,7 +29,7 @@ public class DepTfDefine extends TransferFunction {
 // *********************************************************************************
 
     public DepTfDefine(ConstantsTable table, LiteralAnalysis literalAnalysis,
-                       CfgNodeDefine cfgNode) {
+                       Define cfgNode) {
 
         this.setMe = cfgNode.getSetMe();
         this.caseInsensitive = cfgNode.getCaseInsensitive();

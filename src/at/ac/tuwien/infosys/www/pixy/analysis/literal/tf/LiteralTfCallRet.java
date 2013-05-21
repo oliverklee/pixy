@@ -9,8 +9,8 @@ import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.Literal;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCallPrep;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCallRet;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreperation;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.ReturnFromCall;
 
 import java.util.*;
 
@@ -21,8 +21,8 @@ public class LiteralTfCallRet extends TransferFunction {
     private InterAnalysisNode analysisNodeAtCallPrep;
     private TacFunction caller;
     private TacFunction callee;
-    private CfgNodeCallPrep prepNode;
-    private CfgNodeCallRet retNode;
+    private CallPreperation prepNode;
+    private ReturnFromCall retNode;
     private AliasAnalysis aliasAnalysis;
 
     // call-by-reference parameter pairs
@@ -39,8 +39,8 @@ public class LiteralTfCallRet extends TransferFunction {
         InterAnalysisNode analysisNodeAtCallPrep,
         TacFunction caller,
         TacFunction callee,
-        CfgNodeCallPrep prepNode,
-        CfgNodeCallRet retNode,
+        CallPreperation prepNode,
+        ReturnFromCall retNode,
         AliasAnalysis aliasAnalysis,
         LatticeElement bottom) {
 
