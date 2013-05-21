@@ -1171,8 +1171,10 @@ public class Automaton
                     for (State s : ac) {
                         s.accept = false;
                         s.addEpsilon(aa.initial);
-                        if (s.accept)
+                        //noinspection ConstantConditions
+                        if (s.accept) {
                             ns.add(s);
+                        }
                     }
                     ac = ns;
                 }

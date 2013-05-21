@@ -79,7 +79,6 @@ public class DepLatticeElement extends LatticeElement {
         this.placeToDep = new HashMap<>();
         this.arrayLabels = new HashMap<>();
         for (TacPlace place : places) {
-
             if ((place instanceof Variable) &&
                 place.getVariable().isArrayElement() &&
                 place.getVariable().hasNonLiteralIndices()) {
@@ -90,7 +89,7 @@ public class DepLatticeElement extends LatticeElement {
             }
 
             // arrayLabels are not defined for variables that are array-elements
-            if ((place instanceof Variable) && !(place.getVariable().isArrayElement())) {
+            if ((place instanceof Variable) && !place.getVariable().isArrayElement()) {
                 this.arrayLabels.put((Variable) place, DepSet.UNINIT);
             }
         }
@@ -101,7 +100,7 @@ public class DepLatticeElement extends LatticeElement {
         // for return variables has to have the same properties as the default
         // mapping for NULL (i.e., harmless);
         for (TacPlace place : places) {
-            if ((place instanceof Variable) && (place.getVariable().isReturnVariable())) {
+            if ((place instanceof Variable) && place.getVariable().isReturnVariable()) {
                 this.placeToDep.put(place, DepSet.UNINIT);
                 this.arrayLabels.put((Variable) place, DepSet.UNINIT);
             }
@@ -302,10 +301,8 @@ public class DepLatticeElement extends LatticeElement {
     // returns the non-default array label for the given variable if that mapping
     // exists, or the default label otherwise;
     public DepSet getArrayLabel(TacPlace place) {
-
         if ((place instanceof Literal) || (place instanceof Constant)) {
             throw new RuntimeException("SNH any longer");
-            //return DepSet.HARMLESS;
         }
 
         Variable var = (Variable) place;
@@ -387,7 +384,6 @@ public class DepLatticeElement extends LatticeElement {
 
     // expects a non-array-element!
     private void setArrayLabel(Variable var, DepSet depSet) {
-
         if (var.isArrayElement()) {
             throw new RuntimeException("SNH: " + var);
         }
@@ -407,7 +403,6 @@ public class DepLatticeElement extends LatticeElement {
 //  ********************************************************************************
 
     private void lubArrayLabel(Variable var, DepSet depSet) {
-
         if (var.isMember()) {
             // we don't want to modify the special member variable
             return;
@@ -430,7 +425,6 @@ public class DepLatticeElement extends LatticeElement {
     // sets the dep for all literal array elements in the
     // tree sepcified by the given root, INCLUDING THE ROOT
     private void setWholeTree(Variable root, DepSet depSet) {
-
         this.setDep(root, depSet);
         if (!root.isArray()) {
             return;
@@ -444,7 +438,6 @@ public class DepLatticeElement extends LatticeElement {
 
     // analogous to setWholeTree
     private void lubWholeTree(Variable root, DepSet depSet) {
-
         this.lubDep(root, depSet);
         if (!root.isArray()) {
             return;
@@ -784,7 +777,7 @@ public class DepLatticeElement extends LatticeElement {
             Map.Entry<Variable, DepSet> entry = iter.next();
             TacPlace place = entry.getKey();
 
-            if (!(place instanceof Variable)) {
+            if (!(place != null)) {
                 // nothing to do for non-variables (i.e., constants)
                 // Note: Is this possible here at all as of the Map contents data types?
                 continue;
@@ -829,7 +822,7 @@ public class DepLatticeElement extends LatticeElement {
             Map.Entry<Variable, DepSet> entry = iter.next();
             TacPlace place = entry.getKey();
 
-            if (!(place instanceof Variable)) {
+            if (!(place != null)) {
                 // nothing to do for non-variables (i.e., constants)
                 // Note: Is this possible here at all as of the Map contents data types?
                 continue;
@@ -906,7 +899,7 @@ public class DepLatticeElement extends LatticeElement {
 
             // decide whether to copy this place
             boolean copyMe = false;
-            if (origPlace instanceof Variable) {
+            if (origPlace != null) {
                 Variable origVar = (Variable) origPlace;
                 if (origVar.isGlobal() || origVar.isSuperGlobal()) {
                     copyMe = true;
@@ -965,7 +958,7 @@ public class DepLatticeElement extends LatticeElement {
 
             // decide whether to copy this place
             boolean copyMe = false;
-            if (interPlace instanceof Variable) {
+            if (interPlace != null) {
                 Variable interVar = (Variable) interPlace;
                 if (interVar.isGlobal() || interVar.isSuperGlobal()) {
                     copyMe = true;
@@ -1017,7 +1010,7 @@ public class DepLatticeElement extends LatticeElement {
             DepSet origArrayLabel = entry.getValue();
 
             // nothing to do for non-variables, non-main's, and non-temporaries
-            if (!(origPlace instanceof Variable)) {
+            if (!(origPlace != null)) {
                 continue;
             }
             Variable origVar = (Variable) origPlace;
@@ -1063,7 +1056,7 @@ public class DepLatticeElement extends LatticeElement {
             DepSet origArrayLabel = entry.getValue();
 
             // nothing to do for non-variables and non-main's
-            if (!(origPlace instanceof Variable)) {
+            if (!(origPlace != null)) {
                 continue;
             }
             Variable origVar = (Variable) origPlace;
@@ -1104,7 +1097,7 @@ public class DepLatticeElement extends LatticeElement {
             DepSet origArrayLabel = entry.getValue();
 
             // nothing to do for non-variables and non-locals
-            if (!(origPlace instanceof Variable)) {
+            if (!(origPlace != null)) {
                 continue;
             }
             Variable origVar = (Variable) origPlace;

@@ -28,7 +28,7 @@ public class CfgNodeGlobal extends CfgNode {
 
     public List<Variable> getVariables() {
         List<Variable> retMe = new LinkedList<>();
-        if (this.operand instanceof Variable) {
+        if (this.operand != null) {
             retMe.add(this.operand);
         } else {
             retMe.add(null);

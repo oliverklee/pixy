@@ -164,11 +164,6 @@ public abstract class IntraAnalysis extends Analysis {
             throw new RuntimeException("SNH: " + target.getClass());
         }
 
-        if (analysisNode == null) {
-            System.out.println(target.getOrigLineno());
-            throw new RuntimeException("SNH");
-        }
-
         // determine the target's old invalue
         LatticeElement oldInValue = analysisNode.getInValue();
         if (oldInValue == null) {

@@ -52,9 +52,7 @@ public class MustAliases {
     // returns the MustAliasGroup that contains the given
     // variable, or NULL if there is no such explicit group
     public MustAliasGroup getMustAliasGroup(Variable x) {
-        // EFF: there are faster ways to do this
-        boolean searchGroup = true;
-        for (Iterator<MustAliasGroup> iter = this.groups.iterator(); iter.hasNext() && searchGroup; ) {
+        for (Iterator<MustAliasGroup> iter = this.groups.iterator(); iter.hasNext(); ) {
             MustAliasGroup group = iter.next();
             if (group.contains(x)) {
                 return group;

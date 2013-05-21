@@ -74,72 +74,70 @@ public class Regex2Prolog {
 
             }
 
-            if (!done) {
-                if (sym.equals(FSAAutomaton.star)) {
-                    prologRegex.append('*');
-                    seq = ",";
-                } else if (sym.equals(FSAAutomaton.plus)) {
-                    prologRegex.append('+');
-                    seq = ",";
-                } else if (sym.equals(FSAAutomaton.obra)) {
-                    // start of subpattern
-                    prologRegex.append(seq);
-                    prologRegex.append(parseSub(iter));
-                    seq = ",";
-                } else if (sym.equals(FSAAutomaton.cbra)) {
-                    // end of subpattern
-                    break;
-                } else if (sym.equals(FSAAutomaton.osqbra)) {
-                    // start of character class
-                    prologRegex.append(seq);
-                    prologRegex.append(parseCharClass(iter));
-                    seq = ",";
-                } else if (sym.equals(FSAAutomaton.union)) {
-                    // <from_start_of_sub> | <to_end_of_sub>
-                    // ->
-                    // {[<from_start_of_sub>],[<to_end_of_sub>]}
-                    StringBuilder toEnd = parseSub(iter);
-                    prologRegex.insert(0, "{[");
-                    prologRegex.append("],");
-                    prologRegex.append(toEnd);
-                    prologRegex.append('}');
-                } else if (sym.equals(FSAAutomaton.point)) {
-                    // any character
-                    prologRegex.append(seq);
-                    prologRegex.append('?');
-                    seq = ",";
-                } else if (sym.equals(FSAAutomaton.backslash)) {
-                    // an escape
-                    String escaped = escape(iter);
-                    prologRegex.append(seq);
-                    prologRegex.append(escaped);
-                    seq = ",";
-                } else if (sym.equals(FSAAutomaton.ocurly)) {
-                    // repetition;
-                    // automaton could become quite large;
-                    // here is how it would work:
-                    // - determine the number of repetitions
-                    // - determine the regex that is to be repeated
-                    //   (easy: from start of the current subsequence to here)
-                    // - if the number of repetitions is a constant {x}:
-                    //   - concat the regex this number of times
-                    // - else if the number of repetitions is {x,} (i.e., unbounded):
-                    //   - repeat x times, and add a star-repetition
-                    // - else if the number of repetitions is a range a{2,4}
-                    //   - [a,a,a^,a^] (where ^ is option, i.e, ? in usual regex syntax)
-                    throw new UnsupportedRegexException();
-                } else if (sym.equals(FSAAutomaton.circum)) {
-                    // "start of line"
-                    throw new UnsupportedRegexException();
-                } else if (sym.equals(FSAAutomaton.dollar)) {
-                    // "end of line"
-                    throw new UnsupportedRegexException();
-                } else {
-                    // not a meta-character
-                    prologRegex.append(seq);
-                    prologRegex.append(sym);
-                    seq = ",";
-                }
+            if (sym.equals(FSAAutomaton.star)) {
+                prologRegex.append('*');
+                seq = ",";
+            } else if (sym.equals(FSAAutomaton.plus)) {
+                prologRegex.append('+');
+                seq = ",";
+            } else if (sym.equals(FSAAutomaton.obra)) {
+                // start of subpattern
+                prologRegex.append(seq);
+                prologRegex.append(parseSub(iter));
+                seq = ",";
+            } else if (sym.equals(FSAAutomaton.cbra)) {
+                // end of subpattern
+                break;
+            } else if (sym.equals(FSAAutomaton.osqbra)) {
+                // start of character class
+                prologRegex.append(seq);
+                prologRegex.append(parseCharClass(iter));
+                seq = ",";
+            } else if (sym.equals(FSAAutomaton.union)) {
+                // <from_start_of_sub> | <to_end_of_sub>
+                // ->
+                // {[<from_start_of_sub>],[<to_end_of_sub>]}
+                StringBuilder toEnd = parseSub(iter);
+                prologRegex.insert(0, "{[");
+                prologRegex.append("],");
+                prologRegex.append(toEnd);
+                prologRegex.append('}');
+            } else if (sym.equals(FSAAutomaton.point)) {
+                // any character
+                prologRegex.append(seq);
+                prologRegex.append('?');
+                seq = ",";
+            } else if (sym.equals(FSAAutomaton.backslash)) {
+                // an escape
+                String escaped = escape(iter);
+                prologRegex.append(seq);
+                prologRegex.append(escaped);
+                seq = ",";
+            } else if (sym.equals(FSAAutomaton.ocurly)) {
+                // repetition;
+                // automaton could become quite large;
+                // here is how it would work:
+                // - determine the number of repetitions
+                // - determine the regex that is to be repeated
+                //   (easy: from start of the current subsequence to here)
+                // - if the number of repetitions is a constant {x}:
+                //   - concat the regex this number of times
+                // - else if the number of repetitions is {x,} (i.e., unbounded):
+                //   - repeat x times, and add a star-repetition
+                // - else if the number of repetitions is a range a{2,4}
+                //   - [a,a,a^,a^] (where ^ is option, i.e, ? in usual regex syntax)
+                throw new UnsupportedRegexException();
+            } else if (sym.equals(FSAAutomaton.circum)) {
+                // "start of line"
+                throw new UnsupportedRegexException();
+            } else if (sym.equals(FSAAutomaton.dollar)) {
+                // "end of line"
+                throw new UnsupportedRegexException();
+            } else {
+                // not a meta-character
+                prologRegex.append(seq);
+                prologRegex.append(sym);
+                seq = ",";
             }
         }
 

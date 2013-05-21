@@ -772,8 +772,6 @@ public class DepGraph {
         } else if (cfgNodeX instanceof CfgNodeEval) {
             // still modeled with ID transfer function
             throw new RuntimeException("SNH");
-        } else if (cfgNodeX instanceof CfgNodeExit) {
-            throw new RuntimeException("SNH");
         } else if (cfgNodeX instanceof CfgNodeGlobal) {
             CfgNodeGlobal cfgNode = (CfgNodeGlobal) cfgNodeX;
             // "global($x)" is analogous to "$x =& main.$x";
@@ -1085,9 +1083,6 @@ public class DepGraph {
             // if one of the leafs is not a string, we're done
             if (!(node instanceof DepGraphNormalNode)) {
                 return false;
-            }
-            if (node instanceof DepGraphSccNode) {
-                throw new RuntimeException("SNH");
             }
             if (!((DepGraphNormalNode) node).isString()) {
                 return false;

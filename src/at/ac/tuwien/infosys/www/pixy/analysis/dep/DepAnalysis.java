@@ -471,85 +471,12 @@ public class DepAnalysis extends InterAnalysis {
                 }
 
                 retMe.add(depGraph);
-
-                if (statistics) {
-                    // shape statistics and leaf stringness
-                    System.out.println("Dep Graph Shape Info");
-                    System.out.println("--------------------");
-                    if (depGraph.isTree()) {
-                        System.out.println("is a tree");
-                        treeCount++;
-                        if (depGraph.leafsAreStrings()) {
-                            System.out.println("leafs are strings");
-                            stringLeafs++;
-                        } else {
-                            System.out.println("leafs are not strings");
-                            nonStringLeafs++;
-                        }
-                    } else if (depGraph.hasCycles()) {
-                        System.out.println("has cycles");
-                        cycleCount++;
-                    } else {
-                        System.out.println("is a dag");
-                        dagCount++;
-                        if (depGraph.leafsAreStrings()) {
-                            System.out.println("leafs are strings");
-                            stringLeafs++;
-                        } else {
-                            System.out.println("leafs are not strings");
-                            nonStringLeafs++;
-                        }
-                    }
-                    System.out.println();
-
-                    // operation counters
-                    System.out.println("Dep Graph Operation Counters");
-                    System.out.println("------------------------------");
-                    for (Map.Entry<String, Integer> entry : depGraph.getOpMap().entrySet()) {
-                        String opName = entry.getKey();
-                        Integer opCount = entry.getValue();
-                        System.out.println(opName + ": " + opCount);
-                        // update totals map
-                        Integer totalCount = opMap.get(opName);
-                        if (totalCount == null) {
-                            totalCount = opCount;
-                        } else {
-                            totalCount = totalCount + opCount;
-                        }
-                        opMap.put(opName, totalCount);
-                    }
-                    System.out.println();
-                }
-            }
+           }
         }
 
         this.finishedDetection = true;
         System.out.println("skipping clean-up");
         System.out.println();
-
-        if (statistics) {
-            // print graph shape statistics
-            System.out.println("Total Shape Statistics");
-            System.out.println("------------------------");
-            System.out.println("trees:        " + treeCount);
-            System.out.println("dags:         " + dagCount);
-            System.out.println("cycle graphs: " + cycleCount);
-
-            // leaf stringness
-            System.out.println("with string leafs:     " + stringLeafs);
-            System.out.println("with non-string leafs: " + nonStringLeafs);
-
-            // print total operation counters
-            System.out.println();
-            System.out.println("Total Op Statistics");
-            System.out.println("---------------------");
-            for (Map.Entry<String, Integer> entry : opMap.entrySet()) {
-                String opName = entry.getKey();
-                Integer opCount = entry.getValue();
-                System.out.println(opName + ": " + opCount);
-            }
-            System.out.println();
-        }
 
         return retMe;
     }
