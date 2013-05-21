@@ -3,10 +3,10 @@ package at.ac.tuwien.infosys.www.pixy;
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParam;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallBuiltin;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallPrep;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeEcho;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCallBuiltin;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCallPrep;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeEcho;
 import at.ac.tuwien.infosys.www.pixy.sanitation.SanitationAnalysis;
 
 import java.util.*;

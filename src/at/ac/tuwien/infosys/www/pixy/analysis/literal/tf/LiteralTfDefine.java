@@ -7,8 +7,8 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Constant;
 import at.ac.tuwien.infosys.www.pixy.conversion.ConstantsTable;
 import at.ac.tuwien.infosys.www.pixy.conversion.Literal;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeDefine;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeDefine;
 
 import java.util.List;
 

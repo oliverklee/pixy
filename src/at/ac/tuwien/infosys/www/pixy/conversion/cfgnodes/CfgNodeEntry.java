@@ -1,4 +1,4 @@
-package at.ac.tuwien.infosys.www.pixy.conversion.nodes;
+package at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes;
 
 import at.ac.tuwien.infosys.www.phpparser.ParseNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
@@ -9,21 +9,18 @@ import java.util.List;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeEmpty extends CfgNode {
+public class CfgNodeEntry extends CfgNode {
 // CONSTRUCTORS ********************************************************************
 
-    public CfgNodeEmpty() {
+    // necessary constructor for special functions (have no associated
+    // parse node)
+    public CfgNodeEntry() {
         super();
-        // empty CFG nodes will be deleted from the CFG, so their ID's can be
-        // recycled; TOO DANGEROUS TO DO IT HERE! better: additional pass over
-        // all CFGs
     }
 
-    public CfgNodeEmpty(ParseNode parseNode) {
-        super(parseNode);
+    public CfgNodeEntry(ParseNode node) {
+        super(node);
     }
-
-//  GET ****************************************************************************
 
     public List<Variable> getVariables() {
         return Collections.emptyList();
@@ -32,5 +29,6 @@ public class CfgNodeEmpty extends CfgNode {
 //  SET ****************************************************************************
 
     public void replaceVariable(int index, Variable replacement) {
+        // do nothing
     }
 }

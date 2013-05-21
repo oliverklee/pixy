@@ -4,8 +4,8 @@ import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCall;
 
 import java.util.LinkedList;
 import java.util.List;

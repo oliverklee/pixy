@@ -6,9 +6,9 @@ import at.ac.tuwien.infosys.www.pixy.Utils;
 import at.ac.tuwien.infosys.www.pixy.VulnerabilityInformation;
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallBuiltin;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallUnknown;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCallBuiltin;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCallUnknown;
 
 import java.io.File;
 import java.util.*;

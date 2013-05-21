@@ -1,10 +1,10 @@
 package at.ac.tuwien.infosys.www.pixy.conversion;
 
 import at.ac.tuwien.infosys.www.phpparser.ParseNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignBinary;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeAssignSimple;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeEmpty;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeAssignBinary;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeAssignSimple;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeEmpty;
 
 import java.util.Iterator;
 import java.util.LinkedList;

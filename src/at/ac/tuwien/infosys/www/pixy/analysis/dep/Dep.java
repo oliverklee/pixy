@@ -2,7 +2,7 @@ package at.ac.tuwien.infosys.www.pixy.analysis.dep;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.GenericRepos;
 import at.ac.tuwien.infosys.www.pixy.analysis.Recyclable;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
 
 /**
  * Corresponds to one dependency label, consisting of

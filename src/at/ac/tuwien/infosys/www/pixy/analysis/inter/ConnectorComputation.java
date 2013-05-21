@@ -5,7 +5,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring.CSContext;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring.CallString;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring.ECS;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCall;
 
 import java.util.*;
 

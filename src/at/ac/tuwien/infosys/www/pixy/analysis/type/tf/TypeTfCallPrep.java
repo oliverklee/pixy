@@ -5,7 +5,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.TypeAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.TypeLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
 
 import java.util.Iterator;
 import java.util.List;

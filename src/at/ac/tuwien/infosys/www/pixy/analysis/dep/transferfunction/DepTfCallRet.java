@@ -10,8 +10,8 @@ import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallPrep;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallRet;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCallPrep;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCallRet;
 
 import java.util.*;
 

@@ -7,8 +7,8 @@ import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.SymbolTable;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallPrep;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCallPrep;
 
 import java.util.HashMap;
 import java.util.Iterator;

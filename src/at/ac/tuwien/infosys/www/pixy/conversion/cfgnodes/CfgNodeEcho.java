@@ -1,39 +1,40 @@
-package at.ac.tuwien.infosys.www.pixy.conversion.nodes;
+package at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes;
 
 import at.ac.tuwien.infosys.www.phpparser.ParseNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeUnset extends CfgNode {
-    private Variable operand;
+public class CfgNodeEcho extends CfgNode {
+    private TacPlace place;
 
 // CONSTRUCTORS ********************************************************************
 
-    public CfgNodeUnset(TacPlace operand, ParseNode node) {
+    public CfgNodeEcho(TacPlace place, ParseNode node) {
         super(node);
-        this.operand = (Variable) operand;  // must be a variable
+        this.place = place;
     }
 
-// GET *****************************************************************************
+//  GET *****************************************************************************
 
-    public Variable getOperand() {
-        return this.operand;
+    public TacPlace getPlace() {
+        return this.place;
     }
 
     public List<Variable> getVariables() {
-        List<Variable> retMe = new LinkedList<>();
-        if (this.operand != null) {
-            retMe.add(this.operand);
+        if (this.place instanceof Variable) {
+            List<Variable> retMe = new LinkedList<>();
+            retMe.add((Variable) this.place);
+            return retMe;
         } else {
-            retMe.add(null);
+            return Collections.emptyList();
         }
-        return retMe;
     }
 
 //  SET ****************************************************************************
@@ -41,7 +42,7 @@ public class CfgNodeUnset extends CfgNode {
     public void replaceVariable(int index, Variable replacement) {
         switch (index) {
             case 0:
-                this.operand = replacement;
+                this.place = replacement;
                 break;
             default:
                 throw new RuntimeException("SNH");

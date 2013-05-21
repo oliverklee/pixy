@@ -3,7 +3,7 @@ package at.ac.tuwien.infosys.www.pixy.analysis.literal.tf;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallUnknown;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCallUnknown;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>

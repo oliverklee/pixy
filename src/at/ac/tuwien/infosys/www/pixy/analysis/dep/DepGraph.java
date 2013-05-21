@@ -8,7 +8,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.inter.Context;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysisInfo;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.ReverseTarget;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.*;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.*;
 import at.ac.tuwien.infosys.www.pixy.sanitation.FSAAutomaton;
 import at.ac.tuwien.infosys.www.pixy.sanitation.SanitationAnalysis;
 

@@ -19,7 +19,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.literal.DummyLiteralAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.*;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.*;
 
 import java.io.*;
 import java.util.*;

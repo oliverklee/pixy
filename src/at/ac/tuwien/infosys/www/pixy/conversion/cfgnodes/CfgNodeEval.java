@@ -1,4 +1,4 @@
-package at.ac.tuwien.infosys.www.pixy.conversion.nodes;
+package at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes;
 
 import at.ac.tuwien.infosys.www.phpparser.ParseNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
@@ -10,13 +10,13 @@ import java.util.List;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeEmptyTest extends CfgNode {
+public class CfgNodeEval extends CfgNode {
     private TacPlace left;
     private TacPlace right;
 
 // CONSTRUCTORS ********************************************************************
 
-    public CfgNodeEmptyTest(TacPlace left, TacPlace right, ParseNode node) {
+    public CfgNodeEval(TacPlace left, TacPlace right, ParseNode node) {
         super(node);
         this.left = left;
         this.right = right;

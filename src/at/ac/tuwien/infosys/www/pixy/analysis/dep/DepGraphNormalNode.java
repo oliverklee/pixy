@@ -6,7 +6,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Constant;
 import at.ac.tuwien.infosys.www.pixy.conversion.Literal;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>

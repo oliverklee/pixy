@@ -1,4 +1,4 @@
-package at.ac.tuwien.infosys.www.pixy.conversion.nodes;
+package at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes;
 
 import at.ac.tuwien.infosys.www.phpparser.ParseNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParam;
@@ -13,8 +13,8 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeCallBuiltin extends CfgNode {
-    // name of the called builtin function
+public class CfgNodeCallUnknown extends CfgNode {
+    // name of the called unknown function
     private String functionName;
 
     // parameter list
@@ -23,15 +23,19 @@ public class CfgNodeCallBuiltin extends CfgNode {
     // temporary variable to hold the return value
     private Variable tempVar;
 
+    // is this a call to an unknown method?
+    private boolean isMethod;
+
 // CONSTRUCTORS ********************************************************************
 
-    public CfgNodeCallBuiltin(String functionName,
-                              List<TacActualParam> paramList, TacPlace tempPlace, ParseNode node) {
+    public CfgNodeCallUnknown(String functionName, List<TacActualParam> paramList,
+                              TacPlace tempPlace, ParseNode node, boolean isMethod) {
 
         super(node);
         this.functionName = functionName.toLowerCase();
         this.paramList = paramList;
         this.tempVar = (Variable) tempPlace;
+        this.isMethod = isMethod;
     }
 
 // GET *****************************************************************************
@@ -59,6 +63,10 @@ public class CfgNodeCallBuiltin extends CfgNode {
             }
         }
         return retMe;
+    }
+
+    public boolean isMethod() {
+        return this.isMethod;
     }
 
 // SET *****************************************************************************

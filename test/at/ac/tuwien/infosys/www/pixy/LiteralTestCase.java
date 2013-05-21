@@ -7,7 +7,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.InternalStrings;
 import at.ac.tuwien.infosys.www.pixy.conversion.Literal;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeHotspot;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeHotspot;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 

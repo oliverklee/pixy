@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.intra;
 
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
 
 import java.util.LinkedList;
 

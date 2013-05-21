@@ -2,7 +2,7 @@ package at.ac.tuwien.infosys.www.pixy.analysis;
 
 import at.ac.tuwien.infosys.www.pixy.conversion.ControlFlowGraph;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.*;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.*;
 
 import java.util.List;
 

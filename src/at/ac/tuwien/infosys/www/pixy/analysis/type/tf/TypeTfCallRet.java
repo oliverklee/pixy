@@ -7,7 +7,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.TypeLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCall;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>

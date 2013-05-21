@@ -1,4 +1,4 @@
-package at.ac.tuwien.infosys.www.pixy.conversion.nodes;
+package at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes;
 
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 

@@ -4,7 +4,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.incdom.IncDomAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.incdom.IncDomLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
 
 /**
  * Transfer function for adding include dominators.

@@ -2,7 +2,7 @@ package at.ac.tuwien.infosys.www.pixy.analysis.type;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCall;
 
 import java.util.*;
 

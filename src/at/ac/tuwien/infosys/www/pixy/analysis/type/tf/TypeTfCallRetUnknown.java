@@ -4,7 +4,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.Context;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.TypeLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallRet;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCallRet;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>

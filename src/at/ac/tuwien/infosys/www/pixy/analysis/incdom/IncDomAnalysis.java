@@ -7,10 +7,10 @@ import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunctionId;
 import at.ac.tuwien.infosys.www.pixy.analysis.incdom.tf.IncDomTfAdd;
 import at.ac.tuwien.infosys.www.pixy.analysis.intra.IntraAnalysis;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeBasicBlock;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeIncludeEnd;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeIncludeStart;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeBasicBlock;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeIncludeEnd;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeIncludeStart;
 
 import java.util.LinkedList;
 import java.util.List;

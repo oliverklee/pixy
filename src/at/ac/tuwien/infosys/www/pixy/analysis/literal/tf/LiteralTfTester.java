@@ -5,7 +5,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.Literal;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeTester;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeTester;
 
 /**
  * Transfer function for special ~_test_ node.

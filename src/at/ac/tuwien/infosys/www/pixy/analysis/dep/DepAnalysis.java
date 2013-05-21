@@ -8,7 +8,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring.CSAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.mod.ModAnalysis;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.*;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.*;
 
 import java.util.*;
 

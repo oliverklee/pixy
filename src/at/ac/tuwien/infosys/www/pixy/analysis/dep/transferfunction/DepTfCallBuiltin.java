@@ -5,7 +5,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.Dep;
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepSet;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallBuiltin;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCallBuiltin;
 
 import java.util.HashSet;
 import java.util.Set;

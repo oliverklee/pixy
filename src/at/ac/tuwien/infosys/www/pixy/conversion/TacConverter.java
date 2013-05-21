@@ -8,7 +8,7 @@ import at.ac.tuwien.infosys.www.pixy.Utils;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.CallGraph;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.Type;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.TypeAnalysis;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.*;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.*;
 
 import java.io.File;
 import java.util.*;

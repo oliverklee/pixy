@@ -13,7 +13,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring.CSAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.TypeAnalysis;
 import at.ac.tuwien.infosys.www.pixy.conversion.includes.IncludeGraph;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeInclude;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeInclude;
 
 import java.io.*;
 import java.util.*;

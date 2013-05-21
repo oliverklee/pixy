@@ -4,7 +4,7 @@ import at.ac.tuwien.infosys.www.phpparser.ParseNode;
 import at.ac.tuwien.infosys.www.phpparser.PhpSymbols;
 import at.ac.tuwien.infosys.www.pixy.Utils;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralAnalysis;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeInclude;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeInclude;
 
 import java.io.File;
 import java.util.Collection;

@@ -7,7 +7,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.Literal;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParam;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallBuiltin;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCallBuiltin;
 
 import java.io.*;
 import java.util.List;

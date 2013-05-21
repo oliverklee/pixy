@@ -1,4 +1,4 @@
-package at.ac.tuwien.infosys.www.pixy.conversion.nodes;
+package at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes;
 
 import at.ac.tuwien.infosys.www.phpparser.ParseNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
@@ -10,17 +10,17 @@ import java.util.List;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeGlobal extends CfgNode {
+public class CfgNodeUnset extends CfgNode {
     private Variable operand;
 
 // CONSTRUCTORS ********************************************************************
 
-    public CfgNodeGlobal(TacPlace operand, ParseNode node) {
+    public CfgNodeUnset(TacPlace operand, ParseNode node) {
         super(node);
         this.operand = (Variable) operand;  // must be a variable
     }
 
-//  GET *****************************************************************************
+// GET *****************************************************************************
 
     public Variable getOperand() {
         return this.operand;

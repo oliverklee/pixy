@@ -4,7 +4,7 @@ import at.ac.tuwien.infosys.www.pixy.Dumper;
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.conversion.BuiltinFunctions;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacOperators;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
 
 /**
  * For builtin functions.

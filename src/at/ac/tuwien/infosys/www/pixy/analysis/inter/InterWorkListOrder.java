@@ -5,10 +5,10 @@ import at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring.ECS;
 import at.ac.tuwien.infosys.www.pixy.conversion.CfgEdge;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeEntry;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeExit;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCall;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeEntry;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeExit;
 
 import java.util.*;
 

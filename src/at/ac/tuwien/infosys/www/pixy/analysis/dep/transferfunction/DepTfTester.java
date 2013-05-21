@@ -7,7 +7,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepSet;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFormalParam;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeTester;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeTester;
 
 import java.util.LinkedList;
 import java.util.List;

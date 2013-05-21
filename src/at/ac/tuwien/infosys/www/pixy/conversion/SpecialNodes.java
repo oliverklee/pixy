@@ -1,8 +1,8 @@
 package at.ac.tuwien.infosys.www.pixy.conversion;
 
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeHotspot;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeTester;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeHotspot;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeTester;
 
 import java.util.HashSet;
 import java.util.Set;
