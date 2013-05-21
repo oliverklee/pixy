@@ -21,7 +21,7 @@ import java.util.Map;
  *
  * Guide for how to design such a class:
  * - implement the Recyclable interface
- * - insert a private static GenericRepos<that class>
+ * - insert a private static GenericRepository<that class>
  * - make the constructor private
  * - use a static factory method instead
  * - make sure that the private constructor is ONLY called by factory methods (and perhaps by static field initializers),
@@ -30,11 +30,11 @@ import java.util.Map;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class GenericRepos<E extends Recyclable> {
+public class GenericRepository<E extends Recyclable> {
     // structure hash code (Integer) -> List of Recyclable's
     private Map<Integer, List<E>> repos;
 
-    public GenericRepos() {
+    public GenericRepository() {
         this.repos = new HashMap<>();
     }
 

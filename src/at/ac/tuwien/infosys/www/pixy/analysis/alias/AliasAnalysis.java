@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.alias;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.GenericRepos;
+import at.ac.tuwien.infosys.www.pixy.analysis.GenericRepository;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunctionId;
@@ -20,7 +20,7 @@ import java.util.Set;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class AliasAnalysis extends InterAnalysis {
-    private GenericRepos<LatticeElement> repos;
+    private GenericRepository<LatticeElement> repos;
 
 //  ********************************************************************************
 //  CONSTRUCTORS *******************************************************************
@@ -29,7 +29,7 @@ public class AliasAnalysis extends InterAnalysis {
 //  AliasAnalysis ******************************************************************
 
     public AliasAnalysis(TacConverter tac, AnalysisType analysisType) {
-        this.repos = new GenericRepos<>();
+        this.repos = new GenericRepository<>();
         this.initGeneral(tac.getAllFunctions(), tac.getMainFunction(),
             analysisType, new InterWorkListPoor());
     }

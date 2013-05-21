@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.literal;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.GenericRepos;
+import at.ac.tuwien.infosys.www.pixy.analysis.GenericRepository;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunctionId;
@@ -22,7 +22,7 @@ import java.util.Set;
 public class LiteralAnalysis extends InterAnalysis {
     private TacConverter tac;
 
-    private GenericRepos<LatticeElement> repos;
+    private GenericRepository<LatticeElement> repos;
 
     // preceding alias analysis (required for correct results)
     private AliasAnalysis aliasAnalysis;
@@ -42,7 +42,7 @@ public class LiteralAnalysis extends InterAnalysis {
         InterWorkList workList) {
 
         this.tac = tac;
-        this.repos = new GenericRepos<>();
+        this.repos = new GenericRepository<>();
         this.aliasAnalysis = aliasAnalysis;
         this.includeNodes = new LinkedList<>();
 

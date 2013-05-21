@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.dep;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.GenericRepos;
+import at.ac.tuwien.infosys.www.pixy.analysis.GenericRepository;
 import at.ac.tuwien.infosys.www.pixy.analysis.Recyclable;
 
 import java.util.HashSet;
@@ -12,7 +12,7 @@ import java.util.Set;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class DepSet implements Recyclable {
-    public static GenericRepos<DepSet> repos = new GenericRepos<>();
+    public static GenericRepository<DepSet> repos = new GenericRepository<>();
 
     // no special treatment necessary for the following:
     static public final DepSet UNINIT = new DepSet(Dep.UNINIT);

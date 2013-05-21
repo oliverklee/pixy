@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.dep;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.GenericRepos;
+import at.ac.tuwien.infosys.www.pixy.analysis.GenericRepository;
 import at.ac.tuwien.infosys.www.pixy.analysis.Recyclable;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
@@ -11,8 +11,8 @@ import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class Dep implements Recyclable {
-    public static GenericRepos<Dep> repos =
-        new GenericRepos<>();
+    public static GenericRepository<Dep> repos =
+        new GenericRepository<>();
 
     // special, parameterized label
     public static final Dep UNINIT =

@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.type;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.GenericRepos;
+import at.ac.tuwien.infosys.www.pixy.analysis.GenericRepository;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunctionId;
@@ -24,7 +24,7 @@ import java.util.Set;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class TypeAnalysis extends InterAnalysis {
-    private GenericRepos<LatticeElement> repos;
+    private GenericRepository<LatticeElement> repos;
     private Collection<String> classNames;
 
 //  ********************************************************************************
@@ -33,7 +33,7 @@ public class TypeAnalysis extends InterAnalysis {
                         AnalysisType analysisType,
                         InterWorkList workList) {
 
-        this.repos = new GenericRepos<>();
+        this.repos = new GenericRepository<>();
         this.classNames = tac.getUserClasses().keySet();
         this.initGeneral(tac.getAllFunctions(), tac.getMainFunction(),
             analysisType, workList);

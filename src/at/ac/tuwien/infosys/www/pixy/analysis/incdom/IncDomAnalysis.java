@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.incdom;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.GenericRepos;
+import at.ac.tuwien.infosys.www.pixy.analysis.GenericRepository;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunctionId;
@@ -21,7 +21,7 @@ import java.util.List;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class IncDomAnalysis extends IntraAnalysis {
-    private GenericRepos<LatticeElement> repos;
+    private GenericRepository<LatticeElement> repos;
 
 //  ********************************************************************************
 //  CONSTRUCTORS *******************************************************************
@@ -30,7 +30,7 @@ public class IncDomAnalysis extends IntraAnalysis {
 //  IncDomAnalysis *****************************************************************
 
     public IncDomAnalysis(TacFunction function) {
-        this.repos = new GenericRepos<>();
+        this.repos = new GenericRepository<>();
         this.initGeneral(function);
     }
 

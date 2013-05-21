@@ -23,7 +23,7 @@ public class DepAnalysis extends InterAnalysis {
     private ConstantsTable constantsTable;
     private SymbolTable superSymbolTable;
     private Variable memberPlace;
-    private GenericRepos<LatticeElement> repos;
+    private GenericRepository<LatticeElement> repos;
 
     private AliasAnalysis aliasAnalysis;
     private LiteralAnalysis literalAnalysis;
@@ -50,7 +50,7 @@ public class DepAnalysis extends InterAnalysis {
         this.constantsTable = tac.getConstantsTable();
         this.superSymbolTable = tac.getSuperSymbolTable();
         this.memberPlace = tac.getMemberPlace();
-        this.repos = new GenericRepos<>();
+        this.repos = new GenericRepository<>();
 
         this.aliasAnalysis = aliasAnalysis;
         this.literalAnalysis = literalAnalysis;
