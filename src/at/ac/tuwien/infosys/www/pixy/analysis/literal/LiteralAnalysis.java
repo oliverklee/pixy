@@ -8,7 +8,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.AnalysisType;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterWorkList;
-import at.ac.tuwien.infosys.www.pixy.analysis.literal.tf.*;
+import at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.*;
 

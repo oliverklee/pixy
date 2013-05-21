@@ -4,7 +4,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.GenericRepository;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunctionId;
-import at.ac.tuwien.infosys.www.pixy.analysis.alias.tf.*;
+import at.ac.tuwien.infosys.www.pixy.analysis.alias.transferfunction.*;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.AnalysisType;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysisNode;
