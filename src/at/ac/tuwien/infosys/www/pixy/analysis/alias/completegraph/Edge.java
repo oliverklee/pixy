@@ -1,24 +1,24 @@
-package at.ac.tuwien.infosys.www.pixy.analysis.alias.tools;
+package at.ac.tuwien.infosys.www.pixy.analysis.alias.completegraph;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class SccEdge {
+public class Edge {
     // this edge is undirected, so the order of the nodes
     // doesn't play a role
-    private SccNode n1;
-    private SccNode n2;
+    private Node n1;
+    private Node n2;
 
-    public SccEdge(SccNode n1, SccNode n2) {
+    public Edge(Node n1, Node n2) {
         this.n1 = n1;
         this.n2 = n2;
     }
 
-    public SccNode getN1() {
+    public Node getN1() {
         return this.n1;
     }
 
-    public SccNode getN2() {
+    public Node getN2() {
         return this.n2;
     }
 
@@ -26,10 +26,10 @@ public class SccEdge {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof SccEdge)) {
+        if (!(obj instanceof Edge)) {
             return false;
         }
-        SccEdge comp = (SccEdge) obj;
+        Edge comp = (Edge) obj;
 
         return (this.n1 == comp.getN1() && this.n2 == comp.getN2()) ||
             (this.n1 == comp.getN2() && this.n2 == comp.getN1());

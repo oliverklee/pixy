@@ -1,4 +1,4 @@
-package at.ac.tuwien.infosys.www.pixy.analysis.alias.tools;
+package at.ac.tuwien.infosys.www.pixy.analysis.alias.completegraph;
 
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
@@ -16,16 +16,16 @@ import java.util.Set;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class SccGraph {
-    // Variable (label) -> SccNode
-    private Map<Variable, SccNode> label2nodes;
+public class Graph {
+    // Variable (label) -> Node
+    private Map<Variable, Node> label2nodes;
 
-    // Sets of SccEdge's
-    private Set<SccEdge> singleEdges;
-    private Set<SccEdge> doubleEdges;
+    // Sets of Edge's
+    private Set<Edge> singleEdges;
+    private Set<Edge> doubleEdges;
 
     // expects a set of variables for which to create nodes
-    public SccGraph(Set<Variable> variables) {
+    public Graph(Set<Variable> variables) {
         this.label2nodes = new HashMap<>();
         this.singleEdges = new HashSet<>();
         this.doubleEdges = new HashSet<>();
@@ -34,13 +34,13 @@ public class SccGraph {
         }
     }
 
-    private SccNode createNode(Variable label) {
-        SccNode newNode = new SccNode(label);
+    private Node createNode(Variable label) {
+        Node newNode = new Node(label);
         this.label2nodes.put(label, newNode);
         return newNode;
     }
 
-    public SccNode getNode(Variable label) {
+    public Node getNode(Variable label) {
         return this.label2nodes.get(label);
     }
 
@@ -55,10 +55,10 @@ public class SccGraph {
     }
 
     private void drawFirstEdge(Variable fromVar, Set<Variable> toVarSet) {
-        SccNode fromNode = this.label2nodes.get(fromVar);
+        Node fromNode = this.label2nodes.get(fromVar);
         for (Variable variable : toVarSet) {
-            SccNode toNode = this.label2nodes.get(variable);
-            SccEdge edge = new SccEdge(fromNode, toNode);
+            Node toNode = this.label2nodes.get(variable);
+            Edge edge = new Edge(fromNode, toNode);
             this.singleEdges.add(edge);
         }
     }
@@ -74,10 +74,10 @@ public class SccGraph {
     }
 
     private void drawSecondEdge(Variable fromVar, Set<Variable> toVarSet) {
-        SccNode fromNode = this.label2nodes.get(fromVar);
+        Node fromNode = this.label2nodes.get(fromVar);
         for (Variable variable : toVarSet) {
-            SccNode toNode = this.label2nodes.get(variable);
-            SccEdge edge = new SccEdge(fromNode, toNode);
+            Node toNode = this.label2nodes.get(variable);
+            Edge edge = new Edge(fromNode, toNode);
             // check if such an edge already exists
             if (this.singleEdges.contains(edge)) {
                 this.singleEdges.remove(edge);
@@ -90,7 +90,7 @@ public class SccGraph {
         }
     }
 
-    public Set<SccEdge> getSingleEdges() {
+    public Set<Edge> getSingleEdges() {
         return this.singleEdges;
     }
 
@@ -103,22 +103,22 @@ public class SccGraph {
         Set<Set<Variable>> sccs = new HashSet<>();
 
         // we start with a workset containing all nodes from the graph
-        Set<SccNode> nodesWorkSet = new HashSet<>(this.label2nodes.values());
+        Set<Node> nodesWorkSet = new HashSet<>(this.label2nodes.values());
 
         while (!nodesWorkSet.isEmpty()) {
 
             // pick an arbitrary node from the workset
-            SccNode node = nodesWorkSet.iterator().next();
+            Node node = nodesWorkSet.iterator().next();
 
             // ask the node about its double targets
-            Set<SccNode> doubleTargets = node.getDoubleTargets();
+            Set<Node> doubleTargets = node.getDoubleTargets();
 
             // if there are such double targets
             if (!doubleTargets.isEmpty()) {
 
                 // transform this set of SccNodes into a set of Variables
                 Set<Variable> scc = new HashSet<>();
-                for (SccNode sccNode : doubleTargets) {
+                for (Node sccNode : doubleTargets) {
                     scc.add(sccNode.getLabel());
                 }
                 // add the variable of the node itself to the scc set

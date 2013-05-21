@@ -2,8 +2,8 @@ package at.ac.tuwien.infosys.www.pixy.analysis.alias;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.Recyclable;
-import at.ac.tuwien.infosys.www.pixy.analysis.alias.tools.SccEdge;
-import at.ac.tuwien.infosys.www.pixy.analysis.alias.tools.SccGraph;
+import at.ac.tuwien.infosys.www.pixy.analysis.alias.completegraph.Edge;
+import at.ac.tuwien.infosys.www.pixy.analysis.alias.completegraph.Graph;
 import at.ac.tuwien.infosys.www.pixy.conversion.SymbolTable;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
@@ -196,32 +196,32 @@ public class AliasLatticeElement extends LatticeElement implements Recyclable {
         MustAliases foreignMustAliases = element.getMustAliases();
 
         // collect variables from both must-alias-group sets
-        // to create an SccGraph with them
+        // to create an Graph with them
         Set<Variable> variablesInMust = new HashSet<>();
         variablesInMust.addAll(this.mustAliases.getVariables());
         variablesInMust.addAll(foreignMustAliases.getVariables());
 
-        SccGraph sccGraph = new SccGraph(variablesInMust);
+        Graph graph = new Graph(variablesInMust);
 
         // for each of my own must-alias-groups: draw SCC
         for (MustAliasGroup group : this.mustAliases.getGroups()) {
-            sccGraph.drawFirstScc(group.getVariables());
+            graph.drawFirstScc(group.getVariables());
         }
 
         // for each of the foreign must-alias-groups: draw SCC
         for (MustAliasGroup group : foreignMustAliases.getGroups()) {
-            sccGraph.drawSecondScc(group.getVariables());
+            graph.drawSecondScc(group.getVariables());
         }
 
         // single edges in the resulting graph correspond to may-alias pairs
-        for (SccEdge singleEdge : sccGraph.getSingleEdges()) {
+        for (Edge singleEdge : graph.getSingleEdges()) {
             this.mayAliases.add(new MayAliasPair(singleEdge.getN1().getLabel(), singleEdge.getN2().getLabel()));
         }
 
         // SCC's formed by double edges in the resulting graph correspond
         // to must-alias groups
         MustAliases myNewMustAliases = new MustAliases();
-        Set<Set<Variable>> sccs = sccGraph.getDoubleSccs();
+        Set<Set<Variable>> sccs = graph.getDoubleSccs();
         for (Set<Variable> scc : sccs) {
             myNewMustAliases.add(new MustAliasGroup(scc));
         }

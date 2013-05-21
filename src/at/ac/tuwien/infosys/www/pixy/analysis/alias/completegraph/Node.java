@@ -1,4 +1,4 @@
-package at.ac.tuwien.infosys.www.pixy.analysis.alias.tools;
+package at.ac.tuwien.infosys.www.pixy.analysis.alias.completegraph;
 
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Node in the SccGraph.
+ * Node in the Graph.
  *
  * SCC stands for "strongly connected component".
  *
@@ -16,12 +16,12 @@ import java.util.Set;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class SccNode {
+public class Node {
     private Variable label;
-    // Map SccNode -> SccEdge (i.e., target node -> edge)
-    private Map<SccNode, SccEdge> doubleEdges;
+    // Map Node -> Edge (i.e., target node -> edge)
+    private Map<Node, Edge> doubleEdges;
 
-    public SccNode(Variable label) {
+    public Node(Variable label) {
         this.label = label;
         this.doubleEdges = new HashMap<>();
     }
@@ -30,11 +30,11 @@ public class SccNode {
         return this.label;
     }
 
-    public Set<SccNode> getDoubleTargets() {
+    public Set<Node> getDoubleTargets() {
         return new HashSet<>(this.doubleEdges.keySet());
     }
 
-    public void addDoubleEdge(SccEdge edge, SccNode target) {
+    public void addDoubleEdge(Edge edge, Node target) {
         this.doubleEdges.put(target, edge);
     }
 }
