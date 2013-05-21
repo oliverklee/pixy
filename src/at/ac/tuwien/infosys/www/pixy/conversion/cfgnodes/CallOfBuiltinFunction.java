@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes;
 
 import at.ac.tuwien.infosys.www.phpparser.ParseNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParam;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParameter;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
@@ -18,7 +18,7 @@ public class CallOfBuiltinFunction extends AbstractCfgNode {
     private String functionName;
 
     // parameter list
-    private List<TacActualParam> paramList;
+    private List<TacActualParameter> paramList;
 
     // temporary variable to hold the return value
     private Variable tempVar;
@@ -26,7 +26,7 @@ public class CallOfBuiltinFunction extends AbstractCfgNode {
 // CONSTRUCTORS ********************************************************************
 
     public CallOfBuiltinFunction(String functionName,
-                                 List<TacActualParam> paramList, TacPlace tempPlace, ParseNode node) {
+                                 List<TacActualParameter> paramList, TacPlace tempPlace, ParseNode node) {
 
         super(node);
         this.functionName = functionName.toLowerCase();
@@ -40,7 +40,7 @@ public class CallOfBuiltinFunction extends AbstractCfgNode {
         return this.functionName;
     }
 
-    public List<TacActualParam> getParamList() {
+    public List<TacActualParameter> getParamList() {
         return this.paramList;
     }
 
@@ -50,7 +50,7 @@ public class CallOfBuiltinFunction extends AbstractCfgNode {
 
     public List<Variable> getVariables() {
         List<Variable> retMe = new LinkedList<>();
-        for (TacActualParam param : this.paramList) {
+        for (TacActualParameter param : this.paramList) {
             TacPlace paramPlace = param.getPlace();
             if (paramPlace instanceof Variable) {
                 retMe.add((Variable) paramPlace);
@@ -64,7 +64,7 @@ public class CallOfBuiltinFunction extends AbstractCfgNode {
 // SET *****************************************************************************
 
     public void replaceVariable(int index, Variable replacement) {
-        TacActualParam param = this.paramList.get(index);
+        TacActualParameter param = this.paramList.get(index);
         param.setPlace(replacement);
     }
 }

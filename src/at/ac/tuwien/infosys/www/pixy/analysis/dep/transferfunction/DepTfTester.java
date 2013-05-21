@@ -4,7 +4,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepSet;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacFormalParam;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacFormalParameter;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Tester;
@@ -42,7 +42,7 @@ public class DepTfTester extends TransferFunction {
         // extract formals that are to be tested
         for (Integer paramNumber : cfgNode.getParamNumbers()) {
             int param_int = paramNumber;
-            TacFormalParam formalParam = function.getParam(param_int);
+            TacFormalParameter formalParam = function.getParam(param_int);
             if (formalParam == null) {
                 throw new RuntimeException("Error: Function " + function.getName() +
                     " has no param #" + param_int + "; check builtin functions" +

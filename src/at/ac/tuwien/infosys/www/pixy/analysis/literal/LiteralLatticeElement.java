@@ -909,7 +909,7 @@ public class LiteralLatticeElement extends LatticeElement {
 
     // overlaps the given formal with the given place
     // (no need to consider aliases here)
-    public void setFormal(TacFormalParam formalParam, TacPlace place) {
+    public void setFormal(TacFormalParameter formalParam, TacPlace place) {
 
         // initialize state copy (required by strongOverlap)
         this.origPlaceToLit = new HashMap<>(this.placeToLit);

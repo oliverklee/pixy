@@ -9,7 +9,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring.CSAnalysis;
 import at.ac.tuwien.infosys.www.pixy.conversion.CfgEdge;
 import at.ac.tuwien.infosys.www.pixy.conversion.ControlFlowGraph;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacFormalParam;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacFormalParameter;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.*;
 
@@ -104,7 +104,7 @@ public abstract class InterAnalysis extends Analysis {
         // handle default CFGs (for default parameters) first;
         // for all functions...
         for (TacFunction function : this.functions) {
-            for (TacFormalParam param : function.getParams()) {
+            for (TacFormalParameter param : function.getParams()) {
                 // if this param has a default value, it also has a small CFG;
                 // traverse it as well...;
                 // NOTE: default CFGs will not be associated with analysis information,

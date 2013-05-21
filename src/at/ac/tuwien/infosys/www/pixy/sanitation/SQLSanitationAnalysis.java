@@ -6,7 +6,7 @@ import at.ac.tuwien.infosys.www.pixy.Utils;
 import at.ac.tuwien.infosys.www.pixy.VulnerabilityInformation;
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.Sink;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParam;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParameter;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallOfBuiltinFunction;
@@ -74,7 +74,7 @@ public class SQLSanitationAnalysis extends SanitationAnalysis {
 //  ********************************************************************************
 
     private void checkForSinkHelper(String functionName, AbstractCfgNode cfgNode,
-                                    List<TacActualParam> paramList, TacFunction traversedFunction, List<Sink> sinks) {
+                                    List<TacActualParameter> paramList, TacFunction traversedFunction, List<Sink> sinks) {
 
         if (this.dci.getSinks().containsKey(functionName)) {
             Sink sink = new Sink(cfgNode, traversedFunction);

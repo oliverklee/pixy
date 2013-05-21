@@ -683,14 +683,14 @@ public class DepGraph {
 
             // return corresponding actual param ("victim" is the formal param here)
             CallPreperation cfgNode = (CallPreperation) cfgNodeX;
-            List<TacActualParam> actualParams = cfgNode.getParamList();
-            List<TacFormalParam> formalParams = cfgNode.getCallee().getParams();
+            List<TacActualParameter> actualParams = cfgNode.getParamList();
+            List<TacFormalParameter> formalParams = cfgNode.getCallee().getParams();
             int index = -1;
             int i = 0;
 
             // for each formal parameter...
-            for (TacFormalParam formalParam : formalParams) {
-                TacActualParam actualParam = actualParams.get(i);
+            for (TacFormalParameter formalParam : formalParams) {
+                TacActualParameter actualParam = actualParams.get(i);
 
                 // if the victim equals the formal parameter...
                 if (formalParam.getVariable().equals(victim)) {
@@ -753,7 +753,7 @@ public class DepGraph {
             // call to an unknown function;
             // simply add all parameters;
             CallOfUnknownFunction cfgNode = (CallOfUnknownFunction) cfgNodeX;
-            for (TacActualParam param : cfgNode.getParamList()) {
+            for (TacActualParameter param : cfgNode.getParamList()) {
                 retMe.add(param.getPlace());
             }
         } else if (cfgNodeX instanceof Define) {
@@ -929,7 +929,7 @@ public class DepGraph {
             // flows to the return value
         } else {
             // simply add all parameters
-            for (TacActualParam param : cfgNode.getParamList()) {
+            for (TacActualParameter param : cfgNode.getParamList()) {
                 retMe.add(param.getPlace());
             }
         }

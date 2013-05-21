@@ -221,7 +221,7 @@ public class TacConverter {
             this.assignFunctionsHelper(controlFlowGraph, function);
 
             // handle function default cfgs
-            for (TacFormalParam param : function.getParams()) {
+            for (TacFormalParameter param : function.getParams()) {
                 if (param.hasDefault()) {
                     ControlFlowGraph defaultControlFlowGraph = param.getDefaultControlFlowGraph();
                     this.assignFunctionsHelper(defaultControlFlowGraph, function);
@@ -241,7 +241,7 @@ public class TacConverter {
             this.assignFunctionsHelper(controlFlowGraph, function);
 
             // handle function default cfgs
-            for (TacFormalParam param : function.getParams()) {
+            for (TacFormalParameter param : function.getParams()) {
                 if (param.hasDefault()) {
                     ControlFlowGraph defaultControlFlowGraph = param.getDefaultControlFlowGraph();
                     this.assignFunctionsHelper(defaultControlFlowGraph, function);
@@ -1597,7 +1597,7 @@ public class TacConverter {
         // for all formal parameters:
         // if this param has a default controlFlowGraph, inform all nodes of this default controlFlowGraph about
         // the entry node of the corresponding function
-        for (TacFormalParam formalParam : attsParamList.getFormalParamList()) {
+        for (TacFormalParameter formalParam : attsParamList.getFormalParamList()) {
             if (formalParam.hasDefault()) {
                 ControlFlowGraph defaultControlFlowGraph = formalParam.getDefaultControlFlowGraph();
                 for (AbstractCfgNode defaultNode : defaultControlFlowGraph.dfPreOrder()) {
@@ -1657,7 +1657,7 @@ public class TacConverter {
         // for all formal parameters:
         // if this param has a default controlFlowGraph, inform all nodes of this default controlFlowGraph about
         // the entry node of the corresponding function
-        for (TacFormalParam formalParam : attsParamList.getFormalParamList()) {
+        for (TacFormalParameter formalParam : attsParamList.getFormalParamList()) {
             if (formalParam.hasDefault()) {
                 ControlFlowGraph defaultControlFlowGraph = formalParam.getDefaultControlFlowGraph();
                 for (AbstractCfgNode defaultNode : defaultControlFlowGraph.dfPreOrder()) {
@@ -1707,7 +1707,7 @@ public class TacConverter {
             className);
 
         // set function parameters
-        function.setParams(new LinkedList<TacFormalParam>());
+        function.setParams(new LinkedList<TacFormalParameter>());
 
         return function;
     }
@@ -1748,7 +1748,7 @@ public class TacConverter {
         // F-SHADOWS
 
         // for each formal parameter of this function...
-        for (TacFormalParam param : function.getParams()) {
+        for (TacFormalParameter param : function.getParams()) {
             Variable var = param.getVariable();
             // no need to create shadows for arrays and array elements
             if (var.isArray() || var.isArrayElement()) {
@@ -1768,7 +1768,7 @@ public class TacConverter {
     // calledFunction: object of the called function
     //                 (either this.someMethod or this.unknownFunction or null)
     ControlFlowGraph functionCallHelper(
-        String calledFuncName, boolean isMethod, TacFunction calledFunction, List<TacActualParam> paramList,
+        String calledFuncName, boolean isMethod, TacFunction calledFunction, List<TacActualParameter> paramList,
         TacPlace tempPlace, boolean backpatch, ParseNode parseNode, String className,
         Variable object) {
 
@@ -1777,7 +1777,7 @@ public class TacConverter {
         if (calledFuncName.equals("define")) {
 
             // extract params
-            Iterator<TacActualParam> paramIter = paramList.iterator();
+            Iterator<TacActualParameter> paramIter = paramList.iterator();
             TacPlace setMe = paramIter.next().getPlace();
             TacPlace setTo = paramIter.next().getPlace();
             TacPlace caseInsensitive;
@@ -2099,8 +2099,8 @@ public class TacConverter {
         AbstractCfgNode backupNode = new AssignSimple(arrayPlace, attsArray.getPlace(), node);
 
         // create nodes for calls to reset() and each()
-        List<TacActualParam> paramList = new LinkedList<>();
-        paramList.add(new TacActualParam(arrayPlace, false));
+        List<TacActualParameter> paramList = new LinkedList<>();
+        paramList.add(new TacActualParameter(arrayPlace, false));
         int logId = this.tempId;
         // place for the array returned by each(); can also be used
         // for reset() since we don't need its return value
@@ -2310,8 +2310,8 @@ public class TacConverter {
                     }
                     continue;
                 } else {
-                    List<TacActualParam> actualParams = prepNode.getParamList();
-                    List<TacFormalParam> formalParams = callee.getParams();
+                    List<TacActualParameter> actualParams = prepNode.getParamList();
+                    List<TacFormalParameter> formalParams = callee.getParams();
                     int actualSize = actualParams.size();
                     int formalSize = formalParams.size();
                     if (actualSize != formalSize) {
@@ -2335,7 +2335,7 @@ public class TacConverter {
                             if (finalPass) {
                                 // find out if this is a bug
                                 int i = 0;
-                                for (TacFormalParam formalParam : formalParams) {
+                                for (TacFormalParameter formalParam : formalParams) {
                                     i++;
                                     if (i <= actualSize) {
                                         continue;
@@ -2404,8 +2404,8 @@ public class TacConverter {
                         continue;
                     }
                 } else {
-                    List<TacActualParam> actualParams = prepNode.getParamList();
-                    List<TacFormalParam> formalParams = callee.getParams();
+                    List<TacActualParameter> actualParams = prepNode.getParamList();
+                    List<TacFormalParameter> formalParams = callee.getParams();
                     int actualSize = actualParams.size();
                     int formalSize = formalParams.size();
                     if (actualSize != formalSize) {
@@ -2428,7 +2428,7 @@ public class TacConverter {
                             if (finalPass) {
                                 // find out if this is a bug
                                 int i = 0;
-                                for (TacFormalParam formalParam : formalParams) {
+                                for (TacFormalParameter formalParam : formalParams) {
                                     i++;
                                     if (i <= actualSize) {
                                         continue;
@@ -2516,7 +2516,7 @@ public class TacConverter {
             false,
             node, "");
         // not necessary, but clean
-        List<TacFormalParam> l = Collections.emptyList();
+        List<TacFormalParameter> l = Collections.emptyList();
         function.setParams(l);
         function.setIsMain(true);
 
@@ -2873,7 +2873,7 @@ public class TacConverter {
             myAtts = this.non_empty_parameter_list(firstChild);
         } else {
             // -> empty
-            myAtts.setFormalParamList(new LinkedList<TacFormalParam>());
+            myAtts.setFormalParamList(new LinkedList<TacFormalParameter>());
         }
 
         return myAtts;
@@ -2893,8 +2893,8 @@ public class TacConverter {
                 if (node.getNumChildren() == 1) {
                     // -> T_VARIABLE
                     TacPlace paramPlace = this.makePlace(firstChild.getLexeme());
-                    TacFormalParam param = new TacFormalParam(paramPlace.getVariable());
-                    List<TacFormalParam> paramList = new LinkedList<>();
+                    TacFormalParameter param = new TacFormalParameter(paramPlace.getVariable());
+                    List<TacFormalParameter> paramList = new LinkedList<>();
                     paramList.add(param);
                     myAtts.setFormalParamList(paramList);
                 } else {
@@ -2908,10 +2908,10 @@ public class TacConverter {
                     ControlFlowGraph defaultControlFlowGraph = new ControlFlowGraph(
                         atts2.getControlFlowGraph().getHead(), cfgNode);
                     this.optimize(defaultControlFlowGraph);
-                    TacFormalParam param = new TacFormalParam(
+                    TacFormalParameter param = new TacFormalParameter(
                         paramPlace.getVariable(), true, defaultControlFlowGraph);
 
-                    List<TacFormalParam> paramList = new LinkedList<>();
+                    List<TacFormalParameter> paramList = new LinkedList<>();
                     paramList.add(param);
                     myAtts.setFormalParamList(paramList);
                 }
@@ -2922,8 +2922,8 @@ public class TacConverter {
             // -> & T_VARIABLE
             case PhpSymbols.T_BITWISE_AND: {
                 TacPlace paramPlace = this.makePlace(node.getChild(1).getLexeme());
-                TacFormalParam param = new TacFormalParam(paramPlace.getVariable(), true);
-                List<TacFormalParam> paramList = new LinkedList<>();
+                TacFormalParameter param = new TacFormalParameter(paramPlace.getVariable(), true);
+                List<TacFormalParameter> paramList = new LinkedList<>();
                 paramList.add(param);
                 myAtts.setFormalParamList(paramList);
                 break;
@@ -2933,8 +2933,8 @@ public class TacConverter {
             case PhpSymbols.T_CONST: {
                 // undocumented feature, ignore T_CONST
                 TacPlace paramPlace = this.makePlace(node.getChild(1).getLexeme());
-                TacFormalParam param = new TacFormalParam(paramPlace.getVariable());
-                List<TacFormalParam> paramList = new LinkedList<>();
+                TacFormalParameter param = new TacFormalParameter(paramPlace.getVariable());
+                List<TacFormalParameter> paramList = new LinkedList<>();
                 paramList.add(param);
                 myAtts.setFormalParamList(paramList);
                 break;
@@ -2949,9 +2949,9 @@ public class TacConverter {
                         if (node.getNumChildren() == 3) {
                             // -> non_empty_parameter_list , T_VARIABLE
                             TacPlace paramPlace = this.makePlace(node.getChild(2).getLexeme());
-                            TacFormalParam param = new TacFormalParam(paramPlace.getVariable());
+                            TacFormalParameter param = new TacFormalParameter(paramPlace.getVariable());
                             TacAttributes attsList = this.non_empty_parameter_list(firstChild);
-                            List<TacFormalParam> paramList = attsList.getFormalParamList();
+                            List<TacFormalParameter> paramList = attsList.getFormalParamList();
                             paramList.add(param);
                             myAtts.setFormalParamList(paramList);
                         } else {
@@ -2966,10 +2966,10 @@ public class TacConverter {
                             ControlFlowGraph defaultControlFlowGraph = new ControlFlowGraph(
                                 attsScalar.getControlFlowGraph().getHead(), cfgNode);
                             this.optimize(defaultControlFlowGraph);
-                            TacFormalParam param = new TacFormalParam(
+                            TacFormalParameter param = new TacFormalParameter(
                                 paramPlace.getVariable(), true, defaultControlFlowGraph);
 
-                            List<TacFormalParam> paramList = attsList.getFormalParamList();
+                            List<TacFormalParameter> paramList = attsList.getFormalParamList();
                             paramList.add(param);
                             myAtts.setFormalParamList(paramList);
                         }
@@ -2980,8 +2980,8 @@ public class TacConverter {
                     case PhpSymbols.T_BITWISE_AND: {
                         TacAttributes attsList = this.non_empty_parameter_list(firstChild);
                         TacPlace paramPlace = this.makePlace(node.getChild(3).getLexeme());
-                        TacFormalParam param = new TacFormalParam(paramPlace.getVariable(), true);
-                        List<TacFormalParam> paramList = attsList.getFormalParamList();
+                        TacFormalParameter param = new TacFormalParameter(paramPlace.getVariable(), true);
+                        List<TacFormalParameter> paramList = attsList.getFormalParamList();
                         paramList.add(param);
                         myAtts.setFormalParamList(paramList);
                         break;
@@ -2991,9 +2991,9 @@ public class TacConverter {
                     case PhpSymbols.T_CONST: {
                         // undocumented feature, ignore T_CONST
                         TacPlace paramPlace = this.makePlace(node.getChild(3).getLexeme());
-                        TacFormalParam param = new TacFormalParam(paramPlace.getVariable());
+                        TacFormalParameter param = new TacFormalParameter(paramPlace.getVariable());
                         TacAttributes attsList = this.non_empty_parameter_list(firstChild);
-                        List<TacFormalParam> paramList = attsList.getFormalParamList();
+                        List<TacFormalParameter> paramList = attsList.getFormalParamList();
                         paramList.add(param);
                         myAtts.setFormalParamList(paramList);
                         break;
@@ -4641,8 +4641,8 @@ public class TacConverter {
                 EncapsList encapsList = attsList.getEncapsList();
                 TacAttributes deepList = encapsList.makeAtts(newTemp(), node);
 
-                List<TacActualParam> paramList = new LinkedList<>();
-                paramList.add(new TacActualParam(deepList.getPlace(), false));
+                List<TacActualParameter> paramList = new LinkedList<>();
+                paramList.add(new TacActualParameter(deepList.getPlace(), false));
 
                 ControlFlowGraph execCallControlFlowGraph = this.functionCallHelper(
                     "shell_exec", false, null, paramList,
@@ -4692,7 +4692,7 @@ public class TacConverter {
             // -> empty
             AbstractCfgNode cfgNode = new Empty();
             myAtts.setControlFlowGraph(new ControlFlowGraph(cfgNode, cfgNode));
-            List<TacActualParam> ll = new LinkedList<>();
+            List<TacActualParameter> ll = new LinkedList<>();
             myAtts.setActualParamList(ll);
         } else {
             // -> ( function_call_parameter_list )
@@ -5034,7 +5034,7 @@ public class TacConverter {
             // -> empty
             AbstractCfgNode cfgNode = new Empty();
             myAtts.setControlFlowGraph(new ControlFlowGraph(cfgNode, cfgNode));
-            List<TacActualParam> ll = new LinkedList<>();
+            List<TacActualParameter> ll = new LinkedList<>();
             myAtts.setActualParamList(ll);
         }
 
@@ -5057,8 +5057,8 @@ public class TacConverter {
                 TacAttributes attsExpr = this.expr_without_variable(firstChild);
                 myAtts.setControlFlowGraph(attsExpr.getControlFlowGraph());
 
-                List<TacActualParam> paramList = new LinkedList<>();
-                paramList.add(new TacActualParam(attsExpr.getPlace(), false));
+                List<TacActualParameter> paramList = new LinkedList<>();
+                paramList.add(new TacActualParameter(attsExpr.getPlace(), false));
                 myAtts.setActualParamList(paramList);
 
                 break;
@@ -5070,8 +5070,8 @@ public class TacConverter {
                 TacAttributes attsCvar = this.cvar(firstChild);
                 myAtts.setControlFlowGraph(attsCvar.getControlFlowGraph());
 
-                List<TacActualParam> paramList = new LinkedList<>();
-                paramList.add(new TacActualParam(attsCvar.getPlace(), false));
+                List<TacActualParameter> paramList = new LinkedList<>();
+                paramList.add(new TacActualParameter(attsCvar.getPlace(), false));
                 myAtts.setActualParamList(paramList);
 
                 break;
@@ -5083,8 +5083,8 @@ public class TacConverter {
                 TacAttributes attsCvar = this.w_cvar(node.getChild(1));
                 myAtts.setControlFlowGraph(attsCvar.getControlFlowGraph());
 
-                List<TacActualParam> paramList = new LinkedList<>();
-                paramList.add(new TacActualParam(attsCvar.getPlace(), true));
+                List<TacActualParameter> paramList = new LinkedList<>();
+                paramList.add(new TacActualParameter(attsCvar.getPlace(), true));
                 myAtts.setActualParamList(paramList);
 
                 break;
@@ -5109,8 +5109,8 @@ public class TacConverter {
                         attsList.getControlFlowGraph().getHead(),
                         attsExpr.getControlFlowGraph().getTail()));
 
-                    List<TacActualParam> paramList = attsList.getActualParamList();
-                    paramList.add(new TacActualParam(attsExpr.getPlace(), false));
+                    List<TacActualParameter> paramList = attsList.getActualParamList();
+                    paramList.add(new TacActualParameter(attsExpr.getPlace(), false));
                     myAtts.setActualParamList(paramList);
                 } else if (thirdSymbol == PhpSymbols.cvar) {
 
@@ -5126,8 +5126,8 @@ public class TacConverter {
                         attsList.getControlFlowGraph().getHead(),
                         attsCvar.getControlFlowGraph().getTail()));
 
-                    List<TacActualParam> paramList = attsList.getActualParamList();
-                    paramList.add(new TacActualParam(attsCvar.getPlace(), false));
+                    List<TacActualParameter> paramList = attsList.getActualParamList();
+                    paramList.add(new TacActualParameter(attsCvar.getPlace(), false));
                     myAtts.setActualParamList(paramList);
                 } else {
                     // -> non_empty_function_call_parameter_list , & w_cvar
@@ -5142,8 +5142,8 @@ public class TacConverter {
                         attsList.getControlFlowGraph().getHead(),
                         attsCvar.getControlFlowGraph().getTail()));
 
-                    List<TacActualParam> paramList = attsList.getActualParamList();
-                    paramList.add(new TacActualParam(attsCvar.getPlace(), true));
+                    List<TacActualParameter> paramList = attsList.getActualParamList();
+                    paramList.add(new TacActualParameter(attsCvar.getPlace(), true));
                     myAtts.setActualParamList(paramList);
                 }
 
@@ -5362,7 +5362,7 @@ public class TacConverter {
     // - place
     // - isUnknownCall
     TacAttributes cvar(ParseNode node,
-                       List<TacActualParam> paramList, Variable catchVar) {
+                       List<TacActualParameter> paramList, Variable catchVar) {
 
         TacAttributes myAtts = new TacAttributes();
 
@@ -5397,7 +5397,7 @@ public class TacConverter {
     // - isUnknownCall
     // leftPlace = the place on the left side of the last "->"
     TacAttributes ref_list(ParseNode node, Variable leftPlace,
-                           List<TacActualParam> paramList, Variable catchVar) {
+                           List<TacActualParameter> paramList, Variable catchVar) {
 
         TacAttributes myAtts = new TacAttributes();
 
@@ -5458,7 +5458,7 @@ public class TacConverter {
     // - place
     // - isUnknownCall
     TacAttributes object_property(ParseNode node, Variable leftPlace,
-                                  List<TacActualParam> paramList, Variable catchVar) {
+                                  List<TacActualParameter> paramList, Variable catchVar) {
 
         TacAttributes myAtts = new TacAttributes();
 
@@ -5498,7 +5498,7 @@ public class TacConverter {
     // - place
     // - isUnknownCall
     TacAttributes object_dim_list(ParseNode node, Variable leftPlace,
-                                  List<TacActualParam> paramList, Variable catchVar) {
+                                  List<TacActualParameter> paramList, Variable catchVar) {
         TacAttributes myAtts = new TacAttributes();
 
         ParseNode firstChild = node.getChild(0);
@@ -5555,7 +5555,7 @@ public class TacConverter {
     // - cfg
     // - place
     TacAttributes variable_name(ParseNode node, Variable leftPlace,
-                                List<TacActualParam> paramList, Variable catchVar) {
+                                List<TacActualParameter> paramList, Variable catchVar) {
         TacAttributes myAtts = new TacAttributes();
 
         ParseNode firstChild = node.getChild(0);

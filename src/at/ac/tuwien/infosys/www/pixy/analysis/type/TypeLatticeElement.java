@@ -101,7 +101,7 @@ public class TypeLatticeElement extends LatticeElement {
     }
 
     // sets the dep and array label of the given formal
-    public void setFormal(TacFormalParam formalParam, TacPlace setTo) {
+    public void setFormal(TacFormalParameter formalParam, TacPlace setTo) {
         Variable formalVar = formalParam.getVariable();
         this.assign(formalVar, setTo);
     }

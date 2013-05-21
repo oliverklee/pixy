@@ -15,7 +15,7 @@ public class TacFunction {
     private String name;
     private ControlFlowGraph controlFlowGraph;    // the CFG's tail MUST be the function's exit node
     private boolean isReference;
-    private List<TacFormalParam> params;  // contains TacFormalParam objects
+    private List<TacFormalParameter> params;  // contains TacFormalParameter objects
     private Variable retVar;
 
     private SymbolTable symbolTable;
@@ -87,11 +87,11 @@ public class TacFunction {
         return this.isReference;
     }
 
-    public List<TacFormalParam> getParams() {
+    public List<TacFormalParameter> getParams() {
         return this.params;
     }
 
-    public TacFormalParam getParam(int index) {
+    public TacFormalParameter getParam(int index) {
         return this.params.get(index);
     }
 
@@ -160,8 +160,8 @@ public class TacFunction {
 // SET *****************************************************************************
 // *********************************************************************************
 
-    // expects a List containing TacFormalParam objects
-    void setParams(List<TacFormalParam> params) {
+    // expects a List containing TacFormalParameter objects
+    void setParams(List<TacFormalParameter> params) {
         this.params = params;
     }
 

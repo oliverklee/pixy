@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes;
 
 import at.ac.tuwien.infosys.www.phpparser.ParseNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParam;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParameter;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
@@ -37,7 +37,7 @@ public class CallPreperation extends AbstractCfgNode {
         return this.getCallNode().getFunctionNamePlace();
     }
 
-    public List<TacActualParam> getParamList() {
+    public List<TacActualParameter> getParamList() {
         return this.getCallNode().getParamList();
     }
 

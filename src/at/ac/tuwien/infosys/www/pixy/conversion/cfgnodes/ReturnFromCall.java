@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes;
 
 import at.ac.tuwien.infosys.www.phpparser.ParseNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParam;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParameter;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 import java.util.Collections;
@@ -38,7 +38,7 @@ public class ReturnFromCall extends AbstractCfgNode {
         return (Call) this.getPredecessor();
     }
 
-    List<TacActualParam> getParamsList() {
+    List<TacActualParameter> getParamsList() {
         return this.getCallPrepNode().getParamList();
     }
 

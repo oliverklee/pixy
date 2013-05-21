@@ -15,8 +15,8 @@ import java.util.ListIterator;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class TypeTfCallPrep extends TransferFunction {
-    private List<TacActualParam> actualParams;
-    private List<TacFormalParam> formalParams;
+    private List<TacActualParameter> actualParams;
+    private List<TacFormalParameter> formalParams;
     private TacFunction caller;
     private TacFunction callee;
     private TypeAnalysis typeAnalysis;
@@ -26,7 +26,7 @@ public class TypeTfCallPrep extends TransferFunction {
 //  *********************************************************************************
 
     public TypeTfCallPrep(
-        List<TacActualParam> actualParams, List<TacFormalParam> formalParams, TacFunction caller, TacFunction callee,
+        List<TacActualParameter> actualParams, List<TacFormalParameter> formalParams, TacFunction caller, TacFunction callee,
         TypeAnalysis typeAnalysis
     ) {
         this.actualParams = actualParams;
@@ -48,16 +48,16 @@ public class TypeTfCallPrep extends TransferFunction {
         // set formal params...
 
         // use a ListIterator for formals because we might need to step back (see below)
-        ListIterator<TacFormalParam> formalIter = formalParams.listIterator();
-        Iterator<TacActualParam> actualIter = actualParams.iterator();
+        ListIterator<TacFormalParameter> formalIter = formalParams.listIterator();
+        Iterator<TacActualParameter> actualIter = actualParams.iterator();
 
         // for each formal parameter...
         while (formalIter.hasNext()) {
-            TacFormalParam formalParam = formalIter.next();
+            TacFormalParameter formalParam = formalIter.next();
 
             if (actualIter.hasNext()) {
                 // there is a corresponding actual parameter; advance iterator
-                TacActualParam actualParam = actualIter.next();
+                TacActualParameter actualParam = actualIter.next();
 
                 // set the formal
                 out.assign(formalParam.getVariable(), actualParam.getPlace());

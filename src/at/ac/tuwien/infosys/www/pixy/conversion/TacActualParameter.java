@@ -3,7 +3,7 @@ package at.ac.tuwien.infosys.www.pixy.conversion;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class TacActualParam {
+public class TacActualParameter {
     private TacPlace place;
     private boolean isReference;
 
@@ -11,7 +11,7 @@ public class TacActualParam {
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    TacActualParam(TacPlace place, boolean isReference) {
+    TacActualParameter(TacPlace place, boolean isReference) {
         this.place = place;
         this.isReference = isReference;
     }

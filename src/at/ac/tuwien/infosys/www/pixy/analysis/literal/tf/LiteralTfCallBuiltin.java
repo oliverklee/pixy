@@ -5,7 +5,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.Literal;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParam;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParameter;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallOfBuiltinFunction;
 
@@ -69,7 +69,7 @@ public class LiteralTfCallBuiltin extends TransferFunction {
     private Literal simulate(LiteralLatticeElement in, String functionName) {
 
         // retrieve the necessary parameters
-        List<TacActualParam> paramList = this.cfgNode.getParamList();
+        List<TacActualParameter> paramList = this.cfgNode.getParamList();
         if (paramList.size() < 1) {
             // wrong number of params
             return Literal.TOP;

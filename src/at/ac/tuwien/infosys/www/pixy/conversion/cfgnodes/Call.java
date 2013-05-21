@@ -24,8 +24,8 @@ public class Call extends AbstractCfgNode {
     // temporary variable to hold the return value
     private Variable tempVar;
 
-    // a list of actual params (TacActualParam objects)
-    private List<TacActualParam> paramList;
+    // a list of actual params (TacActualParameter objects)
+    private List<TacActualParameter> paramList;
 
     // list of cbr params; description see getCbrParams()
     private List<List<Variable>> cbrParamList;
@@ -48,7 +48,7 @@ public class Call extends AbstractCfgNode {
     public Call(
         TacPlace functionNamePlace, TacFunction calledFunction, ParseNode node,
         TacFunction enclosingFunction, Variable retVar, TacPlace tempPlace,
-        List<TacActualParam> paramList, Variable object) {
+        List<TacActualParameter> paramList, Variable object) {
 
         super(node);
         this.functionNamePlace = functionNamePlace;
@@ -81,7 +81,7 @@ public class Call extends AbstractCfgNode {
     public List<Variable> getVariables() {
         // only the params are relevant for globals replacement
         List<Variable> retMe = new LinkedList<>();
-        for (TacActualParam param : this.paramList) {
+        for (TacActualParameter param : this.paramList) {
             TacPlace paramPlace = param.getPlace();
             if (paramPlace instanceof Variable) {
                 retMe.add((Variable) paramPlace);
@@ -100,7 +100,7 @@ public class Call extends AbstractCfgNode {
         return this.tempVar;
     }
 
-    public List<TacActualParam> getParamList() {
+    public List<TacActualParameter> getParamList() {
         return this.paramList;
     }
 
@@ -112,17 +112,17 @@ public class Call extends AbstractCfgNode {
             return this.cbrParamList;
         }
 
-        List<TacActualParam> actualParams = this.paramList;
-        List<TacFormalParam> formalParams = this.getCallee().getParams();
+        List<TacActualParameter> actualParams = this.paramList;
+        List<TacFormalParameter> formalParams = this.getCallee().getParams();
 
         this.cbrParamList = new LinkedList<>();
 
-        Iterator<TacActualParam> actualIter = actualParams.iterator();
-        Iterator<TacFormalParam> formalIter = formalParams.iterator();
+        Iterator<TacActualParameter> actualIter = actualParams.iterator();
+        Iterator<TacFormalParameter> formalIter = formalParams.iterator();
 
         while (actualIter.hasNext()) {
-            TacActualParam actualParam = actualIter.next();
-            TacFormalParam formalParam = formalIter.next();
+            TacActualParameter actualParam = actualIter.next();
+            TacFormalParameter formalParam = formalIter.next();
 
             // if this is a cbr-param...
             if (actualParam.isReference() || formalParam.isReference()) {
@@ -166,7 +166,7 @@ public class Call extends AbstractCfgNode {
 // SET *****************************************************************************
 
     public void replaceVariable(int index, Variable replacement) {
-        TacActualParam param = this.paramList.get(index);
+        TacActualParameter param = this.paramList.get(index);
         param.setPlace(replacement);
     }
 

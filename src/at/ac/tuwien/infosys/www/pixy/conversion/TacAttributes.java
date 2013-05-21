@@ -15,8 +15,8 @@ public class TacAttributes {
 
     private AbstractCfgNode defaultNode;
 
-    private List<TacActualParam> actualParamList;
-    private List<TacFormalParam> formalParamList;
+    private List<TacActualParameter> actualParamList;
+    private List<TacFormalParameter> formalParamList;
 
     private EncapsList encapsList;
 
@@ -43,11 +43,11 @@ public class TacAttributes {
         return this.defaultNode;
     }
 
-    List<TacActualParam> getActualParamList() {
+    List<TacActualParameter> getActualParamList() {
         return this.actualParamList;
     }
 
-    List<TacFormalParam> getFormalParamList() {
+    List<TacFormalParameter> getFormalParamList() {
         return this.formalParamList;
     }
 
@@ -77,19 +77,19 @@ public class TacAttributes {
         this.defaultNode = defaultNode;
     }
 
-    void setActualParamList(List<TacActualParam> actualParamList) {
+    void setActualParamList(List<TacActualParameter> actualParamList) {
         this.actualParamList = actualParamList;
     }
 
-    void setFormalParamList(List<TacFormalParam> formalParamList) {
+    void setFormalParamList(List<TacFormalParameter> formalParamList) {
         this.formalParamList = formalParamList;
     }
 
-    void addActualParam(TacActualParam param) {
+    void addActualParam(TacActualParameter param) {
         this.actualParamList.add(param);
     }
 
-    void addFormalParam(TacFormalParam param) {
+    void addFormalParam(TacFormalParameter param) {
         this.formalParamList.add(param);
     }
 

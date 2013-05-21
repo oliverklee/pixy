@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.*;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParam;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParameter;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallOfBuiltinFunction;
@@ -271,7 +271,7 @@ public class XSSAnalysis extends DepClient {
     // LATER: this method looks very similar in all client analyses;
     // possibility to reduce code redundancy
     private void checkForSinkHelper(String functionName, AbstractCfgNode cfgNode,
-                                    List<TacActualParam> paramList, TacFunction traversedFunction, List<Sink> sinks) {
+                                    List<TacActualParameter> paramList, TacFunction traversedFunction, List<Sink> sinks) {
 
         if (this.dci.getSinks().containsKey(functionName)) {
             Sink sink = new Sink(cfgNode, traversedFunction);
@@ -280,7 +280,7 @@ public class XSSAnalysis extends DepClient {
                 // special treatment is necessary here
                 if (functionName.equals("printf")) {
                     // none of the arguments to printf must be tainted
-                    for (TacActualParam param : paramList) {
+                    for (TacActualParameter param : paramList) {
                         sink.addSensitivePlace(param.getPlace());
                     }
                     sinks.add(sink);

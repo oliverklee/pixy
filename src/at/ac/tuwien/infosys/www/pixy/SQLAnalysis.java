@@ -3,7 +3,7 @@ package at.ac.tuwien.infosys.www.pixy;
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.*;
 import at.ac.tuwien.infosys.www.pixy.automaton.Automaton;
 import at.ac.tuwien.infosys.www.pixy.automaton.Transition;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParam;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParameter;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
@@ -543,7 +543,7 @@ public class SQLAnalysis extends DepClient {
 //  ********************************************************************************
 
     private void checkForSinkHelper(String functionName, AbstractCfgNode cfgNode,
-                                    List<TacActualParam> paramList, TacFunction traversedFunction, List<Sink> sinks) {
+                                    List<TacActualParameter> paramList, TacFunction traversedFunction, List<Sink> sinks) {
 
         if (this.dci.getSinks().containsKey(functionName)) {
             Sink sink = new Sink(cfgNode, traversedFunction);

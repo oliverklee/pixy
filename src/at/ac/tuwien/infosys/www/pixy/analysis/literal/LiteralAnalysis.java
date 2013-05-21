@@ -161,8 +161,8 @@ public class LiteralAnalysis extends InterAnalysis {
         }
 
         // extract actual and formal params
-        List<TacActualParam> actualParams = cfgNode.getParamList();
-        List<TacFormalParam> formalParams = calledFunction.getParams();
+        List<TacActualParameter> actualParams = cfgNode.getParamList();
+        List<TacFormalParameter> formalParams = calledFunction.getParams();
 
         // the transfer function to be assigned to this node
         TransferFunction tf = null;

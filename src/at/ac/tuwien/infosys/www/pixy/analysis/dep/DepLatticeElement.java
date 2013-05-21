@@ -843,7 +843,7 @@ public class DepLatticeElement extends LatticeElement {
 //  setFormal **********************************************************************
 
     // sets the dep and array label of the given formal
-    public void setFormal(TacFormalParam formalParam, AbstractCfgNode cfgNode) {
+    public void setFormal(TacFormalParameter formalParam, AbstractCfgNode cfgNode) {
         Variable formalVar = formalParam.getVariable();
         Set<Variable> mustAliases = new HashSet<>();
         mustAliases.add(formalVar);

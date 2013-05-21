@@ -3,7 +3,7 @@ package at.ac.tuwien.infosys.www.pixy.conversion;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class TacFormalParam {
+public class TacFormalParameter {
     private Variable variable;
     private boolean isReference;
     private boolean hasDefault;
@@ -13,21 +13,21 @@ public class TacFormalParam {
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    TacFormalParam(Variable variable) {
+    TacFormalParameter(Variable variable) {
         this.variable = variable;
         this.isReference = false;
         this.hasDefault = false;
         this.defaultControlFlowGraph = null;
     }
 
-    TacFormalParam(Variable variable, boolean isReference) {
+    TacFormalParameter(Variable variable, boolean isReference) {
         this.variable = variable;
         this.isReference = isReference;
         this.hasDefault = false;
         this.defaultControlFlowGraph = null;
     }
 
-    TacFormalParam(Variable variable, boolean hasDefault, ControlFlowGraph defaultControlFlowGraph) {
+    TacFormalParameter(Variable variable, boolean hasDefault, ControlFlowGraph defaultControlFlowGraph) {
         this.variable = variable;
         this.isReference = false;
         this.hasDefault = hasDefault;

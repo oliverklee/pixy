@@ -119,7 +119,7 @@ public final class Dumper {
         dumpDot(function.getControlFlowGraph(), function.getName(), graphPath);
 
         if (dumpParams) {
-            for (TacFormalParam parameter : function.getParams()) {
+            for (TacFormalParameter parameter : function.getParams()) {
                 String paramString = parameter.getVariable().getName();
                 paramString = paramString.substring(1); // remove "$"
                 if (parameter.hasDefault()) {
@@ -235,7 +235,7 @@ public final class Dumper {
         if (function.isReference()) {
             System.out.println("isReference");
         }
-        for (TacFormalParam param : function.getParams()) {
+        for (TacFormalParameter param : function.getParams()) {
             String paramString = param.getVariable().getName();
             System.out.print("Param: " + paramString);
             if (param.isReference()) {
@@ -325,8 +325,8 @@ public final class Dumper {
 
             // construct parameter list
             StringBuilder paramListStringBuf = new StringBuilder();
-            for (Iterator<TacActualParam> iter = cfgNode.getParamList().iterator(); iter.hasNext(); ) {
-                TacActualParam param = iter.next();
+            for (Iterator<TacActualParameter> iter = cfgNode.getParamList().iterator(); iter.hasNext(); ) {
+                TacActualParameter param = iter.next();
                 if (param.isReference()) {
                     paramListStringBuf.append("&");
                 }
@@ -348,8 +348,8 @@ public final class Dumper {
 
             // construct parameter list
             StringBuilder paramListStringBuf = new StringBuilder();
-            for (Iterator<TacActualParam> iter = cfgNode.getParamList().iterator(); iter.hasNext(); ) {
-                TacActualParam param = iter.next();
+            for (Iterator<TacActualParameter> iter = cfgNode.getParamList().iterator(); iter.hasNext(); ) {
+                TacActualParameter param = iter.next();
                 if (param.isReference()) {
                     paramListStringBuf.append("&");
                 }
@@ -368,8 +368,8 @@ public final class Dumper {
 
             // construct parameter list
             StringBuilder paramListStringBuf = new StringBuilder();
-            for (Iterator<TacActualParam> iter = cfgNode.getParamList().iterator(); iter.hasNext(); ) {
-                TacActualParam param = iter.next();
+            for (Iterator<TacActualParameter> iter = cfgNode.getParamList().iterator(); iter.hasNext(); ) {
+                TacActualParameter param = iter.next();
                 if (param.isReference()) {
                     paramListStringBuf.append("&");
                 }
