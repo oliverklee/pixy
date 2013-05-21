@@ -1,4 +1,4 @@
-package at.ac.tuwien.infosys.www.pixy.analysis.dep;
+package at.ac.tuwien.infosys.www.pixy.analysis.dependency;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>

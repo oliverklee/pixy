@@ -1,4 +1,4 @@
-package at.ac.tuwien.infosys.www.pixy.analysis.dep;
+package at.ac.tuwien.infosys.www.pixy.analysis.dependency;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.GenericRepository;
 import at.ac.tuwien.infosys.www.pixy.analysis.Recyclable;
@@ -21,7 +21,7 @@ public class DepSet implements Recyclable {
         repos.recycle(UNINIT);
     }
 
-    // the contained dep labels
+    // the contained dependency labels
     private Set<Dep> depSet;
 
 //  ********************************************************************************

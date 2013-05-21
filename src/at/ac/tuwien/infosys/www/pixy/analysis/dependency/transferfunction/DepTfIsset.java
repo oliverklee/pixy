@@ -1,35 +1,33 @@
-package at.ac.tuwien.infosys.www.pixy.analysis.dep.transferfunction;
+package at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Transfer function for simple assignment nodes.
+ * Transfer function for "isset" tests,
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepTfAssignSimple extends TransferFunction {
-    private Variable left;
-    private Set<Variable> mustAliases;
-    private Set<Variable> mayAliases;
+public class DepTfIsset extends TransferFunction {
+    private Variable setMe;
+    private TacPlace testMe;
     private AbstractCfgNode cfgNode;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public DepTfAssignSimple(
-        TacPlace left, TacPlace right, Set<Variable> mustAliases, Set<Variable> mayAliases, AbstractCfgNode cfgNode
-    ) {
-        this.left = (Variable) left;  // must be a variable
-        this.mustAliases = mustAliases;
-        this.mayAliases = mayAliases;
+    public DepTfIsset(TacPlace setMe, TacPlace testMe, AbstractCfgNode cfgNode) {
+        this.setMe = (Variable) setMe;  // must be a variable
+        this.testMe = testMe;
         this.cfgNode = cfgNode;
     }
 
@@ -39,11 +37,20 @@ public class DepTfAssignSimple extends TransferFunction {
 
     public LatticeElement transfer(LatticeElement inX) {
 
+        // System.out.println("transfer method: " + setMe + " = " + setTo);
         DepLatticeElement in = (DepLatticeElement) inX;
         DepLatticeElement out = new DepLatticeElement(in);
 
-        // let the lattice element handle the details
-        out.assign(left, mustAliases, mayAliases, cfgNode);
+        if (!setMe.isTemp()) {
+            throw new RuntimeException("SNH");
+        }
+
+        // always results in a boolean, which is always untainted/clean;
+        // not so elegant, but working: simply use Literal.FALSE
+        Set<Variable> mustAliases = new HashSet<>();
+        mustAliases.add(setMe);
+        Set<Variable> mayAliases = Collections.emptySet();
+        out.assign(setMe, mustAliases, mayAliases, cfgNode);
 
         return out;
     }

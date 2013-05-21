@@ -1,4 +1,4 @@
-package at.ac.tuwien.infosys.www.pixy.analysis.dep;
+package at.ac.tuwien.infosys.www.pixy.analysis.dependency;
 
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
@@ -14,7 +14,7 @@ import java.util.*;
 public class DepLatticeElement extends LatticeElement {
     // contains only non-default mappings;
     // does not contain mappings for non-literal array elements, because:
-    // the dep value of such elements solely depends on the array label
+    // the dependency value of such elements solely depends on the array label
     // of their root array;
     // also: contains only mappings for Variables and Constants, not for Literals
     private Map<TacPlace, DepSet> placeToDep;
@@ -243,8 +243,8 @@ public class DepLatticeElement extends LatticeElement {
 
 //  ********************************************************************************
 
-    // returns the non-default dep for this place if that mapping exists,
-    // or the default dep otherwise
+    // returns the non-default dependency for this place if that mapping exists,
+    // or the default dependency otherwise
     private DepSet getDepFrom(
         TacPlace place, Map<? extends TacPlace, DepSet> readFrom) {
 
@@ -253,7 +253,7 @@ public class DepLatticeElement extends LatticeElement {
         }
 
         // if we encounter a non-literal array element:
-        // dep depends solely on the array label of the enclosing array
+        // dependency depends solely on the array label of the enclosing array
         if (place instanceof Variable) {
             Variable var = (Variable) place;
             if (var.isArrayElement() && var.hasNonLiteralIndices()) {
@@ -287,8 +287,8 @@ public class DepLatticeElement extends LatticeElement {
 
 //  ********************************************************************************
 
-    // returns the non-default dep for the given place;
-    // null if there is no non-default dep for it
+    // returns the non-default dependency for the given place;
+    // null if there is no non-default dependency for it
     private DepSet getNonDefaultDep(TacPlace place) {
         if (place instanceof Literal) {
             throw new RuntimeException("SNH");
@@ -351,7 +351,7 @@ public class DepLatticeElement extends LatticeElement {
         }
 
         if (getDefaultDep(place).equals(depSet)) {
-            // if the target dep is the default, we simply remove the mapping
+            // if the target dependency is the default, we simply remove the mapping
             this.placeToDep.remove(place);
         } else {
             this.placeToDep.put(place, depSet);
@@ -373,7 +373,7 @@ public class DepLatticeElement extends LatticeElement {
         DepSet oldDep = this.getDep(place);
         DepSet resultDep = DepSet.lub(oldDep, depSet);
         if (getDefaultDep(place).equals(resultDep)) {
-            // if the target dep is the default, we simply remove the mapping
+            // if the target dependency is the default, we simply remove the mapping
             this.placeToDep.remove(place);
         } else {
             this.placeToDep.put(place, resultDep);
@@ -392,7 +392,7 @@ public class DepLatticeElement extends LatticeElement {
             return;
         }
 
-        // if the target dep is the default, we simply remove the mapping
+        // if the target dependency is the default, we simply remove the mapping
         if (getDefaultArrayLabel(var).equals(depSet)) {
             this.arrayLabels.remove(var);
         } else {
@@ -411,8 +411,8 @@ public class DepLatticeElement extends LatticeElement {
         DepSet oldDep = this.getArrayLabel(var);
         DepSet resultDep = DepSet.lub(depSet, oldDep);
         if (resultDep.equals(getDefaultArrayLabel(var))) {
-            // if the resulting dep is equal to this variable's default
-            // dep, we simply have to remove the default mapping
+            // if the resulting dependency is equal to this variable's default
+            // dependency, we simply have to remove the default mapping
             this.arrayLabels.remove(var);
         } else {
             // replace the non-default mapping
@@ -422,7 +422,7 @@ public class DepLatticeElement extends LatticeElement {
 
 // setWholeTree ********************************************************************
 
-    // sets the dep for all literal array elements in the
+    // sets the dependency for all literal array elements in the
     // tree sepcified by the given root, INCLUDING THE ROOT
     private void setWholeTree(Variable root, DepSet depSet) {
         this.setDep(root, depSet);
@@ -537,7 +537,7 @@ public class DepLatticeElement extends LatticeElement {
 
 //  lub (static) *******************************************************************
 
-    // returns the lub of the given deps (the first dep might be reused)
+    // returns the lub of the given deps (the first dependency might be reused)
     public static DepSet lub(DepSet dep1, DepSet dep2) {
         return DepSet.lub(dep1, dep2);
     }
@@ -564,7 +564,7 @@ public class DepLatticeElement extends LatticeElement {
     // mustAliases and mayAliases: of left; mustAliases always have to
     // include left itself
     public void assign(Variable left, Set<Variable> mustAliases, Set<Variable> mayAliases, AbstractCfgNode cfgNode) {
-        // dep to be assigned to the left side
+        // dependency to be assigned to the left side
         DepSet dep = DepSet.create(Dep.create(cfgNode));
 
         // case distinguisher for the left variable
@@ -662,7 +662,7 @@ public class DepLatticeElement extends LatticeElement {
 
 //  defineConstant *****************************************************************
 
-    // sets the dep of the given constant
+    // sets the dependency of the given constant
     public void defineConstant(Constant c, AbstractCfgNode cfgNode) {
         this.setDep(c, DepSet.create(Dep.create(cfgNode)));
     }
@@ -842,7 +842,7 @@ public class DepLatticeElement extends LatticeElement {
 
 //  setFormal **********************************************************************
 
-    // sets the dep and array label of the given formal
+    // sets the dependency and array label of the given formal
     public void setFormal(TacFormalParameter formalParam, AbstractCfgNode cfgNode) {
         Variable formalVar = formalParam.getVariable();
         Set<Variable> mustAliases = new HashSet<>();
@@ -855,7 +855,7 @@ public class DepLatticeElement extends LatticeElement {
 
 //  setShadow **********************************************************************
 
-    // sets a shadow's dep/label to the dep/label of its original
+    // sets a shadow's dependency/label to the dependency/label of its original
     public void setShadow(Variable shadow, Variable original) {
         // TODO: might be causing problems in some cases?
         this.setDep(shadow, this.getDep(original));
@@ -864,12 +864,12 @@ public class DepLatticeElement extends LatticeElement {
 
 //  copyGlobalLike *****************************************************************
 
-    // copies the non-default dep/label mappings for "global-like" places
+    // copies the non-default dependency/label mappings for "global-like" places
     // from interIn (i.e., global variables, superglobal variables, and
     // constants)
     public void copyGlobalLike(DepLatticeElement interIn) {
 
-        // dep mappings
+        // dependency mappings
         for (Map.Entry<TacPlace, DepSet> entry : interIn.getPlaceToDep().entrySet()) {
             TacPlace origPlace = entry.getKey();
             DepSet origDep = entry.getValue();
@@ -921,7 +921,7 @@ public class DepLatticeElement extends LatticeElement {
     public void copyGlobalLike(DepLatticeElement interIn, DepLatticeElement intraIn,
                                Set<TacPlace> calleeMod) {
 
-        // dep mappings
+        // dependency mappings
         for (Map.Entry<TacPlace, DepSet> entry : interIn.getPlaceToDep().entrySet()) {
             TacPlace interPlace = entry.getKey();
             DepSet interDep = entry.getValue();
@@ -979,10 +979,10 @@ public class DepLatticeElement extends LatticeElement {
 
 //  copyMainTemporaries ****************************************************************
 
-    // copies the dep/label mappings for local temporaries of the main function
+    // copies the dependency/label mappings for local temporaries of the main function
     public void copyMainTemporaries(DepLatticeElement origElement) {
 
-        // dep mappings
+        // dependency mappings
         for (Map.Entry<TacPlace, DepSet> entry : origElement.getPlaceToDep().entrySet()) {
             TacPlace origPlace = entry.getKey();
             DepSet origDep = entry.getValue();
@@ -1000,7 +1000,7 @@ public class DepLatticeElement extends LatticeElement {
                 continue;
             }
 
-            //System.out.println("setting dep for " + origVar);
+            //System.out.println("setting dependency for " + origVar);
             this.setDep(origVar, origDep);
         }
 
@@ -1028,10 +1028,10 @@ public class DepLatticeElement extends LatticeElement {
 
 //  copyMainVariables **************************************************************
 
-    // copies the dep/label mappings for all variables of the main function
+    // copies the dependency/label mappings for all variables of the main function
     public void copyMainVariables(DepLatticeElement origElement) {
 
-        // dep mappings
+        // dependency mappings
         for (Map.Entry<TacPlace, DepSet> entry : origElement.getPlaceToDep().entrySet()) {
             TacPlace origPlace = entry.getKey();
             DepSet origDep = entry.getValue();
@@ -1046,7 +1046,7 @@ public class DepLatticeElement extends LatticeElement {
                 continue;
             }
 
-            //System.out.println("setting dep for " + origVar);
+            //System.out.println("setting dependency for " + origVar);
             this.setDep(origVar, origDep);
         }
 
@@ -1071,10 +1071,10 @@ public class DepLatticeElement extends LatticeElement {
 
 //  copyLocals ********************************************************************
 
-    // copies the non-default dep/label mappings for local variables from origElement
+    // copies the non-default dependency/label mappings for local variables from origElement
     public void copyLocals(DepLatticeElement origElement) {
 
-        // dep mappings
+        // dependency mappings
         for (Map.Entry<TacPlace, DepSet> entry : origElement.getPlaceToDep().entrySet()) {
             TacPlace origPlace = entry.getKey();
             DepSet origDep = entry.getValue();
@@ -1111,7 +1111,7 @@ public class DepLatticeElement extends LatticeElement {
 
 //  setLocal ***********************************************************************
 
-    // sets the dep/label of the given local variable to the given dep/label
+    // sets the dependency/label of the given local variable to the given dependency/label
     public void setLocal(Variable local, DepSet dep, DepSet arrayLabel) {
         this.setDep(local, dep);
         this.setArrayLabel(local, arrayLabel);
@@ -1135,7 +1135,7 @@ public class DepLatticeElement extends LatticeElement {
     public void handleReturnValueUnknown(Variable tempVar, DepSet dep,
                                          DepSet arrayLabel, Variable retVar) {
 
-        //System.out.println("callretunknown: " + tempVar + " -> " + dep);
+        //System.out.println("callretunknown: " + tempVar + " -> " + dependency);
 
         this.setWholeTree(tempVar, dep);
         this.setArrayLabel(tempVar, arrayLabel);
@@ -1154,7 +1154,7 @@ public class DepLatticeElement extends LatticeElement {
 
 //  setRetVar **********************************************************************
 
-    // sets the dep/label of the given return variable to the given dep/label
+    // sets the dependency/label of the given return variable to the given dependency/label
     public void setRetVar(Variable retVar, DepSet dep, DepSet arrayLabel) {
         this.setDep(retVar, dep);
         this.setArrayLabel(retVar, arrayLabel);
@@ -1184,7 +1184,7 @@ public class DepLatticeElement extends LatticeElement {
         }
         DepLatticeElement comp = (DepLatticeElement) compX;
 
-        // the dep and CA maps have to be equal
+        // the dependency and CA maps have to be equal
         return this.placeToDep.equals(comp.getPlaceToDep()) && this.arrayLabels.equals(comp.getArrayLabels());
     }
 

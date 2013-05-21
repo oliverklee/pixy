@@ -48,7 +48,7 @@ public final class InterWorkListElement {
         }
         InterWorkListElement comp = (InterWorkListElement) compX;
 
-        // the dep and CA maps have to be equal
+        // the dependency and CA maps have to be equal
         return this.cfgNode.equals(comp.cfgNode) && this.context.equals(comp.context);
     }
 

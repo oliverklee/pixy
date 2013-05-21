@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.*;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParameter;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;

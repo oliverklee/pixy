@@ -1,4 +1,4 @@
-package at.ac.tuwien.infosys.www.pixy.analysis.dep;
+package at.ac.tuwien.infosys.www.pixy.analysis.dependency;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.GenericRepository;
 import at.ac.tuwien.infosys.www.pixy.analysis.Recyclable;

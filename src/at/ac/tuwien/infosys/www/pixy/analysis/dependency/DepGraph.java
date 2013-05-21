@@ -1,4 +1,4 @@
-package at.ac.tuwien.infosys.www.pixy.analysis.dep;
+package at.ac.tuwien.infosys.www.pixy.analysis.dependency;
 
 import at.ac.tuwien.infosys.www.pixy.DependencyClientInformation;
 import at.ac.tuwien.infosys.www.pixy.Dumper;
@@ -212,11 +212,11 @@ public class DepGraph {
             return dgn;
         }
 
-        // get the dep value of the given place for the current cfg node under
+        // get the dependency value of the given place for the current cfg node under
         // the given contexts
         DepSet depSet = this.getDepSet(current, place, contexts);
 
-        // a dep set is basically nothing but a set of cfg nodes at which
+        // a dependency set is basically nothing but a set of cfg nodes at which
         // a variable's value has been modified; now we go and visit these cfg nodes...
         debug("start going to nodes...");
         for (Dep dep : depSet.getDepSet()) {
@@ -276,7 +276,7 @@ public class DepGraph {
 
 //  ********************************************************************************
 
-    // returns the dep set of the given place for the given cfg node under
+    // returns the dependency set of the given place for the given cfg node under
     // the given contexts,
     // considering basic blocks and function default cfg's (in these cases,
     // the cfg node has no directly associated analysis info)
@@ -441,7 +441,7 @@ public class DepGraph {
         // check if the target cfg node is located in a different function
         // than the current cfg node; this case can happen, for instance, if
         // a global variable is written in some function, and later read in some
-        // other function; the read dep directly leads us to the function where
+        // other function; the read dependency directly leads us to the function where
         // the global variable was written, without warning
         else if (!ControlFlowGraph.getFunction(targetNode).equals(function)) {
             debug("Unexpected function change: " + function.getName() + " -> " + ControlFlowGraph.getFunction(targetNode).getName());
@@ -939,7 +939,7 @@ public class DepGraph {
 
 //  *********************************************************************************
 
-    // determines the "folded" dep set of the given place by lubbing over
+    // determines the "folded" dependency set of the given place by lubbing over
     // the given contexts
     private DepSet newFold(Map<Context, LatticeElement> phi, TacPlace place, Set<Context> contexts) {
         DepSet depSet = null;

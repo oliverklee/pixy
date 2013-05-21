@@ -1,8 +1,8 @@
-package at.ac.tuwien.infosys.www.pixy.analysis.dep.transferfunction;
+package at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 

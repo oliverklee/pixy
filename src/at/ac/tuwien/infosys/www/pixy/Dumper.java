@@ -6,8 +6,8 @@ import at.ac.tuwien.infosys.www.pixy.analysis.AnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElementBottom;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.*;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepSet;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepSet;
 import at.ac.tuwien.infosys.www.pixy.analysis.incdom.IncDomAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.incdom.IncDomLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterAnalysis;
@@ -754,7 +754,7 @@ public final class Dumper {
     static public void dumpComplete(DepLatticeElement element, Writer writer)
         throws IOException {
 
-        // dump non-default dep mappings
+        // dump non-default dependency mappings
         writer.write(linesep + "DEP MAPPINGS" + linesep + linesep);
         for (Map.Entry<TacPlace, DepSet> entry : element.getPlaceToDep().entrySet()) {
             TacPlace place = entry.getKey();

@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AnalysisType;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterWorkList;
 import at.ac.tuwien.infosys.www.pixy.analysis.mod.ModAnalysis;
@@ -51,7 +51,7 @@ public class GenericTaintAnalysis {
 
             // each of the depclients will get the depAnalysis as parameter
             Class<?>[] argsClass = new Class<?>[]{
-                Class.forName("at.ac.tuwien.infosys.www.pixy.analysis.dep.DepAnalysis")};
+                Class.forName("at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepAnalysis")};
             Object[] args = new Object[]{gta.depAnalysis};
 
             // for each requested depclient...

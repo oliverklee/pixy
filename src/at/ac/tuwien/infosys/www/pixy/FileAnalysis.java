@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.*;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.*;
 import at.ac.tuwien.infosys.www.pixy.automaton.Automaton;
 import at.ac.tuwien.infosys.www.pixy.automaton.Transition;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParameter;

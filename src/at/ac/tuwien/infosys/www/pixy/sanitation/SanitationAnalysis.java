@@ -4,7 +4,7 @@ import at.ac.tuwien.infosys.www.pixy.DependencyClient;
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.Utils;
 import at.ac.tuwien.infosys.www.pixy.VulnerabilityInformation;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.*;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallOfBuiltinFunction;
@@ -295,7 +295,7 @@ public abstract class SanitationAnalysis extends DependencyClient {
              * and that the direct successors of the SCC are not <uninit> nodes
              * (see there, below);
              * it is primarily based on the fact that SCCs can never contain
-             * <uninit> nodes, because <uninit> nodes are always leaf nodes in the dep
+             * <uninit> nodes, because <uninit> nodes are always leaf nodes in the dependency
              * graph (since they have no successors);
              * under the above assumptions and observations, it is valid to
              * say that the taint value of an SCC node solely depends on

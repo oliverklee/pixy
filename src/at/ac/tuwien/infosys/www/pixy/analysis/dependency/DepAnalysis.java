@@ -1,8 +1,8 @@
-package at.ac.tuwien.infosys.www.pixy.analysis.dep;
+package at.ac.tuwien.infosys.www.pixy.analysis.dependency;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.*;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.transferfunction.*;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.*;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.*;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.CSAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralAnalysis;

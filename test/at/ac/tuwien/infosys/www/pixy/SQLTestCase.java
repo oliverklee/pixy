@@ -1,8 +1,8 @@
 package at.ac.tuwien.infosys.www.pixy;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepGraph;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.Sink;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepGraph;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.Sink;
 import at.ac.tuwien.infosys.www.pixy.automaton.Automaton;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
 import junit.framework.Assert;

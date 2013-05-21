@@ -2,8 +2,8 @@ package at.ac.tuwien.infosys.www.pixy.sanitation;
 
 import at.ac.tuwien.infosys.www.pixy.VulnerabilityInformation;
 import at.ac.tuwien.infosys.www.pixy.XSSAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.Sink;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.Sink;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParameter;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;

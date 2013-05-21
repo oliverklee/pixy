@@ -1,8 +1,8 @@
-package at.ac.tuwien.infosys.www.pixy.analysis.dep.transferfunction;
+package at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
@@ -10,13 +10,14 @@ import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 import java.util.Set;
 
 /**
- * Transfer function for unary assignment nodes.
+ * Transfer function for binary assignment nodes.
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepTfAssignUnary extends TransferFunction {
+public class DepTfAssignBinary extends TransferFunction {
     private Variable left;
-    private TacPlace right;
+    private TacPlace leftOperand;
+    private TacPlace rightOperand;
     private int op;
     private Set<Variable> mustAliases;
     private Set<Variable> mayAliases;
@@ -27,11 +28,13 @@ public class DepTfAssignUnary extends TransferFunction {
 // *********************************************************************************
 
     // mustAliases, mayAliases: of setMe
-    public DepTfAssignUnary(
-        TacPlace left, TacPlace right, int op, Set<Variable> mustAliases, Set<Variable> mayAliases, AbstractCfgNode cfgNode
+    public DepTfAssignBinary(
+        TacPlace left, TacPlace leftOperand, TacPlace rightOperand, int op, Set<Variable> mustAliases,
+        Set<Variable> mayAliases, AbstractCfgNode cfgNode
     ) {
         this.left = (Variable) left;  // must be a variable
-        this.right = right;
+        this.leftOperand = leftOperand;
+        this.rightOperand = rightOperand;
         this.op = op;
         this.mustAliases = mustAliases;
         this.mayAliases = mayAliases;
