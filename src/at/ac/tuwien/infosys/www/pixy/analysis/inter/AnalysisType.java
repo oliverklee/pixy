@@ -13,7 +13,6 @@ import java.util.List;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public abstract class AnalysisType {
-
     protected InterAnalysis enclosedAnalysis;
 
     // returns the context to which interprocedural propagation shall

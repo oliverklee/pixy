@@ -16,9 +16,7 @@ import java.util.Set;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepTfIsset
-    extends TransferFunction {
-
+public class DepTfIsset extends TransferFunction {
     private Variable setMe;
     private TacPlace testMe;
     private CfgNode cfgNode;

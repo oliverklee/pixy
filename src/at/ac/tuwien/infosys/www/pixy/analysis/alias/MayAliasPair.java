@@ -12,7 +12,6 @@ import java.util.Set;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class MayAliasPair {
-
     // a pair of Variable's;
     // EFF: it might be faster if you implement this explicitly with two variables
     // instead of using a hash set

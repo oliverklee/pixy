@@ -8,9 +8,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallUnknown;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class LiteralTfCallUnknown
-    extends TransferFunction {
-
+public class LiteralTfCallUnknown extends TransferFunction {
     private CfgNodeCallUnknown cfgNode;
 
 // *********************************************************************************

@@ -12,7 +12,6 @@ import java.util.Set;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class CallGraphNode {
-
     private TacFunction function;
 
     // contained call nodes -> target call graph node

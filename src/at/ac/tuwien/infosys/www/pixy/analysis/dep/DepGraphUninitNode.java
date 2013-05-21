@@ -5,9 +5,7 @@ package at.ac.tuwien.infosys.www.pixy.analysis.dep;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepGraphUninitNode
-    extends DepGraphNode {
-
+public class DepGraphUninitNode extends DepGraphNode {
     public DepGraphUninitNode() {
     }
 

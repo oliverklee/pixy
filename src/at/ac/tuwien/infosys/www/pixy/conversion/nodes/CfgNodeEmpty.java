@@ -9,9 +9,7 @@ import java.util.List;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeEmpty
-    extends CfgNode {
-
+public class CfgNodeEmpty extends CfgNode {
 // CONSTRUCTORS ********************************************************************
 
     public CfgNodeEmpty() {

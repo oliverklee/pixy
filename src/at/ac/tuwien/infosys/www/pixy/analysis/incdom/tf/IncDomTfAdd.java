@@ -11,9 +11,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class IncDomTfAdd
-    extends TransferFunction {
-
+public class IncDomTfAdd extends TransferFunction {
     private CfgNode cfgNode;
     private IncDomAnalysis incDomAnalysis;
 

@@ -16,9 +16,7 @@ import java.util.LinkedList;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public abstract class IntraAnalysis
-    extends Analysis {
-
+public abstract class IntraAnalysis extends Analysis {
     // INPUT ***********************************************************************
 
     // <see superclass>

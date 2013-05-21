@@ -10,9 +10,7 @@ import java.util.List;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeEval
-    extends CfgNode {
-
+public class CfgNodeEval extends CfgNode {
     private TacPlace left;
     private TacPlace right;
 

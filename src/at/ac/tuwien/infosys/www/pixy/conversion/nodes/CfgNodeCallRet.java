@@ -13,9 +13,7 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeCallRet
-    extends CfgNode {
-
+public class CfgNodeCallRet extends CfgNode {
 // CONSTRUCTORS ********************************************************************
 
     public CfgNodeCallRet(ParseNode parseNode) {

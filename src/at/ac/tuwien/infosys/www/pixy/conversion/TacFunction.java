@@ -12,7 +12,6 @@ import java.util.List;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class TacFunction {
-
     private String name;
     private Cfg cfg;    // the CFG's tail MUST be the function's exit node
     private boolean isReference;

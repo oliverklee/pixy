@@ -9,9 +9,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class IntraAnalysisNode
-    extends AnalysisNode {
-
+public class IntraAnalysisNode extends AnalysisNode {
     // input lattice element at current CFG node
     LatticeElement inValue;
 

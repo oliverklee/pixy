@@ -15,10 +15,7 @@ import java.util.Set;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class AliasLatticeElement
-    extends LatticeElement
-    implements Recyclable {
-
+public class AliasLatticeElement extends LatticeElement implements Recyclable {
     private MustAliases mustAliases;
     private MayAliases mayAliases;
 

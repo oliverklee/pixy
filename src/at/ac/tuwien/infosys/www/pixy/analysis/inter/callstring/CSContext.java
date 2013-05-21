@@ -5,9 +5,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.inter.Context;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CSContext
-    extends Context {
-
+public class CSContext extends Context {
     private int position;
 
     public CSContext(int position) {

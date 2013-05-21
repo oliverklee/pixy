@@ -14,9 +14,7 @@ import java.util.Set;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepTfAssignSimple
-    extends TransferFunction {
-
+public class DepTfAssignSimple extends TransferFunction {
     private Variable left;
     private Set<Variable> mustAliases;
     private Set<Variable> mayAliases;

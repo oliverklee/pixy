@@ -19,9 +19,7 @@ import java.util.Set;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class LiteralAnalysis
-    extends InterAnalysis {
-
+public class LiteralAnalysis extends InterAnalysis {
     private TacConverter tac;
 
     private GenericRepos<LatticeElement> repos;

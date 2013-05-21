@@ -12,9 +12,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepTfAssignArray
-    extends TransferFunction {
-
+public class DepTfAssignArray extends TransferFunction {
     private Variable left;
     private boolean supported;
     private CfgNode cfgNode;

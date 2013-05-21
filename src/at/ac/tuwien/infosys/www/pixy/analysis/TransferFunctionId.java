@@ -5,9 +5,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.inter.Context;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class TransferFunctionId
-    extends TransferFunction {
-
+public class TransferFunctionId extends TransferFunction {
     public static final TransferFunctionId INSTANCE = new TransferFunctionId();
 
 // *********************************************************************************

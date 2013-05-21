@@ -6,7 +6,6 @@ import java.util.*;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class ConstantsTable {
-
     // constant's label (String) -> Constant;
     // works in a case-sensitive way (i.e. nothing unusual to be done)
     private Map<String, Constant> constants;

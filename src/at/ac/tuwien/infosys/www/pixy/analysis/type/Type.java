@@ -8,9 +8,6 @@ import java.util.Map;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class Type {
-
-//  static stuff *******************************************************************
-
     private static Map<String, Type> classTypes;
 
     public static void initTypes(Collection<String> classNames) {
@@ -27,8 +24,6 @@ public class Type {
         }
         return type;
     }
-
-//  ********************************************************************************
 
     private String className;
 

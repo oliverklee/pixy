@@ -24,9 +24,7 @@ import java.util.*;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class SQLAnalysis
-    extends DepClient {
-
+public class SQLAnalysis extends DepClient {
     // flag indicating whether to use transducers or not (are still unstable)
     private boolean useTransducers = false;
 

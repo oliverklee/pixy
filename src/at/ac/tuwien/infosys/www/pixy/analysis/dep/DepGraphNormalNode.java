@@ -11,9 +11,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepGraphNormalNode
-    extends DepGraphNode {
-
+public class DepGraphNormalNode extends DepGraphNode {
     private TacPlace place;
     private CfgNode cfgNode;
     private boolean isTainted;

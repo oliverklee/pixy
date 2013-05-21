@@ -17,9 +17,7 @@ import java.util.Set;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class LiteralTfUnset
-    extends TransferFunction {
-
+public class LiteralTfUnset extends TransferFunction {
     private Variable operand;
     private boolean supported;
 

@@ -4,7 +4,6 @@ package at.ac.tuwien.infosys.www.pixy.analysis;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public abstract class AnalysisNode {
-
     // the transfer function for this node
     protected TransferFunction tf;
 

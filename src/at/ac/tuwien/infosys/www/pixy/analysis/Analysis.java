@@ -12,7 +12,6 @@ import java.util.List;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public abstract class Analysis {
-
     // INPUT ***********************************************************************
 
     // functions to be analyzed (function name -> TacFunction)

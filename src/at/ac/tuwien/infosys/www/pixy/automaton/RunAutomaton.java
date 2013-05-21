@@ -39,7 +39,6 @@ import java.util.Set;
  * @author Anders M&oslash;ller &lt;<a href="mailto:amoeller@brics.dk">amoeller@brics.dk</a>&gt;
  */
 public class RunAutomaton implements Serializable {
-
     static final long serialVersionUID = 20001;
 
     int size;

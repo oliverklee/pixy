@@ -6,7 +6,6 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public final class CfgEdge {
-
     static final int FALSE_EDGE = 0;
     static final int TRUE_EDGE = 1;
     static public final int NORMAL_EDGE = 2;

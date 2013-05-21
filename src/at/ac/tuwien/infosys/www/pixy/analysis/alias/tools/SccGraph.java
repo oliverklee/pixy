@@ -17,7 +17,6 @@ import java.util.Set;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class SccGraph {
-
     // Variable (label) -> SccNode
     private Map<Variable, SccNode> label2nodes;
 

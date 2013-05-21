@@ -13,9 +13,7 @@ import java.util.Set;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepTfCallUnknown
-    extends TransferFunction {
-
+public class DepTfCallUnknown extends TransferFunction {
     private CfgNodeCallUnknown cfgNode;
 
 // *********************************************************************************

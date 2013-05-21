@@ -16,9 +16,7 @@ import java.util.Set;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class LiteralTfIsset
-    extends TransferFunction {
-
+public class LiteralTfIsset extends TransferFunction {
     private Variable setMe;
     private TacPlace testMe;
 

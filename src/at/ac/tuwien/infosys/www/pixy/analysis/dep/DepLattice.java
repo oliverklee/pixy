@@ -11,13 +11,7 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-class DepLattice
-    extends Lattice {
-
-// *********************************************************************************
-// CONSTRUCTORS ********************************************************************
-// *********************************************************************************
-
+class DepLattice extends Lattice {
     DepLattice(
         List<TacPlace> places, ConstantsTable constantsTable, List<TacFunction> functions, SymbolTable superSymbolTable,
         Variable memberPlace

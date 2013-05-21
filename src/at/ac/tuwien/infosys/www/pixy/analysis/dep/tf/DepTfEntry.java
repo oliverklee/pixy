@@ -13,9 +13,7 @@ import java.util.Map;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepTfEntry
-    extends TransferFunction {
-
+public class DepTfEntry extends TransferFunction {
     private TacFunction function;
 
 // *********************************************************************************

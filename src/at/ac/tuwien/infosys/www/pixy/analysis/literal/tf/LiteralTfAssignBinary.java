@@ -14,9 +14,7 @@ import java.util.Set;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class LiteralTfAssignBinary
-    extends TransferFunction {
-
+public class LiteralTfAssignBinary extends TransferFunction {
     private Variable left;
     private TacPlace leftOperand;
     private TacPlace rightOperand;

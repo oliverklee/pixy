@@ -8,9 +8,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.inter.Context;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class FunctionalContext
-    extends Context {
-
+public class FunctionalContext extends Context {
     private LatticeElement latticeElement;
 
     public FunctionalContext(LatticeElement latticeElement) {

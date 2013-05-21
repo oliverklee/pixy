@@ -6,7 +6,6 @@ package at.ac.tuwien.infosys.www.pixy.analysis;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public abstract class Lattice {
-
     // bottom element of this lattice
     protected final LatticeElement bottom = LatticeElementBottom.INSTANCE;
 

@@ -16,7 +16,6 @@ import java.util.*;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public abstract class DepClient {
-
     protected DepAnalysis depAnalysis;
     protected DepClientInfo dci;
 

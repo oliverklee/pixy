@@ -8,9 +8,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class TypeTfUnset
-    extends TransferFunction {
-
+public class TypeTfUnset extends TransferFunction {
     private Variable operand;
 
 // *********************************************************************************

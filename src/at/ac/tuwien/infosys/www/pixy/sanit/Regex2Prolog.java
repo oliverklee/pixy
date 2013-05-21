@@ -10,9 +10,6 @@ import java.util.ListIterator;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class Regex2Prolog {
-
-//  ********************************************************************************
-
     // converts a PHP regex into a Prolog (FSA-Utils) regexp;
     // throws UnsupportedRegexException for unsupported regexes;
     // preg: true if this regex is perl-compatible, false if it is posix (ereg)

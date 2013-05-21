@@ -8,8 +8,7 @@ package at.ac.tuwien.infosys.www.pixy.analysis;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public abstract class LatticeElement
-    implements Recyclable {
+public abstract class LatticeElement implements Recyclable {
 
     // lubs the given element over *this* element;
     // can be called on every lattice element except Bottom and Top

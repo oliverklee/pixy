@@ -11,9 +11,7 @@ import java.util.Set;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepSet
-    implements Recyclable {
-
+public class DepSet implements Recyclable {
     public static GenericRepos<DepSet> repos = new GenericRepos<>();
 
     // no special treatment necessary for the following:

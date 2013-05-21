@@ -12,9 +12,7 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeIncludeStart
-    extends CfgNode {
-
+public class CfgNodeIncludeStart extends CfgNode {
     private File containingFile;  // file in which this node occurs
     private CfgNodeIncludeEnd peer;
 

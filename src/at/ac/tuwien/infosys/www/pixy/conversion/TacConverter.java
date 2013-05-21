@@ -26,7 +26,6 @@ import java.util.*;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class TacConverter {
-
     // the file from which the parse tree was constructed
     private File file;
 

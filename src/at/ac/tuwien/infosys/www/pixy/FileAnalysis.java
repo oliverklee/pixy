@@ -22,14 +22,9 @@ import java.util.*;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class FileAnalysis extends DepClient {
-
-//  ********************************************************************************
-
     public FileAnalysis(DepAnalysis depAnalysis) {
         super(depAnalysis);
     }
-
-//  ********************************************************************************
 
     public List<Integer> detectVulns() {
 

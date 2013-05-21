@@ -11,9 +11,7 @@ import java.util.List;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeEcho
-    extends CfgNode {
-
+public class CfgNodeEcho extends CfgNode {
     private TacPlace place;
 
 // CONSTRUCTORS ********************************************************************

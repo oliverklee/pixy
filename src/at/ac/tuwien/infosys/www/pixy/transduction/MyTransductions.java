@@ -20,7 +20,6 @@ import java.util.Set;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class MyTransductions {
-
     private MyAlphabet alphabet;
 
     public MyTransductions() {

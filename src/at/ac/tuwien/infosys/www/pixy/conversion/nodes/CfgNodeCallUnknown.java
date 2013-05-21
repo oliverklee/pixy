@@ -13,9 +13,7 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeCallUnknown
-    extends CfgNode {
-
+public class CfgNodeCallUnknown extends CfgNode {
     // name of the called unknown function
     private String functionName;
 

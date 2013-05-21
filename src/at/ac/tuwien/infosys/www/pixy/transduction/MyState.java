@@ -4,7 +4,6 @@ package at.ac.tuwien.infosys.www.pixy.transduction;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class MyState {
-
     public final int i;
 
     boolean initial;

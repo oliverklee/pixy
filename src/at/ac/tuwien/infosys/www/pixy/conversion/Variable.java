@@ -5,11 +5,7 @@ import java.util.*;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class Variable
-    extends TacPlace {
-
-    // EFF: check for unnecessary fields / methods
-
+public class Variable extends TacPlace {
     private String name;
     private SymbolTable symbolTable; // the symbol table this variable belongs to;
     private boolean isSuperGlobal;   // member of the superglobals symboltable?

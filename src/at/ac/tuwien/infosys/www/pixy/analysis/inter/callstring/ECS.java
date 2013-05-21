@@ -7,7 +7,6 @@ import java.util.List;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class ECS {
-
     // a list of CallString objects
     List<CallString> callStrings;
 

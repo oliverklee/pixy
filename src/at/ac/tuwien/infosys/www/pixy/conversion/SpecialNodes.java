@@ -11,7 +11,6 @@ import java.util.Set;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 class SpecialNodes {
-
     private SpecialNodes() {
         // utility class, no instances needed
     }

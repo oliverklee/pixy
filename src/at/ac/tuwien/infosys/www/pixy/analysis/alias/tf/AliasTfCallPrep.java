@@ -18,9 +18,7 @@ import java.util.Map;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class AliasTfCallPrep
-    extends TransferFunction {
-
+public class AliasTfCallPrep extends TransferFunction {
     private List<List<Variable>> cbrParams;
     private TacFunction caller;
     private AliasAnalysis aliasAnalysis;

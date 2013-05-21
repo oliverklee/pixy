@@ -22,7 +22,6 @@ import java.util.*;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class ProgramConverter {
-
     // = the directory in which the given entry file is located
     private File workingDirectoryFile;
 

@@ -12,9 +12,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class AliasTfUnset
-    extends TransferFunction {
-
+public class AliasTfUnset extends TransferFunction {
     private Variable operand;
     private AliasAnalysis aliasAnalysis;
     private boolean supported;

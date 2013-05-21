@@ -19,7 +19,6 @@ import java.util.*;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class ModAnalysis {
-
     // this is what we want to compute:
     // a set of modified global-likes for each function
     // (global variables, superglobals, and constants)

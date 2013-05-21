@@ -19,9 +19,7 @@ import java.util.Set;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class XSSSanitAnalysis
-    extends SanitAnalysis {
-
+public class XSSSanitAnalysis extends SanitAnalysis {
 //  ********************************************************************************
 
     public XSSSanitAnalysis(DepAnalysis depAnalysis) {

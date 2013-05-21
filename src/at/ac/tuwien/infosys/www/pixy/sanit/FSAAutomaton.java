@@ -9,7 +9,6 @@ import java.util.*;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class FSAAutomaton {
-
     // the internal FSA-Utils representation (type "normal")
     private String str;
 

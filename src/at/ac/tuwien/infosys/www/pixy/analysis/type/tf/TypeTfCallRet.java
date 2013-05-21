@@ -12,9 +12,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCall;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class TypeTfCallRet
-    extends TransferFunction {
-
+public class TypeTfCallRet extends TransferFunction {
     private InterAnalysisNode analysisNodeAtCallPrep;
     private TacFunction caller;
     private TacFunction callee;

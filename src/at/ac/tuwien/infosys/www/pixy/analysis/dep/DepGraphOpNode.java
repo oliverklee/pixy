@@ -11,9 +11,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepGraphOpNode
-    extends DepGraphNode {
-
+public class DepGraphOpNode extends DepGraphNode {
     private CfgNode cfgNode;
     private String name;
     private boolean builtin;    // builtin function?

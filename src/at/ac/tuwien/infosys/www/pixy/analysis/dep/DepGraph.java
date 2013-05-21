@@ -30,7 +30,6 @@ import java.util.*;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class DepGraph {
-
     // map from a node to *the same* node;
     // necessary due to the usual limitation of java.util.Set
     private Map<DepGraphNode, DepGraphNode> nodes;

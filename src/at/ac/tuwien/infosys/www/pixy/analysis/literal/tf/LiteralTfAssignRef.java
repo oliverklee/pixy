@@ -16,9 +16,7 @@ import java.util.Set;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class LiteralTfAssignRef
-    extends TransferFunction {
-
+public class LiteralTfAssignRef extends TransferFunction {
     private Variable left;
     private Variable right;
     private boolean supported;

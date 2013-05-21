@@ -10,9 +10,7 @@ import java.util.List;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class IncDomLatticeElement
-    extends LatticeElement {
-
+public class IncDomLatticeElement extends LatticeElement {
     // an ordered list of CfgNodes (more specifically: of CfgNodeIncludeStart and
     // CfgNodeIncludeEnd) that dominate the current node
     private List<CfgNode> dominators;

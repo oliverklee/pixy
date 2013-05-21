@@ -23,9 +23,7 @@ import java.util.Set;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class TypeAnalysis
-    extends InterAnalysis {
-
+public class TypeAnalysis extends InterAnalysis {
     private GenericRepos<LatticeElement> repos;
     private Collection<String> classNames;
 

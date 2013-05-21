@@ -18,7 +18,6 @@ import java.util.regex.Pattern;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class ParseNodeHeuristics {
-
     private static LiteralAnalysis literalAnalysis;
     private static CfgNodeInclude includeNode;
 

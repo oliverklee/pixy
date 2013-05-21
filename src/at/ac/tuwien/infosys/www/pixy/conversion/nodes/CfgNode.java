@@ -17,7 +17,6 @@ import java.util.List;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public abstract class CfgNode {
-
     protected final ParseNode parseNode;
 
     protected List<CfgEdge> inEdges;

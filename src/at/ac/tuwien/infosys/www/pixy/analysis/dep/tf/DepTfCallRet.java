@@ -18,9 +18,7 @@ import java.util.*;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepTfCallRet
-    extends TransferFunction {
-
+public class DepTfCallRet extends TransferFunction {
     private InterAnalysisNode analysisNodeAtCallPrep;
     private TacFunction caller;
     private TacFunction callee;

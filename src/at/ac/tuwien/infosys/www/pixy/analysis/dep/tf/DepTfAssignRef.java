@@ -17,9 +17,7 @@ import java.util.Set;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepTfAssignRef
-    extends TransferFunction {
-
+public class DepTfAssignRef extends TransferFunction {
     private Variable left;
     private Variable right;
     private boolean supported;

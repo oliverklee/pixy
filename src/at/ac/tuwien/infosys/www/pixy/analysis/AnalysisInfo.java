@@ -10,7 +10,6 @@ import java.util.HashMap;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public abstract class AnalysisInfo {
-
     // CfgNode -> AnalysisNode
     protected HashMap<CfgNode, AnalysisNode> map;
 

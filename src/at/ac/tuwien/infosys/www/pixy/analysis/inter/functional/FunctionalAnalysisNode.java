@@ -17,9 +17,7 @@ import java.util.Set;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class FunctionalAnalysisNode
-    extends InterAnalysisNode {
-
+public class FunctionalAnalysisNode extends InterAnalysisNode {
     // mapping input LatticeElement -> Set of context LatticeElements;
     // only needed for call nodes
     Map<LatticeElement, Set<FunctionalContext>> reversePhi;

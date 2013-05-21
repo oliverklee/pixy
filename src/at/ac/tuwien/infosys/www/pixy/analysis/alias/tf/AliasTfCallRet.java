@@ -19,9 +19,7 @@ import java.util.Set;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class AliasTfCallRet
-    extends TransferFunction {
-
+public class AliasTfCallRet extends TransferFunction {
     private InterAnalysisNode analysisNodeAtCallPrep;
     private TacFunction callee;
     private List<List<Variable>> cbrParams;

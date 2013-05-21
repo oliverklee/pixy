@@ -10,9 +10,7 @@ import java.util.Set;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DummyAliasAnalysis
-    extends AliasAnalysis {
-
+public class DummyAliasAnalysis extends AliasAnalysis {
     public DummyAliasAnalysis() {
         super();
     }

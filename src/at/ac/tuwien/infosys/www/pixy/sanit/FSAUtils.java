@@ -12,7 +12,6 @@ import java.util.List;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class FSAUtils {
-
     private static String mohri = MyOptions.fsa_home + "/Examples/MohriSproat96/ops.pl";
 
     public static FSAAutomaton reg_replace(FSAAutomaton phpPatternAuto,

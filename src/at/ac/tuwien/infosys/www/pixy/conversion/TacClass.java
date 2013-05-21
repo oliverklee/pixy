@@ -11,7 +11,6 @@ import java.util.Map;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class TacClass {
-
     // node where the class definition starts
     private ParseNode parseNode;
 

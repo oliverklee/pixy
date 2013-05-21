@@ -12,9 +12,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeTester;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class LiteralTfTester
-    extends TransferFunction {
-
+public class LiteralTfTester extends TransferFunction {
     // provides access to the return variable of the function enclosing
     // this ~_test_ node
     private Variable retVar;

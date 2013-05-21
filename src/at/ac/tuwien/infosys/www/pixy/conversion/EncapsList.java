@@ -17,7 +17,6 @@ import java.util.List;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class EncapsList {
-
     private List<Object> encapsList;
 
     EncapsList() {

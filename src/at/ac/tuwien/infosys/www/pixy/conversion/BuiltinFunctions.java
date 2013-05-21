@@ -6,7 +6,6 @@ import java.util.HashSet;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class BuiltinFunctions {
-
     // set containing the lower-case names of ALL builtin PHP functions,
     // i.e. including those that are not modeled in the builtin functions
     // input file

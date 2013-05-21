@@ -16,9 +16,7 @@ import java.util.List;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepTfDefine
-    extends TransferFunction {
-
+public class DepTfDefine extends TransferFunction {
     private TacPlace setMe;
     private TacPlace caseInsensitive;
 

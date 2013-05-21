@@ -21,9 +21,7 @@ import java.util.Map;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepGraphTestCaseNA
-    extends TestCase {
-
+public class DepGraphTestCaseNA extends TestCase {
     private String path;    // complete path to the testfile directory (with trailing slash)
 
     // these are recomputed for every single test

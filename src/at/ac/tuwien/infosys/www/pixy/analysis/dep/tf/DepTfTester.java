@@ -17,9 +17,7 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepTfTester
-    extends TransferFunction {
-
+public class DepTfTester extends TransferFunction {
     // provides access to the return variable of the function enclosing
     // this ~_test_ node
     private Variable retVar;

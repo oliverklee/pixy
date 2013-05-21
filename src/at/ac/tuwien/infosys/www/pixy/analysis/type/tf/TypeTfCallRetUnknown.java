@@ -9,9 +9,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallRet;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class TypeTfCallRetUnknown
-    extends TransferFunction {
-
+public class TypeTfCallRetUnknown extends TransferFunction {
     private CfgNodeCallRet retNode;
 
 // *********************************************************************************

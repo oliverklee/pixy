@@ -6,9 +6,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class IncDomLattice
-    extends Lattice {
-
+public class IncDomLattice extends Lattice {
     private IncDomAnalysis incDomAnalysis;
 
     public IncDomLattice(IncDomAnalysis incDomAnalysis) {

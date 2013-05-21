@@ -13,9 +13,7 @@ import java.util.Set;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class LiteralTfAssignUnary
-    extends TransferFunction {
-
+public class LiteralTfAssignUnary extends TransferFunction {
     private Variable left;
     private TacPlace right;
     private int op;

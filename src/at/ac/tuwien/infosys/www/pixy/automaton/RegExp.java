@@ -99,7 +99,6 @@ import java.util.*;
  * @author Anders M&oslash;ller &lt;<a href="mailto:amoeller@brics.dk">amoeller@brics.dk</a>&gt;
  */
 public class RegExp {
-
     enum Kind {
         REGEXP_UNION,
         REGEXP_CONCATENATION,

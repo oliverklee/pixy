@@ -12,9 +12,7 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class Sink
-    implements Comparable<Sink> {
-
+public class Sink implements Comparable<Sink> {
     // a list of sensitive places
     // (i.e. places for which we want to get dependency graphs)
     private List<TacPlace> sensitivePlaces;

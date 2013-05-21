@@ -19,11 +19,7 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class SQLSanitAnalysis
-    extends SanitAnalysis {
-
-//  ********************************************************************************
-
+public class SQLSanitAnalysis extends SanitAnalysis {
     public SQLSanitAnalysis(DepAnalysis depAnalysis) {
         this(depAnalysis, true);
     }

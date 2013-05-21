@@ -8,9 +8,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallBuiltin;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class TypeTfCallBuiltin
-    extends TransferFunction {
-
+public class TypeTfCallBuiltin extends TransferFunction {
     private CfgNodeCallBuiltin cfgNode;
 
 // *********************************************************************************

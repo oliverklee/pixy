@@ -16,9 +16,7 @@ import java.util.Set;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepTfUnset
-    extends TransferFunction {
-
+public class DepTfUnset extends TransferFunction {
     private Variable operand;
     private CfgNode cfgNode;
     private boolean supported;

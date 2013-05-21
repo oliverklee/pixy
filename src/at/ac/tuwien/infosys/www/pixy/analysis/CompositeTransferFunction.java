@@ -7,9 +7,7 @@ import java.util.List;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CompositeTransferFunction
-    extends TransferFunction {
-
+public class CompositeTransferFunction extends TransferFunction {
     // a list of TransferFunctions to be applied in sequence
     private List<TransferFunction> tfs;
 

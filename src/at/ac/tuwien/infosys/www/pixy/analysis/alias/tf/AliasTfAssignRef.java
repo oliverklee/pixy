@@ -13,9 +13,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class AliasTfAssignRef
-    extends TransferFunction {
-
+public class AliasTfAssignRef extends TransferFunction {
     private Variable left;
     private Variable right;
 

@@ -14,7 +14,6 @@ import java.util.Set;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class IncludeGraph {
-
     private IncludeNode root;
 
     private Set<IncludeNode> nodes;

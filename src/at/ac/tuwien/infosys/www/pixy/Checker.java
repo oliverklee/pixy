@@ -29,7 +29,6 @@ import java.util.StringTokenizer;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public final class Checker {
-
     // enable this switch to make the TacConverter recognize hotspots
     // and other special nodes
     private boolean specialNodes = true;

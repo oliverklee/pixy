@@ -15,9 +15,7 @@ import java.util.List;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class LiteralTfDefine
-    extends TransferFunction {
-
+public class LiteralTfDefine extends TransferFunction {
     private TacPlace setMe;
     private TacPlace setTo;
     private TacPlace caseInsensitive;

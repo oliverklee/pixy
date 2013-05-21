@@ -9,9 +9,7 @@ import java.util.List;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeEntry
-    extends CfgNode {
-
+public class CfgNodeEntry extends CfgNode {
 // CONSTRUCTORS ********************************************************************
 
     // necessary constructor for special functions (have no associated

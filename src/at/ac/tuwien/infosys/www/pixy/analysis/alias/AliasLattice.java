@@ -6,9 +6,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class AliasLattice
-    extends Lattice {
-
+public class AliasLattice extends Lattice {
     private AliasAnalysis aliasAnalysis;
 
     public AliasLattice(AliasAnalysis aliasAnalysis) {

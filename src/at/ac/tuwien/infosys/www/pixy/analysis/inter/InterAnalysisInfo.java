@@ -9,9 +9,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class InterAnalysisInfo
-    extends AnalysisInfo {
-
+public class InterAnalysisInfo extends AnalysisInfo {
     public InterAnalysisInfo() {
         super();
     }

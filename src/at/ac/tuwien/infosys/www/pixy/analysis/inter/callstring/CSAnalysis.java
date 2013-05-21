@@ -15,9 +15,7 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CSAnalysis
-    extends AnalysisType {
-
+public class CSAnalysis extends AnalysisType {
     // INPUT ***********************************************************************
 
     // results from preceding connector computation (for interprocedural

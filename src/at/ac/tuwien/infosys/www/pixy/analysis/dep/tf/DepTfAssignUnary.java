@@ -14,9 +14,7 @@ import java.util.Set;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepTfAssignUnary
-    extends TransferFunction {
-
+public class DepTfAssignUnary extends TransferFunction {
     private Variable left;
     private TacPlace right;
     private int op;

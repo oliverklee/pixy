@@ -6,7 +6,6 @@ package at.ac.tuwien.infosys.www.pixy.conversion;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class InternalStrings {
-
     // suffix for g-shadows
     public static final String gShadowSuffix = "_gs";
 

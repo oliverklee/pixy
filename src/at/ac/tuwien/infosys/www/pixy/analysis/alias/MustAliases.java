@@ -11,7 +11,6 @@ import java.util.*;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class MustAliases {
-
     // contains MustAliasGroup's
     private Set<MustAliasGroup> groups;
 

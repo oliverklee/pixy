@@ -9,9 +9,7 @@ import java.util.Set;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class MyAcceptor
-    extends MyAutomaton {
-
+public class MyAcceptor extends MyAutomaton {
     public MyAcceptor() {
         super();
     }

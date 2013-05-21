@@ -11,9 +11,7 @@ import java.util.*;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class LiteralLatticeElement
-    extends LatticeElement {
-
+public class LiteralLatticeElement extends LatticeElement {
     // TacPlace -> Literal
     // contains only non-default mappings;
     private Map<TacPlace, Literal> placeToLit;

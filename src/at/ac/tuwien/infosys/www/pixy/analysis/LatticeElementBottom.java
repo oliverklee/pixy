@@ -3,9 +3,7 @@ package at.ac.tuwien.infosys.www.pixy.analysis;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class LatticeElementBottom
-    extends LatticeElement {
-
+public class LatticeElementBottom extends LatticeElement {
     public static final LatticeElementBottom INSTANCE = new LatticeElementBottom();
 
 // *********************************************************************************

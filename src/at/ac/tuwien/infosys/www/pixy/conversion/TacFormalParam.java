@@ -4,7 +4,6 @@ package at.ac.tuwien.infosys.www.pixy.conversion;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class TacFormalParam {
-
     private Variable variable;
     private boolean isReference;
     private boolean hasDefault;

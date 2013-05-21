@@ -10,9 +10,7 @@ import java.util.List;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeGlobal
-    extends CfgNode {
-
+public class CfgNodeGlobal extends CfgNode {
     private Variable operand;
 
 // CONSTRUCTORS ********************************************************************

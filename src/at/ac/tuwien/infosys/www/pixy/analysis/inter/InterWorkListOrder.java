@@ -20,7 +20,6 @@ import java.util.*;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class InterWorkListOrder {
-
     // this is what we want to compute: a mapping of interprocedural
     // worklist elements to some number (order)
     private Map<InterWorkListElement, Integer> order;

@@ -31,9 +31,7 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public abstract class InterAnalysis
-    extends Analysis {
-
+public abstract class InterAnalysis extends Analysis {
     // INPUT ***********************************************************************
 
     // functional or CS analysis

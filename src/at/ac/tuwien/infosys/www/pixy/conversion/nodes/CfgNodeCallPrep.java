@@ -16,9 +16,7 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeCallPrep
-    extends CfgNode {
-
+public class CfgNodeCallPrep extends CfgNode {
 // CONSTRUCTORS ********************************************************************
 
     public CfgNodeCallPrep(ParseNode node) {

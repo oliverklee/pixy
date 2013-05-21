@@ -9,9 +9,7 @@ import java.util.*;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class TypeLatticeElement
-    extends LatticeElement {
-
+public class TypeLatticeElement extends LatticeElement {
     private Map<Variable, Set<Type>> var2Type;
 
     // an empty lattice element (the analysis starts with this one)

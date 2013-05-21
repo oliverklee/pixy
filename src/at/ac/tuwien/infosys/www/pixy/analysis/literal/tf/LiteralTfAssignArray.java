@@ -10,9 +10,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
  * Transfer function for array assignment nodes ("left = array()").
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class LiteralTfAssignArray
-    extends TransferFunction {
-
+public class LiteralTfAssignArray extends TransferFunction {
     private Variable left;
     private boolean supported;
 

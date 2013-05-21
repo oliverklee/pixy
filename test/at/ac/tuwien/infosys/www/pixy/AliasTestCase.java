@@ -18,9 +18,7 @@ import java.util.*;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class AliasTestCase
-    extends TestCase {
-
+public class AliasTestCase extends TestCase {
     private String path;
     private TacConverter tac;
     private AliasAnalysis aliasAnalysis;

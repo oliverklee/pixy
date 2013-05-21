@@ -19,9 +19,7 @@ import java.util.Set;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class LiteralTestCase
-    extends TestCase {
-
+public class LiteralTestCase extends TestCase {
     private String path;    // complete path to the testfile directory (with trailing slash)
 
     private TacConverter tac;

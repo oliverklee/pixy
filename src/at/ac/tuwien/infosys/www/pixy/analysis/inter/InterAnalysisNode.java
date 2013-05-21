@@ -15,7 +15,6 @@ import java.util.Set;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public abstract class InterAnalysisNode extends AnalysisNode {
-
     // context map for interprocedural analysis
     // (Context -> input LatticeElement at current CFG node)
     Map<Context, LatticeElement> phi;

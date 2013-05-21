@@ -28,7 +28,6 @@ import java.util.*;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public final class Dumper {
-
     // auxiliary HashMap: CfgNode -> Integer
     private static HashMap<CfgNode, Integer> node2Int;
     private static int idCounter;

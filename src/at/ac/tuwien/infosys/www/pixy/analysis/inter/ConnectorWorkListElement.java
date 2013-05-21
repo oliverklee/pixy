@@ -9,7 +9,6 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public final class ConnectorWorkListElement {
-
     private final TacFunction function;
     private final CallString callString;
 

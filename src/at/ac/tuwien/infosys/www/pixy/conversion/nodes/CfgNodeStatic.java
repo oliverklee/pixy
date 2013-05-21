@@ -10,9 +10,7 @@ import java.util.List;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeStatic
-    extends CfgNode {
-
+public class CfgNodeStatic extends CfgNode {
     private TacPlace operand;
     private TacPlace initialPlace;
     private boolean hasInitialPlace;

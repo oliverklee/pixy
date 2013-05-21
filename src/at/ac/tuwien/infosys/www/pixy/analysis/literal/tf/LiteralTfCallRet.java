@@ -17,9 +17,7 @@ import java.util.*;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class LiteralTfCallRet
-    extends TransferFunction {
-
+public class LiteralTfCallRet extends TransferFunction {
     private InterAnalysisNode analysisNodeAtCallPrep;
     private TacFunction caller;
     private TacFunction callee;

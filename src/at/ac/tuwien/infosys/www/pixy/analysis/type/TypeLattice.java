@@ -8,9 +8,7 @@ import java.util.Collection;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class TypeLattice
-    extends Lattice {
-
+public class TypeLattice extends Lattice {
     public TypeLattice(Collection<String> classNames) {
         Type.initTypes(classNames);
     }

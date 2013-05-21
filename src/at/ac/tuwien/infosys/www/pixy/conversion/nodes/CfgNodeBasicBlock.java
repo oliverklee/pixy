@@ -8,9 +8,7 @@ import java.util.List;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeBasicBlock
-    extends CfgNode {
-
+public class CfgNodeBasicBlock extends CfgNode {
     List<CfgNode> containedNodes;
 
     // associate parse node of the basic block's initial node

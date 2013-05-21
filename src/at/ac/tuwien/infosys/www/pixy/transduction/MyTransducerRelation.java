@@ -4,7 +4,6 @@ package at.ac.tuwien.infosys.www.pixy.transduction;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public final class MyTransducerRelation {
-
     // input label
     final Object in;
 

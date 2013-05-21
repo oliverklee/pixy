@@ -18,9 +18,7 @@ import java.util.*;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public abstract class SanitAnalysis
-    extends DepClient {
-
+public abstract class SanitAnalysis extends DepClient {
     // if this flag is active, untainted values (most notably: static strings)
     // are treated as empty strings during depgraph decoration
     private boolean trimUntainted = !MyOptions.optionR;

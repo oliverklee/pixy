@@ -15,9 +15,7 @@ import java.util.List;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class LiteralTfCallBuiltin
-    extends TransferFunction {
-
+public class LiteralTfCallBuiltin extends TransferFunction {
     private CfgNodeCallBuiltin cfgNode;
 
 // *********************************************************************************

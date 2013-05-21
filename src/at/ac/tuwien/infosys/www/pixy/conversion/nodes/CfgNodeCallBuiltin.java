@@ -13,9 +13,7 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeCallBuiltin
-    extends CfgNode {
-
+public class CfgNodeCallBuiltin extends CfgNode {
     // name of the called builtin function
     private String functionName;
 

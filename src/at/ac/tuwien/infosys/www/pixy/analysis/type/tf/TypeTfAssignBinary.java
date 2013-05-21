@@ -9,9 +9,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
  * Transfer function for unary assignment nodes.
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class TypeTfAssignBinary
-    extends TransferFunction {
-
+public class TypeTfAssignBinary extends TransferFunction {
     private Variable left;
 
 // *********************************************************************************

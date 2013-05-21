@@ -9,7 +9,6 @@ import java.util.Map;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class SymbolTable {
-
     // map variable object -> Variable object
     private Map<Variable, Variable> variables;
     private String name;    // usually corresponds to a function name (lowercase)

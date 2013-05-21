@@ -4,7 +4,6 @@ package at.ac.tuwien.infosys.www.pixy.automaton;
  * @author Anders M&oslash;ller &lt;<a href="mailto:amoeller@brics.dk">amoeller@brics.dk</a>&gt;
  */
 public class TransitionRegExp {
-
     RegExp regExp;
     State to;
 

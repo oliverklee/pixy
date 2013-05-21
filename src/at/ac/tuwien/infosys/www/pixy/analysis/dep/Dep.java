@@ -10,9 +10,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class Dep
-    implements Recyclable {
-
+public class Dep implements Recyclable {
     public static GenericRepos<Dep> repos =
         new GenericRepos<>();
 

@@ -7,7 +7,6 @@ import java.util.Map;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class TacOperators {
-
     public static final int PLUS = 0;
     public static final int IS_SMALLER = 1;
     public static final int IS_EQUAL = 2;

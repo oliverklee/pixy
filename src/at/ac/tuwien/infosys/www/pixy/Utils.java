@@ -8,7 +8,6 @@ import java.util.List;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class Utils {
-
     // same as PHP's basename()
     public static String basename(String s) {
         return (new File(s).getName());

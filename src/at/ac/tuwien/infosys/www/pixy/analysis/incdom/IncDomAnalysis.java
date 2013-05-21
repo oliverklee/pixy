@@ -20,9 +20,7 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class IncDomAnalysis
-    extends IntraAnalysis {
-
+public class IncDomAnalysis extends IntraAnalysis {
     private GenericRepos<LatticeElement> repos;
 
 //  ********************************************************************************

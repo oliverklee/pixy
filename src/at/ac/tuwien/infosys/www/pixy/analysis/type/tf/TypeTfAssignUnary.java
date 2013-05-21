@@ -10,9 +10,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class TypeTfAssignUnary
-    extends TransferFunction {
-
+public class TypeTfAssignUnary extends TransferFunction {
     private Variable left;
 
 // *********************************************************************************

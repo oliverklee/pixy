@@ -10,7 +10,6 @@ import java.util.*;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public abstract class MyAutomaton {
-
     // STATE INFO ***********************************
 
     // counter for state labels

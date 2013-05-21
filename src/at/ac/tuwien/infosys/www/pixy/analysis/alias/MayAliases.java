@@ -14,7 +14,6 @@ import java.util.Set;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class MayAliases {
-
     // contains MayAliasPair's
     private Set<MayAliasPair> pairs;
 

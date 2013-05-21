@@ -17,9 +17,7 @@ import java.util.*;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepAnalysis
-    extends InterAnalysis {
-
+public class DepAnalysis extends InterAnalysis {
     private TacConverter tac;
     private List<TacPlace> places;
     private ConstantsTable constantsTable;

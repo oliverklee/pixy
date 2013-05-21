@@ -14,9 +14,7 @@ import java.util.Set;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class MyTransducer
-    extends MyAutomaton {
-
+public class MyTransducer extends MyAutomaton {
     // constructs a transducer from the given automaton by duplicating
     // the input labels into output labels.
     public MyTransducer(MyAcceptor orig) {

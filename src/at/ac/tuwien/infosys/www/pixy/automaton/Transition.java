@@ -41,7 +41,6 @@ import java.util.Comparator;
  * @author Anders M&oslash;ller &lt;<a href="mailto:amoeller@brics.dk">amoeller@brics.dk</a>&gt;
  */
 public class Transition implements Serializable, Cloneable {
-
     // Indirectly: tainted through sanitization function;
     // forms a lattice: Untainted -> Indirectly -> Directly
     public static enum Taint {
@@ -243,7 +242,6 @@ public class Transition implements Serializable, Cloneable {
  * @author Anders M&oslash;ller &lt;<a href="mailto:amoeller@brics.dk">amoeller@brics.dk</a>&gt;
  */
 class TransitionComparator implements Comparator<Transition> {
-
     boolean to_first;
 
     TransitionComparator(boolean to_first) {

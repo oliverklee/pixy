@@ -8,9 +8,7 @@ import java.util.Set;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class MyAlphabet {
-    private Set<Character> alphabet;
-
+public class MyAlphabet { private Set<Character> alphabet;
     public MyAlphabet() {
         // LATER: do we need a complete alphabet here...?
         char[] alphabet = {

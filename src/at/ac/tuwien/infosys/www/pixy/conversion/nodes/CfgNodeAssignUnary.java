@@ -15,9 +15,7 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeAssignUnary
-    extends CfgNode {
-
+public class CfgNodeAssignUnary extends CfgNode {
     private Variable left;
     private TacPlace right;
     private int op;

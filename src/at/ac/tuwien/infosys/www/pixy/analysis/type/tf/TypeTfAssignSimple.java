@@ -11,9 +11,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class TypeTfAssignSimple
-    extends TransferFunction {
-
+public class TypeTfAssignSimple extends TransferFunction {
     private Variable left;
     private TacPlace right;
 

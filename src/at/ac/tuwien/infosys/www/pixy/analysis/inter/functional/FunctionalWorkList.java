@@ -9,7 +9,6 @@ import java.util.LinkedList;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public final class FunctionalWorkList {
-
     private LinkedList<FunctionalWorkListElement> workList;
 
 // *********************************************************************************

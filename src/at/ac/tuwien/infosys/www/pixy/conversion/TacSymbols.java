@@ -4,7 +4,6 @@ package at.ac.tuwien.infosys.www.pixy.conversion;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class TacSymbols {
-
     // symbols
     public static final int T_EPSILON = 0;
     public static final int R_statement = 1;

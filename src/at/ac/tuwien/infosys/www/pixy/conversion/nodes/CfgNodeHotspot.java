@@ -10,9 +10,7 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeHotspot
-    extends CfgNode {
-
+public class CfgNodeHotspot extends CfgNode {
     private Integer hotspotId;
 
 //  CONSTRUCTORS *******************************************************************

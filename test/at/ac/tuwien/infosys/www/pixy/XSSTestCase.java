@@ -12,9 +12,7 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class XSSTestCase
-    extends TestCase {
-
+public class XSSTestCase extends TestCase {
     private String path;    // complete path to the testfile directory (with trailing slash)
 
     // recomputed for every single test

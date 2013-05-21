@@ -13,9 +13,7 @@ import java.util.Set;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class LiteralTfAssignSimple
-    extends TransferFunction {
-
+public class LiteralTfAssignSimple extends TransferFunction {
     private Variable left;
     private TacPlace right;
     private Set<Variable> mustAliases;

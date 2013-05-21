@@ -8,7 +8,6 @@ import java.util.List;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class TacAttributes {
-
     private int arrayIndex = -1;
 
     private TacPlace place;
