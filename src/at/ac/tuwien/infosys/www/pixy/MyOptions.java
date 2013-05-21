@@ -351,8 +351,8 @@ public class MyOptions {
     private static DepClientInfo[] analyses = {
         new DepClientInfo("xss", "at.ac.tuwien.infosys.www.pixy.XSSAnalysis"),
         new DepClientInfo("sql", "at.ac.tuwien.infosys.www.pixy.SQLAnalysis"),
-        new DepClientInfo("sqlsanit", "at.ac.tuwien.infosys.www.pixy.sanitation.SQLSanitAnalysis"),
-        new DepClientInfo("xsssanit", "at.ac.tuwien.infosys.www.pixy.sanitation.XSSSanitAnalysis"),
+        new DepClientInfo("sqlsanit", "at.ac.tuwien.infosys.www.pixy.sanitation.SQLSanitationAnalysis"),
+        new DepClientInfo("xsssanit", "at.ac.tuwien.infosys.www.pixy.sanitation.XSSSanitationAnalysis"),
         new DepClientInfo("file", "at.ac.tuwien.infosys.www.pixy.FileAnalysis")
     };
 

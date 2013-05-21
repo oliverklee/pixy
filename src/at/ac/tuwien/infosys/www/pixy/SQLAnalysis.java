@@ -10,7 +10,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallBuiltin;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallPrep;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallUnknown;
-import at.ac.tuwien.infosys.www.pixy.sanitation.SanitAnalysis;
+import at.ac.tuwien.infosys.www.pixy.sanitation.SanitationAnalysis;
 import at.ac.tuwien.infosys.www.pixy.transduction.MyTransductions;
 
 import java.io.File;
@@ -199,7 +199,7 @@ public class SQLAnalysis extends DepClient {
                     }
                 }
 
-                if (!SanitAnalysis.findCustomSanit(depGraph).isEmpty()) {
+                if (!SanitationAnalysis.findCustomSanit(depGraph).isEmpty()) {
                     hasCustomSanitCount++;
                     if (!tainted) {
                         customSanitThrownAwayCount++;

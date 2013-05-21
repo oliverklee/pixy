@@ -1,7 +1,9 @@
 package at.ac.tuwien.infosys.www.pixy.sanitation;
 
+import at.ac.tuwien.infosys.www.pixy.MyOptions;
+import at.ac.tuwien.infosys.www.pixy.SQLAnalysis;
+import at.ac.tuwien.infosys.www.pixy.Utils;
 import at.ac.tuwien.infosys.www.pixy.VulnerabilityInformation;
-import at.ac.tuwien.infosys.www.pixy.XSSAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.Sink;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParam;
@@ -9,27 +11,32 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallBuiltin;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallPrep;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeEcho;
 
 import java.util.List;
-import java.util.Set;
 
 /**
- * XSS detection.
+ * SQL Injection detection (with precise sanitation detection).
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class XSSSanitAnalysis extends SanitAnalysis {
-//  ********************************************************************************
+public class SQLSanitationAnalysis extends SanitationAnalysis {
+    public SQLSanitationAnalysis(DepAnalysis depAnalysis) {
+        this(depAnalysis, true);
+    }
 
-    public XSSSanitAnalysis(DepAnalysis depAnalysis) {
-        super("xss", depAnalysis, FSAAutomaton.getUndesiredXSSTest());
+    public SQLSanitationAnalysis(DepAnalysis depAnalysis, boolean getIsTainted) {
+        super("sql", depAnalysis, FSAAutomaton.getUndesiredSQLTest());
+        this.getIsTainted = getIsTainted;
+        if (MyOptions.fsa_home == null) {
+            Utils.bail("SQL Sanitization analysis requires FSA Utilities.\n" +
+                "Please set a valid path in the config file.");
+        }
     }
 
 //  ********************************************************************************
 
     public List<Integer> detectVulns() {
-        return detectVulns(new XSSAnalysis(this.depAnalysis));
+        return detectVulns(new SQLAnalysis(this.depAnalysis));
     }
 
     public VulnerabilityInformation detectAlternative() {
@@ -43,18 +50,7 @@ public class XSSSanitAnalysis extends SanitAnalysis {
     protected void checkForSink(CfgNode cfgNodeX, TacFunction traversedFunction,
                                 List<Sink> sinks) {
 
-        if (cfgNodeX instanceof CfgNodeEcho) {
-
-            // echo() or print()
-            CfgNodeEcho cfgNode = (CfgNodeEcho) cfgNodeX;
-
-            // create sink object for this node
-            Sink sink = new Sink(cfgNode, traversedFunction);
-            sink.addSensitivePlace(cfgNode.getPlace());
-
-            // add it to the list of sensitive sinks
-            sinks.add(sink);
-        } else if (cfgNodeX instanceof CfgNodeCallBuiltin) {
+        if (cfgNodeX instanceof CfgNodeCallBuiltin) {
 
             // builtin function sinks
 
@@ -77,30 +73,16 @@ public class XSSSanitAnalysis extends SanitAnalysis {
 
 //  ********************************************************************************
 
-    // LATER: this method looks very similar in all client analyses;
-    // possibility to reduce code redundancy
     private void checkForSinkHelper(String functionName, CfgNode cfgNode,
                                     List<TacActualParam> paramList, TacFunction traversedFunction, List<Sink> sinks) {
 
         if (this.dci.getSinks().containsKey(functionName)) {
             Sink sink = new Sink(cfgNode, traversedFunction);
-            Set<Integer> indexList = this.dci.getSinks().get(functionName);
-            if (indexList == null) {
-                // special treatment is necessary here
-                if (functionName.equals("printf")) {
-                    // none of the arguments to printf must be tainted
-                    for (TacActualParam param : paramList) {
-                        sink.addSensitivePlace(param.getPlace());
-                    }
+            for (Integer param : this.dci.getSinks().get(functionName)) {
+                if (paramList.size() > param) {
+                    sink.addSensitivePlace(paramList.get(param).getPlace());
+                    // add this sink to the list of sensitive sinks
                     sinks.add(sink);
-                }
-            } else {
-                for (Integer index : indexList) {
-                    if (paramList.size() > index) {
-                        sink.addSensitivePlace(paramList.get(index).getPlace());
-                        // add this sink to the list of sensitive sinks
-                        sinks.add(sink);
-                    }
                 }
             }
         } else {

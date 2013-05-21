@@ -10,7 +10,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.inter.ReverseTarget;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.*;
 import at.ac.tuwien.infosys.www.pixy.sanitation.FSAAutomaton;
-import at.ac.tuwien.infosys.www.pixy.sanitation.SanitAnalysis;
+import at.ac.tuwien.infosys.www.pixy.sanitation.SanitationAnalysis;
 
 import java.io.*;
 import java.util.*;
@@ -1801,7 +1801,7 @@ public class DepGraph {
     // reduces this depgraph to the ineffective sanitization stuff;
     // returns the number of ineffective border sanitizations
     public int reduceToIneffectiveSanit(Map<DepGraphNode, FSAAutomaton> deco,
-                                        SanitAnalysis sanitAnalysis) {
+                                        SanitationAnalysis sanitationAnalysis) {
 
         // get the "custom sanitization border"
         List<DepGraphNode> border = new LinkedList<>();
@@ -1811,7 +1811,7 @@ public class DepGraph {
         // identify ineffective border sanitizations
         List<DepGraphNode> ineffectiveBorder = new LinkedList<>();
         for (DepGraphNode customSanit : border) {
-            if (sanitAnalysis.isIneffective(customSanit, deco)) {
+            if (sanitationAnalysis.isIneffective(customSanit, deco)) {
                 ineffectiveBorder.add(customSanit);
             }
         }
@@ -1832,7 +1832,7 @@ public class DepGraph {
         visited.add(node);
 
         // reached the border?
-        if (SanitAnalysis.isCustomSanit(node)) {
+        if (SanitationAnalysis.isCustomSanit(node)) {
             border.add(node);
             return;
         }

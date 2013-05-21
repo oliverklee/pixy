@@ -7,7 +7,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallBuiltin;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallPrep;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeEcho;
-import at.ac.tuwien.infosys.www.pixy.sanitation.SanitAnalysis;
+import at.ac.tuwien.infosys.www.pixy.sanitation.SanitationAnalysis;
 
 import java.util.*;
 
@@ -210,7 +210,7 @@ public class XSSAnalysis extends DepClient {
                     }
                 }
 
-                if (!SanitAnalysis.findCustomSanit(depGraph).isEmpty()) {
+                if (!SanitationAnalysis.findCustomSanit(depGraph).isEmpty()) {
                     hasCustomSanitCount++;
                     if (!tainted) {
                         customSanitThrownAwayCount++;
