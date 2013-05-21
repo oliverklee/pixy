@@ -80,11 +80,7 @@ public class MustAliases {
         MustAliasGroup groupX = this.getMustAliasGroup(x);
 
         // if x's group is implicit, x isn't a must-alias of anyone
-        if (groupX == null) {
-            return false;
-        }
-
-        return groupX.contains(y);
+        return groupX != null && groupX.contains(y);
     }
 
 //  ********************************************************************************

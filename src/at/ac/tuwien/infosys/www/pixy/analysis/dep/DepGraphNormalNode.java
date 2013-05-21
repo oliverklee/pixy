@@ -118,10 +118,7 @@ public class DepGraphNormalNode extends DepGraphNode {
         }
         DepGraphNormalNode comp = (DepGraphNormalNode) compX;
 
-        if (!this.place.equals(comp.place)) {
-            return false;
-        }
-        return this.cfgNode.equals(comp.cfgNode);
+        return this.place.equals(comp.place) && this.cfgNode.equals(comp.cfgNode);
     }
 
 //  ********************************************************************************

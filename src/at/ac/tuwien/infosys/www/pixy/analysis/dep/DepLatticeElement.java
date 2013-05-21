@@ -1192,10 +1192,7 @@ public class DepLatticeElement extends LatticeElement {
         DepLatticeElement comp = (DepLatticeElement) compX;
 
         // the dep and CA maps have to be equal
-        if (!this.placeToDep.equals(comp.getPlaceToDep())) {
-            return false;
-        }
-        return this.arrayLabels.equals(comp.getArrayLabels());
+        return this.placeToDep.equals(comp.getPlaceToDep()) && this.arrayLabels.equals(comp.getArrayLabels());
     }
 
 //  ********************************************************************************

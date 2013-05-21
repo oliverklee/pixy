@@ -49,10 +49,7 @@ public final class InterWorkListElement {
         InterWorkListElement comp = (InterWorkListElement) compX;
 
         // the dep and CA maps have to be equal
-        if (!this.cfgNode.equals(comp.cfgNode)) {
-            return false;
-        }
-        return this.context.equals(comp.context);
+        return this.cfgNode.equals(comp.cfgNode) && this.context.equals(comp.context);
     }
 
 //  hashCode ***********************************************************************

@@ -190,9 +190,6 @@ public class TacFunction {
             return false;
         }
         TacFunction comp = (TacFunction) obj;
-        if (!this.name.equals(comp.name)) {
-            return false;
-        }
-        return this.className.equals(comp.className);
+        return this.name.equals(comp.name) && this.className.equals(comp.className);
     }
 }
