@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeCall extends CfgNode {
+public class CfgNodeCall extends AbstractCfgNode {
     // can also be a variable
     private TacPlace functionNamePlace;
 

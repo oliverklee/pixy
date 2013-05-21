@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeDefine extends CfgNode {
+public class CfgNodeDefine extends AbstractCfgNode {
     // the first parameter (the name of the constant to be set)
     private TacPlace setMe;
 

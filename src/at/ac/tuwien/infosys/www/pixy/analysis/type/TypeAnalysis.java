@@ -41,7 +41,7 @@ public class TypeAnalysis extends InterAnalysis {
 
 //  ********************************************************************************
 
-    public Set<Type> getType(Variable var, CfgNode cfgNode) {
+    public Set<Type> getType(Variable var, AbstractCfgNode cfgNode) {
         InterAnalysisNode ian = this.interAnalysisInfo.getAnalysisNode(cfgNode);
         if (ian == null) {
             // this means that this cfg node was not assigned an analysis node
@@ -91,7 +91,7 @@ public class TypeAnalysis extends InterAnalysis {
     // aliasInNode:
     // - if cfgNodeX is not inside a basic block: the same node
     // - else: the basic block
-    protected TransferFunction assignSimple(CfgNode cfgNodeX, CfgNode aliasInNode) {
+    protected TransferFunction assignSimple(AbstractCfgNode cfgNodeX, AbstractCfgNode aliasInNode) {
 
         CfgNodeAssignSimple cfgNode = (CfgNodeAssignSimple) cfgNodeX;
         Variable left = cfgNode.getLeft();
@@ -99,7 +99,7 @@ public class TypeAnalysis extends InterAnalysis {
         return new TypeTfAssignSimple(left, cfgNode.getRight());
     }
 
-    protected TransferFunction assignUnary(CfgNode cfgNodeX, CfgNode aliasInNode) {
+    protected TransferFunction assignUnary(AbstractCfgNode cfgNodeX, AbstractCfgNode aliasInNode) {
 
         CfgNodeAssignUnary cfgNode = (CfgNodeAssignUnary) cfgNodeX;
         Variable left = cfgNode.getLeft();
@@ -107,7 +107,7 @@ public class TypeAnalysis extends InterAnalysis {
         return new TypeTfAssignUnary(left);
     }
 
-    protected TransferFunction assignBinary(CfgNode cfgNodeX, CfgNode aliasInNode) {
+    protected TransferFunction assignBinary(AbstractCfgNode cfgNodeX, AbstractCfgNode aliasInNode) {
 
         CfgNodeAssignBinary cfgNode = (CfgNodeAssignBinary) cfgNodeX;
         Variable left = cfgNode.getLeft();
@@ -115,7 +115,7 @@ public class TypeAnalysis extends InterAnalysis {
         return new TypeTfAssignBinary(left);
     }
 
-    protected TransferFunction assignRef(CfgNode cfgNodeX) {
+    protected TransferFunction assignRef(AbstractCfgNode cfgNodeX) {
 
         CfgNodeAssignRef cfgNode = (CfgNodeAssignRef) cfgNodeX;
         Variable left = cfgNode.getLeft();
@@ -123,17 +123,17 @@ public class TypeAnalysis extends InterAnalysis {
         return new TypeTfAssignRef(left, cfgNode.getRight());
     }
 
-    protected TransferFunction unset(CfgNode cfgNodeX) {
+    protected TransferFunction unset(AbstractCfgNode cfgNodeX) {
         CfgNodeUnset cfgNode = (CfgNodeUnset) cfgNodeX;
         return new TypeTfUnset(cfgNode.getOperand());
     }
 
-    protected TransferFunction assignArray(CfgNode cfgNodeX) {
+    protected TransferFunction assignArray(AbstractCfgNode cfgNodeX) {
         CfgNodeAssignArray cfgNode = (CfgNodeAssignArray) cfgNodeX;
         return new TypeTfAssignArray(cfgNode.getLeft());
     }
 
-    protected TransferFunction callPrep(CfgNode cfgNodeX, TacFunction traversedFunction) {
+    protected TransferFunction callPrep(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
 
         CfgNodeCallPrep cfgNode = (CfgNodeCallPrep) cfgNodeX;
         TacFunction calledFunction = cfgNode.getCallee();
@@ -178,7 +178,7 @@ public class TypeAnalysis extends InterAnalysis {
         return tf;
     }
 
-    protected TransferFunction callRet(CfgNode cfgNodeX, TacFunction traversedFunction) {
+    protected TransferFunction callRet(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
 
         CfgNodeCallRet cfgNodeRet = (CfgNodeCallRet) cfgNodeX;
         CfgNodeCall cfgNodeCall = cfgNodeRet.getCallNode();
@@ -205,12 +205,12 @@ public class TypeAnalysis extends InterAnalysis {
         return tf;
     }
 
-    protected TransferFunction callBuiltin(CfgNode cfgNodeX, TacFunction traversedFunction) {
+    protected TransferFunction callBuiltin(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
         CfgNodeCallBuiltin cfgNode = (CfgNodeCallBuiltin) cfgNodeX;
         return new TypeTfCallBuiltin(cfgNode);
     }
 
-    protected TransferFunction isset(CfgNode cfgNodeX) {
+    protected TransferFunction isset(AbstractCfgNode cfgNodeX) {
         CfgNodeIsset cfgNode = (CfgNodeIsset) cfgNodeX;
         return new TypeTfIsset((Variable) cfgNode.getLeft());
     }

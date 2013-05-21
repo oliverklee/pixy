@@ -2,7 +2,7 @@ package at.ac.tuwien.infosys.www.pixy.analysis.inter;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCall;
 
 import java.util.List;
@@ -29,7 +29,7 @@ public abstract class AnalysisType {
     }
 
     // creates an appropriate AnalysisNode
-    public abstract InterAnalysisNode makeAnalysisNode(CfgNode cfgNode, TransferFunction tf);
+    public abstract InterAnalysisNode makeAnalysisNode(AbstractCfgNode cfgNode, TransferFunction tf);
 
     // use function summaries?
     public abstract boolean useSummaries();

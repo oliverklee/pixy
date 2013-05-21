@@ -1,19 +1,19 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.inter;
 
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public final class InterWorkListElement {
-    private final CfgNode cfgNode;
+    private final AbstractCfgNode cfgNode;
     private final Context context;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    InterWorkListElement(CfgNode cfgNode, Context context) {
+    InterWorkListElement(AbstractCfgNode cfgNode, Context context) {
         this.cfgNode = cfgNode;
         this.context = context;
         if (context == null) {
@@ -25,7 +25,7 @@ public final class InterWorkListElement {
 // GET *****************************************************************************
 // *********************************************************************************
 
-    CfgNode getCfgNode() {
+    AbstractCfgNode getCfgNode() {
         return this.cfgNode;
     }
 

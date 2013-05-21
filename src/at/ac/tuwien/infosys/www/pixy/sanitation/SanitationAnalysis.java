@@ -6,7 +6,7 @@ import at.ac.tuwien.infosys.www.pixy.Utils;
 import at.ac.tuwien.infosys.www.pixy.VulnerabilityInformation;
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCallBuiltin;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCallUnknown;
 
@@ -83,7 +83,7 @@ public abstract class SanitationAnalysis extends DepClient {
             depGraph.dumpDot(name + "sanitation" + graphcount + "i", MyOptions.graphPath, depGraph.getUninitNodes(), this.dci);
             minGraph.dumpDot(name + "sanitation" + graphcount + "m", MyOptions.graphPath, depGraph.getUninitNodes(), this.dci);
 
-            CfgNode cfgNode = depGraph.getRoot().getCfgNode();
+            AbstractCfgNode cfgNode = depGraph.getRoot().getCfgNode();
 
             // retrieve custom sanitization routines from the minGraph
             List<DepGraphNode> customSanitNodes = findCustomSanit(minGraph);
@@ -419,7 +419,7 @@ public abstract class SanitationAnalysis extends DepClient {
         if (!node.isBuiltin()) {
             // call to function or method for which no definition
             // could be found
-            CfgNode cfgNodeX = node.getCfgNode();
+            AbstractCfgNode cfgNodeX = node.getCfgNode();
             if (cfgNodeX instanceof CfgNodeCallUnknown) {
                 CfgNodeCallUnknown cfgNode = (CfgNodeCallUnknown) cfgNodeX;
                 if (cfgNode.isMethod()) {
@@ -625,7 +625,7 @@ public abstract class SanitationAnalysis extends DepClient {
             // check if this operation could be used for custom sanitization
             DepGraphOpNode opNode = (DepGraphOpNode) node;
             if (opNode.isBuiltin()) {
-                CfgNode cfgNode = opNode.getCfgNode();
+                AbstractCfgNode cfgNode = opNode.getCfgNode();
                 if (cfgNode instanceof CfgNodeCallBuiltin) {
                     CfgNodeCallBuiltin callBuiltin = (CfgNodeCallBuiltin) cfgNode;
                     String funcName = callBuiltin.getFunctionName();

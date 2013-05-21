@@ -74,7 +74,7 @@ public class LiteralAnalysis extends InterAnalysis {
     // aliasInNode:
     // - if cfgNodeX is not inside a basic block: the same node
     // - else: the basic block
-    protected TransferFunction assignSimple(CfgNode cfgNodeX, CfgNode aliasInNode) {
+    protected TransferFunction assignSimple(AbstractCfgNode cfgNodeX, AbstractCfgNode aliasInNode) {
 
         CfgNodeAssignSimple cfgNode = (CfgNodeAssignSimple) cfgNodeX;
         Variable left = cfgNode.getLeft();
@@ -88,7 +88,7 @@ public class LiteralAnalysis extends InterAnalysis {
             mayAliases);
     }
 
-    protected TransferFunction assignUnary(CfgNode cfgNodeX, CfgNode aliasInNode) {
+    protected TransferFunction assignUnary(AbstractCfgNode cfgNodeX, AbstractCfgNode aliasInNode) {
 
         CfgNodeAssignUnary cfgNode = (CfgNodeAssignUnary) cfgNodeX;
         Variable left = cfgNode.getLeft();
@@ -103,7 +103,7 @@ public class LiteralAnalysis extends InterAnalysis {
             mayAliases);
     }
 
-    protected TransferFunction assignBinary(CfgNode cfgNodeX, CfgNode aliasInNode) {
+    protected TransferFunction assignBinary(AbstractCfgNode cfgNodeX, AbstractCfgNode aliasInNode) {
 
         CfgNodeAssignBinary cfgNode = (CfgNodeAssignBinary) cfgNodeX;
         Variable left = cfgNode.getLeft();
@@ -120,24 +120,24 @@ public class LiteralAnalysis extends InterAnalysis {
             cfgNode);
     }
 
-    protected TransferFunction assignRef(CfgNode cfgNodeX) {
+    protected TransferFunction assignRef(AbstractCfgNode cfgNodeX) {
         CfgNodeAssignRef cfgNode = (CfgNodeAssignRef) cfgNodeX;
         return new LiteralTfAssignRef(
             cfgNode.getLeft(),
             cfgNode.getRight());
     }
 
-    protected TransferFunction unset(CfgNode cfgNodeX) {
+    protected TransferFunction unset(AbstractCfgNode cfgNodeX) {
         CfgNodeUnset cfgNode = (CfgNodeUnset) cfgNodeX;
         return new LiteralTfUnset(cfgNode.getOperand());
     }
 
-    protected TransferFunction assignArray(CfgNode cfgNodeX) {
+    protected TransferFunction assignArray(AbstractCfgNode cfgNodeX) {
         CfgNodeAssignArray cfgNode = (CfgNodeAssignArray) cfgNodeX;
         return new LiteralTfAssignArray(cfgNode.getLeft());
     }
 
-    protected TransferFunction callPrep(CfgNode cfgNodeX, TacFunction traversedFunction) {
+    protected TransferFunction callPrep(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
 
         CfgNodeCallPrep cfgNode = (CfgNodeCallPrep) cfgNodeX;
         TacFunction calledFunction = cfgNode.getCallee();
@@ -189,7 +189,7 @@ public class LiteralAnalysis extends InterAnalysis {
         return new LiteralTfEntry(traversedFunction);
     }
 
-    protected TransferFunction callRet(CfgNode cfgNodeX, TacFunction traversedFunction) {
+    protected TransferFunction callRet(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
 
         CfgNodeCallRet cfgNodeRet = (CfgNodeCallRet) cfgNodeX;
         CfgNodeCallPrep cfgNodePrep = cfgNodeRet.getCallPrepNode();
@@ -219,17 +219,17 @@ public class LiteralAnalysis extends InterAnalysis {
         return tf;
     }
 
-    protected TransferFunction callBuiltin(CfgNode cfgNodeX, TacFunction traversedFunction) {
+    protected TransferFunction callBuiltin(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
         CfgNodeCallBuiltin cfgNode = (CfgNodeCallBuiltin) cfgNodeX;
         return new LiteralTfCallBuiltin(cfgNode);
     }
 
-    protected TransferFunction callUnknown(CfgNode cfgNodeX, TacFunction traversedFunction) {
+    protected TransferFunction callUnknown(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
         CfgNodeCallUnknown cfgNode = (CfgNodeCallUnknown) cfgNodeX;
         return new LiteralTfCallUnknown(cfgNode);
     }
 
-    protected TransferFunction global(CfgNode cfgNodeX) {
+    protected TransferFunction global(AbstractCfgNode cfgNodeX) {
 
         // "global <var>";
         // equivalent to: creating a reference to the variable in the main function with
@@ -263,7 +263,7 @@ public class LiteralAnalysis extends InterAnalysis {
         }
     }
 
-    protected TransferFunction isset(CfgNode cfgNodeX) {
+    protected TransferFunction isset(AbstractCfgNode cfgNodeX) {
 
         CfgNodeIsset cfgNode = (CfgNodeIsset) cfgNodeX;
         return new LiteralTfIsset(
@@ -271,18 +271,18 @@ public class LiteralAnalysis extends InterAnalysis {
             cfgNode.getRight());
     }
 
-    protected TransferFunction define(CfgNode cfgNodeX) {
+    protected TransferFunction define(AbstractCfgNode cfgNodeX) {
         CfgNodeDefine cfgNode = (CfgNodeDefine) cfgNodeX;
         return new LiteralTfDefine(this.tac.getConstantsTable(), cfgNode);
     }
 
-    protected TransferFunction tester(CfgNode cfgNodeX) {
+    protected TransferFunction tester(AbstractCfgNode cfgNodeX) {
         // special node that only occurs inside the builtin functions file
         CfgNodeTester cfgNode = (CfgNodeTester) cfgNodeX;
         return new LiteralTfTester(cfgNode);
     }
 
-    protected TransferFunction include(CfgNode cfgNodeX) {
+    protected TransferFunction include(AbstractCfgNode cfgNodeX) {
         this.includeNodes.add((CfgNodeInclude) cfgNodeX);
         return TransferFunctionId.INSTANCE;
     }
@@ -293,7 +293,7 @@ public class LiteralAnalysis extends InterAnalysis {
 
     // returns the (folded) literal of the given place coming in to the given node;
     // TOP if the cfgNode is unreachable (and hence can't return a folded value)
-    public Literal getLiteral(TacPlace place, CfgNode cfgNode) {
+    public Literal getLiteral(TacPlace place, AbstractCfgNode cfgNode) {
 
         LiteralLatticeElement element =
             (LiteralLatticeElement) this.interAnalysisInfo.getAnalysisNode(cfgNode).getUnrecycledFoldedValue();
@@ -305,7 +305,7 @@ public class LiteralAnalysis extends InterAnalysis {
         }
     }
 
-    public Literal getLiteral(String varName, CfgNode cfgNode) {
+    public Literal getLiteral(String varName, AbstractCfgNode cfgNode) {
         Variable var = this.tac.getVariable(cfgNode.getEnclosingFunction(), varName);
         if (var == null) {
             // you gave me the name of a variable that does not exist

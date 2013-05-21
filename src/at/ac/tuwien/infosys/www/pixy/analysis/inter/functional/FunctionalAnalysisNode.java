@@ -4,7 +4,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.Context;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterAnalysisNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCall;
 
 import java.util.HashMap;
@@ -26,7 +26,7 @@ public class FunctionalAnalysisNode extends InterAnalysisNode {
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public FunctionalAnalysisNode(CfgNode node, TransferFunction tf) {
+    public FunctionalAnalysisNode(AbstractCfgNode node, TransferFunction tf) {
         super(tf);
         // maintain reverse mapping for call nodes
         if (node instanceof CfgNodeCall) {

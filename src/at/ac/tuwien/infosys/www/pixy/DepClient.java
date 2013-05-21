@@ -2,7 +2,7 @@ package at.ac.tuwien.infosys.www.pixy;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCallUnknown;
 
 import java.util.*;
@@ -48,7 +48,7 @@ public abstract class DepClient {
 
     // checks if the given node (inside the given function) is a sensitive sink;
     // adds an appropriate sink object to the given list if it is a sink
-    protected abstract void checkForSink(CfgNode cfgNodeX, TacFunction traversedFunction,
+    protected abstract void checkForSink(AbstractCfgNode cfgNodeX, TacFunction traversedFunction,
                                          List<Sink> sinks);
 
 //  ********************************************************************************
@@ -57,7 +57,7 @@ public abstract class DepClient {
     public List<Sink> collectSinks() {
         List<Sink> sinks = new LinkedList<>();
         for (TacFunction function : this.depAnalysis.getFunctions()) {
-            for (CfgNode cfgNodeX : function.getControlFlowGraph().dfPreOrder()) {
+            for (AbstractCfgNode cfgNodeX : function.getControlFlowGraph().dfPreOrder()) {
                 checkForSink(cfgNodeX, function, sinks);
             }
         }
@@ -237,7 +237,7 @@ public abstract class DepClient {
                 // call to function or method for which no definition
                 // could be found
 
-                CfgNode cfgNodeX = opNode.getCfgNode();
+                AbstractCfgNode cfgNodeX = opNode.getCfgNode();
                 if (cfgNodeX instanceof CfgNodeCallUnknown) {
                     CfgNodeCallUnknown callUnknown = (CfgNodeCallUnknown) cfgNodeX;
                     if (callUnknown.isMethod()) {

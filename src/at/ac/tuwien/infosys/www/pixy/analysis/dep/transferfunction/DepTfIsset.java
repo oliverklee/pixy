@@ -5,7 +5,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -19,13 +19,13 @@ import java.util.Set;
 public class DepTfIsset extends TransferFunction {
     private Variable setMe;
     private TacPlace testMe;
-    private CfgNode cfgNode;
+    private AbstractCfgNode cfgNode;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public DepTfIsset(TacPlace setMe, TacPlace testMe, CfgNode cfgNode) {
+    public DepTfIsset(TacPlace setMe, TacPlace testMe, AbstractCfgNode cfgNode) {
         this.setMe = (Variable) setMe;  // must be a variable
         this.testMe = testMe;
         this.cfgNode = cfgNode;

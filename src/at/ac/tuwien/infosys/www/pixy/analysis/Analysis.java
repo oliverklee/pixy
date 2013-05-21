@@ -47,7 +47,7 @@ public abstract class Analysis {
     // creates a transfer function for the given node;
     // the enclosingNode is either an enclosing basic block (if you already know
     // that it is enclosed by a basic block) or the node itself
-    protected TransferFunction createTf(CfgNode cfgNodeX, TacFunction traversedFunction, CfgNode enclosingNode) {
+    protected TransferFunction createTf(AbstractCfgNode cfgNodeX, TacFunction traversedFunction, AbstractCfgNode enclosingNode) {
 
         // EFF: more efficient implementation (hashmap?)
 
@@ -126,7 +126,7 @@ public abstract class Analysis {
 
     protected void traverseCfg(ControlFlowGraph controlFlowGraph, TacFunction traversedFunction) {
 
-        for (CfgNode cfgNodeX : controlFlowGraph.dfPreOrder()) {
+        for (AbstractCfgNode cfgNodeX : controlFlowGraph.dfPreOrder()) {
 
             TransferFunction tf = this.createTf(cfgNodeX, traversedFunction, cfgNodeX);
             if (tf == null) {
@@ -178,7 +178,7 @@ public abstract class Analysis {
 
         CompositeTransferFunction ctf = new CompositeTransferFunction();
 
-        for (CfgNode cfgNodeX : basicBlock.getContainedNodes()) {
+        for (AbstractCfgNode cfgNodeX : basicBlock.getContainedNodes()) {
             ctf.add(this.createTf(cfgNodeX, traversedFunction, basicBlock));
         }
         return ctf;
@@ -194,31 +194,31 @@ public abstract class Analysis {
     // analyses; be sure to think about the necessary transfer functions for
     // your concrete analysis
 
-    protected TransferFunction assignSimple(CfgNode cfgNodeX, CfgNode aliasInNode) {
+    protected TransferFunction assignSimple(AbstractCfgNode cfgNodeX, AbstractCfgNode aliasInNode) {
         return TransferFunctionId.INSTANCE;
     }
 
-    protected TransferFunction assignUnary(CfgNode cfgNodeX, CfgNode aliasInNode) {
+    protected TransferFunction assignUnary(AbstractCfgNode cfgNodeX, AbstractCfgNode aliasInNode) {
         return TransferFunctionId.INSTANCE;
     }
 
-    protected TransferFunction assignBinary(CfgNode cfgNodeX, CfgNode aliasInNode) {
+    protected TransferFunction assignBinary(AbstractCfgNode cfgNodeX, AbstractCfgNode aliasInNode) {
         return TransferFunctionId.INSTANCE;
     }
 
-    protected TransferFunction assignRef(CfgNode cfgNodeX) {
+    protected TransferFunction assignRef(AbstractCfgNode cfgNodeX) {
         return TransferFunctionId.INSTANCE;
     }
 
-    protected TransferFunction unset(CfgNode cfgNodeX) {
+    protected TransferFunction unset(AbstractCfgNode cfgNodeX) {
         return TransferFunctionId.INSTANCE;
     }
 
-    protected TransferFunction assignArray(CfgNode cfgNodeX) {
+    protected TransferFunction assignArray(AbstractCfgNode cfgNodeX) {
         return TransferFunctionId.INSTANCE;
     }
 
-    protected TransferFunction callPrep(CfgNode cfgNodeX, TacFunction traversedFunction) {
+    protected TransferFunction callPrep(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
         return TransferFunctionId.INSTANCE;
     }
 
@@ -226,35 +226,35 @@ public abstract class Analysis {
         return TransferFunctionId.INSTANCE;
     }
 
-    protected TransferFunction callRet(CfgNode cfgNodeX, TacFunction traversedFunction) {
+    protected TransferFunction callRet(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
         return TransferFunctionId.INSTANCE;
     }
 
-    protected TransferFunction callBuiltin(CfgNode cfgNodeX, TacFunction traversedFunction) {
+    protected TransferFunction callBuiltin(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
         return TransferFunctionId.INSTANCE;
     }
 
-    protected TransferFunction callUnknown(CfgNode cfgNodeX, TacFunction traversedFunction) {
+    protected TransferFunction callUnknown(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
         return TransferFunctionId.INSTANCE;
     }
 
-    protected TransferFunction global(CfgNode cfgNodeX) {
+    protected TransferFunction global(AbstractCfgNode cfgNodeX) {
         return TransferFunctionId.INSTANCE;
     }
 
-    protected TransferFunction isset(CfgNode cfgNodeX) {
+    protected TransferFunction isset(AbstractCfgNode cfgNodeX) {
         return TransferFunctionId.INSTANCE;
     }
 
-    protected TransferFunction define(CfgNode cfgNodeX) {
+    protected TransferFunction define(AbstractCfgNode cfgNodeX) {
         return TransferFunctionId.INSTANCE;
     }
 
-    protected TransferFunction tester(CfgNode cfgNodeX) {
+    protected TransferFunction tester(AbstractCfgNode cfgNodeX) {
         return TransferFunctionId.INSTANCE;
     }
 
-    protected TransferFunction echo(CfgNode cfgNodeX, TacFunction traversedFunction) {
+    protected TransferFunction echo(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
         return TransferFunctionId.INSTANCE;
     }
 
@@ -262,15 +262,15 @@ public abstract class Analysis {
         return TransferFunctionId.INSTANCE;
     }
 
-    protected TransferFunction include(CfgNode cfgNodeX) {
+    protected TransferFunction include(AbstractCfgNode cfgNodeX) {
         return TransferFunctionId.INSTANCE;
     }
 
-    protected TransferFunction includeStart(CfgNode cfgNodeX) {
+    protected TransferFunction includeStart(AbstractCfgNode cfgNodeX) {
         return TransferFunctionId.INSTANCE;
     }
 
-    protected TransferFunction includeEnd(CfgNode cfgNodeX) {
+    protected TransferFunction includeEnd(AbstractCfgNode cfgNodeX) {
         return TransferFunctionId.INSTANCE;
     }
 
@@ -280,7 +280,7 @@ public abstract class Analysis {
 
 //  makeAnalysisNode ***************************************************************
 
-    protected abstract AnalysisNode makeAnalysisNode(CfgNode cfgNode, TransferFunction tf);
+    protected abstract AnalysisNode makeAnalysisNode(AbstractCfgNode cfgNode, TransferFunction tf);
 
 //  recycle ************************************************************************
 

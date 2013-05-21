@@ -5,7 +5,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring.ECS;
 import at.ac.tuwien.infosys.www.pixy.conversion.CfgEdge;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCall;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeEntry;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeExit;
@@ -30,7 +30,7 @@ public class InterWorkListOrder {
         this.order = new HashMap<>();
 
         TacFunction mainFunction = tac.getMainFunction();
-        CfgNode startNode = mainFunction.getControlFlowGraph().getHead();
+        AbstractCfgNode startNode = mainFunction.getControlFlowGraph().getHead();
 
         Map<TacFunction, ECS> function2ECS = cc.getFunction2ECS();
         ECS mainECS = function2ECS.get(mainFunction);
@@ -80,7 +80,7 @@ public class InterWorkListOrder {
             visited.add(element);
 
             // interior of this element
-            CfgNode cfgNode = element.getCfgNode();
+            AbstractCfgNode cfgNode = element.getCfgNode();
             CSContext context = (CSContext) element.getContext();
 
             // we will try to get an unvisited successor element
@@ -97,7 +97,7 @@ public class InterWorkListOrder {
                     // for unknown calls:
                     // simply move on to the callret node; context stays the same
 
-                    CfgNode retNode = callNode.getSuccessor(0);
+                    AbstractCfgNode retNode = callNode.getSuccessor(0);
                     nextElement = new InterWorkListElement(retNode, context);
 
                     if (visited.contains(nextElement)) {
@@ -133,7 +133,7 @@ public class InterWorkListOrder {
 
                         ReverseTarget revTarget = revTargetsIter.next();
                         CfgNodeCall revCall = revTarget.getCallNode();
-                        CfgNode revRet = revCall.getSuccessor(0);
+                        AbstractCfgNode revRet = revCall.getSuccessor(0);
                         Iterator<? extends Context> reverseContextsIter = revTarget.getContexts().iterator();
 
                         while ((nextElement == null) && reverseContextsIter.hasNext()) {
@@ -156,7 +156,7 @@ public class InterWorkListOrder {
                 for (int i = 0; (i < 2) && (nextElement == null); i++) {
                     CfgEdge outEdge = cfgNode.getOutEdge(i);
                     if (outEdge != null) {
-                        CfgNode succNode = outEdge.getDest();
+                        AbstractCfgNode succNode = outEdge.getDest();
                         nextElement = new InterWorkListElement(succNode, context);
                         if (visited.contains(nextElement)) {
                             // try next one

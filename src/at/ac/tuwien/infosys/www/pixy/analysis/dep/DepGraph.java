@@ -95,7 +95,7 @@ public class DepGraph {
      *
      * @return
      */
-    public static DepGraph create(TacPlace place, CfgNode start, InterAnalysisInfo analysisInfo,
+    public static DepGraph create(TacPlace place, AbstractCfgNode start, InterAnalysisInfo analysisInfo,
                                   SymbolTable mainSymTab, DepAnalysis depAnalysis) {
 
         DepGraph depGraph = new DepGraph();
@@ -184,7 +184,7 @@ public class DepGraph {
      * @return
      * @throws NotReachableException
      */
-    private DepGraphNode makeDepGraph(TacPlace place, CfgNode current, TacFunction function,
+    private DepGraphNode makeDepGraph(TacPlace place, AbstractCfgNode current, TacFunction function,
                                       List<TacPlace> indices, Set<Context> contexts) throws NotReachableException {
 
         debug("  visiting: " + current.getClass() + ", " + current.getOrigLineno() + ", " + place);
@@ -233,7 +233,7 @@ public class DepGraph {
                 // and recursively continue the graph construction algorithm
 
                 // the node we will have to visit next
-                CfgNode targetNode = dep.getCfgNode();
+                AbstractCfgNode targetNode = dep.getCfgNode();
 
                 // tweak to add appropriate operation nodes
                 DepGraphNode connectWith = this.checkOp(targetNode);
@@ -280,11 +280,11 @@ public class DepGraph {
     // the given contexts,
     // considering basic blocks and function default cfg's (in these cases,
     // the cfg node has no directly associated analysis info)
-    private DepSet getDepSet(CfgNode cfgNode, TacPlace place, Set<Context> contexts)
+    private DepSet getDepSet(AbstractCfgNode cfgNode, TacPlace place, Set<Context> contexts)
         throws NotReachableException {
 
         DepSet depSet = null;
-        CfgNode enclosingX = cfgNode.getSpecial();
+        AbstractCfgNode enclosingX = cfgNode.getSpecial();
         if (enclosingX instanceof CfgNodeBasicBlock) {
             // the current node is enclosed by a basic block
 
@@ -329,7 +329,7 @@ public class DepGraph {
                 // functions inside this default cfg
 
                 // start at the default cfg's head
-                CfgNode defaultHead = ControlFlowGraph.getHead(cfgNode);
+                AbstractCfgNode defaultHead = ControlFlowGraph.getHead(cfgNode);
 
                 // use the value at the function's entry node as start value
                 // (since we only have static stuff inside default cfgs, this is
@@ -372,7 +372,7 @@ public class DepGraph {
     // depgraph construction algorithm context-sensitive;
     // the target function and the target contexts are returned
     private ContextSwitch switchContexts(TacFunction function, Set<Context> contexts,
-                                         CfgNode current, CfgNode targetNode) {
+                                         AbstractCfgNode current, AbstractCfgNode targetNode) {
 
         ContextSwitch retMe = new ContextSwitch();
 
@@ -462,7 +462,7 @@ public class DepGraph {
     // checks if the given targetNode is an operation node;
     // if it is, it creates a corresponding node and returns it; otherwise,
     // it returns null
-    private DepGraphNode checkOp(CfgNode targetNode) {
+    private DepGraphNode checkOp(AbstractCfgNode targetNode) {
 
         if (targetNode instanceof CfgNodeAssignBinary) {
             CfgNodeAssignBinary inspectMe = (CfgNodeAssignBinary) targetNode;
@@ -604,7 +604,7 @@ public class DepGraph {
      *
      * @return
      */
-    private List<TacPlace> getUsedPlaces(CfgNode cfgNodeX, TacPlace victim,
+    private List<TacPlace> getUsedPlaces(AbstractCfgNode cfgNodeX, TacPlace victim,
                                          List<TacPlace> oldIndices, List<TacPlace> newIndices) {
 
         List<TacPlace> retMe = new LinkedList<>();

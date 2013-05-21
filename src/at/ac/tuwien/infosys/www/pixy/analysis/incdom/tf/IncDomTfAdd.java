@@ -4,7 +4,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.incdom.IncDomAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.incdom.IncDomLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
 /**
  * Transfer function for adding include dominators.
@@ -12,14 +12,14 @@ import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class IncDomTfAdd extends TransferFunction {
-    private CfgNode cfgNode;
+    private AbstractCfgNode cfgNode;
     private IncDomAnalysis incDomAnalysis;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public IncDomTfAdd(CfgNode cfgNode, IncDomAnalysis incDomAnalysis) {
+    public IncDomTfAdd(AbstractCfgNode cfgNode, IncDomAnalysis incDomAnalysis) {
         this.cfgNode = cfgNode;
         this.incDomAnalysis = incDomAnalysis;
     }

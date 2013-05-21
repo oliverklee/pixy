@@ -6,19 +6,19 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Constant;
 import at.ac.tuwien.infosys.www.pixy.conversion.Literal;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class DepGraphNormalNode extends DepGraphNode {
     private TacPlace place;
-    private CfgNode cfgNode;
+    private AbstractCfgNode cfgNode;
     private boolean isTainted;
 
 //  ********************************************************************************
 
-    public DepGraphNormalNode(TacPlace place, CfgNode cfgNode) {
+    public DepGraphNormalNode(TacPlace place, AbstractCfgNode cfgNode) {
         this.place = place;
         this.cfgNode = cfgNode;
         this.isTainted = false;
@@ -96,7 +96,7 @@ public class DepGraphNormalNode extends DepGraphNode {
 
 //  ********************************************************************************
 
-    public CfgNode getCfgNode() {
+    public AbstractCfgNode getCfgNode() {
         return this.cfgNode;
     }
 

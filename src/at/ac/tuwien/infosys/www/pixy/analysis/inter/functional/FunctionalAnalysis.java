@@ -4,7 +4,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCall;
 
 import java.util.LinkedList;
@@ -75,7 +75,7 @@ public class FunctionalAnalysis extends AnalysisType {
 //  OTHER ***************************************************************************
 //  *********************************************************************************
 
-    public InterAnalysisNode makeAnalysisNode(CfgNode cfgNode, TransferFunction tf) {
+    public InterAnalysisNode makeAnalysisNode(AbstractCfgNode cfgNode, TransferFunction tf) {
         return new FunctionalAnalysisNode(cfgNode, tf);
     }
 

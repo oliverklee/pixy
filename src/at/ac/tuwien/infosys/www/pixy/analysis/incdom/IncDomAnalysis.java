@@ -7,7 +7,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunctionId;
 import at.ac.tuwien.infosys.www.pixy.analysis.incdom.tf.IncDomTfAdd;
 import at.ac.tuwien.infosys.www.pixy.analysis.intra.IntraAnalysis;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeBasicBlock;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeIncludeEnd;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeIncludeStart;
@@ -56,11 +56,11 @@ public class IncDomAnalysis extends IntraAnalysis {
         return TransferFunctionId.INSTANCE;
     }
 
-    protected TransferFunction includeStart(CfgNode cfgNodeX) {
+    protected TransferFunction includeStart(AbstractCfgNode cfgNodeX) {
         return new IncDomTfAdd(cfgNodeX, this);
     }
 
-    protected TransferFunction includeEnd(CfgNode cfgNodeX) {
+    protected TransferFunction includeEnd(AbstractCfgNode cfgNodeX) {
         return includeStart(cfgNodeX);
     }
 
@@ -70,15 +70,15 @@ public class IncDomAnalysis extends IntraAnalysis {
 
     // computes and returns the include chain list (consisting of cfg nodes)
     // for the given cfg node
-    public LinkedList<CfgNode> getIncludeChain(CfgNode cfgNode) {
+    public LinkedList<AbstractCfgNode> getIncludeChain(AbstractCfgNode cfgNode) {
         IncDomLatticeElement latElem = (IncDomLatticeElement) this.getAnalysisNode(cfgNode).getInValue();
-        List<CfgNode> dominators = latElem.getDominators();
+        List<AbstractCfgNode> dominators = latElem.getDominators();
 
         // * input: a list of (dominating) cfg nodes, both includeEnd and
         //   includeStart
         // * output: a chain of unclosed includeStart nodes
-        LinkedList<CfgNode> chain = new LinkedList<>();
-        for (CfgNode dominator : dominators) {
+        LinkedList<AbstractCfgNode> chain = new LinkedList<>();
+        for (AbstractCfgNode dominator : dominators) {
             if (dominator instanceof CfgNodeIncludeStart) {
                 chain.add(dominator);
             } else if (dominator instanceof CfgNodeIncludeEnd) {
@@ -102,7 +102,7 @@ public class IncDomAnalysis extends IntraAnalysis {
 //  computeChain *******************************************************************
 
     // shortcut function
-    public static LinkedList<CfgNode> computeChain(TacFunction function, CfgNode cfgNode) {
+    public static LinkedList<AbstractCfgNode> computeChain(TacFunction function, AbstractCfgNode cfgNode) {
         IncDomAnalysis incDomAnalysis = new IncDomAnalysis(function);
         incDomAnalysis.analyze();
         return incDomAnalysis.getIncludeChain(cfgNode);

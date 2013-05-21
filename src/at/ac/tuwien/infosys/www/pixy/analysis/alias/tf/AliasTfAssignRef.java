@@ -6,7 +6,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
 /**
  * Transfer function for simple assignment nodes.
@@ -24,7 +24,7 @@ public class AliasTfAssignRef extends TransferFunction {
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public AliasTfAssignRef(TacPlace left, TacPlace right, AliasAnalysis aliasAnalysis, CfgNode cfgNode) {
+    public AliasTfAssignRef(TacPlace left, TacPlace right, AliasAnalysis aliasAnalysis, AbstractCfgNode cfgNode) {
 
         // both arguments are variables if the PHP input is correct
         this.left = (Variable) left;

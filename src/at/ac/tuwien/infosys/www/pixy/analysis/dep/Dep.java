@@ -2,7 +2,7 @@ package at.ac.tuwien.infosys.www.pixy.analysis.dep;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.GenericRepos;
 import at.ac.tuwien.infosys.www.pixy.analysis.Recyclable;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
 /**
  * Corresponds to one dependency label, consisting of
@@ -18,7 +18,7 @@ public class Dep implements Recyclable {
     public static final Dep UNINIT =
         new Dep(null);
 
-    private CfgNode cfgNode;
+    private AbstractCfgNode cfgNode;
 
 //  ********************************************************************************
 //  CONSTRUCTORS *******************************************************************
@@ -26,13 +26,13 @@ public class Dep implements Recyclable {
 
 //  ********************************************************************************
 
-    private Dep(CfgNode cfgNode) {
+    private Dep(AbstractCfgNode cfgNode) {
         this.cfgNode = cfgNode;
     }
 
 //  ********************************************************************************
 
-    public static Dep create(CfgNode cfgNode) {
+    public static Dep create(AbstractCfgNode cfgNode) {
         Dep ret = new Dep(cfgNode);
         ret = repos.recycle(ret);
         return ret;
@@ -44,7 +44,7 @@ public class Dep implements Recyclable {
 
 //  ********************************************************************************
 
-    public CfgNode getCfgNode() {
+    public AbstractCfgNode getCfgNode() {
         return this.cfgNode;
     }
 

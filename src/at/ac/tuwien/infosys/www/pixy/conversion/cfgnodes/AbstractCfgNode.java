@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public abstract class CfgNode {
+public abstract class AbstractCfgNode {
     protected final ParseNode parseNode;
 
     protected List<CfgEdge> inEdges;
@@ -33,7 +33,7 @@ public abstract class CfgNode {
     // - a function's CfgNodeEntry, if this cfg node is member of one of this
     //   function's default param cfgs
     // - null, if neither of the above applies
-    private CfgNode enclosingNode;
+    private AbstractCfgNode enclosingNode;
 
     // function that contains this cfgNode;
     // note: you can't just set this in the constructor, since it
@@ -42,11 +42,11 @@ public abstract class CfgNode {
 
 // CONSTRUCTORS ********************************************************************
 
-    CfgNode() {
+    AbstractCfgNode() {
         this(null);
     }
 
-    CfgNode(ParseNode parseNode) {
+    AbstractCfgNode(ParseNode parseNode) {
         this.parseNode = parseNode;
         this.inEdges = new ArrayList<>();
         this.outEdges = new CfgEdge[2];
@@ -61,8 +61,8 @@ public abstract class CfgNode {
     // - the enclosing basic block, if it is enclosed in one
     // - the entry node of the function default cfg, if it is inside such a cfg
     // - itself otherwise
-    public CfgNode getSpecial() {
-        CfgNode retMe;
+    public AbstractCfgNode getSpecial() {
+        AbstractCfgNode retMe;
 
         retMe = this.getEnclosingBasicBlock();
         if (retMe != null) {
@@ -94,7 +94,7 @@ public abstract class CfgNode {
         return this.outEdges[index];
     }
 
-    public CfgNode getSuccessor(int index) {
+    public AbstractCfgNode getSuccessor(int index) {
         if (this.outEdges[index] != null) {
             return this.outEdges[index].getDest();
         } else {
@@ -102,8 +102,8 @@ public abstract class CfgNode {
         }
     }
 
-    public List<CfgNode> getSuccessors() {
-        List<CfgNode> successors = new LinkedList<>();
+    public List<AbstractCfgNode> getSuccessors() {
+        List<AbstractCfgNode> successors = new LinkedList<>();
         if (this.outEdges[0] != null) {
             successors.add(this.outEdges[0].getDest());
             if (this.outEdges[1] != null) {
@@ -115,16 +115,16 @@ public abstract class CfgNode {
 
     // returns the unique predecessor if there is one;
     // throws an exception otherwise
-    public CfgNode getPredecessor() {
-        List<CfgNode> predecessors = this.getPredecessors();
+    public AbstractCfgNode getPredecessor() {
+        List<AbstractCfgNode> predecessors = this.getPredecessors();
         if (predecessors.size() != 1) {
             throw new RuntimeException("SNH: " + predecessors.size());
         }
         return predecessors.get(0);
     }
 
-    public List<CfgNode> getPredecessors() {
-        List<CfgNode> predecessors = new LinkedList<>();
+    public List<AbstractCfgNode> getPredecessors() {
+        List<AbstractCfgNode> predecessors = new LinkedList<>();
         for (CfgEdge inEdge : this.inEdges) {
             predecessors.add(inEdge.getSource());
         }
@@ -240,7 +240,7 @@ public abstract class CfgNode {
     }
 
     // removes the edge coming in from the given predecessor
-    public void removeInEdge(CfgNode predecessor) {
+    public void removeInEdge(AbstractCfgNode predecessor) {
         for (Iterator<CfgEdge> iter = this.inEdges.iterator(); iter.hasNext(); ) {
             CfgEdge inEdge = iter.next();
             if (inEdge.getSource() == predecessor) {

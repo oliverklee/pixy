@@ -18,7 +18,7 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeAssignBinary extends CfgNode {
+public class CfgNodeAssignBinary extends AbstractCfgNode {
     private Variable left;
     private TacPlace leftOperand;
     private TacPlace rightOperand;

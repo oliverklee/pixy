@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.conversion;
 
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -298,7 +298,7 @@ public class Literal extends TacPlace {
 
     // tests if left < right and returns the resulting literal (can also be
     // Literal.TOP in case of unspecified semantics)
-    public static Literal isSmallerLiteral(Literal left, Literal right, CfgNode cfgNode) {
+    public static Literal isSmallerLiteral(Literal left, Literal right, AbstractCfgNode cfgNode) {
         // if both operands are completely numeric, comparing them
         // is straightforward
         if (left.isCompletelyNumeric() && right.isCompletelyNumeric()) {
@@ -318,7 +318,7 @@ public class Literal extends TacPlace {
 
     // tests if left > right and returns the resulting literal;
     // analogous to isSmallerLiteral
-    public static Literal isGreaterLiteral(Literal left, Literal right, CfgNode cfgNode) {
+    public static Literal isGreaterLiteral(Literal left, Literal right, AbstractCfgNode cfgNode) {
         if (left.isCompletelyNumeric() && right.isCompletelyNumeric()) {
             if (left.getFloatValue() > right.getFloatValue()) {
                 return Literal.TRUE;

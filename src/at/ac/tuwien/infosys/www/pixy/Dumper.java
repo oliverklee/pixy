@@ -29,7 +29,7 @@ import java.util.*;
  */
 public final class Dumper {
     // auxiliary HashMap: CfgNode -> Integer
-    private static HashMap<CfgNode, Integer> node2Int;
+    private static HashMap<AbstractCfgNode, Integer> node2Int;
     private static int idCounter;
     static final String linesep = System.getProperty("line.separator");
 
@@ -179,7 +179,7 @@ public final class Dumper {
 
     // recursively dumps the CfgNode in dot syntax
     // and returns the ID that is assigned to this node
-    static int dumpDot(CfgNode cfgNode, Writer outWriter)
+    static int dumpDot(AbstractCfgNode cfgNode, Writer outWriter)
         throws java.io.IOException {
 
         // mark node as visited and store ID
@@ -198,7 +198,7 @@ public final class Dumper {
 
             if (outEdge != null) {
 
-                CfgNode succNode = outEdge.getDest();
+                AbstractCfgNode succNode = outEdge.getDest();
 
                 // print successor
                 Integer succIdInt = Dumper.node2Int.get(succNode);
@@ -251,11 +251,11 @@ public final class Dumper {
 // makeCfgNodeName(CfgNode) ********************************************************
 
     // creates a string representation for the given cfg node
-    public static String makeCfgNodeName(CfgNode cfgNodeX) {
+    public static String makeCfgNodeName(AbstractCfgNode cfgNodeX) {
         if (cfgNodeX instanceof CfgNodeBasicBlock) {
             CfgNodeBasicBlock cfgNode = (CfgNodeBasicBlock) cfgNodeX;
             StringBuilder label = new StringBuilder("basic block\\n");
-            for (CfgNode containedNode : cfgNode.getContainedNodes()) {
+            for (AbstractCfgNode containedNode : cfgNode.getContainedNodes()) {
                 label.append(makeCfgNodeName(containedNode));
                 label.append("\\n");
             }
@@ -615,8 +615,8 @@ public final class Dumper {
     }
 
     static public void dump(IncDomAnalysis analysis) {
-        for (Map.Entry<CfgNode, AnalysisNode> entry : analysis.getAnalysisInfo().getMap().entrySet()) {
-            CfgNode cfgNode = entry.getKey();
+        for (Map.Entry<AbstractCfgNode, AnalysisNode> entry : analysis.getAnalysisInfo().getMap().entrySet()) {
+            AbstractCfgNode cfgNode = entry.getKey();
             IntraAnalysisNode analysisNode = (IntraAnalysisNode) entry.getValue();
             System.out.println("dominators for cfg node " + cfgNode.toString() + ", " + cfgNode.getOrigLineno());
             Dumper.dump(analysisNode.getInValue());
@@ -653,8 +653,8 @@ public final class Dumper {
                 writer.write(function.getName() + linesep);
                 writer.write("****************************************************" + linesep + linesep);
                 // for each ControlFlowGraph node...
-                for (Iterator<CfgNode> bft = controlFlowGraph.bfIterator(); bft.hasNext(); ) {
-                    CfgNode cfgNode = bft.next();
+                for (Iterator<AbstractCfgNode> bft = controlFlowGraph.bfIterator(); bft.hasNext(); ) {
+                    AbstractCfgNode cfgNode = bft.next();
                     writer.write("----------------------------------------" + linesep);
                     writer.write(cfgNode.getFileName() + ", " + cfgNode.getOrigLineno() +
                         ", " + makeCfgNodeName(cfgNode) + linesep);
@@ -716,11 +716,11 @@ public final class Dumper {
             dumpComplete((DepLatticeElement) elementX, writer);
         } else if (elementX instanceof IncDomLatticeElement) {
             IncDomLatticeElement element = (IncDomLatticeElement) elementX;
-            List<CfgNode> dominators = element.getDominators();
+            List<AbstractCfgNode> dominators = element.getDominators();
             if (dominators.isEmpty()) {
                 System.out.println("<<empty>>");
             } else {
-                for (CfgNode dominator : dominators) {
+                for (AbstractCfgNode dominator : dominators) {
                     System.out.println(dominator.toString() + ", " + dominator.getOrigLineno());
                 }
             }

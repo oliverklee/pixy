@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeAssignSimple extends CfgNode {
+public class CfgNodeAssignSimple extends AbstractCfgNode {
     private Variable left;
     private TacPlace right;
 

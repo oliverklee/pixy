@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeAssignRef extends CfgNode {
+public class CfgNodeAssignRef extends AbstractCfgNode {
     private Variable left;
     private Variable right;
 

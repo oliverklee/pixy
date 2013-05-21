@@ -2,7 +2,7 @@ package at.ac.tuwien.infosys.www.pixy.sanitation;
 
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.Utils;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ public class FSAUtils {
 
     public static FSAAutomaton reg_replace(FSAAutomaton phpPatternAuto,
                                            FSAAutomaton replaceAuto, FSAAutomaton subjectAuto, boolean preg,
-                                           CfgNode cfgNode) {
+                                           AbstractCfgNode cfgNode) {
 
         // get a finite string from the pattern
         List<String> finitePattern = phpPatternAuto.getFiniteString();
@@ -73,7 +73,7 @@ public class FSAUtils {
     }
 
     public static FSAAutomaton str_replace(FSAAutomaton searchAuto,
-                                           FSAAutomaton replaceAuto, FSAAutomaton subjectAuto, CfgNode cfgNode) {
+                                           FSAAutomaton replaceAuto, FSAAutomaton subjectAuto, AbstractCfgNode cfgNode) {
 
         // current approximation:
         // if the search automaton does not encode a finite string,
@@ -106,7 +106,7 @@ public class FSAUtils {
         return retMe;
     }
 
-    public static FSAAutomaton addslashes(FSAAutomaton subjectAuto, CfgNode cfgNode) {
+    public static FSAAutomaton addslashes(FSAAutomaton subjectAuto, AbstractCfgNode cfgNode) {
         // the easy way: addslashes is the same as applying str_replace
         // several times:
         // \ -> \\

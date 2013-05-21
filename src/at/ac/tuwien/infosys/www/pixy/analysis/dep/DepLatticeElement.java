@@ -3,7 +3,7 @@ package at.ac.tuwien.infosys.www.pixy.analysis.dep;
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCallRet;
 
 import java.util.*;
@@ -563,7 +563,7 @@ public class DepLatticeElement extends LatticeElement {
 
     // mustAliases and mayAliases: of left; mustAliases always have to
     // include left itself
-    public void assign(Variable left, Set<Variable> mustAliases, Set<Variable> mayAliases, CfgNode cfgNode) {
+    public void assign(Variable left, Set<Variable> mustAliases, Set<Variable> mayAliases, AbstractCfgNode cfgNode) {
         // dep to be assigned to the left side
         DepSet dep = DepSet.create(Dep.create(cfgNode));
 
@@ -651,7 +651,7 @@ public class DepLatticeElement extends LatticeElement {
 
 //  assignArray ********************************************************************
 
-    public void assignArray(Variable left, CfgNode cfgNode) {
+    public void assignArray(Variable left, AbstractCfgNode cfgNode) {
         // set the whole tree of left
         this.setWholeTree(left, DepSet.create(Dep.create(cfgNode)));
         // if left is not an array element, set its arrayLabel
@@ -663,14 +663,14 @@ public class DepLatticeElement extends LatticeElement {
 //  defineConstant *****************************************************************
 
     // sets the dep of the given constant
-    public void defineConstant(Constant c, CfgNode cfgNode) {
+    public void defineConstant(Constant c, AbstractCfgNode cfgNode) {
         this.setDep(c, DepSet.create(Dep.create(cfgNode)));
     }
 
 //  defineConstantWeak *************************************************************
 
     // lubs the taint of the given constant
-    public void defineConstantWeak(Constant c, CfgNode cfgNode) {
+    public void defineConstantWeak(Constant c, AbstractCfgNode cfgNode) {
         this.lubDep(c, DepSet.create(Dep.create(cfgNode)));
     }
 
@@ -843,7 +843,7 @@ public class DepLatticeElement extends LatticeElement {
 //  setFormal **********************************************************************
 
     // sets the dep and array label of the given formal
-    public void setFormal(TacFormalParam formalParam, CfgNode cfgNode) {
+    public void setFormal(TacFormalParam formalParam, AbstractCfgNode cfgNode) {
         Variable formalVar = formalParam.getVariable();
         Set<Variable> mustAliases = new HashSet<>();
         mustAliases.add(formalVar);

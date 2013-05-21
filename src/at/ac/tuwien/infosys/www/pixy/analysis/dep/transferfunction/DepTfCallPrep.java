@@ -5,7 +5,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
 import java.util.Iterator;
 import java.util.List;
@@ -20,7 +20,7 @@ public class DepTfCallPrep extends TransferFunction {
     private TacFunction caller;
     private TacFunction callee;
     private DepAnalysis depAnalysis;
-    private CfgNode cfgNode;
+    private AbstractCfgNode cfgNode;
 
 //  *********************************************************************************
 //  CONSTRUCTORS ********************************************************************
@@ -28,7 +28,7 @@ public class DepTfCallPrep extends TransferFunction {
 
     public DepTfCallPrep(
         List<TacActualParam> actualParams, List<TacFormalParam> formalParams, TacFunction caller, TacFunction callee,
-        DepAnalysis depAnalysis, CfgNode cfgNode
+        DepAnalysis depAnalysis, AbstractCfgNode cfgNode
     ) {
         this.actualParams = actualParams;
         this.formalParams = formalParams;
@@ -77,7 +77,7 @@ public class DepTfCallPrep extends TransferFunction {
 
                         // default CFG's have no branches;
                         // start at the CFG's head and apply all transfer functions
-                        CfgNode defaultNode = defaultControlFlowGraph.getHead();
+                        AbstractCfgNode defaultNode = defaultControlFlowGraph.getHead();
                         while (defaultNode != null) {
                             TransferFunction tf = this.depAnalysis.getTransferFunction(defaultNode);
                             out = (DepLatticeElement) tf.transfer(out);

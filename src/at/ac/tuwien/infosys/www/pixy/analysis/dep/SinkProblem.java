@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.dep;
 
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -15,14 +15,14 @@ public class SinkProblem {
 
     // nodes from which the function containing the
     // sensitive sink is called
-    List<CfgNode> callNodes;
+    List<AbstractCfgNode> callNodes;
 
     public SinkProblem(TacPlace place) {
         this.place = place;
         this.callNodes = new LinkedList<>();
     }
 
-    public void setCallList(List<CfgNode> callNodes) {
+    public void setCallList(List<AbstractCfgNode> callNodes) {
         this.callNodes = callNodes;
     }
 
@@ -30,7 +30,7 @@ public class SinkProblem {
         return this.place;
     }
 
-    public List<CfgNode> getCallNodes() {
+    public List<AbstractCfgNode> getCallNodes() {
         return this.callNodes;
     }
 }

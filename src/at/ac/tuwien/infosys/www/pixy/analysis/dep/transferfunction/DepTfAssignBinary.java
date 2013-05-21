@@ -5,7 +5,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
 import java.util.Set;
 
@@ -21,7 +21,7 @@ public class DepTfAssignBinary extends TransferFunction {
     private int op;
     private Set<Variable> mustAliases;
     private Set<Variable> mayAliases;
-    private CfgNode cfgNode;
+    private AbstractCfgNode cfgNode;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
@@ -30,7 +30,7 @@ public class DepTfAssignBinary extends TransferFunction {
     // mustAliases, mayAliases: of setMe
     public DepTfAssignBinary(
         TacPlace left, TacPlace leftOperand, TacPlace rightOperand, int op, Set<Variable> mustAliases,
-        Set<Variable> mayAliases, CfgNode cfgNode
+        Set<Variable> mayAliases, AbstractCfgNode cfgNode
     ) {
         this.left = (Variable) left;  // must be a variable
         this.leftOperand = leftOperand;

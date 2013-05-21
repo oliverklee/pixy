@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeIf extends CfgNode {
+public class CfgNodeIf extends AbstractCfgNode {
     private TacPlace leftOperand;
     private TacPlace rightOperand;  // may only be Constant.TRUE or Constant.FALSE
     private int op;

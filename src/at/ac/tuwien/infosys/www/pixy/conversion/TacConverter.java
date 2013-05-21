@@ -41,8 +41,8 @@ public class TacConverter {
     private int id;
 
     // various stacks
-    private LinkedList<CfgNode> breakTargetStack;
-    private LinkedList<CfgNode> continueTargetStack;
+    private LinkedList<AbstractCfgNode> breakTargetStack;
+    private LinkedList<AbstractCfgNode> continueTargetStack;
     private LinkedList<TacFunction> functionStack;
     private LinkedList<TacClass> classStack;
 
@@ -254,14 +254,14 @@ public class TacConverter {
 
     private void assignFunctionsHelper(ControlFlowGraph controlFlowGraph, TacFunction function) {
 
-        for (CfgNode node : controlFlowGraph.dfPreOrder()) {
+        for (AbstractCfgNode node : controlFlowGraph.dfPreOrder()) {
 
             node.setEnclosingFunction(function);
 
             // enter basic block
             if (node instanceof CfgNodeBasicBlock) {
                 CfgNodeBasicBlock bb = (CfgNodeBasicBlock) node;
-                for (CfgNode contained : bb.getContainedNodes()) {
+                for (AbstractCfgNode contained : bb.getContainedNodes()) {
                     contained.setEnclosingFunction(function);
                 }
             }
@@ -276,19 +276,19 @@ public class TacConverter {
     public void createBasicBlocks() {
 
         // which cfg nodes did we already visit?
-        Set<CfgNode> visited = new HashSet<>();
+        Set<AbstractCfgNode> visited = new HashSet<>();
 
         // for each function cfg...
         for (TacFunction function : this.userFunctions.values()) {
             ControlFlowGraph controlFlowGraph = function.getControlFlowGraph();
-            CfgNode head = controlFlowGraph.getHead();
+            AbstractCfgNode head = controlFlowGraph.getHead();
             visited.add(head);
             this.createBasicBlocksHelper(head.getSuccessor(0), visited);
         }
         // for each method cfg...
         for (TacFunction function : this.getMethods()) {
             ControlFlowGraph controlFlowGraph = function.getControlFlowGraph();
-            CfgNode head = controlFlowGraph.getHead();
+            AbstractCfgNode head = controlFlowGraph.getHead();
             visited.add(head);
             this.createBasicBlocksHelper(head.getSuccessor(0), visited);
         }
@@ -298,7 +298,7 @@ public class TacConverter {
 
     // LATER: non-recursive implementation (stack is getting deep);
     // receives a node that might be the beginning of a basic block
-    private void createBasicBlocksHelper(CfgNode cfgNode, Set<CfgNode> visited) {
+    private void createBasicBlocksHelper(AbstractCfgNode cfgNode, Set<AbstractCfgNode> visited) {
 
         if (visited.contains(cfgNode)) {
             // we've already been here: don't go any further
@@ -316,15 +316,15 @@ public class TacConverter {
             List<CfgEdge> inEdges = cfgNode.getInEdges();
 
             // the first node in the basic block
-            CfgNode startNode = cfgNode;
+            AbstractCfgNode startNode = cfgNode;
 
             // the basic block
             CfgNodeBasicBlock basicBlock = new CfgNodeBasicBlock(startNode);
 
             // all nodes that are allowed to be in a basic block
             // have 1 or no successors
-            CfgNode succ = startNode.getSuccessor(0);
-            CfgNode beforeSucc = startNode;
+            AbstractCfgNode succ = startNode.getSuccessor(0);
+            AbstractCfgNode beforeSucc = startNode;
             while (succ != null && this.allowedInBasicBlock(succ) && !visited.contains(succ)) {
                 if (succ.getPredecessors().size() > 1) {
                     // if the successor node has more than 1 predecessors,
@@ -367,8 +367,8 @@ public class TacConverter {
             }
         } else {
             // try successors
-            List<CfgNode> successors = cfgNode.getSuccessors();
-            for (CfgNode successor : successors) {
+            List<AbstractCfgNode> successors = cfgNode.getSuccessors();
+            for (AbstractCfgNode successor : successors) {
                 this.createBasicBlocksHelper(successor, visited);
             }
         }
@@ -376,7 +376,7 @@ public class TacConverter {
 
 //  allowedInBasicBlock ************************************************************
 
-    private boolean allowedInBasicBlock(CfgNode cfgNode) {
+    private boolean allowedInBasicBlock(AbstractCfgNode cfgNode) {
 
         // EFF: use a field inside CfgNode* instead;
         // note: alias information must not change inside basic blocks
@@ -559,7 +559,7 @@ public class TacConverter {
         CfgNodeExit includedExit = (CfgNodeExit) includedMainControlFlowGraph.getTail();
 
         // node after the entry
-        CfgNode afterEntry = includedEntry.getSuccessor(0);
+        AbstractCfgNode afterEntry = includedEntry.getSuccessor(0);
 
         // if this main cfg consists only of entry and exit node:
         // simply remove the include node
@@ -578,7 +578,7 @@ public class TacConverter {
             CfgEdge[] includeOutEdges = includeNode.getOutEdges();
 
             // node after the "include" node
-            CfgNode afterInclude;
+            AbstractCfgNode afterInclude;
             try {
                 afterInclude = includeOutEdges[0].getDest();
             } catch (NullPointerException e) {
@@ -974,7 +974,7 @@ public class TacConverter {
     // the controlFlowGraph must have at least one non-empty node;
     private void optimize(ControlFlowGraph controlFlowGraph) {
 
-        CfgNode startHere;
+        AbstractCfgNode startHere;
 
         // remove leading empty nodes
         // (requires "head" adjustment)
@@ -984,7 +984,7 @@ public class TacConverter {
         controlFlowGraph.setHead(startHere);
 
         // remove remaining empty nodes
-        for (CfgNode current : controlFlowGraph.dfPreOrder()) {
+        for (AbstractCfgNode current : controlFlowGraph.dfPreOrder()) {
             if (current instanceof CfgNodeEmpty) {
                 this.removeCfgNode(current);
             }
@@ -994,13 +994,13 @@ public class TacConverter {
 // removeCfgNode *******************************************************************
 
     // removes empty cfg node and returns successor
-    private CfgNode removeCfgNode(CfgNode cfgNode) {
+    private AbstractCfgNode removeCfgNode(AbstractCfgNode cfgNode) {
 
         // empty nodes have at most one successor:
         CfgEdge outEdge = cfgNode.getOutEdge(0);
         List<CfgEdge> inEdges = cfgNode.getInEdges();
         if (outEdge != null) {
-            CfgNode succ = outEdge.getDest();
+            AbstractCfgNode succ = outEdge.getDest();
 
             // remove this edge (from the viewpoint of the successor)
             succ.removeInEdge(cfgNode);
@@ -1029,7 +1029,7 @@ public class TacConverter {
         Variable globalsArray = this.superSymbolTable.getVariable("$GLOBALS");
 
         // traverse CFG...
-        for (CfgNode cfgNode : controlFlowGraph.dfPreOrder()) {
+        for (AbstractCfgNode cfgNode : controlFlowGraph.dfPreOrder()) {
 
             // inspect this node's variables...
             int varCount = -1;
@@ -1103,7 +1103,7 @@ public class TacConverter {
             // mapping "variable name" -> "global variable"
             Map<String, Variable> declaredAsGlobal = new HashMap<>();
             // traverse CFG...
-            for (CfgNode cfgNodeX : userFunction.getControlFlowGraph().dfPreOrder()) {
+            for (AbstractCfgNode cfgNodeX : userFunction.getControlFlowGraph().dfPreOrder()) {
                 if (!(cfgNodeX instanceof CfgNodeGlobal)) {
                     // we are only interested in "global" statements
                     continue;
@@ -1134,7 +1134,7 @@ public class TacConverter {
             // replacement *******
 
             // traverse CFG...
-            for (CfgNode cfgNode : userFunction.getControlFlowGraph().dfPreOrder()) {
+            for (AbstractCfgNode cfgNode : userFunction.getControlFlowGraph().dfPreOrder()) {
                 // nothing to do for "global" statements
                 if (cfgNode instanceof CfgNodeGlobal) {
                     continue;
@@ -1241,7 +1241,7 @@ public class TacConverter {
 
 // connect(CfgNode, CfgNode, int) **************************************************
 
-    private static void connect(CfgNode source, CfgNode dest, int edgeType) {
+    private static void connect(AbstractCfgNode source, AbstractCfgNode dest, int edgeType) {
         if (edgeType != CfgEdge.NO_EDGE) {
 
             // create edge
@@ -1261,7 +1261,7 @@ public class TacConverter {
 
 // connect(CfgNode, CfgNode) **************************************************
 
-    static void connect(CfgNode source, CfgNode dest) {
+    static void connect(AbstractCfgNode source, AbstractCfgNode dest) {
         connect(source, dest, CfgEdge.NORMAL_EDGE);
     }
 
@@ -1276,7 +1276,7 @@ public class TacConverter {
 
 // connect(ControlFlowGraph, CfgNode) ***********************************************************
 
-    static void connect(ControlFlowGraph firstControlFlowGraph, CfgNode dest) {
+    static void connect(ControlFlowGraph firstControlFlowGraph, AbstractCfgNode dest) {
         connect(
             firstControlFlowGraph.getTail(),
             dest,
@@ -1285,7 +1285,7 @@ public class TacConverter {
 
 // connect(CfgNode, ControlFlowGraph, int) ******************************************************
 
-    private static void connect(CfgNode source, ControlFlowGraph secondControlFlowGraph, int edgeType) {
+    private static void connect(AbstractCfgNode source, ControlFlowGraph secondControlFlowGraph, int edgeType) {
         connect(
             source,
             secondControlFlowGraph.getHead(),
@@ -1294,7 +1294,7 @@ public class TacConverter {
 
 // connect(CfgNode, ControlFlowGraph) ******************************************************
 
-    static void connect(CfgNode source, ControlFlowGraph secondControlFlowGraph) {
+    static void connect(AbstractCfgNode source, ControlFlowGraph secondControlFlowGraph) {
         connect(source, secondControlFlowGraph, CfgEdge.NORMAL_EDGE);
     }
 
@@ -1360,23 +1360,23 @@ public class TacConverter {
         TacAttributes atts2 = this.expr(node.getChild(2));
 
         // nodes for assigning true or false to the temporary
-        CfgNode trueNode = new CfgNodeAssignSimple(myPlace, Constant.TRUE, node);
-        CfgNode falseNode = new CfgNodeAssignSimple(myPlace, Constant.FALSE, node);
+        AbstractCfgNode trueNode = new CfgNodeAssignSimple(myPlace, Constant.TRUE, node);
+        AbstractCfgNode falseNode = new CfgNodeAssignSimple(myPlace, Constant.FALSE, node);
 
         // target node for trueNode and falseNode
-        CfgNode emptyNode = new CfgNodeEmpty();
+        AbstractCfgNode emptyNode = new CfgNodeEmpty();
         connect(trueNode, emptyNode);
         connect(falseNode, emptyNode);
 
         // test for first expression
-        CfgNode ifNode0 = new CfgNodeIf(
+        AbstractCfgNode ifNode0 = new CfgNodeIf(
             atts0.getPlace(),
             Constant.TRUE,
             TacOperators.IS_EQUAL,
             node.getChild(0));
 
         // test for second expression
-        CfgNode ifNode2 = new CfgNodeIf(
+        AbstractCfgNode ifNode2 = new CfgNodeIf(
             atts2.getPlace(),
             Constant.TRUE,
             TacOperators.IS_EQUAL,
@@ -1457,7 +1457,7 @@ public class TacConverter {
             this.resetId(logId);
         }
 
-        CfgNode cfgNode = new CfgNodeAssignBinary(
+        AbstractCfgNode cfgNode = new CfgNodeAssignBinary(
             myPlace, atts0.getPlace(), atts2.getPlace(), op, node);
         connect(atts0.getControlFlowGraph(), atts2.getControlFlowGraph());
         connect(atts2.getControlFlowGraph(), cfgNode);
@@ -1474,7 +1474,7 @@ public class TacConverter {
         TacAttributes atts0 = this.cvar(node.getChild(0));
         TacAttributes atts2 = this.expr(node.getChild(2));
 
-        CfgNode cfgNode = new CfgNodeAssignBinary(
+        AbstractCfgNode cfgNode = new CfgNodeAssignBinary(
             (Variable) atts0.getPlace(), atts0.getPlace(), atts2.getPlace(), op, node);
         connect(atts0.getControlFlowGraph(), atts2.getControlFlowGraph());
         connect(atts2.getControlFlowGraph(), cfgNode);
@@ -1495,11 +1495,11 @@ public class TacConverter {
         TacPlace addMePlace = new Literal("1");
 
         // assign the variable's old value to the temporary
-        CfgNode rescueNode = new CfgNodeAssignSimple(
+        AbstractCfgNode rescueNode = new CfgNodeAssignSimple(
             tempPlace, atts0.getPlace(), node.getChild(0));
 
         // increment / decrement the variable
-        CfgNode cfgNode = new CfgNodeAssignBinary(
+        AbstractCfgNode cfgNode = new CfgNodeAssignBinary(
             (Variable) atts0.getPlace(), atts0.getPlace(), addMePlace, op, node);
 
         connect(atts0.getControlFlowGraph(), rescueNode);
@@ -1517,7 +1517,7 @@ public class TacConverter {
         TacAttributes atts1 = this.rw_cvar(node.getChild(1));
         TacPlace addMePlace = new Literal("1");
 
-        CfgNode cfgNode = new CfgNodeAssignBinary(
+        AbstractCfgNode cfgNode = new CfgNodeAssignBinary(
             (Variable) atts1.getPlace(), atts1.getPlace(), addMePlace, op, node);
 
         connect(atts1.getControlFlowGraph(), cfgNode);
@@ -1534,7 +1534,7 @@ public class TacConverter {
         Variable tempPlace = newTemp();
         TacAttributes atts1 = this.expr(node.getChild(1));
 
-        CfgNode cfgNode = new CfgNodeAssignUnary(
+        AbstractCfgNode cfgNode = new CfgNodeAssignUnary(
             tempPlace, atts1.getPlace(), op, node);
         connect(atts1.getControlFlowGraph(), cfgNode);
 
@@ -1569,7 +1569,7 @@ public class TacConverter {
             System.out.println("- using: " + existingFunction.getLoc());
 
             // return empty ControlFlowGraph (we don't put function Cfgs inside one another)
-            CfgNode emptyNode = new CfgNodeEmpty();
+            AbstractCfgNode emptyNode = new CfgNodeEmpty();
             myAtts.setControlFlowGraph(new ControlFlowGraph(emptyNode, emptyNode));
             return;
         }
@@ -1600,7 +1600,7 @@ public class TacConverter {
         for (TacFormalParam formalParam : attsParamList.getFormalParamList()) {
             if (formalParam.hasDefault()) {
                 ControlFlowGraph defaultControlFlowGraph = formalParam.getDefaultControlFlowGraph();
-                for (CfgNode defaultNode : defaultControlFlowGraph.dfPreOrder()) {
+                for (AbstractCfgNode defaultNode : defaultControlFlowGraph.dfPreOrder()) {
                     defaultNode.setDefaultParamPrep(entryNode);
                 }
             }
@@ -1617,7 +1617,7 @@ public class TacConverter {
         connect(attsStat.getControlFlowGraph(), exitNode);
 
         // return empty ControlFlowGraph (we don't put function Cfgs inside one another)
-        CfgNode emptyNode = new CfgNodeEmpty();
+        AbstractCfgNode emptyNode = new CfgNodeEmpty();
         myAtts.setControlFlowGraph(new ControlFlowGraph(emptyNode, emptyNode));
 
         // pop function stack
@@ -1660,7 +1660,7 @@ public class TacConverter {
         for (TacFormalParam formalParam : attsParamList.getFormalParamList()) {
             if (formalParam.hasDefault()) {
                 ControlFlowGraph defaultControlFlowGraph = formalParam.getDefaultControlFlowGraph();
-                for (CfgNode defaultNode : defaultControlFlowGraph.dfPreOrder()) {
+                for (AbstractCfgNode defaultNode : defaultControlFlowGraph.dfPreOrder()) {
                     defaultNode.setDefaultParamPrep(entryNode);
                 }
             }
@@ -2010,7 +2010,7 @@ public class TacConverter {
     // - creates the array element and
     //   creates a ControlFlowGraph node which either assigns a value to the array element
     //   or makes the array element a reference to the given valuePlace
-    CfgNode arrayPairListHelper(
+    AbstractCfgNode arrayPairListHelper(
         TacPlace arrayPlace, TacPlace offsetPlace, TacPlace valuePlace,
         boolean reference, ParseNode node) {
 
@@ -2096,7 +2096,7 @@ public class TacConverter {
 
         // copy the array into a temporary to ensure correct semantics
         Variable arrayPlace = this.newTemp();
-        CfgNode backupNode = new CfgNodeAssignSimple(arrayPlace, attsArray.getPlace(), node);
+        AbstractCfgNode backupNode = new CfgNodeAssignSimple(arrayPlace, attsArray.getPlace(), node);
 
         // create nodes for calls to reset() and each()
         List<TacActualParam> paramList = new LinkedList<>();
@@ -2119,14 +2119,14 @@ public class TacConverter {
         connect(resetCallControlFlowGraph.getTail(), eachCallControlFlowGraph.getHead());
 
         // node testing whether to stay inside the loop or not
-        CfgNode ifNode = new CfgNodeIf(
+        AbstractCfgNode ifNode = new CfgNodeIf(
             tempPlace,
             Constant.TRUE,
             TacOperators.IS_EQUAL,
             node);
 
         // end node for the whole foreach construct
-        CfgNode endNode = new CfgNodeEmpty();
+        AbstractCfgNode endNode = new CfgNodeEmpty();
 
         // assigning the array returned by each() to the right variables
         TacAttributes attsOptional = this.foreach_optional_arg(node.getChild(5));
@@ -2142,7 +2142,7 @@ public class TacConverter {
             TacPlace tempPlaceValue = this.makeArrayElementPlace(
                 tempPlace, new Literal("1"));
 
-            CfgNode valueNode = new CfgNodeAssignSimple(
+            AbstractCfgNode valueNode = new CfgNodeAssignSimple(
                 (Variable) attsValue.getPlace(), tempPlaceValue, node.getChild(4));
 
             connect(eachCallControlFlowGraph.getTail(), attsValue.getControlFlowGraph());
@@ -2161,10 +2161,10 @@ public class TacConverter {
             TacPlace tempPlaceValue = this.makeArrayElementPlace(
                 tempPlace, new Literal("1"));
 
-            CfgNode keyNode = new CfgNodeAssignSimple(
+            AbstractCfgNode keyNode = new CfgNodeAssignSimple(
                 (Variable) attsKey.getPlace(), tempPlaceKey, node.getChild(4));
 
-            CfgNode valueNode = new CfgNodeAssignSimple(
+            AbstractCfgNode valueNode = new CfgNodeAssignSimple(
                 (Variable) attsValue.getPlace(), tempPlaceValue, node.getChild(5));
 
             connect(eachCallControlFlowGraph.getTail(), attsKey.getControlFlowGraph());
@@ -2473,9 +2473,9 @@ public class TacConverter {
         }
 
         // update successor
-        List<CfgNode> succs = prepNode.getCallRetNode().getSuccessors();
+        List<AbstractCfgNode> succs = prepNode.getCallRetNode().getSuccessors();
         if (succs.size() == 1) {
-            CfgNode succ = succs.get(0);
+            AbstractCfgNode succ = succs.get(0);
             succ.removeInEdge(callRet);
             connect(callUnknown, succ);
         } else if (succs.size() == 0) {
@@ -2499,8 +2499,8 @@ public class TacConverter {
 
         // entry and exit nodes for the (virtual) main function;
         // no need for a CfgNodeExitPrep here
-        CfgNode entryNode = new CfgNodeEntry(node);
-        CfgNode exitNode = new CfgNodeExit(node);
+        AbstractCfgNode entryNode = new CfgNodeEntry(node);
+        AbstractCfgNode exitNode = new CfgNodeExit(node);
 
         // ControlFlowGraph for the main function
         ControlFlowGraph controlFlowGraph = new ControlFlowGraph(entryNode, exitNode, CfgEdge.NO_EDGE);
@@ -2577,7 +2577,7 @@ public class TacConverter {
 
             // -> empty
             case PhpSymbols.T_EPSILON: {
-                CfgNode emptyNode = new CfgNodeEmpty();
+                AbstractCfgNode emptyNode = new CfgNodeEmpty();
                 myAtts.setControlFlowGraph(new ControlFlowGraph(emptyNode, emptyNode));
                 break;
             }
@@ -2679,7 +2679,7 @@ public class TacConverter {
 
                 // put an empty node in place of class declarations
                 // (we don't need the declaration in the resulting cfg)
-                CfgNode emptyNode = new CfgNodeEmpty();
+                AbstractCfgNode emptyNode = new CfgNodeEmpty();
                 myAtts.setControlFlowGraph(new ControlFlowGraph(emptyNode, emptyNode));
                 break;
             }
@@ -2721,7 +2721,7 @@ public class TacConverter {
 
                 // put an empty node in place of class declarations
                 // (we don't need the declaration in the resulting cfg)
-                CfgNode emptyNode = new CfgNodeEmpty();
+                AbstractCfgNode emptyNode = new CfgNodeEmpty();
                 myAtts.setControlFlowGraph(new ControlFlowGraph(emptyNode, emptyNode));
                 break;
             }
@@ -2826,7 +2826,7 @@ public class TacConverter {
                     this.class_variable_decleration(firstChild, c);
 
                     Variable var = this.newTemp();
-                    CfgNode cfgNode = new CfgNodeAssignSimple(var, this.constantsTable.getConstant("NULL"), node);
+                    AbstractCfgNode cfgNode = new CfgNodeAssignSimple(var, this.constantsTable.getConstant("NULL"), node);
                     ControlFlowGraph nullControlFlowGraph = new ControlFlowGraph(cfgNode, cfgNode);
                     c.addMember(node.getChild(2).getLexeme(), nullControlFlowGraph, var);
                 } else {
@@ -2846,7 +2846,7 @@ public class TacConverter {
                     // create a one-node cfg that assigns NULL to a temporary variable,
                     // and use this cfg as initializer for the member variable
                     Variable var = this.newTemp();
-                    CfgNode cfgNode = new CfgNodeAssignSimple(var, this.constantsTable.getConstant("NULL"), node);
+                    AbstractCfgNode cfgNode = new CfgNodeAssignSimple(var, this.constantsTable.getConstant("NULL"), node);
                     ControlFlowGraph nullControlFlowGraph = new ControlFlowGraph(cfgNode, cfgNode);
                     c.addMember(firstChild.getLexeme(), nullControlFlowGraph, var);
                 } else {
@@ -2902,7 +2902,7 @@ public class TacConverter {
                     TacAttributes atts2 = this.static_scalar(node.getChild(2));
                     Variable paramPlace = this.makePlace(firstChild.getLexeme());
 
-                    CfgNode cfgNode =
+                    AbstractCfgNode cfgNode =
                         new CfgNodeAssignSimple(paramPlace, atts2.getPlace(), node.getChild(2));
                     connect(atts2.getControlFlowGraph(), cfgNode);
                     ControlFlowGraph defaultControlFlowGraph = new ControlFlowGraph(
@@ -2960,7 +2960,7 @@ public class TacConverter {
                             TacAttributes attsScalar = this.static_scalar(node.getChild(4));
                             Variable paramPlace = this.makePlace(node.getChild(2).getLexeme());
 
-                            CfgNode cfgNode =
+                            AbstractCfgNode cfgNode =
                                 new CfgNodeAssignSimple(paramPlace, attsScalar.getPlace(), node.getChild(4));
                             connect(attsScalar.getControlFlowGraph(), cfgNode);
                             ControlFlowGraph defaultControlFlowGraph = new ControlFlowGraph(
@@ -3024,7 +3024,7 @@ public class TacConverter {
 
             // -> T_STRING
             case PhpSymbols.T_STRING: {
-                CfgNode cfgNode = new CfgNodeEmpty();
+                AbstractCfgNode cfgNode = new CfgNodeEmpty();
                 myAtts.setControlFlowGraph(new ControlFlowGraph(cfgNode, cfgNode));
                 myAtts.setPlace(makeConstantPlace(firstChild.getLexeme()));
                 break;
@@ -3034,7 +3034,7 @@ public class TacConverter {
             case PhpSymbols.T_PLUS: {
                 Variable tempPlace = this.newTemp();
                 TacAttributes atts1 = this.static_scalar(node.getChild(1));
-                CfgNode cfgNode = new CfgNodeAssignUnary(
+                AbstractCfgNode cfgNode = new CfgNodeAssignUnary(
                     tempPlace, atts1.getPlace(), TacOperators.PLUS, node);
                 connect(atts1.getControlFlowGraph(), cfgNode);
                 myAtts.setControlFlowGraph(new ControlFlowGraph(atts1.getControlFlowGraph().getHead(), cfgNode));
@@ -3046,7 +3046,7 @@ public class TacConverter {
             case PhpSymbols.T_MINUS: {
                 Variable tempPlace = this.newTemp();
                 TacAttributes atts1 = this.static_scalar(node.getChild(1));
-                CfgNode cfgNode = new CfgNodeAssignUnary(
+                AbstractCfgNode cfgNode = new CfgNodeAssignUnary(
                     tempPlace, atts1.getPlace(), TacOperators.MINUS, node);
                 connect(atts1.getControlFlowGraph(), cfgNode);
                 myAtts.setControlFlowGraph(new ControlFlowGraph(atts1.getControlFlowGraph().getHead(), cfgNode));
@@ -3061,7 +3061,7 @@ public class TacConverter {
                     node.getChild(2),
                     arrayPlace);
 
-                CfgNode cfgNode = new CfgNodeAssignArray(arrayPlace, node);
+                AbstractCfgNode cfgNode = new CfgNodeAssignArray(arrayPlace, node);
                 connect(cfgNode, attsList.getControlFlowGraph());
 
                 myAtts.setControlFlowGraph(new ControlFlowGraph(
@@ -3086,7 +3086,7 @@ public class TacConverter {
 
         if (firstChild.getSymbol() == PhpSymbols.T_EPSILON) {
             // -> empty
-            CfgNode emptyNode = new CfgNodeEmpty();
+            AbstractCfgNode emptyNode = new CfgNodeEmpty();
             myAtts.setControlFlowGraph(new ControlFlowGraph(emptyNode, emptyNode));
         } else {
             // -> non_empty_static_array_pair_list possible_comma
@@ -3121,7 +3121,7 @@ public class TacConverter {
                 TacAttributes attsScalar1 = this.static_scalar(node.getChild(2));
                 TacAttributes attsScalar2 = this.static_scalar(node.getChild(4));
 
-                CfgNode cfgNode = this.arrayPairListHelper(
+                AbstractCfgNode cfgNode = this.arrayPairListHelper(
                     arrayPlace, attsScalar1.getPlace(),
                     attsScalar2.getPlace(), false, node);
 
@@ -3149,7 +3149,7 @@ public class TacConverter {
                     myAtts.setArrayIndex(largestIndex);
                 }
 
-                CfgNode cfgNode = this.arrayPairListHelper(
+                AbstractCfgNode cfgNode = this.arrayPairListHelper(
                     arrayPlace,
                     offsetPlace,
                     attsScalar.getPlace(), false, node);
@@ -3168,7 +3168,7 @@ public class TacConverter {
                 TacAttributes attsScalar1 = this.static_scalar(firstChild);
                 TacAttributes attsScalar2 = this.static_scalar(node.getChild(2));
 
-                CfgNode cfgNode = this.arrayPairListHelper(
+                AbstractCfgNode cfgNode = this.arrayPairListHelper(
                     arrayPlace, attsScalar1.getPlace(), attsScalar2.getPlace(), false, node);
                 connect(attsScalar1.getControlFlowGraph(), attsScalar2.getControlFlowGraph());
                 connect(attsScalar2.getControlFlowGraph(), cfgNode);
@@ -3181,7 +3181,7 @@ public class TacConverter {
 
                 TacAttributes attsScalar = this.static_scalar(firstChild);
 
-                CfgNode cfgNode = this.arrayPairListHelper(
+                AbstractCfgNode cfgNode = this.arrayPairListHelper(
                     arrayPlace, new Literal("0"), attsScalar.getPlace(),
                     false, node);
 
@@ -3224,7 +3224,7 @@ public class TacConverter {
 
             // -> empty
             case PhpSymbols.T_EPSILON: {
-                CfgNode emptyNode = new CfgNodeEmpty();
+                AbstractCfgNode emptyNode = new CfgNodeEmpty();
                 myAtts.setControlFlowGraph(new ControlFlowGraph(emptyNode, emptyNode));
                 break;
             }
@@ -3290,7 +3290,7 @@ public class TacConverter {
                 if (node.getChild(4).getSymbol() == PhpSymbols.statement) {
                     // -> T_IF ( expr ) statement elseif_list else_single
 
-                    CfgNode endIfNode = new CfgNodeEmpty();
+                    AbstractCfgNode endIfNode = new CfgNodeEmpty();
 
                     int logId = this.tempId;
                     TacAttributes attsExpr = this.expr(node.getChild(2));
@@ -3300,7 +3300,7 @@ public class TacConverter {
                     TacAttributes attsElif = this.elseif_list(
                         node.getChild(5), endIfNode, attsElse.getControlFlowGraph().getHead());
 
-                    CfgNode ifNode = new CfgNodeIf(
+                    AbstractCfgNode ifNode = new CfgNodeIf(
                         attsExpr.getPlace(), Constant.TRUE, TacOperators.IS_EQUAL,
                         node.getChild(2));
 
@@ -3317,7 +3317,7 @@ public class TacConverter {
                     // -> T_IF ( expr ) : inner_statement_list new_elseif_list
                     //    new_else_single T_ENDIF ;
 
-                    CfgNode endIfNode = new CfgNodeEmpty();
+                    AbstractCfgNode endIfNode = new CfgNodeEmpty();
 
                     int logId = this.tempId;
                     TacAttributes attsExpr = this.expr(node.getChild(2));
@@ -3327,7 +3327,7 @@ public class TacConverter {
                     TacAttributes attsElif = this.new_elseif_list(
                         node.getChild(6), endIfNode, attsElse.getControlFlowGraph().getHead());
 
-                    CfgNode ifNode = new CfgNodeIf(
+                    AbstractCfgNode ifNode = new CfgNodeIf(
                         attsExpr.getPlace(), Constant.TRUE, TacOperators.IS_EQUAL,
                         node.getChild(2));
 
@@ -3347,7 +3347,7 @@ public class TacConverter {
 
             // -> T_WHILE ( expr ) while_statement
             case PhpSymbols.T_WHILE: {
-                CfgNode endWhileNode = new CfgNodeEmpty();
+                AbstractCfgNode endWhileNode = new CfgNodeEmpty();
                 this.breakTargetStack.add(endWhileNode);
                 int logId = this.tempId;
                 TacAttributes attsExpr = this.expr(node.getChild(2));
@@ -3355,7 +3355,7 @@ public class TacConverter {
                 this.continueTargetStack.add(attsExpr.getControlFlowGraph().getHead());
                 TacAttributes attsStatement = this.while_statement(node.getChild(4));
 
-                CfgNode ifNode = new CfgNodeIf(
+                AbstractCfgNode ifNode = new CfgNodeIf(
                     attsExpr.getPlace(), Constant.TRUE, TacOperators.IS_EQUAL,
                     node.getChild(2));
 
@@ -3376,7 +3376,7 @@ public class TacConverter {
 
             // -> T_DO statement T_WHILE ( expr ) ;
             case PhpSymbols.T_DO: {
-                CfgNode endDoNode = new CfgNodeEmpty();
+                AbstractCfgNode endDoNode = new CfgNodeEmpty();
                 this.breakTargetStack.add(endDoNode);
                 TacAttributes attsStatement = this.statement(node.getChild(1));
                 int logId = this.tempId;
@@ -3384,7 +3384,7 @@ public class TacConverter {
                 this.resetId(logId);
                 this.continueTargetStack.add(attsStatement.getControlFlowGraph().getHead());
 
-                CfgNode ifNode = new CfgNodeIf(
+                AbstractCfgNode ifNode = new CfgNodeIf(
                     attsExpr.getPlace(), Constant.TRUE, TacOperators.IS_EQUAL,
                     node.getChild(4));
 
@@ -3405,7 +3405,7 @@ public class TacConverter {
 
             // -> T_FOR ( for_expr1 ; for_expr2 ; for_expr3 ) for_statement
             case PhpSymbols.T_FOR: {
-                CfgNode endForNode = new CfgNodeEmpty();
+                AbstractCfgNode endForNode = new CfgNodeEmpty();
                 this.breakTargetStack.add(endForNode);
 
                 TacAttributes attsExpr1 = this.for_expr(node.getChild(2));
@@ -3416,7 +3416,7 @@ public class TacConverter {
 
                 TacAttributes attsStatement = this.for_statement(node.getChild(8));
 
-                CfgNode ifNode = new CfgNodeIf(
+                AbstractCfgNode ifNode = new CfgNodeIf(
                     attsExpr2.getPlace(), Constant.TRUE, TacOperators.IS_EQUAL,
                     node.getChild(4));
 
@@ -3439,8 +3439,8 @@ public class TacConverter {
 
             // -> T_SWITCH ( expr ) switch_case_list
             case PhpSymbols.T_SWITCH: {
-                CfgNode endSwitchNode = new CfgNodeEmpty();
-                CfgNode defaultJumpNode = new CfgNodeEmpty();
+                AbstractCfgNode endSwitchNode = new CfgNodeEmpty();
+                AbstractCfgNode defaultJumpNode = new CfgNodeEmpty();
 
                 this.continueTargetStack.add(endSwitchNode);
                 this.breakTargetStack.add(endSwitchNode);
@@ -3470,8 +3470,8 @@ public class TacConverter {
             case PhpSymbols.T_BREAK: {
                 if (node.getChild(1).getSymbol() == PhpSymbols.T_SEMICOLON) {
                     // -> T_BREAK ;
-                    CfgNode cfgNode = new CfgNodeEmpty();
-                    CfgNode breakTarget = null;
+                    AbstractCfgNode cfgNode = new CfgNodeEmpty();
+                    AbstractCfgNode breakTarget = null;
                     try {
                         breakTarget = this.breakTargetStack.getLast();
                     } catch (NoSuchElementException e) {
@@ -3501,8 +3501,8 @@ public class TacConverter {
                     if (isNumber) {
                         int breakDepth = Integer.parseInt(maybeNumber.getLexeme());
 
-                        CfgNode cfgNode = new CfgNodeEmpty();
-                        CfgNode breakTarget = this.breakTargetStack.get(
+                        AbstractCfgNode cfgNode = new CfgNodeEmpty();
+                        AbstractCfgNode breakTarget = this.breakTargetStack.get(
                             this.breakTargetStack.size() - breakDepth);
                         connect(cfgNode, breakTarget);
                         myAtts.setControlFlowGraph(new ControlFlowGraph(cfgNode, cfgNode, CfgEdge.NO_EDGE));
@@ -3523,9 +3523,9 @@ public class TacConverter {
             case PhpSymbols.T_CONTINUE: {
                 if (node.getChild(1).getSymbol() == PhpSymbols.T_SEMICOLON) {
                     // -> T_CONTINUE ;
-                    CfgNode cfgNode = new CfgNodeEmpty();
+                    AbstractCfgNode cfgNode = new CfgNodeEmpty();
                     try {
-                        CfgNode continueTarget = this.continueTargetStack.getLast();
+                        AbstractCfgNode continueTarget = this.continueTargetStack.getLast();
                         connect(cfgNode, continueTarget);
                         myAtts.setControlFlowGraph(new ControlFlowGraph(cfgNode, cfgNode, CfgEdge.NO_EDGE));
                     } catch (NoSuchElementException e) {
@@ -3553,8 +3553,8 @@ public class TacConverter {
                     if (isNumber) {
                         int continueDepth = Integer.parseInt(maybeNumber.getLexeme());
 
-                        CfgNode cfgNode = new CfgNodeEmpty();
-                        CfgNode continueTarget = this.continueTargetStack.get(
+                        AbstractCfgNode cfgNode = new CfgNodeEmpty();
+                        AbstractCfgNode continueTarget = this.continueTargetStack.get(
                             this.continueTargetStack.size() - continueDepth);
                         connect(cfgNode, continueTarget);
                         myAtts.setControlFlowGraph(new ControlFlowGraph(cfgNode, cfgNode, CfgEdge.NO_EDGE));
@@ -3580,7 +3580,7 @@ public class TacConverter {
 
                     // can be ignored, but control flow has to lead directly to
                     // the function's exit node
-                    CfgNode emptyNode = new CfgNodeEmpty();
+                    AbstractCfgNode emptyNode = new CfgNodeEmpty();
                     connect(emptyNode, this.functionStack.getLast().getControlFlowGraph().getTail());
 
                     // this ControlFlowGraph must not be connected with succeeding statements,
@@ -3594,10 +3594,10 @@ public class TacConverter {
                     // get necessary function stuff
                     TacFunction function = this.functionStack.getLast();
                     Variable retVarPlace = function.getRetVar();
-                    CfgNode exitNode = function.getControlFlowGraph().getTail();
+                    AbstractCfgNode exitNode = function.getControlFlowGraph().getTail();
 
                     // return variable = cvar
-                    CfgNode cfgNode = new CfgNodeAssignSimple(
+                    AbstractCfgNode cfgNode = new CfgNodeAssignSimple(
                         retVarPlace, attsExpr.getPlace(), secondChild);
 
                     // "return" statement has to lead to the function's exit node
@@ -3620,10 +3620,10 @@ public class TacConverter {
                     // get necessary function stuff
                     TacFunction function = this.functionStack.getLast();
                     Variable retVarPlace = function.getRetVar();
-                    CfgNode exitNode = function.getControlFlowGraph().getTail();
+                    AbstractCfgNode exitNode = function.getControlFlowGraph().getTail();
 
                     // return variable = cvar
-                    CfgNode cfgNode = new CfgNodeAssignSimple(
+                    AbstractCfgNode cfgNode = new CfgNodeAssignSimple(
                         retVarPlace, attsCvar.getPlace(), secondChild);
 
                     connect(attsCvar.getControlFlowGraph(), cfgNode);
@@ -3664,7 +3664,7 @@ public class TacConverter {
             // -> T_INLINE_HTML
             case PhpSymbols.T_INLINE_HTML: {
                 // static HTML output can be ignored for our analysis
-                CfgNode emptyNode = new CfgNodeEmpty();
+                AbstractCfgNode emptyNode = new CfgNodeEmpty();
                 myAtts.setControlFlowGraph(new ControlFlowGraph(emptyNode, emptyNode));
                 break;
             }
@@ -3679,7 +3679,7 @@ public class TacConverter {
             // -> T_USE use_filename ;
             case PhpSymbols.T_USE: {
                 // not implemented in current PHP version
-                CfgNode emptyNode = new CfgNodeEmpty();
+                AbstractCfgNode emptyNode = new CfgNodeEmpty();
                 myAtts.setControlFlowGraph(new ControlFlowGraph(emptyNode, emptyNode));
                 break;
             }
@@ -3722,7 +3722,7 @@ public class TacConverter {
 
             // -> ;
             case PhpSymbols.T_SEMICOLON: {
-                CfgNode emptyNode = new CfgNodeEmpty();
+                AbstractCfgNode emptyNode = new CfgNodeEmpty();
                 myAtts.setControlFlowGraph(new ControlFlowGraph(emptyNode, emptyNode));
                 break;
             }
@@ -3787,7 +3787,7 @@ public class TacConverter {
                 TacAttributes atts0 = this.static_var_list(firstChild);
 
                 TacPlace varPlace = makePlace(node.getChild(2).getLexeme());
-                CfgNode cfgNode = new CfgNodeStatic(varPlace, node);
+                AbstractCfgNode cfgNode = new CfgNodeStatic(varPlace, node);
 
                 connect(atts0.getControlFlowGraph(), cfgNode);
 
@@ -3801,7 +3801,7 @@ public class TacConverter {
                 TacAttributes atts4 = this.static_scalar(node.getChild(4));
 
                 TacPlace varPlace = makePlace(node.getChild(2).getLexeme());
-                CfgNode cfgNode = new CfgNodeStatic(varPlace, atts4.getPlace(), node);
+                AbstractCfgNode cfgNode = new CfgNodeStatic(varPlace, atts4.getPlace(), node);
 
                 connect(atts0.getControlFlowGraph(), atts4.getControlFlowGraph());
                 connect(atts4.getControlFlowGraph(), cfgNode);
@@ -3815,7 +3815,7 @@ public class TacConverter {
                 // -> T_VARIABLE
 
                 TacPlace varPlace = makePlace(firstChild.getLexeme());
-                CfgNode cfgNode = new CfgNodeStatic(varPlace, node);
+                AbstractCfgNode cfgNode = new CfgNodeStatic(varPlace, node);
                 myAtts.setControlFlowGraph(new ControlFlowGraph(cfgNode, cfgNode));
             } else {
                 // -> T_VARIABLE = static_scalar
@@ -3823,7 +3823,7 @@ public class TacConverter {
                 TacAttributes atts2 = this.static_scalar(node.getChild(2));
 
                 TacPlace varPlace = makePlace(firstChild.getLexeme());
-                CfgNode cfgNode = new CfgNodeStatic(varPlace, atts2.getPlace(), node);
+                AbstractCfgNode cfgNode = new CfgNodeStatic(varPlace, atts2.getPlace(), node);
 
                 connect(atts2.getControlFlowGraph(), cfgNode);
 
@@ -3875,7 +3875,7 @@ public class TacConverter {
             TacPlace varPlace = makePlace(varLex);
             // there also has to be a global variable with the same name
             makePlace(varLex, this.mainSymbolTable);
-            CfgNode cfgNode = new CfgNodeGlobal(varPlace, node);
+            AbstractCfgNode cfgNode = new CfgNodeGlobal(varPlace, node);
             myAtts.setControlFlowGraph(new ControlFlowGraph(cfgNode, cfgNode));
         } else if (node.getChild(1).getSymbol() == PhpSymbols.r_cvar) {
             // -> $ r_cvar
@@ -3884,7 +3884,7 @@ public class TacConverter {
             TacPlace cvarPlace = attsCvar.getPlace();
             TacPlace varPlace = makePlace("${" + cvarPlace.toString() + "}");
             varPlace.getVariable().setDependsOn(cvarPlace);
-            CfgNode cfgNode = new CfgNodeGlobal(varPlace, node);
+            AbstractCfgNode cfgNode = new CfgNodeGlobal(varPlace, node);
 
             connect(attsCvar.getControlFlowGraph(), cfgNode);
             myAtts.setControlFlowGraph(new ControlFlowGraph(
@@ -3895,7 +3895,7 @@ public class TacConverter {
             // ex: global ${$a} or something more complicated
             TacAttributes attsExpr = this.expr(node.getChild(2));
             TacPlace varPlace = this.exprVarHelper(attsExpr.getPlace());
-            CfgNode cfgNode = new CfgNodeGlobal(varPlace, node);
+            AbstractCfgNode cfgNode = new CfgNodeGlobal(varPlace, node);
             connect(attsExpr.getControlFlowGraph(), cfgNode);
             myAtts.setControlFlowGraph(new ControlFlowGraph(attsExpr.getControlFlowGraph().getHead(), cfgNode));
         }
@@ -3968,7 +3968,7 @@ public class TacConverter {
                             TacAttributes atts0 = this.cvar(firstChild);
                             TacAttributes atts2 = this.expr(node.getChild(2));
 
-                            CfgNode cfgNode =
+                            AbstractCfgNode cfgNode =
                                 new CfgNodeAssignSimple(
                                     (Variable) atts0.getPlace(),
                                     atts2.getPlace(), node);
@@ -3987,7 +3987,7 @@ public class TacConverter {
                                     TacAttributes atts0 = this.cvar(firstChild);
                                     TacAttributes atts3 = this.w_cvar(node.getChild(3));
 
-                                    CfgNode cfgNode = new CfgNodeAssignRef(
+                                    AbstractCfgNode cfgNode = new CfgNodeAssignRef(
                                         (Variable) atts0.getPlace(),
                                         (Variable) atts3.getPlace(), node);
                                     connect(atts0.getControlFlowGraph(), atts3.getControlFlowGraph());
@@ -4006,7 +4006,7 @@ public class TacConverter {
                                     TacAttributes attsCvar = this.cvar(firstChild);
                                     TacAttributes attsCall = this.function_call(node.getChild(3));
 
-                                    CfgNode cfgNode = new CfgNodeAssignRef(
+                                    AbstractCfgNode cfgNode = new CfgNodeAssignRef(
                                         (Variable) attsCvar.getPlace(),
                                         (Variable) attsCall.getPlace(), node);
 
@@ -4032,7 +4032,7 @@ public class TacConverter {
 
                                     // node for assigning some value to cvar
                                     // (depending on whether we can resolve the classname or not)
-                                    CfgNode cfgNode;
+                                    AbstractCfgNode cfgNode;
 
                                     ParseNode classNameNode = node.getChild(4).getChild(0);
                                     if (classNameNode.getSymbol() == PhpSymbols.T_STRING) {
@@ -4264,16 +4264,16 @@ public class TacConverter {
                         // "$c = ($a xor $b)"
 
                         // nodes for assigning true or false to the temporary
-                        CfgNode trueNode = new CfgNodeAssignSimple(tempPlace, Constant.TRUE, node);
-                        CfgNode falseNode = new CfgNodeAssignSimple(tempPlace, Constant.FALSE, node);
+                        AbstractCfgNode trueNode = new CfgNodeAssignSimple(tempPlace, Constant.TRUE, node);
+                        AbstractCfgNode falseNode = new CfgNodeAssignSimple(tempPlace, Constant.FALSE, node);
 
                         // target node for trueNode and falseNode
-                        CfgNode emptyNode = new CfgNodeEmpty();
+                        AbstractCfgNode emptyNode = new CfgNodeEmpty();
                         connect(trueNode, emptyNode);
                         connect(falseNode, emptyNode);
 
                         // test first expression
-                        CfgNode ifNode0 = new CfgNodeIf(
+                        AbstractCfgNode ifNode0 = new CfgNodeIf(
                             atts0.getPlace(),
                             Constant.TRUE,
                             TacOperators.IS_EQUAL,
@@ -4286,12 +4286,12 @@ public class TacConverter {
 
                         // second expression needs two different tests,
                         // depending on the result of the first test
-                        CfgNode ifNode2WasTrue = new CfgNodeIf(
+                        AbstractCfgNode ifNode2WasTrue = new CfgNodeIf(
                             atts2.getPlace(),
                             Constant.TRUE,
                             TacOperators.IS_EQUAL,
                             node.getChild(2));
-                        CfgNode ifNode2WasFalse = new CfgNodeIf(
+                        AbstractCfgNode ifNode2WasFalse = new CfgNodeIf(
                             atts2.getPlace(),
                             Constant.TRUE,
                             TacOperators.IS_EQUAL,
@@ -4438,14 +4438,14 @@ public class TacConverter {
                         TacAttributes attsExprThen = this.expr(node.getChild(2));
                         TacAttributes attsExprElse = this.expr(node.getChild(4));
 
-                        CfgNode assignThen = new CfgNodeAssignSimple(
+                        AbstractCfgNode assignThen = new CfgNodeAssignSimple(
                             tempPlace, attsExprThen.getPlace(), node.getChild(2));
-                        CfgNode assignElse = new CfgNodeAssignSimple(
+                        AbstractCfgNode assignElse = new CfgNodeAssignSimple(
                             tempPlace, attsExprElse.getPlace(), node.getChild(4));
 
-                        CfgNode endIfNode = new CfgNodeEmpty();
+                        AbstractCfgNode endIfNode = new CfgNodeEmpty();
 
-                        CfgNode ifNode = new CfgNodeIf(
+                        AbstractCfgNode ifNode = new CfgNodeIf(
                             attsExprTest.getPlace(), Constant.TRUE,
                             TacOperators.IS_EQUAL, node.getChild(0));
 
@@ -4514,7 +4514,7 @@ public class TacConverter {
                     this.opExp(node, TacOperators.BITWISE_NOT, myAtts);
                 } else {
                     // insert appropriate special node for marker
-                    CfgNode cfgNode = SpecialNodes.get(marker, this.functionStack.getLast(), this);
+                    AbstractCfgNode cfgNode = SpecialNodes.get(marker, this.functionStack.getLast(), this);
                     myAtts.setControlFlowGraph(new ControlFlowGraph(cfgNode, cfgNode));
                 }
 
@@ -4619,7 +4619,7 @@ public class TacConverter {
                     node.getChild(2),
                     arrayPlace);
 
-                CfgNode cfgNode = new CfgNodeAssignArray(arrayPlace, node);
+                AbstractCfgNode cfgNode = new CfgNodeAssignArray(arrayPlace, node);
                 connect(cfgNode, attsList.getControlFlowGraph());
 
                 myAtts.setControlFlowGraph(new ControlFlowGraph(
@@ -4663,7 +4663,7 @@ public class TacConverter {
                 // treat print like an "echo" with expression value 1
                 // (since print() always evaluates to 1)
                 TacAttributes atts1 = this.expr(node.getChild(1));
-                CfgNode cfgNode = new CfgNodeEcho(atts1.getPlace(), node);
+                AbstractCfgNode cfgNode = new CfgNodeEcho(atts1.getPlace(), node);
                 connect(atts1.getControlFlowGraph(), cfgNode);
 
                 myAtts.setPlace(new Literal("1"));
@@ -4690,7 +4690,7 @@ public class TacConverter {
 
         if (node.getChild(0).getSymbol() == PhpSymbols.T_EPSILON) {
             // -> empty
-            CfgNode cfgNode = new CfgNodeEmpty();
+            AbstractCfgNode cfgNode = new CfgNodeEmpty();
             myAtts.setControlFlowGraph(new ControlFlowGraph(cfgNode, cfgNode));
             List<TacActualParam> ll = new LinkedList<>();
             myAtts.setActualParamList(ll);
@@ -4726,7 +4726,7 @@ public class TacConverter {
             case PhpSymbols.T_EMPTY: {
                 TacPlace tempPlace = this.newTemp();
                 TacAttributes attsCvar = this.cvar(node.getChild(2));
-                CfgNode cfgNode =
+                AbstractCfgNode cfgNode =
                     new CfgNodeEmptyTest(tempPlace, attsCvar.getPlace(), node);
                 connect(attsCvar.getControlFlowGraph(), cfgNode);
                 myAtts.setControlFlowGraph(new ControlFlowGraph(
@@ -4770,7 +4770,7 @@ public class TacConverter {
             case PhpSymbols.T_EVAL: {
                 TacPlace tempPlace = this.newTemp();
                 TacAttributes attsExpr = this.expr(node.getChild(2));
-                CfgNode cfgNode = new CfgNodeEval(tempPlace, attsExpr.getPlace(), node);
+                AbstractCfgNode cfgNode = new CfgNodeEval(tempPlace, attsExpr.getPlace(), node);
                 connect(attsExpr.getControlFlowGraph(), cfgNode);
                 myAtts.setControlFlowGraph(new ControlFlowGraph(
                     attsExpr.getControlFlowGraph().getHead(),
@@ -4828,7 +4828,7 @@ public class TacConverter {
             // -> cvar
             TacAttributes attsCvar = this.cvar(firstChild);
 
-            CfgNode cfgNode = new CfgNodeIsset(tempPlace, attsCvar.getPlace(), node);
+            AbstractCfgNode cfgNode = new CfgNodeIsset(tempPlace, attsCvar.getPlace(), node);
 
             connect(attsCvar.getControlFlowGraph(), cfgNode);
             myAtts.setControlFlowGraph(new ControlFlowGraph(
@@ -4841,9 +4841,9 @@ public class TacConverter {
             TacAttributes attsCvar = this.cvar(node.getChild(2));
 
             TacPlace tempPlaceIsset = this.newTemp();
-            CfgNode cfgNodeIsset = new CfgNodeIsset(tempPlaceIsset, attsCvar.getPlace(), node);
+            AbstractCfgNode cfgNodeIsset = new CfgNodeIsset(tempPlaceIsset, attsCvar.getPlace(), node);
             // no need for short-circuit code here
-            CfgNode cfgNode = new CfgNodeAssignBinary(
+            AbstractCfgNode cfgNode = new CfgNodeAssignBinary(
                 tempPlace, attsVariables.getPlace(), tempPlaceIsset,
                 TacOperators.BOOLEAN_AND, node);
 
@@ -4868,12 +4868,12 @@ public class TacConverter {
 
         if (node.getChild(0).getSymbol() == PhpSymbols.T_EPSILON) {
             // -> empty
-            CfgNode cfgNode = new CfgNodeEmpty();
+            AbstractCfgNode cfgNode = new CfgNodeEmpty();
             myAtts.setControlFlowGraph(new ControlFlowGraph(cfgNode, cfgNode, CfgEdge.NO_EDGE));
         } else {
             if (node.getChild(1).getSymbol() == PhpSymbols.T_CLOSE_BRACES) {
                 // -> ( )
-                CfgNode cfgNode = new CfgNodeEmpty();
+                AbstractCfgNode cfgNode = new CfgNodeEmpty();
                 myAtts.setControlFlowGraph(new ControlFlowGraph(cfgNode, cfgNode, CfgEdge.NO_EDGE));
             } else {
                 // -> ( expr )
@@ -5032,7 +5032,7 @@ public class TacConverter {
         } else {
 
             // -> empty
-            CfgNode cfgNode = new CfgNodeEmpty();
+            AbstractCfgNode cfgNode = new CfgNodeEmpty();
             myAtts.setControlFlowGraph(new ControlFlowGraph(cfgNode, cfgNode));
             List<TacActualParam> ll = new LinkedList<>();
             myAtts.setActualParamList(ll);
@@ -5164,7 +5164,7 @@ public class TacConverter {
 
         if (firstChild.getSymbol() == PhpSymbols.T_EPSILON) {
             // -> empty
-            CfgNode emptyNode = new CfgNodeEmpty();
+            AbstractCfgNode emptyNode = new CfgNodeEmpty();
             myAtts.setControlFlowGraph(new ControlFlowGraph(emptyNode, emptyNode));
         } else {
             // -> non_empty_array_pair_list possible_comma
@@ -5206,7 +5206,7 @@ public class TacConverter {
                         myAtts.setArrayIndex(largestIndex);
                     }
 
-                    CfgNode cfgNode = this.arrayPairListHelper(
+                    AbstractCfgNode cfgNode = this.arrayPairListHelper(
                         arrayPlace,
                         offsetPlace,
                         attsExpr.getPlace(), false, node);
@@ -5224,7 +5224,7 @@ public class TacConverter {
                     TacAttributes attsList = this.non_empty_array_pair_list(firstChild, arrayPlace);
                     TacAttributes attsCvar = this.w_cvar(node.getChild(3));
 
-                    CfgNode cfgNode = this.arrayPairListHelper(
+                    AbstractCfgNode cfgNode = this.arrayPairListHelper(
                         arrayPlace,
                         this.emptyOffsetPlace,
                         attsCvar.getPlace(), true, node);
@@ -5243,7 +5243,7 @@ public class TacConverter {
                     TacAttributes attsExpr1 = this.expr(node.getChild(2));
                     TacAttributes attsExpr2 = this.expr(node.getChild(4));
 
-                    CfgNode cfgNode = this.arrayPairListHelper(
+                    AbstractCfgNode cfgNode = this.arrayPairListHelper(
                         arrayPlace, attsExpr1.getPlace(), attsExpr2.getPlace(), false, node);
 
                     connect(attsList.getControlFlowGraph(), attsExpr1.getControlFlowGraph());
@@ -5261,7 +5261,7 @@ public class TacConverter {
                     TacAttributes attsExpr1 = this.expr(node.getChild(2));
                     TacAttributes attsCvar = this.w_cvar(node.getChild(5));
 
-                    CfgNode cfgNode = this.arrayPairListHelper(
+                    AbstractCfgNode cfgNode = this.arrayPairListHelper(
                         arrayPlace, attsExpr1.getPlace(), attsCvar.getPlace(), true, node);
 
                     connect(attsList.getControlFlowGraph(), attsExpr1.getControlFlowGraph());
@@ -5284,7 +5284,7 @@ public class TacConverter {
 
                     TacAttributes attsExpr = this.expr(firstChild);
 
-                    CfgNode cfgNode = this.arrayPairListHelper(
+                    AbstractCfgNode cfgNode = this.arrayPairListHelper(
                         arrayPlace, new Literal("0"), attsExpr.getPlace(), false, node);
 
                     connect(attsExpr.getControlFlowGraph(), cfgNode);
@@ -5301,7 +5301,7 @@ public class TacConverter {
                     TacAttributes attsExpr1 = this.expr(firstChild);
                     TacAttributes attsExpr2 = this.expr(node.getChild(2));
 
-                    CfgNode cfgNode = this.arrayPairListHelper(
+                    AbstractCfgNode cfgNode = this.arrayPairListHelper(
                         arrayPlace, attsExpr1.getPlace(), attsExpr2.getPlace(), false, node);
 
                     connect(attsExpr1.getControlFlowGraph(), attsExpr2.getControlFlowGraph());
@@ -5317,7 +5317,7 @@ public class TacConverter {
                     TacAttributes attsExpr1 = this.expr(firstChild);
                     TacAttributes attsCvar = this.w_cvar(node.getChild(3));
 
-                    CfgNode cfgNode = this.arrayPairListHelper(
+                    AbstractCfgNode cfgNode = this.arrayPairListHelper(
                         arrayPlace, attsExpr1.getPlace(), attsCvar.getPlace(), true, node);
 
                     connect(attsExpr1.getControlFlowGraph(), attsCvar.getControlFlowGraph());
@@ -5335,7 +5335,7 @@ public class TacConverter {
             case PhpSymbols.T_BITWISE_AND: {
                 TacAttributes attsCvar = this.w_cvar(node.getChild(1));
 
-                CfgNode cfgNode = this.arrayPairListHelper(
+                AbstractCfgNode cfgNode = this.arrayPairListHelper(
                     arrayPlace, new Literal("0"), attsCvar.getPlace(), true, node);
 
                 connect(attsCvar.getControlFlowGraph(), cfgNode);
@@ -5481,7 +5481,7 @@ public class TacConverter {
                 // something like "$x->$y" or "$x->$y()"
 
                 // very simple approximation
-                CfgNode emptyNode = new CfgNodeEmpty();
+                AbstractCfgNode emptyNode = new CfgNodeEmpty();
                 myAtts.setControlFlowGraph(new ControlFlowGraph(emptyNode, emptyNode));
                 myAtts.setPlace(this.memberPlace);
                 myAtts.setIsKnownCall(false);
@@ -5525,7 +5525,7 @@ public class TacConverter {
                 }
 
                 // very simple approximation
-                CfgNode emptyNode = new CfgNodeEmpty();
+                AbstractCfgNode emptyNode = new CfgNodeEmpty();
                 myAtts.setControlFlowGraph(new ControlFlowGraph(emptyNode, emptyNode));
                 myAtts.setPlace(this.memberPlace);
                 myAtts.setIsKnownCall(false);
@@ -5582,7 +5582,7 @@ public class TacConverter {
                     myAtts.setIsKnownCall(true);
                 } else {
                     // access to a member variable
-                    CfgNode emptyNode = new CfgNodeEmpty();
+                    AbstractCfgNode emptyNode = new CfgNodeEmpty();
                     myAtts.setControlFlowGraph(new ControlFlowGraph(emptyNode, emptyNode));
                     myAtts.setPlace(this.memberPlace);
                     myAtts.setIsKnownCall(false);
@@ -5754,7 +5754,7 @@ public class TacConverter {
 
             // -> empty
             case PhpSymbols.T_EPSILON: {
-                CfgNode emptyNode = new CfgNodeEmpty();
+                AbstractCfgNode emptyNode = new CfgNodeEmpty();
                 myAtts.setControlFlowGraph(new ControlFlowGraph(emptyNode, emptyNode));
                 myAtts.setPlace(this.emptyOffsetPlace);
                 break;
@@ -5784,7 +5784,7 @@ public class TacConverter {
 
             // -> T_VARIABLE
             case PhpSymbols.T_VARIABLE: {
-                CfgNode emptyNode = new CfgNodeEmpty();
+                AbstractCfgNode emptyNode = new CfgNodeEmpty();
                 myAtts.setControlFlowGraph(new ControlFlowGraph(emptyNode, emptyNode));
                 myAtts.setPlace(makePlace(firstChild.getLexeme()));
 
@@ -5821,7 +5821,7 @@ public class TacConverter {
             // constants must have been defined before their use (unlike functions);
             // magic constants have their own tokens under common_scalar
             case PhpSymbols.T_STRING: {
-                CfgNode cfgNode = new CfgNodeEmpty();
+                AbstractCfgNode cfgNode = new CfgNodeEmpty();
                 myAtts.setControlFlowGraph(new ControlFlowGraph(cfgNode, cfgNode));
                 myAtts.setPlace(makeConstantPlace(firstChild.getLexeme()));
                 break;
@@ -5830,7 +5830,7 @@ public class TacConverter {
             // -> T_STRING_VARNAME
             case PhpSymbols.T_STRING_VARNAME: {
                 // ex. a in "${a}"
-                CfgNode cfgNode = new CfgNodeEmpty();
+                AbstractCfgNode cfgNode = new CfgNodeEmpty();
                 myAtts.setControlFlowGraph(new ControlFlowGraph(cfgNode, cfgNode));
                 myAtts.setPlace(new Literal(firstChild.getLexeme()));
                 break;
@@ -5988,7 +5988,7 @@ public class TacConverter {
 
         if (node.getNumChildren() == 1) {
             // -> T_VARIABLE
-            CfgNode emptyNode = new CfgNodeEmpty();
+            AbstractCfgNode emptyNode = new CfgNodeEmpty();
             myAtts.setControlFlowGraph(new ControlFlowGraph(emptyNode, emptyNode));
             myAtts.setPlace(makePlace(node.getChild(0).getLexeme()));
             return myAtts;
@@ -6002,7 +6002,7 @@ public class TacConverter {
                 TacPlace varPlace = this.makePlace(node.getChild(0).getLexeme());
                 myAtts.setPlace(this.makeArrayElementPlace(
                     varPlace, attsOffset.getPlace()));
-                CfgNode emptyNode = new CfgNodeEmpty();
+                AbstractCfgNode emptyNode = new CfgNodeEmpty();
                 myAtts.setControlFlowGraph(new ControlFlowGraph(emptyNode, emptyNode));
                 break;
             }
@@ -6010,7 +6010,7 @@ public class TacConverter {
             // -> T_VARIABLE T_OBJECT_OPERATOR T_STRING
             // access to a member variable
             case PhpSymbols.T_OBJECT_OPERATOR: {
-                CfgNode emptyNode = new CfgNodeEmpty();
+                AbstractCfgNode emptyNode = new CfgNodeEmpty();
                 myAtts.setControlFlowGraph(new ControlFlowGraph(emptyNode, emptyNode));
                 myAtts.setPlace(this.memberPlace);
                 break;
@@ -6094,7 +6094,7 @@ public class TacConverter {
 
             // T_LNUMBER
             case PhpSymbols.T_LNUMBER: {
-                CfgNode emptyNode = new CfgNodeEmpty();
+                AbstractCfgNode emptyNode = new CfgNodeEmpty();
                 myAtts.setControlFlowGraph(new ControlFlowGraph(emptyNode, emptyNode));
                 myAtts.setPlace(new Literal(firstChild.getLexeme()));
                 break;
@@ -6102,7 +6102,7 @@ public class TacConverter {
 
             // T_DNUMBER
             case PhpSymbols.T_DNUMBER: {
-                CfgNode emptyNode = new CfgNodeEmpty();
+                AbstractCfgNode emptyNode = new CfgNodeEmpty();
                 myAtts.setControlFlowGraph(new ControlFlowGraph(emptyNode, emptyNode));
                 myAtts.setPlace(new Literal(firstChild.getLexeme()));
                 break;
@@ -6111,7 +6111,7 @@ public class TacConverter {
             // T_CONSTANT_ENCAPSED_STRING
             // simple string inside single or double quotes, no variables within
             case PhpSymbols.T_CONSTANT_ENCAPSED_STRING: {
-                CfgNode emptyNode = new CfgNodeEmpty();
+                AbstractCfgNode emptyNode = new CfgNodeEmpty();
                 myAtts.setControlFlowGraph(new ControlFlowGraph(emptyNode, emptyNode));
                 myAtts.setPlace(new Literal(firstChild.getLexeme()));
                 break;
@@ -6120,7 +6120,7 @@ public class TacConverter {
             // T_LINE
             // magic constant __LINE__
             case PhpSymbols.T_LINE: {
-                CfgNode emptyNode = new CfgNodeEmpty();
+                AbstractCfgNode emptyNode = new CfgNodeEmpty();
                 myAtts.setControlFlowGraph(new ControlFlowGraph(emptyNode, emptyNode));
                 myAtts.setPlace(this.lineCPlace);
                 break;
@@ -6129,7 +6129,7 @@ public class TacConverter {
             // T_FILE
             // magic constant __FILE__
             case PhpSymbols.T_FILE: {
-                CfgNode emptyNode = new CfgNodeEmpty();
+                AbstractCfgNode emptyNode = new CfgNodeEmpty();
                 myAtts.setControlFlowGraph(new ControlFlowGraph(emptyNode, emptyNode));
                 myAtts.setPlace(new Literal(this.file.getPath()));
                 //myAtts.setPlace(this.fileCPlace);
@@ -6139,7 +6139,7 @@ public class TacConverter {
             // T_CLASS_C
             // magic constant __CLASS__
             case PhpSymbols.T_CLASS_C: {
-                CfgNode emptyNode = new CfgNodeEmpty();
+                AbstractCfgNode emptyNode = new CfgNodeEmpty();
                 myAtts.setControlFlowGraph(new ControlFlowGraph(emptyNode, emptyNode));
                 myAtts.setPlace(this.classCPlace);
                 break;
@@ -6148,7 +6148,7 @@ public class TacConverter {
             // T_FUNC_C
             // magic constant __FUNC__
             case PhpSymbols.T_FUNC_C: {
-                CfgNode emptyNode = new CfgNodeEmpty();
+                AbstractCfgNode emptyNode = new CfgNodeEmpty();
                 myAtts.setControlFlowGraph(new ControlFlowGraph(emptyNode, emptyNode));
                 // if you want to resolve this in more detail, you
                 // have to consider that
@@ -6167,7 +6167,7 @@ public class TacConverter {
 // elseif_list *****************************************************************
 
     // - cfg
-    TacAttributes elseif_list(ParseNode node, CfgNode trueSucc, CfgNode falseSucc) {
+    TacAttributes elseif_list(ParseNode node, AbstractCfgNode trueSucc, AbstractCfgNode falseSucc) {
         TacAttributes myAtts = new TacAttributes();
 
         ParseNode firstChild = node.getChild(0);
@@ -6175,7 +6175,7 @@ public class TacConverter {
 
             // -> empty
             case PhpSymbols.T_EPSILON: {
-                CfgNode emptyNode = new CfgNodeEmpty();
+                AbstractCfgNode emptyNode = new CfgNodeEmpty();
                 connect(emptyNode, falseSucc);
                 myAtts.setControlFlowGraph(new ControlFlowGraph(emptyNode, emptyNode));
                 break;
@@ -6189,7 +6189,7 @@ public class TacConverter {
                 TacAttributes attsElif = this.elseif_list(firstChild, trueSucc, attsExpr.getControlFlowGraph().getHead());
                 TacAttributes attsStatement = this.statement(node.getChild(5));
 
-                CfgNode ifNode = new CfgNodeIf(
+                AbstractCfgNode ifNode = new CfgNodeIf(
                     attsExpr.getPlace(), Constant.TRUE, TacOperators.IS_EQUAL, node.getChild(3));
 
                 connect(attsExpr.getControlFlowGraph(), ifNode);
@@ -6220,7 +6220,7 @@ public class TacConverter {
 
             // -> empty
             case PhpSymbols.T_EPSILON: {
-                CfgNode emptyNode = new CfgNodeEmpty();
+                AbstractCfgNode emptyNode = new CfgNodeEmpty();
                 myAtts.setControlFlowGraph(new ControlFlowGraph(emptyNode, emptyNode));
                 break;
             }
@@ -6239,7 +6239,7 @@ public class TacConverter {
 // new_elseif_list *****************************************************************
 
     // - cfg
-    TacAttributes new_elseif_list(ParseNode node, CfgNode trueSucc, CfgNode falseSucc) {
+    TacAttributes new_elseif_list(ParseNode node, AbstractCfgNode trueSucc, AbstractCfgNode falseSucc) {
         TacAttributes myAtts = new TacAttributes();
 
         ParseNode firstChild = node.getChild(0);
@@ -6247,7 +6247,7 @@ public class TacConverter {
 
             // -> empty
             case PhpSymbols.T_EPSILON: {
-                CfgNode emptyNode = new CfgNodeEmpty();
+                AbstractCfgNode emptyNode = new CfgNodeEmpty();
                 connect(emptyNode, falseSucc);
                 myAtts.setControlFlowGraph(new ControlFlowGraph(emptyNode, emptyNode));
                 break;
@@ -6263,7 +6263,7 @@ public class TacConverter {
                 TacAttributes attsStatement =
                     this.inner_statement_list(node.getChild(6));
 
-                CfgNode ifNode = new CfgNodeIf(
+                AbstractCfgNode ifNode = new CfgNodeIf(
                     attsExpr.getPlace(), Constant.TRUE, TacOperators.IS_EQUAL,
                     node.getChild(3));
 
@@ -6295,7 +6295,7 @@ public class TacConverter {
 
             // -> empty
             case PhpSymbols.T_EPSILON: {
-                CfgNode emptyNode = new CfgNodeEmpty();
+                AbstractCfgNode emptyNode = new CfgNodeEmpty();
                 myAtts.setControlFlowGraph(new ControlFlowGraph(emptyNode, emptyNode));
                 break;
             }
@@ -6378,7 +6378,7 @@ public class TacConverter {
 
             // -> empty
             case PhpSymbols.T_EPSILON: {
-                CfgNode emptyNode = new CfgNodeEmpty();
+                AbstractCfgNode emptyNode = new CfgNodeEmpty();
                 myAtts.setControlFlowGraph(new ControlFlowGraph(emptyNode, emptyNode));
                 myAtts.setPlace(Constant.TRUE);
                 break;
@@ -6439,7 +6439,7 @@ public class TacConverter {
     // - cfg
     // - defaultNode
     TacAttributes switch_case_list(ParseNode node,
-                                   TacPlace switchPlace, CfgNode nextTest, CfgNode nextStatement) {
+                                   TacPlace switchPlace, AbstractCfgNode nextTest, AbstractCfgNode nextStatement) {
 
         ParseNode listNode = null;
         switch (node.getChild(2).getSymbol()) {
@@ -6480,14 +6480,14 @@ public class TacConverter {
     // - cfg
     // - defaultNode
     TacAttributes case_list(ParseNode node,
-                            TacPlace switchPlace, CfgNode nextTest, CfgNode nextStatement) {
+                            TacPlace switchPlace, AbstractCfgNode nextTest, AbstractCfgNode nextStatement) {
 
         TacAttributes myAtts = new TacAttributes();
 
         if (node.getChild(0).getSymbol() == PhpSymbols.T_EPSILON) {
 
             // -> empty
-            CfgNode emptyNode = new CfgNodeEmpty();
+            AbstractCfgNode emptyNode = new CfgNodeEmpty();
             connect(emptyNode, nextTest);
             myAtts.setControlFlowGraph(new ControlFlowGraph(emptyNode, emptyNode));
             myAtts.setDefaultNode(null);
@@ -6500,9 +6500,9 @@ public class TacConverter {
                 switchPlace, attsExpr.getControlFlowGraph().getHead(), attsStatement.getControlFlowGraph().getHead());
 
             Variable tempPlace = this.newTemp();
-            CfgNode compareNode = new CfgNodeAssignBinary(
+            AbstractCfgNode compareNode = new CfgNodeAssignBinary(
                 tempPlace, switchPlace, attsExpr.getPlace(), TacOperators.IS_EQUAL, node.getChild(2));
-            CfgNode ifNode = new CfgNodeIf(
+            AbstractCfgNode ifNode = new CfgNodeIf(
                 tempPlace, Constant.TRUE, TacOperators.IS_EQUAL, node.getChild(2));
 
             connect(attsExpr.getControlFlowGraph(), compareNode);
@@ -6551,7 +6551,7 @@ public class TacConverter {
                 TacAttributes attsList = this.echo_expr_list(firstChild);
                 TacAttributes attsExpr = this.expr(node.getChild(2));
 
-                CfgNode cfgNode = new CfgNodeEcho(attsExpr.getPlace(), node);
+                AbstractCfgNode cfgNode = new CfgNodeEcho(attsExpr.getPlace(), node);
 
                 connect(attsList.getControlFlowGraph(), attsExpr.getControlFlowGraph());
                 connect(attsExpr.getControlFlowGraph(), cfgNode);
@@ -6566,7 +6566,7 @@ public class TacConverter {
             // -> expr
             case PhpSymbols.expr: {
                 TacAttributes atts0 = this.expr(firstChild);
-                CfgNode cfgNode = new CfgNodeEcho(atts0.getPlace(), node);
+                AbstractCfgNode cfgNode = new CfgNodeEcho(atts0.getPlace(), node);
                 connect(atts0.getControlFlowGraph(), cfgNode);
                 myAtts.setControlFlowGraph(new ControlFlowGraph(
                     atts0.getControlFlowGraph().getHead(),
@@ -6619,7 +6619,7 @@ public class TacConverter {
         // -> cvar
 
         TacAttributes atts0 = this.cvar(node.getChild(0));
-        CfgNode cfgNode = new CfgNodeUnset(atts0.getPlace(), node);
+        AbstractCfgNode cfgNode = new CfgNodeUnset(atts0.getPlace(), node);
         connect(atts0.getControlFlowGraph(), cfgNode);
         myAtts.setControlFlowGraph(new ControlFlowGraph(
             atts0.getControlFlowGraph().getHead(),
@@ -6713,7 +6713,7 @@ public class TacConverter {
                 TacPlace arrayElementPlace = this.makeArrayElementPlace(
                     arrayPlace, new Literal(String.valueOf(arrayIndex)));
 
-                CfgNode cfgNode = new CfgNodeAssignSimple(
+                AbstractCfgNode cfgNode = new CfgNodeAssignSimple(
                     (Variable) attsCvar.getPlace(),
                     arrayElementPlace,
                     firstChild);
@@ -6746,7 +6746,7 @@ public class TacConverter {
             // -> empty
             case PhpSymbols.T_EPSILON: {
 
-                CfgNode emptyNode = new CfgNodeEmpty();
+                AbstractCfgNode emptyNode = new CfgNodeEmpty();
                 myAtts.setControlFlowGraph(new ControlFlowGraph(emptyNode, emptyNode));
                 break;
             }

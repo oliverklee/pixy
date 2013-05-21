@@ -7,7 +7,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.CfgEdge;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
 import java.util.LinkedList;
 
@@ -73,7 +73,7 @@ public abstract class IntraAnalysis extends Analysis {
 
 // getTransferFunction *************************************************************
 
-    public TransferFunction getTransferFunction(CfgNode cfgNode) {
+    public TransferFunction getTransferFunction(AbstractCfgNode cfgNode) {
         return this.analysisInfo.getAnalysisNode(cfgNode).getTransferFunction();
     }
 
@@ -85,7 +85,7 @@ public abstract class IntraAnalysis extends Analysis {
 
 //  getAnalysisNode ****************************************************************
 
-    public IntraAnalysisNode getAnalysisNode(CfgNode cfgNode) {
+    public IntraAnalysisNode getAnalysisNode(AbstractCfgNode cfgNode) {
         return this.analysisInfo.getAnalysisNode(cfgNode);
     }
 
@@ -96,7 +96,7 @@ public abstract class IntraAnalysis extends Analysis {
 //  makeAnalysisNode ***************************************************************
 
     // creates and returns an analysis node for the given parameters
-    protected AnalysisNode makeAnalysisNode(CfgNode node, TransferFunction tf) {
+    protected AnalysisNode makeAnalysisNode(AbstractCfgNode node, TransferFunction tf) {
         return new IntraAnalysisNode(tf);
     }
 
@@ -113,7 +113,7 @@ public abstract class IntraAnalysis extends Analysis {
         while (this.workList.hasNext()) {
 
             // remove the element from the worklist
-            CfgNode node = this.workList.removeNext();
+            AbstractCfgNode node = this.workList.removeNext();
 
             // get incoming value at node n
             IntraAnalysisNode analysisNode = this.analysisInfo.getAnalysisNode(node);
@@ -134,7 +134,7 @@ public abstract class IntraAnalysis extends Analysis {
                     if (outEdge != null) {
 
                         // determine the successor
-                        CfgNode succ = outEdge.getDest();
+                        AbstractCfgNode succ = outEdge.getDest();
 
                         // propagate the result of applying the transfer function
                         // to the successor
@@ -154,7 +154,7 @@ public abstract class IntraAnalysis extends Analysis {
 
     // helper method for analyze();
     // propagates a value to the target node
-    void propagate(LatticeElement value, CfgNode target) {
+    void propagate(LatticeElement value, AbstractCfgNode target) {
 
         // analysis information for the target node
         IntraAnalysisNode analysisNode = this.analysisInfo.getAnalysisNode(target);

@@ -72,7 +72,7 @@ public abstract class InterAnalysis extends Analysis {
         // determine ControlFlowGraph of main function: start analysis here
         this.mainFunction = mainFunction;
         ControlFlowGraph mainControlFlowGraph = this.mainFunction.getControlFlowGraph();
-        CfgNode mainHead = mainControlFlowGraph.getHead();
+        AbstractCfgNode mainHead = mainControlFlowGraph.getHead();
 
         // initialize carrier lattice
         this.initLattice();
@@ -147,7 +147,7 @@ public abstract class InterAnalysis extends Analysis {
 
 //  getTransferFunction ************************************************************
 
-    public TransferFunction getTransferFunction(CfgNode cfgNode) {
+    public TransferFunction getTransferFunction(AbstractCfgNode cfgNode) {
         return this.interAnalysisInfo.getTransferFunction(cfgNode);
     }
 
@@ -159,7 +159,7 @@ public abstract class InterAnalysis extends Analysis {
 
 //  getAnalysisNode ****************************************************************
 
-    public InterAnalysisNode getAnalysisNode(CfgNode cfgNode) {
+    public InterAnalysisNode getAnalysisNode(AbstractCfgNode cfgNode) {
         return this.interAnalysisInfo.getAnalysisNode(cfgNode);
     }
 
@@ -171,7 +171,7 @@ public abstract class InterAnalysis extends Analysis {
 
     // creates and returns an analysis node for the given parameters that is
     // appropriate for the analysis type (functional / call-string)
-    protected AnalysisNode makeAnalysisNode(CfgNode cfgNode, TransferFunction tf) {
+    protected AnalysisNode makeAnalysisNode(AbstractCfgNode cfgNode, TransferFunction tf) {
         return this.analysisType.makeAnalysisNode(cfgNode, tf);
     }
 
@@ -213,7 +213,7 @@ public abstract class InterAnalysis extends Analysis {
             InterWorkListElement element = this.workList.removeNext();
 
             // extract information from the element
-            CfgNode node = element.getCfgNode();
+            AbstractCfgNode node = element.getCfgNode();
             Context context = element.getContext();
 
             // get incoming value at node n (you need to understand the PHI table :)
@@ -253,7 +253,7 @@ public abstract class InterAnalysis extends Analysis {
 
                     ControlFlowGraph functionControlFlowGraph = function.getControlFlowGraph();
 
-                    CfgNode exitNode = functionControlFlowGraph.getTail();
+                    AbstractCfgNode exitNode = functionControlFlowGraph.getTail();
                     // the tail of the function's CFG has to be an exit node
                     if (!(exitNode instanceof CfgNodeExit)) {
                         throw new RuntimeException("SNH");
@@ -271,7 +271,7 @@ public abstract class InterAnalysis extends Analysis {
                         // case, we simply enter the function; this can lead to
                         // redundant computations, but it is simpler than a
                         // special, more efficient treatment of this rare case
-                        CfgNode entryNode = functionControlFlowGraph.getHead();
+                        AbstractCfgNode entryNode = functionControlFlowGraph.getHead();
                         propagate(propagationContext, inValue, entryNode);
                         continue;
                     }
@@ -283,7 +283,7 @@ public abstract class InterAnalysis extends Analysis {
                         // previously computed function summary can be used;
                         // determine successor node (unique) of this call node
                         CfgEdge[] outEdges = callNode.getOutEdges();
-                        CfgNode succ = outEdges[0].getDest();
+                        AbstractCfgNode succ = outEdges[0].getDest();
                         propagate(context, exitInValue, succ);
                     } else {
 
@@ -298,7 +298,7 @@ public abstract class InterAnalysis extends Analysis {
 
                         // there is no function summary yet (or we don't want to
                         // use summaries), so compute it now by entering the function
-                        CfgNode entryNode = functionControlFlowGraph.getHead();
+                        AbstractCfgNode entryNode = functionControlFlowGraph.getHead();
                         propagate(propagationContext, inValue, entryNode);
                     }
 
@@ -390,7 +390,7 @@ public abstract class InterAnalysis extends Analysis {
                         if (outEdge != null) {
 
                             // determine the successor
-                            CfgNode succ = outEdge.getDest();
+                            AbstractCfgNode succ = outEdge.getDest();
 
                             // propagate the result of applying the transfer function
                             // to the successor (under the current context)
@@ -409,7 +409,7 @@ public abstract class InterAnalysis extends Analysis {
                         if (outEdge != null) {
 
                             // determine the successor
-                            CfgNode succ = outEdge.getDest();
+                            AbstractCfgNode succ = outEdge.getDest();
 
                             // propagate the result of applying the transfer function
                             // to the successor (under the current context)
@@ -433,7 +433,7 @@ public abstract class InterAnalysis extends Analysis {
 
     // helper method for analyze();
     // propagates a value under the given context to the target node
-    void propagate(Context context, LatticeElement value, CfgNode target) {
+    void propagate(Context context, LatticeElement value, AbstractCfgNode target) {
         // analysis information for the target node
         InterAnalysisNode analysisNode = this.interAnalysisInfo.getAnalysisNode(target);
 

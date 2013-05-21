@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.inter;
 
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
 import java.util.LinkedList;
 import java.util.SortedMap;
@@ -33,7 +33,7 @@ public final class InterWorkListPoor implements InterWorkList {
 // OTHER ***************************************************************************
 // *********************************************************************************
 
-    public void add(CfgNode cfgNode, Context context) {
+    public void add(AbstractCfgNode cfgNode, Context context) {
         // null contexts are not allowed
         if (context == null) {
             throw new RuntimeException("SNH");

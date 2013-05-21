@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeEmptyTest extends CfgNode {
+public class CfgNodeEmptyTest extends AbstractCfgNode {
     private TacPlace left;
     private TacPlace right;
 

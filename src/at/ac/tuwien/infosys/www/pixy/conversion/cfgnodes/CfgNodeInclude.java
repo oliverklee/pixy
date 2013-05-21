@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeInclude extends CfgNode implements Comparable<CfgNodeInclude> {
+public class CfgNodeInclude extends AbstractCfgNode implements Comparable<CfgNodeInclude> {
     private Variable temp;
     private TacPlace includeMe;
     private File file;  // file in which this node occurs

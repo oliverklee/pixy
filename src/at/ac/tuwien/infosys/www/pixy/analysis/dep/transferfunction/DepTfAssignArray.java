@@ -5,7 +5,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
 /**
  * Transfer function for array assignment nodes ("left = array()").
@@ -15,13 +15,13 @@ import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
 public class DepTfAssignArray extends TransferFunction {
     private Variable left;
     private boolean supported;
-    private CfgNode cfgNode;
+    private AbstractCfgNode cfgNode;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public DepTfAssignArray(TacPlace left, CfgNode cfgNode) {
+    public DepTfAssignArray(TacPlace left, AbstractCfgNode cfgNode) {
 
         this.left = (Variable) left;    // must be a variable
         this.cfgNode = cfgNode;

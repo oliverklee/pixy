@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeIncludeEnd extends CfgNode {
+public class CfgNodeIncludeEnd extends AbstractCfgNode {
     private File file;  // file in which this node occurs
     private CfgNodeIncludeStart peer;
 
@@ -41,7 +41,7 @@ public class CfgNodeIncludeEnd extends CfgNode {
         return this.peer;
     }
 
-    public boolean isPeer(CfgNode node) {
+    public boolean isPeer(AbstractCfgNode node) {
         return node == this.peer;
     }
 

@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.conversion;
 
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ public class TacAttributes {
     private TacPlace place;
     private ControlFlowGraph controlFlowGraph;
 
-    private CfgNode defaultNode;
+    private AbstractCfgNode defaultNode;
 
     private List<TacActualParam> actualParamList;
     private List<TacFormalParam> formalParamList;
@@ -39,7 +39,7 @@ public class TacAttributes {
         return this.arrayIndex;
     }
 
-    CfgNode getDefaultNode() {
+    AbstractCfgNode getDefaultNode() {
         return this.defaultNode;
     }
 
@@ -73,7 +73,7 @@ public class TacAttributes {
         this.controlFlowGraph = controlFlowGraph;
     }
 
-    void setDefaultNode(CfgNode defaultNode) {
+    void setDefaultNode(AbstractCfgNode defaultNode) {
         this.defaultNode = defaultNode;
     }
 

@@ -5,7 +5,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
 import java.util.Set;
 
@@ -18,14 +18,14 @@ public class DepTfAssignSimple extends TransferFunction {
     private Variable left;
     private Set<Variable> mustAliases;
     private Set<Variable> mayAliases;
-    private CfgNode cfgNode;
+    private AbstractCfgNode cfgNode;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
     public DepTfAssignSimple(
-        TacPlace left, TacPlace right, Set<Variable> mustAliases, Set<Variable> mayAliases, CfgNode cfgNode
+        TacPlace left, TacPlace right, Set<Variable> mustAliases, Set<Variable> mayAliases, AbstractCfgNode cfgNode
     ) {
         this.left = (Variable) left;  // must be a variable
         this.mustAliases = mustAliases;

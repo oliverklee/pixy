@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeExit extends CfgNode {
+public class CfgNodeExit extends AbstractCfgNode {
 // CONSTRUCTORS ********************************************************************
 
     public CfgNodeExit() {

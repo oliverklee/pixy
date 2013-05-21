@@ -5,7 +5,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -18,14 +18,14 @@ import java.util.Set;
  */
 public class DepTfUnset extends TransferFunction {
     private Variable operand;
-    private CfgNode cfgNode;
+    private AbstractCfgNode cfgNode;
     private boolean supported;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public DepTfUnset(TacPlace operand, CfgNode cfgNode) {
+    public DepTfUnset(TacPlace operand, AbstractCfgNode cfgNode) {
 
         // only variables can be unset
         if (!operand.isVariable()) {

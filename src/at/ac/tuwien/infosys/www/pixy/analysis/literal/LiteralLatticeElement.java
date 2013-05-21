@@ -4,7 +4,7 @@ import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.Recyclable;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
 import java.util.*;
 
@@ -544,7 +544,7 @@ public class LiteralLatticeElement extends LatticeElement {
 
     public void assignBinary(
         Variable left, TacPlace leftOperand, TacPlace rightOperand, int op, Set<Variable> mustAliases,
-        Set<Variable> mayAliases, CfgNode cfgNode
+        Set<Variable> mayAliases, AbstractCfgNode cfgNode
     ) {
         // base literals; must undergo conversion depending on operator
         Literal baseLeftLit = this.getLiteral(leftOperand);

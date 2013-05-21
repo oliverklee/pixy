@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.conversion;
 
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
@@ -12,12 +12,12 @@ public final class CfgEdge {
     static final int NO_EDGE = 3;
 
     private final int type;
-    private final CfgNode source;
-    private CfgNode dest;
+    private final AbstractCfgNode source;
+    private AbstractCfgNode dest;
 
 // CONSTRUCTORS ********************************************************************
 
-    CfgEdge(CfgNode source, CfgNode dest, int type) {
+    CfgEdge(AbstractCfgNode source, AbstractCfgNode dest, int type) {
         this.source = source;
         this.dest = dest;
         this.type = type;
@@ -25,11 +25,11 @@ public final class CfgEdge {
 
 // GET *****************************************************************************
 
-    public CfgNode getSource() {
+    public AbstractCfgNode getSource() {
         return this.source;
     }
 
-    public CfgNode getDest() {
+    public AbstractCfgNode getDest() {
         return this.dest;
     }
 
@@ -55,7 +55,7 @@ public final class CfgEdge {
 // SET *****************************************************************************
 
     // don't forget to inform the destination node about me with "addInEdge"
-    void setDest(CfgNode dest) {
+    void setDest(AbstractCfgNode dest) {
         this.dest = dest;
     }
 }

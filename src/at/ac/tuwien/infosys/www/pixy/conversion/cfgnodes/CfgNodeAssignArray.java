@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeAssignArray extends CfgNode {
+public class CfgNodeAssignArray extends AbstractCfgNode {
     private Variable left;
 
 // CONSTRUCTORS ********************************************************************

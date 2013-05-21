@@ -6,7 +6,7 @@ import at.ac.tuwien.infosys.www.pixy.automaton.Transition;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParam;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCallBuiltin;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeCallPrep;
 
@@ -53,7 +53,7 @@ public class FileAnalysis extends DepClient {
 
             DepGraph stringGraph = new DepGraph(depGraph);
             DepGraphNormalNode root = depGraph.getRoot();
-            CfgNode cfgNode = root.getCfgNode();
+            AbstractCfgNode cfgNode = root.getCfgNode();
 
             depGraph = null;    // don't touch this one
 
@@ -282,7 +282,7 @@ public class FileAnalysis extends DepClient {
 
     // checks if the given node (inside the given function) is a sensitive sink;
     // adds an appropriate sink object to the given list if it is a sink
-    protected void checkForSink(CfgNode cfgNodeX, TacFunction traversedFunction,
+    protected void checkForSink(AbstractCfgNode cfgNodeX, TacFunction traversedFunction,
                                 List<Sink> sinks) {
 
         if (cfgNodeX instanceof CfgNodeCallBuiltin) {
@@ -306,7 +306,7 @@ public class FileAnalysis extends DepClient {
 
 //  ********************************************************************************
 
-    private void checkForSinkHelper(String functionName, CfgNode cfgNode,
+    private void checkForSinkHelper(String functionName, AbstractCfgNode cfgNode,
                                     List<TacActualParam> paramList, TacFunction traversedFunction, List<Sink> sinks) {
 
         if (this.dci.getSinks().containsKey(functionName)) {

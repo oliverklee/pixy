@@ -54,7 +54,7 @@ public class ModAnalysis {
         for (TacFunction function : functions) {
             Set<TacPlace> modSet = new HashSet<>();
 
-            for (CfgNode cfgNodeX : function.getControlFlowGraph().dfPreOrder()) {
+            for (AbstractCfgNode cfgNodeX : function.getControlFlowGraph().dfPreOrder()) {
                 this.processNode(cfgNodeX, modSet);
             }
 
@@ -102,12 +102,12 @@ public class ModAnalysis {
 
     // if the given cfg node has an effect on mod info, this method
     // adjusts the given modSet accordingly (i.e., it adds variables to it)
-    private void processNode(CfgNode cfgNodeX, Set<TacPlace> modSet) {
+    private void processNode(AbstractCfgNode cfgNodeX, Set<TacPlace> modSet) {
 
         if (cfgNodeX instanceof CfgNodeBasicBlock) {
 
             CfgNodeBasicBlock basicBlock = (CfgNodeBasicBlock) cfgNodeX;
-            for (CfgNode cfgNode : basicBlock.getContainedNodes()) {
+            for (AbstractCfgNode cfgNode : basicBlock.getContainedNodes()) {
                 processNode(cfgNode, modSet);
             }
         } else if (cfgNodeX instanceof CfgNodeAssignSimple) {

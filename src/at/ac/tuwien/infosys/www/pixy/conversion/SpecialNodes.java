@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.conversion;
 
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeHotspot;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeTester;
 
@@ -15,9 +15,9 @@ class SpecialNodes {
         // utility class, no instances needed
     }
 
-    static CfgNode get(String marker, TacFunction function, TacConverter tac) {
+    static AbstractCfgNode get(String marker, TacFunction function, TacConverter tac) {
         // EFF: distinguish between markers more efficiently
-        CfgNode retMe = null;
+        AbstractCfgNode retMe = null;
 
         if (marker.startsWith("_test_")) {
             // a tester node:

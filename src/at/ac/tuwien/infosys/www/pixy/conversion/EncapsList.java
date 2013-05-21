@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.conversion;
 
 import at.ac.tuwien.infosys.www.phpparser.ParseNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeAssignBinary;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeAssignSimple;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNodeEmpty;
@@ -45,8 +45,8 @@ public class EncapsList {
     TacAttributes makeAtts(Variable temp, ParseNode node) {
         TacAttributes myAtts = new TacAttributes();
 
-        CfgNode head = new CfgNodeEmpty();
-        CfgNode contd = head;
+        AbstractCfgNode head = new CfgNodeEmpty();
+        AbstractCfgNode contd = head;
 
         // is the temporary variable still empty?
         boolean tempEmpty = true;
@@ -70,7 +70,7 @@ public class EncapsList {
                 if (lastLiteral != null) {
                     // catch the last literal in a temporary
 
-                    CfgNode cfgNode;
+                    AbstractCfgNode cfgNode;
                     if (tempEmpty) {
                         // if the temporary is still empty, we can simply
                         // assign the literal to it
@@ -90,7 +90,7 @@ public class EncapsList {
                 // fetch the cfg of this non-literal
                 ControlFlowGraph nextControlFlowGraph = (ControlFlowGraph) iter.next();
 
-                CfgNode cfgNode;
+                AbstractCfgNode cfgNode;
                 if (tempEmpty) {
                     cfgNode = new CfgNodeAssignSimple(
                         temp, (TacPlace) obj, node);
@@ -109,7 +109,7 @@ public class EncapsList {
 
         if (lastLiteral != null) {
             // some literal is hanging around at the end...
-            CfgNode cfgNode;
+            AbstractCfgNode cfgNode;
             if (tempEmpty) {
                 cfgNode = new CfgNodeAssignSimple(
                     temp, lastLiteral, node);

@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.analysis;
 
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
 import java.util.HashMap;
 
@@ -11,13 +11,13 @@ import java.util.HashMap;
  */
 public abstract class AnalysisInfo {
     // CfgNode -> AnalysisNode
-    protected HashMap<CfgNode, AnalysisNode> map;
+    protected HashMap<AbstractCfgNode, AnalysisNode> map;
 
     protected AnalysisInfo() {
         this.map = new HashMap<>();
     }
 
-    public void add(CfgNode cfgNode, AnalysisNode analysisNode) {
+    public void add(AbstractCfgNode cfgNode, AnalysisNode analysisNode) {
         this.map.put(cfgNode, analysisNode);
     }
 
@@ -25,7 +25,7 @@ public abstract class AnalysisInfo {
         return this.map.size();
     }
 
-    public HashMap<CfgNode, AnalysisNode> getMap() {
+    public HashMap<AbstractCfgNode, AnalysisNode> getMap() {
         return this.map;
     }
 }

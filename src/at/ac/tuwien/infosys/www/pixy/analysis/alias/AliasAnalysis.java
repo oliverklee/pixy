@@ -60,7 +60,7 @@ public class AliasAnalysis extends InterAnalysis {
 //  TRANSFER FUNCTION GENERATORS ***************************************************
 //  ********************************************************************************
 
-    protected TransferFunction assignRef(CfgNode cfgNodeX) {
+    protected TransferFunction assignRef(AbstractCfgNode cfgNodeX) {
         CfgNodeAssignRef cfgNode = (CfgNodeAssignRef) cfgNodeX;
         return new AliasTfAssignRef(
             cfgNode.getLeft(),
@@ -69,7 +69,7 @@ public class AliasAnalysis extends InterAnalysis {
             cfgNode);
     }
 
-    protected TransferFunction global(CfgNode cfgNodeX) {
+    protected TransferFunction global(AbstractCfgNode cfgNodeX) {
 
         // "global <var>";
         // equivalent to creating a reference to the variable in the main function with
@@ -99,17 +99,17 @@ public class AliasAnalysis extends InterAnalysis {
         }
     }
 
-    protected TransferFunction unset(CfgNode cfgNodeX) {
+    protected TransferFunction unset(AbstractCfgNode cfgNodeX) {
         CfgNodeUnset cfgNode = (CfgNodeUnset) cfgNodeX;
         return new AliasTfUnset(cfgNode.getOperand(), this);
     }
 
-    protected TransferFunction assignArray(CfgNode cfgNodeX) {
+    protected TransferFunction assignArray(AbstractCfgNode cfgNodeX) {
         // no effect on alias information
         return TransferFunctionId.INSTANCE;
     }
 
-    protected TransferFunction callPrep(CfgNode cfgNodeX, TacFunction traversedFunction) {
+    protected TransferFunction callPrep(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
 
         CfgNodeCallPrep cfgNode = (CfgNodeCallPrep) cfgNodeX;
         TacFunction calledFunction = cfgNode.getCallee();
@@ -162,7 +162,7 @@ public class AliasAnalysis extends InterAnalysis {
         return new AliasTfEntry(traversedFunction, this);
     }
 
-    protected TransferFunction callRet(CfgNode cfgNodeX, TacFunction traversedFunction) {
+    protected TransferFunction callRet(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
 
         CfgNodeCallRet cfgNode = (CfgNodeCallRet) cfgNodeX;
         CfgNodeCallPrep cfgNodePrep = cfgNode.getCallPrepNode();
@@ -191,7 +191,7 @@ public class AliasAnalysis extends InterAnalysis {
 
     // returns the set of must-aliases (Variable's) for the given variable
     // at the given node (folded over all contexts)
-    public Set<Variable> getMustAliases(Variable var, CfgNode cfgNode) {
+    public Set<Variable> getMustAliases(Variable var, AbstractCfgNode cfgNode) {
         InterAnalysisNode aNode = this.interAnalysisInfo.getAnalysisNode(cfgNode);
         if (aNode == null) {
             System.out.println(cfgNode);
@@ -212,7 +212,7 @@ public class AliasAnalysis extends InterAnalysis {
 
     // returns the set of may-aliases (Variable's) for the given variable
     // at the given node (folded over all contexts)
-    public Set<Variable> getMayAliases(Variable var, CfgNode cfgNode) {
+    public Set<Variable> getMayAliases(Variable var, AbstractCfgNode cfgNode) {
         InterAnalysisNode aNode = this.interAnalysisInfo.getAnalysisNode(cfgNode);
         AliasLatticeElement value = this.getFoldedValue(aNode);
         if (value == null) {
@@ -227,7 +227,7 @@ public class AliasAnalysis extends InterAnalysis {
 
     // returns an arbitrary global must-alias of the given variable at
     // the given node (folded over all contexts); null if there is none
-    public Variable getGlobalMustAlias(Variable var, CfgNode cfgNode) {
+    public Variable getGlobalMustAlias(Variable var, AbstractCfgNode cfgNode) {
         for (Variable mustAlias : this.getMustAliases(var, cfgNode)) {
             if (mustAlias.isGlobal()) {
                 return mustAlias;
@@ -240,7 +240,7 @@ public class AliasAnalysis extends InterAnalysis {
     // returns a set of local must-aliases of the given variable at
     // the given node (folded over all contexts); empty set if there
     // are none
-    public Set<Variable> getLocalMustAliases(Variable var, CfgNode cfgNode) {
+    public Set<Variable> getLocalMustAliases(Variable var, AbstractCfgNode cfgNode) {
         Set<Variable> retMe = new HashSet<>();
         for (Variable mustAlias : this.getMustAliases(var, cfgNode)) {
             if (mustAlias.isLocal()) {
@@ -254,7 +254,7 @@ public class AliasAnalysis extends InterAnalysis {
     // returns a set of global may-aliases of the given variable at
     // the given node (folded over all contexts); empty set if there
     // are none
-    public Set<Variable> getGlobalMayAliases(Variable var, CfgNode cfgNode) {
+    public Set<Variable> getGlobalMayAliases(Variable var, AbstractCfgNode cfgNode) {
         Set<Variable> retMe = new HashSet<>();
         for (Variable mayAlias : this.getMayAliases(var, cfgNode)) {
             if (mayAlias.isGlobal()) {
@@ -268,7 +268,7 @@ public class AliasAnalysis extends InterAnalysis {
     // returns a set of local may-aliases of the given variable at
     // the given node (folded over all contexts); empty set if there
     // are none
-    public Set<Variable> getLocalMayAliases(Variable var, CfgNode cfgNode) {
+    public Set<Variable> getLocalMayAliases(Variable var, AbstractCfgNode cfgNode) {
         Set<Variable> retMe = new HashSet<>();
         for (Variable mayAlias : this.getMayAliases(var, cfgNode)) {
             if (mayAlias.isLocal()) {

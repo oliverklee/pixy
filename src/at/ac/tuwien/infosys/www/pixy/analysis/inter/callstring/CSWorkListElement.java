@@ -1,19 +1,19 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring;
 
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public final class CSWorkListElement {
-    private final CfgNode cfgNode;
+    private final AbstractCfgNode cfgNode;
     private final int position;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    CSWorkListElement(CfgNode cfgNode, int position) {
+    CSWorkListElement(AbstractCfgNode cfgNode, int position) {
         this.cfgNode = cfgNode;
         this.position = position;
     }
@@ -22,7 +22,7 @@ public final class CSWorkListElement {
 // GET *****************************************************************************
 // *********************************************************************************
 
-    CfgNode getCfgNode() {
+    AbstractCfgNode getCfgNode() {
         return this.cfgNode;
     }
 

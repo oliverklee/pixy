@@ -4,7 +4,7 @@ import at.ac.tuwien.infosys.www.pixy.Dumper;
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.conversion.BuiltinFunctions;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacOperators;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
 /**
  * For builtin functions.
@@ -12,13 +12,13 @@ import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class DepGraphOpNode extends DepGraphNode {
-    private CfgNode cfgNode;
+    private AbstractCfgNode cfgNode;
     private String name;
     private boolean builtin;    // builtin function?
 
 //  ********************************************************************************
 
-    DepGraphOpNode(CfgNode cfgNode, String name, boolean builtin) {
+    DepGraphOpNode(AbstractCfgNode cfgNode, String name, boolean builtin) {
         //this.place = place;
         this.cfgNode = cfgNode;
         this.name = name;
@@ -98,7 +98,7 @@ public class DepGraphOpNode extends DepGraphNode {
 
 //  ********************************************************************************
 
-    public CfgNode getCfgNode() {
+    public AbstractCfgNode getCfgNode() {
         return this.cfgNode;
     }
 

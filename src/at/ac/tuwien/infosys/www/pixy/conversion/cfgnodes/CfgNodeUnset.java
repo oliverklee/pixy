@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CfgNodeUnset extends CfgNode {
+public class CfgNodeUnset extends AbstractCfgNode {
     private Variable operand;
 
 // CONSTRUCTORS ********************************************************************

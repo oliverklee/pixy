@@ -5,7 +5,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.TypeAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.TypeLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
 import java.util.Iterator;
 import java.util.List;
@@ -76,7 +76,7 @@ public class TypeTfCallPrep extends TransferFunction {
 
                         // default CFG's have no branches;
                         // start at the CFG's head and apply all transfer functions
-                        CfgNode defaultNode = defaultControlFlowGraph.getHead();
+                        AbstractCfgNode defaultNode = defaultControlFlowGraph.getHead();
                         while (defaultNode != null) {
                             TransferFunction tf = this.typeAnalysis.getTransferFunction(defaultNode);
                             out = (TypeLatticeElement) tf.transfer(out);

@@ -4,7 +4,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.AnalysisInfo;
 import at.ac.tuwien.infosys.www.pixy.analysis.AnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
@@ -32,11 +32,11 @@ public class InterAnalysisInfo extends AnalysisInfo {
     // for such nodes, you should query the enclosing basic block, or the
     // entry node of the function default cfg; use the appropriate "get"
     // method of CfgNode to retrieve these nodes
-    public InterAnalysisNode getAnalysisNode(CfgNode cfgNode) {
+    public InterAnalysisNode getAnalysisNode(AbstractCfgNode cfgNode) {
         return (InterAnalysisNode) this.map.get(cfgNode);
     }
 
-    public TransferFunction getTransferFunction(CfgNode cfgNode) {
+    public TransferFunction getTransferFunction(AbstractCfgNode cfgNode) {
         AnalysisNode analysisNode = this.getAnalysisNode(cfgNode);
         return analysisNode.getTransferFunction();
     }

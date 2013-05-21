@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.incdom;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -13,7 +13,7 @@ import java.util.List;
 public class IncDomLatticeElement extends LatticeElement {
     // an ordered list of CfgNodes (more specifically: of CfgNodeIncludeStart and
     // CfgNodeIncludeEnd) that dominate the current node
-    private List<CfgNode> dominators;
+    private List<AbstractCfgNode> dominators;
 
 //  ********************************************************************************
 //  CONSTRUCTORS *******************************************************************
@@ -38,7 +38,7 @@ public class IncDomLatticeElement extends LatticeElement {
 //  GET ****************************************************************************
 //  ********************************************************************************
 
-    public List<CfgNode> getDominators() {
+    public List<AbstractCfgNode> getDominators() {
         return this.dominators;
     }
 
@@ -56,13 +56,13 @@ public class IncDomLatticeElement extends LatticeElement {
 
     public void lub(IncDomLatticeElement element) {
         // longest matching prefix
-        Iterator<CfgNode> foreignIter = element.getDominators().iterator();
-        Iterator<CfgNode> myIter = this.dominators.iterator();
-        List<CfgNode> newList = new LinkedList<>();
+        Iterator<AbstractCfgNode> foreignIter = element.getDominators().iterator();
+        Iterator<AbstractCfgNode> myIter = this.dominators.iterator();
+        List<AbstractCfgNode> newList = new LinkedList<>();
         boolean goOn = true;
         while (foreignIter.hasNext() && myIter.hasNext() && goOn) {
-            CfgNode myNode = myIter.next();
-            CfgNode foreignNode = foreignIter.next();
+            AbstractCfgNode myNode = myIter.next();
+            AbstractCfgNode foreignNode = foreignIter.next();
             if (myNode == foreignNode) {
                 newList.add(myNode);
             } else {
@@ -73,7 +73,7 @@ public class IncDomLatticeElement extends LatticeElement {
     }
 
     // apends the given CfgNode to the list of dominators
-    public void add(CfgNode cfgNode) {
+    public void add(AbstractCfgNode cfgNode) {
         this.dominators.add(cfgNode);
     }
 

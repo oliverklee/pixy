@@ -86,17 +86,17 @@ public class DepAnalysis extends InterAnalysis {
     // of this node is NOT applied);
     // only required by DepGraph
     public DepLatticeElement applyInsideBasicBlock(
-        CfgNodeBasicBlock basicBlock, CfgNode untilHere, DepLatticeElement invalue) {
+        CfgNodeBasicBlock basicBlock, AbstractCfgNode untilHere, DepLatticeElement invalue) {
 
         DepLatticeElement outValue = new DepLatticeElement(invalue);
-        List<CfgNode> containedNodes = basicBlock.getContainedNodes();
+        List<AbstractCfgNode> containedNodes = basicBlock.getContainedNodes();
         CompositeTransferFunction ctf = (CompositeTransferFunction) this.getTransferFunction(basicBlock);
 
-        Iterator<CfgNode> nodesIter = containedNodes.iterator();
+        Iterator<AbstractCfgNode> nodesIter = containedNodes.iterator();
         Iterator<TransferFunction> tfIter = ctf.iterator();
 
         while (nodesIter.hasNext() && tfIter.hasNext()) {
-            CfgNode node = nodesIter.next();
+            AbstractCfgNode node = nodesIter.next();
             TransferFunction tf = tfIter.next();
             if (node == untilHere) {
                 break;
@@ -113,8 +113,8 @@ public class DepAnalysis extends InterAnalysis {
     // default cfg (given by "defaultNode") until the beginning of "untilHere"
     // (i.e., the transfer function of this node is NOT applied);
     // only required by DepGraph
-    public DepLatticeElement applyInsideDefaultCfg(CfgNode defaultNode,
-                                                   CfgNode untilHere, DepLatticeElement invalue) {
+    public DepLatticeElement applyInsideDefaultCfg(AbstractCfgNode defaultNode,
+                                                   AbstractCfgNode untilHere, DepLatticeElement invalue) {
         DepLatticeElement out = new DepLatticeElement(invalue);
 
         while (defaultNode != untilHere) {
@@ -134,7 +134,7 @@ public class DepAnalysis extends InterAnalysis {
     // aliasInNode:
     // - if cfgNodeX is not inside a basic block: the same node
     // - else: the basic block
-    protected TransferFunction assignSimple(CfgNode cfgNodeX, CfgNode aliasInNode) {
+    protected TransferFunction assignSimple(AbstractCfgNode cfgNodeX, AbstractCfgNode aliasInNode) {
 
         CfgNodeAssignSimple cfgNode = (CfgNodeAssignSimple) cfgNodeX;
         Variable left = cfgNode.getLeft();
@@ -149,7 +149,7 @@ public class DepAnalysis extends InterAnalysis {
             cfgNode);
     }
 
-    protected TransferFunction assignUnary(CfgNode cfgNodeX, CfgNode aliasInNode) {
+    protected TransferFunction assignUnary(AbstractCfgNode cfgNodeX, AbstractCfgNode aliasInNode) {
 
         CfgNodeAssignUnary cfgNode = (CfgNodeAssignUnary) cfgNodeX;
         Variable left = cfgNode.getLeft();
@@ -165,7 +165,7 @@ public class DepAnalysis extends InterAnalysis {
             cfgNode);
     }
 
-    protected TransferFunction assignBinary(CfgNode cfgNodeX, CfgNode aliasInNode) {
+    protected TransferFunction assignBinary(AbstractCfgNode cfgNodeX, AbstractCfgNode aliasInNode) {
 
         CfgNodeAssignBinary cfgNode = (CfgNodeAssignBinary) cfgNodeX;
         Variable left = cfgNode.getLeft();
@@ -182,7 +182,7 @@ public class DepAnalysis extends InterAnalysis {
             cfgNode);
     }
 
-    protected TransferFunction assignRef(CfgNode cfgNodeX) {
+    protected TransferFunction assignRef(AbstractCfgNode cfgNodeX) {
         CfgNodeAssignRef cfgNode = (CfgNodeAssignRef) cfgNodeX;
         return new DepTfAssignRef(
             cfgNode.getLeft(),
@@ -190,17 +190,17 @@ public class DepAnalysis extends InterAnalysis {
             cfgNode);
     }
 
-    protected TransferFunction unset(CfgNode cfgNodeX) {
+    protected TransferFunction unset(AbstractCfgNode cfgNodeX) {
         CfgNodeUnset cfgNode = (CfgNodeUnset) cfgNodeX;
         return new DepTfUnset(cfgNode.getOperand(), cfgNode);
     }
 
-    protected TransferFunction assignArray(CfgNode cfgNodeX) {
+    protected TransferFunction assignArray(AbstractCfgNode cfgNodeX) {
         CfgNodeAssignArray cfgNode = (CfgNodeAssignArray) cfgNodeX;
         return new DepTfAssignArray(cfgNode.getLeft(), cfgNode);
     }
 
-    protected TransferFunction callPrep(CfgNode cfgNodeX, TacFunction traversedFunction) {
+    protected TransferFunction callPrep(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
 
         CfgNodeCallPrep cfgNode = (CfgNodeCallPrep) cfgNodeX;
         TacFunction calledFunction = cfgNode.getCallee();
@@ -264,7 +264,7 @@ public class DepAnalysis extends InterAnalysis {
         return new DepTfEntry(traversedFunction);
     }
 
-    protected TransferFunction callRet(CfgNode cfgNodeX, TacFunction traversedFunction) {
+    protected TransferFunction callRet(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
 
         CfgNodeCallRet cfgNodeRet = (CfgNodeCallRet) cfgNodeX;
         CfgNodeCallPrep cfgNodePrep = cfgNodeRet.getCallPrepNode();
@@ -296,17 +296,17 @@ public class DepAnalysis extends InterAnalysis {
         return tf;
     }
 
-    protected TransferFunction callBuiltin(CfgNode cfgNodeX, TacFunction traversedFunction) {
+    protected TransferFunction callBuiltin(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
         CfgNodeCallBuiltin cfgNode = (CfgNodeCallBuiltin) cfgNodeX;
         return new DepTfCallBuiltin(cfgNode);
     }
 
-    protected TransferFunction callUnknown(CfgNode cfgNodeX, TacFunction traversedFunction) {
+    protected TransferFunction callUnknown(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
         CfgNodeCallUnknown cfgNode = (CfgNodeCallUnknown) cfgNodeX;
         return new DepTfCallUnknown(cfgNode);
     }
 
-    protected TransferFunction global(CfgNode cfgNodeX) {
+    protected TransferFunction global(AbstractCfgNode cfgNodeX) {
 
         // "global <var>";
         // equivalent to: creating a reference to the variable in the main function with
@@ -334,7 +334,7 @@ public class DepAnalysis extends InterAnalysis {
         }
     }
 
-    protected TransferFunction isset(CfgNode cfgNodeX) {
+    protected TransferFunction isset(AbstractCfgNode cfgNodeX) {
 
         CfgNodeIsset cfgNode = (CfgNodeIsset) cfgNodeX;
         return new DepTfIsset(
@@ -343,18 +343,18 @@ public class DepAnalysis extends InterAnalysis {
             cfgNode);
     }
 
-    protected TransferFunction define(CfgNode cfgNodeX) {
+    protected TransferFunction define(AbstractCfgNode cfgNodeX) {
         CfgNodeDefine cfgNode = (CfgNodeDefine) cfgNodeX;
         return new DepTfDefine(this.constantsTable, this.literalAnalysis, cfgNode);
     }
 
-    protected TransferFunction tester(CfgNode cfgNodeX) {
+    protected TransferFunction tester(AbstractCfgNode cfgNodeX) {
         // special node that only occurs inside the builtin functions file
         CfgNodeTester cfgNode = (CfgNodeTester) cfgNodeX;
         return new DepTfTester(cfgNode);
     }
 
-    protected TransferFunction echo(CfgNode cfgNodeX, TacFunction traversedFunction) {
+    protected TransferFunction echo(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
         return TransferFunctionId.INSTANCE;
     }
 
@@ -528,7 +528,7 @@ public class DepAnalysis extends InterAnalysis {
 
         // for each function in the call graph...
         for (TacFunction f : callGraph.getFunctions()) {
-            CfgNode head = f.getControlFlowGraph().getHead();
+            AbstractCfgNode head = f.getControlFlowGraph().getHead();
 
             // make a depth-first traversal
 
@@ -536,11 +536,11 @@ public class DepAnalysis extends InterAnalysis {
             int numContexts = cc.getNumContexts(f);
 
             // auxiliary stack and visited set
-            LinkedList<CfgNode> stack = new LinkedList<>();
-            Set<CfgNode> visited = new HashSet<>();
+            LinkedList<AbstractCfgNode> stack = new LinkedList<>();
+            Set<AbstractCfgNode> visited = new HashSet<>();
 
             // visit head
-            CfgNode current = head;
+            AbstractCfgNode current = head;
             visited.add(current);
             if (!this.isReachable(head, numContexts)) {
                 this.warnUnreachable(current);
@@ -560,7 +560,7 @@ public class DepAnalysis extends InterAnalysis {
                 current = stack.getLast();
 
                 // we will try to get an unvisited successor element
-                CfgNode next = null;
+                AbstractCfgNode next = null;
                 for (int i = 0; (i < 2) && (next == null); i++) {
                     CfgEdge outEdge = current.getOutEdge(i);
                     if (outEdge != null) {
@@ -591,7 +591,7 @@ public class DepAnalysis extends InterAnalysis {
         }
     }
 
-    private boolean isReachable(CfgNode cfgNode, int numContexts) {
+    private boolean isReachable(AbstractCfgNode cfgNode, int numContexts) {
         Map<Context, LatticeElement> phi = this.interAnalysisInfo.getAnalysisNode(cfgNode).getPhi();
         if (phi.size() == 0) {
             // there is not a single context for this node
@@ -607,7 +607,7 @@ public class DepAnalysis extends InterAnalysis {
         return true;
     }
 
-    private void warnUnreachable(CfgNode cfgNode) {
+    private void warnUnreachable(AbstractCfgNode cfgNode) {
         System.out.println("Warning: Unreachable code");
         System.out.println("- " + cfgNode.getLoc());
         if (cfgNode instanceof CfgNodeCallRet) {
