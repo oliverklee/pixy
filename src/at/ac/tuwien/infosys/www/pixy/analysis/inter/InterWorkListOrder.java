@@ -30,7 +30,7 @@ public class InterWorkListOrder {
         this.order = new HashMap<>();
 
         TacFunction mainFunction = tac.getMainFunction();
-        CfgNode startNode = mainFunction.getCfg().getHead();
+        CfgNode startNode = mainFunction.getControlFlowGraph().getHead();
 
         Map<TacFunction, ECS> function2ECS = cc.getFunction2ECS();
         ECS mainECS = function2ECS.get(mainFunction);
@@ -107,7 +107,7 @@ public class InterWorkListOrder {
                     // for normal calls:
                     // enter function under corresponding context
 
-                    CfgNodeEntry entryNode = (CfgNodeEntry) callee.getCfg().getHead();
+                    CfgNodeEntry entryNode = (CfgNodeEntry) callee.getControlFlowGraph().getHead();
                     Context propagationContext = cc.getTargetContext(callNode, context.getPosition());
                     if (propagationContext == null) {
                         throw new RuntimeException("SNH: " + callNode.getLoc());

@@ -72,11 +72,11 @@ public class TypeTfCallPrep extends TransferFunction {
                     formalParam = formalIter.next();
 
                     if (formalParam.hasDefault()) {
-                        Cfg defaultCfg = formalParam.getDefaultCfg();
+                        ControlFlowGraph defaultControlFlowGraph = formalParam.getDefaultControlFlowGraph();
 
                         // default CFG's have no branches;
                         // start at the CFG's head and apply all transfer functions
-                        CfgNode defaultNode = defaultCfg.getHead();
+                        CfgNode defaultNode = defaultControlFlowGraph.getHead();
                         while (defaultNode != null) {
                             TransferFunction tf = this.typeAnalysis.getTransferFunction(defaultNode);
                             out = (TypeLatticeElement) tf.transfer(out);

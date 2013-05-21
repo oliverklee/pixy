@@ -8,27 +8,27 @@ import java.util.*;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public final class Cfg {
+public final class ControlFlowGraph {
     private CfgNode head;
     private final CfgNode tail;
     private final int tailEdgeType;
 
 // CONSTRUCTORS ********************************************************************
 
-    Cfg(CfgNode head, CfgNode tail, int tailEdgeType) {
+    ControlFlowGraph(CfgNode head, CfgNode tail, int tailEdgeType) {
         this.head = head;
         this.tail = tail;
         this.tailEdgeType = tailEdgeType;
     }
 
-    Cfg(CfgNode head, CfgNode tail) {
+    ControlFlowGraph(CfgNode head, CfgNode tail) {
         this.head = head;
         this.tail = tail;
         this.tailEdgeType = CfgEdge.NORMAL_EDGE;
     }
 
     // dummy constructor, can be used for "getFunction"
-    public Cfg() {
+    public ControlFlowGraph() {
         this.tail = null;
         this.tailEdgeType = 0;
     }
@@ -106,7 +106,7 @@ public final class Cfg {
         }
     }
 
-    // returns the number of nodes in this Cfg
+    // returns the number of nodes in this ControlFlowGraph
     public int size() {
         Set<CfgNode> visited = new HashSet<>();
         int s = size(this.head, visited);

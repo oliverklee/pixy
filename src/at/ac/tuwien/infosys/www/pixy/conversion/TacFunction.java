@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class TacFunction {
     private String name;
-    private Cfg cfg;    // the CFG's tail MUST be the function's exit node
+    private ControlFlowGraph controlFlowGraph;    // the CFG's tail MUST be the function's exit node
     private boolean isReference;
     private List<TacFormalParam> params;  // contains TacFormalParam objects
     private Variable retVar;
@@ -39,11 +39,11 @@ public class TacFunction {
 // *********************************************************************************
 
     // DON'T FORGET TO SET THE PARAMETERS with setParams()!
-    TacFunction(String name, Cfg cfg, Variable retVar, boolean isReference,
+    TacFunction(String name, ControlFlowGraph controlFlowGraph, Variable retVar, boolean isReference,
                 ParseNode parseNode, String className) {
 
         this.name = name;
-        this.cfg = cfg;
+        this.controlFlowGraph = controlFlowGraph;
         this.retVar = retVar;
         this.isReference = isReference;
         this.parseNode = parseNode;
@@ -62,13 +62,13 @@ public class TacFunction {
         this.isMain = false;
 
         // this is necessary, even though we use TacFunction's assignFunction()
-        // for assigning functions to cfg nodes; the reason is that assignFunction()
+        // for assigning functions to controlFlowGraph nodes; the reason is that assignFunction()
         // is called in the final stage of program conversion, but we need function
         // information already during conversion (literals analysis for include
         // file resolution: InterAnalysis);
         // a cleaner solution would be to force the assignment of functions to
         // cfgnodes by requiring this information in each cfgnode's constructor
-        this.cfg.getTail().setEnclosingFunction(this);
+        this.controlFlowGraph.getTail().setEnclosingFunction(this);
     }
 
 // *********************************************************************************
@@ -79,8 +79,8 @@ public class TacFunction {
         return this.name;
     }
 
-    public Cfg getCfg() {
-        return this.cfg;
+    public ControlFlowGraph getControlFlowGraph() {
+        return this.controlFlowGraph;
     }
 
     public boolean isReference() {
@@ -113,7 +113,7 @@ public class TacFunction {
     }
 
     public List<CfgNodeCall> getContainedCalls() {
-        return this.cfg.getContainedCalls();
+        return this.controlFlowGraph.getContainedCalls();
     }
 
     public boolean isMain() {
@@ -127,7 +127,7 @@ public class TacFunction {
     // returns true if this function's CFG has only 2 nodes (entry and exit
     // node), and false otherwise
     boolean isEmpty() {
-        return this.cfg.size() == 2;
+        return this.controlFlowGraph.size() == 2;
     }
 
     // returns a collection containing this function's locals
@@ -136,7 +136,7 @@ public class TacFunction {
     }
 
     public int size() {
-        return this.cfg.size();
+        return this.controlFlowGraph.size();
     }
 
     public String getFileName() {
@@ -147,9 +147,9 @@ public class TacFunction {
         return this.parseNode.getLoc();
     }
 
-    // returns the line number of the contained cfg's head
+    // returns the line number of the contained controlFlowGraph's head
     public int getLine() {
-        return this.cfg.getHead().getOrigLineno();
+        return this.controlFlowGraph.getHead().getOrigLineno();
     }
 
     public String getClassName() {
@@ -178,7 +178,7 @@ public class TacFunction {
 //  *********************************************************************************
 
     public void assignReversePostOrder() {
-        this.cfg.assignReversePostOrder();
+        this.controlFlowGraph.assignReversePostOrder();
     }
 
     public int hashCode() {

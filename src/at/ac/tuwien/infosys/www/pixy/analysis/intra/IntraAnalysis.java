@@ -28,7 +28,7 @@ public abstract class IntraAnalysis extends Analysis {
 
     // OTHER ***********************************************************************
 
-    // worklist consisting of pairs (Cfg node, lattice element)
+    // worklist consisting of pairs (ControlFlowGraph node, lattice element)
     IntraWorkList workList;
 
 // *********************************************************************************
@@ -52,18 +52,18 @@ public abstract class IntraAnalysis extends Analysis {
 
         // initialize worklist
         this.workList = new IntraWorkList();
-        this.workList.add(function.getCfg().getHead());
+        this.workList.add(function.getControlFlowGraph().getHead());
 
         // initialize analysis nodes
         this.analysisInfo = new IntraAnalysisInfo();
         this.genericAnalysisInfo = analysisInfo;
 
         // assign transfer functions to analysis nodes
-        this.traverseCfg(function.getCfg(), function);
+        this.traverseCfg(function.getControlFlowGraph(), function);
         // this.asfsafsaf: initTransferFunctions
 
         // initialize inValue for start node
-        IntraAnalysisNode startAnalysisNode = this.analysisInfo.getAnalysisNode(function.getCfg().getHead());
+        IntraAnalysisNode startAnalysisNode = this.analysisInfo.getAnalysisNode(function.getControlFlowGraph().getHead());
         startAnalysisNode.setInValue(this.startValue);
     }
 

@@ -7,7 +7,7 @@ public class TacFormalParam {
     private Variable variable;
     private boolean isReference;
     private boolean hasDefault;
-    private Cfg defaultCfg;
+    private ControlFlowGraph defaultControlFlowGraph;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
@@ -17,21 +17,21 @@ public class TacFormalParam {
         this.variable = variable;
         this.isReference = false;
         this.hasDefault = false;
-        this.defaultCfg = null;
+        this.defaultControlFlowGraph = null;
     }
 
     TacFormalParam(Variable variable, boolean isReference) {
         this.variable = variable;
         this.isReference = isReference;
         this.hasDefault = false;
-        this.defaultCfg = null;
+        this.defaultControlFlowGraph = null;
     }
 
-    TacFormalParam(Variable variable, boolean hasDefault, Cfg defaultCfg) {
+    TacFormalParam(Variable variable, boolean hasDefault, ControlFlowGraph defaultControlFlowGraph) {
         this.variable = variable;
         this.isReference = false;
         this.hasDefault = hasDefault;
-        this.defaultCfg = defaultCfg;
+        this.defaultControlFlowGraph = defaultControlFlowGraph;
     }
 
 // *********************************************************************************
@@ -50,7 +50,7 @@ public class TacFormalParam {
         return this.hasDefault;
     }
 
-    public Cfg getDefaultCfg() {
-        return this.defaultCfg;
+    public ControlFlowGraph getDefaultControlFlowGraph() {
+        return this.defaultControlFlowGraph;
     }
 }

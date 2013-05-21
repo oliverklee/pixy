@@ -30,9 +30,9 @@ public class EncapsList {
         }
     }
 
-    void add(TacPlace place, Cfg cfg) {
+    void add(TacPlace place, ControlFlowGraph controlFlowGraph) {
         this.encapsList.add(place);
-        this.encapsList.add(cfg);
+        this.encapsList.add(controlFlowGraph);
     }
 
     void add(Literal string) {
@@ -88,7 +88,7 @@ public class EncapsList {
                 }
 
                 // fetch the cfg of this non-literal
-                Cfg nextCfg = (Cfg) iter.next();
+                ControlFlowGraph nextControlFlowGraph = (ControlFlowGraph) iter.next();
 
                 CfgNode cfgNode;
                 if (tempEmpty) {
@@ -99,8 +99,8 @@ public class EncapsList {
                     cfgNode = new CfgNodeAssignBinary(
                         temp, temp, (TacPlace) obj, TacOperators.CONCAT, node);
                 }
-                TacConverter.connect(contd, nextCfg);
-                TacConverter.connect(nextCfg, cfgNode);
+                TacConverter.connect(contd, nextControlFlowGraph);
+                TacConverter.connect(nextControlFlowGraph, cfgNode);
                 contd = cfgNode;
             } else {
                 throw new RuntimeException("SNH");
@@ -123,7 +123,7 @@ public class EncapsList {
             lastLiteral = null;
         }
 
-        myAtts.setCfg(new Cfg(head, contd));
+        myAtts.setControlFlowGraph(new ControlFlowGraph(head, contd));
         myAtts.setPlace(temp);
         return myAtts;
     }

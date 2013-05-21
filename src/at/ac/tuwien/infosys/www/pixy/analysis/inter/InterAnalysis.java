@@ -7,8 +7,8 @@ import at.ac.tuwien.infosys.www.pixy.analysis.AnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring.CSAnalysis;
-import at.ac.tuwien.infosys.www.pixy.conversion.Cfg;
 import at.ac.tuwien.infosys.www.pixy.conversion.CfgEdge;
+import at.ac.tuwien.infosys.www.pixy.conversion.ControlFlowGraph;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFormalParam;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.*;
@@ -50,7 +50,7 @@ public abstract class InterAnalysis extends Analysis {
     // context for the main function
     protected Context mainContext;
 
-    // worklist consisting of pairs (Cfg node, lattice element)
+    // worklist consisting of pairs (ControlFlowGraph node, lattice element)
     InterWorkList workList;
 
 // *********************************************************************************
@@ -69,10 +69,10 @@ public abstract class InterAnalysis extends Analysis {
         this.analysisType.setAnalysis(this);
         this.functions = functions;
 
-        // determine Cfg of main function: start analysis here
+        // determine ControlFlowGraph of main function: start analysis here
         this.mainFunction = mainFunction;
-        Cfg mainCfg = this.mainFunction.getCfg();
-        CfgNode mainHead = mainCfg.getHead();
+        ControlFlowGraph mainControlFlowGraph = this.mainFunction.getControlFlowGraph();
+        CfgNode mainHead = mainControlFlowGraph.getHead();
 
         // initialize carrier lattice
         this.initLattice();
@@ -111,8 +111,8 @@ public abstract class InterAnalysis extends Analysis {
                 // see transfer functions for CfgNodeCallPrep; analogous to the
                 // contents of basic blocks
                 if (param.hasDefault()) {
-                    Cfg defaultCfg = param.getDefaultCfg();
-                    this.traverseCfg(defaultCfg, function);
+                    ControlFlowGraph defaultControlFlowGraph = param.getDefaultControlFlowGraph();
+                    this.traverseCfg(defaultControlFlowGraph, function);
                 }
             }
         }
@@ -121,7 +121,7 @@ public abstract class InterAnalysis extends Analysis {
         // for all functions...
         for (TacFunction function : this.functions) {
             // extract and traverse CFG
-            this.traverseCfg(function.getCfg(), function);
+            this.traverseCfg(function.getControlFlowGraph(), function);
         }
     }
 
@@ -251,9 +251,9 @@ public abstract class InterAnalysis extends Analysis {
                         continue;
                     }
 
-                    Cfg functionCfg = function.getCfg();
+                    ControlFlowGraph functionControlFlowGraph = function.getControlFlowGraph();
 
-                    CfgNode exitNode = functionCfg.getTail();
+                    CfgNode exitNode = functionControlFlowGraph.getTail();
                     // the tail of the function's CFG has to be an exit node
                     if (!(exitNode instanceof CfgNodeExit)) {
                         throw new RuntimeException("SNH");
@@ -271,7 +271,7 @@ public abstract class InterAnalysis extends Analysis {
                         // case, we simply enter the function; this can lead to
                         // redundant computations, but it is simpler than a
                         // special, more efficient treatment of this rare case
-                        CfgNode entryNode = functionCfg.getHead();
+                        CfgNode entryNode = functionControlFlowGraph.getHead();
                         propagate(propagationContext, inValue, entryNode);
                         continue;
                     }
@@ -298,7 +298,7 @@ public abstract class InterAnalysis extends Analysis {
 
                         // there is no function summary yet (or we don't want to
                         // use summaries), so compute it now by entering the function
-                        CfgNode entryNode = functionCfg.getHead();
+                        CfgNode entryNode = functionControlFlowGraph.getHead();
                         propagate(propagationContext, inValue, entryNode);
                     }
 

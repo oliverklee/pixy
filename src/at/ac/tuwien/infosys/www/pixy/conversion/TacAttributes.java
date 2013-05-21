@@ -11,7 +11,7 @@ public class TacAttributes {
     private int arrayIndex = -1;
 
     private TacPlace place;
-    private Cfg cfg;
+    private ControlFlowGraph controlFlowGraph;
 
     private CfgNode defaultNode;
 
@@ -31,8 +31,8 @@ public class TacAttributes {
         return this.place;
     }
 
-    Cfg getCfg() {
-        return this.cfg;
+    ControlFlowGraph getControlFlowGraph() {
+        return this.controlFlowGraph;
     }
 
     int getArrayIndex() {
@@ -69,8 +69,8 @@ public class TacAttributes {
         this.arrayIndex = arrayIndex;
     }
 
-    void setCfg(Cfg cfg) {
-        this.cfg = cfg;
+    void setControlFlowGraph(ControlFlowGraph controlFlowGraph) {
+        this.controlFlowGraph = controlFlowGraph;
     }
 
     void setDefaultNode(CfgNode defaultNode) {

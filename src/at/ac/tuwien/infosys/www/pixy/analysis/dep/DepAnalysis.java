@@ -528,7 +528,7 @@ public class DepAnalysis extends InterAnalysis {
 
         // for each function in the call graph...
         for (TacFunction f : callGraph.getFunctions()) {
-            CfgNode head = f.getCfg().getHead();
+            CfgNode head = f.getControlFlowGraph().getHead();
 
             // make a depth-first traversal
 

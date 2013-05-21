@@ -111,7 +111,7 @@ public class DepGraph {
             // start with all contexts of the start node
             Set<Context> allC = analysisInfo.getAnalysisNode(start).getContexts();
             depGraph.root = (DepGraphNormalNode) depGraph.makeDepGraph(
-                place, start, Cfg.getFunction(start), indices, allC);
+                place, start, ControlFlowGraph.getFunction(start), indices, allC);
         } catch (NotReachableException ex) {
             debug("not reachable!!!");
             return null;
@@ -329,7 +329,7 @@ public class DepGraph {
                 // functions inside this default cfg
 
                 // start at the default cfg's head
-                CfgNode defaultHead = Cfg.getHead(cfgNode);
+                CfgNode defaultHead = ControlFlowGraph.getHead(cfgNode);
 
                 // use the value at the function's entry node as start value
                 // (since we only have static stuff inside default cfgs, this is
@@ -431,7 +431,7 @@ public class DepGraph {
         // here, we make a reasonable conservative decision, and use
         // *all* available contexts
         else if (targetNode instanceof CfgNodeDefine) {
-            targetFunction = Cfg.getFunction(targetNode);
+            targetFunction = ControlFlowGraph.getFunction(targetNode);
             targetContexts = this.analysisInfo.getAnalysisNode(targetNode.getSpecial()).getContexts();
             if (targetContexts.isEmpty()) {
                 throw new RuntimeException("SNH");
@@ -443,9 +443,9 @@ public class DepGraph {
         // a global variable is written in some function, and later read in some
         // other function; the read dep directly leads us to the function where
         // the global variable was written, without warning
-        else if (!Cfg.getFunction(targetNode).equals(function)) {
-            debug("Unexpected function change: " + function.getName() + " -> " + Cfg.getFunction(targetNode).getName());
-            targetFunction = Cfg.getFunction(targetNode);
+        else if (!ControlFlowGraph.getFunction(targetNode).equals(function)) {
+            debug("Unexpected function change: " + function.getName() + " -> " + ControlFlowGraph.getFunction(targetNode).getName());
+            targetFunction = ControlFlowGraph.getFunction(targetNode);
             targetContexts = this.analysisInfo.getAnalysisNode(targetNode.getSpecial()).getContexts();
             if (targetContexts.isEmpty()) {
                 throw new RuntimeException("SNH");

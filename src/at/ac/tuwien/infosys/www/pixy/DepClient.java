@@ -57,7 +57,7 @@ public abstract class DepClient {
     public List<Sink> collectSinks() {
         List<Sink> sinks = new LinkedList<>();
         for (TacFunction function : this.depAnalysis.getFunctions()) {
-            for (CfgNode cfgNodeX : function.getCfg().dfPreOrder()) {
+            for (CfgNode cfgNodeX : function.getControlFlowGraph().dfPreOrder()) {
                 checkForSink(cfgNodeX, function, sinks);
             }
         }

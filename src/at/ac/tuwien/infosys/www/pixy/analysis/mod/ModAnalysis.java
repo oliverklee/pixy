@@ -54,7 +54,7 @@ public class ModAnalysis {
         for (TacFunction function : functions) {
             Set<TacPlace> modSet = new HashSet<>();
 
-            for (CfgNode cfgNodeX : function.getCfg().dfPreOrder()) {
+            for (CfgNode cfgNodeX : function.getControlFlowGraph().dfPreOrder()) {
                 this.processNode(cfgNodeX, modSet);
             }
 

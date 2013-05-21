@@ -114,9 +114,9 @@ public final class Dumper {
 
 // dumpDot(TacFunction, String, boolean) *******************************************
 
-    // dumps the function's Cfg in dot syntax
+    // dumps the function's ControlFlowGraph in dot syntax
     public static void dumpDot(TacFunction function, String graphPath, boolean dumpParams) {
-        dumpDot(function.getCfg(), function.getName(), graphPath);
+        dumpDot(function.getControlFlowGraph(), function.getName(), graphPath);
 
         if (dumpParams) {
             for (TacFormalParam parameter : function.getParams()) {
@@ -124,7 +124,7 @@ public final class Dumper {
                 paramString = paramString.substring(1); // remove "$"
                 if (parameter.hasDefault()) {
                     dumpDot(
-                        parameter.getDefaultCfg(),
+                        parameter.getDefaultControlFlowGraph(),
                         function.getName() + "_" + paramString,
                         graphPath);
                 }
@@ -132,43 +132,43 @@ public final class Dumper {
         }
     }
 
-// dumpDot(Cfg, String) ************************************************************
+// dumpDot(ControlFlowGraph, String) ************************************************************
 
-    static void dumpDot(Cfg cfg, String graphName, String graphPath) {
-        dumpDot(cfg, graphName, graphPath, graphName + ".dot");
+    static void dumpDot(ControlFlowGraph controlFlowGraph, String graphName, String graphPath) {
+        dumpDot(controlFlowGraph, graphName, graphPath, graphName + ".dot");
     }
 
-// dumpDot(Cfg, String, String, String) ********************************************
+// dumpDot(ControlFlowGraph, String, String, String) ********************************************
 
-    // dumps the Cfg in dot syntax to the directory specified by "path" and the
+    // dumps the ControlFlowGraph in dot syntax to the directory specified by "path" and the
     // file specified by "filename"
-    public static void dumpDot(Cfg cfg, String graphName, String path, String filename) {
+    public static void dumpDot(ControlFlowGraph controlFlowGraph, String graphName, String path, String filename) {
 
         // create directory
         (new File(path)).mkdir();
 
         try {
             Writer outWriter = new FileWriter(path + "/" + filename);
-            dumpDot(cfg, graphName, outWriter);
+            dumpDot(controlFlowGraph, graphName, outWriter);
             outWriter.close();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
 
-// dumpDot(Cfg, String, Writer) ****************************************************
+// dumpDot(ControlFlowGraph, String, Writer) ****************************************************
 
-    // dumps the Cfg in dot syntax using the specified Writer
-    static void dumpDot(Cfg cfg, String graphName, Writer outWriter) {
+    // dumps the ControlFlowGraph in dot syntax using the specified Writer
+    static void dumpDot(ControlFlowGraph controlFlowGraph, String graphName, Writer outWriter) {
 
         try {
             Dumper.node2Int = new HashMap<>();
             Dumper.idCounter = 0;
-            outWriter.write("digraph cfg {\n  label=\"");
+            outWriter.write("digraph controlFlowGraph {\n  label=\"");
             outWriter.write(escapeDot(graphName, 0));
             outWriter.write("\";\n");
             outWriter.write("  labelloc=t;\n");
-            dumpDot(cfg.getHead(), outWriter);
+            dumpDot(controlFlowGraph.getHead(), outWriter);
             outWriter.write("}\n");
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -648,12 +648,12 @@ public final class Dumper {
 
             // for each function...
             for (TacFunction function : functions) {
-                Cfg cfg = function.getCfg();
+                ControlFlowGraph controlFlowGraph = function.getControlFlowGraph();
                 writer.write(linesep + "****************************************************" + linesep);
                 writer.write(function.getName() + linesep);
                 writer.write("****************************************************" + linesep + linesep);
-                // for each Cfg node...
-                for (Iterator<CfgNode> bft = cfg.bfIterator(); bft.hasNext(); ) {
+                // for each ControlFlowGraph node...
+                for (Iterator<CfgNode> bft = controlFlowGraph.bfIterator(); bft.hasNext(); ) {
                     CfgNode cfgNode = bft.next();
                     writer.write("----------------------------------------" + linesep);
                     writer.write(cfgNode.getFileName() + ", " + cfgNode.getOrigLineno() +

@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.analysis;
 
-import at.ac.tuwien.infosys.www.pixy.conversion.Cfg;
+import at.ac.tuwien.infosys.www.pixy.conversion.ControlFlowGraph;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.*;
 
@@ -124,9 +124,9 @@ public abstract class Analysis {
 
 //  traverseCfg ********************************************************************
 
-    protected void traverseCfg(Cfg cfg, TacFunction traversedFunction) {
+    protected void traverseCfg(ControlFlowGraph controlFlowGraph, TacFunction traversedFunction) {
 
-        for (CfgNode cfgNodeX : cfg.dfPreOrder()) {
+        for (CfgNode cfgNodeX : controlFlowGraph.dfPreOrder()) {
 
             TransferFunction tf = this.createTf(cfgNodeX, traversedFunction, cfgNodeX);
             if (tf == null) {
