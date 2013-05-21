@@ -21,7 +21,7 @@ import java.util.*;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class FileAnalysis extends DepClient {
+public class FileAnalysis extends DependencyClient {
     public FileAnalysis(DepAnalysis depAnalysis) {
         super(depAnalysis);
     }

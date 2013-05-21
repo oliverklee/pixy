@@ -18,20 +18,20 @@ import java.util.List;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class GenericTaintAnalysis {
-    private List<DepClient> depClients;
+    private List<DependencyClient> dependencyClients;
 
     public DepAnalysis depAnalysis;
 
 //  ********************************************************************************
 
     private GenericTaintAnalysis() {
-        this.depClients = new LinkedList<>();
+        this.dependencyClients = new LinkedList<>();
     }
 
 //  ********************************************************************************
 
-    private void addDepClient(DepClient depClient) {
-        this.depClients.add(depClient);
+    private void addDepClient(DependencyClient dependencyClient) {
+        this.dependencyClients.add(dependencyClient);
     }
 
 //  ********************************************************************************
@@ -55,14 +55,14 @@ public class GenericTaintAnalysis {
             Object[] args = new Object[]{gta.depAnalysis};
 
             // for each requested depclient...
-            for (DepClientInfo dci : MyOptions.getDepClients()) {
+            for (DependencyClientInformation dci : MyOptions.getDepClients()) {
                 if (!dci.performMe()) {
                     continue;
                 }
                 Class<?> clientDefinition = Class.forName(dci.getClassName());
                 Constructor<?> constructor = clientDefinition.getConstructor(argsClass);
-                DepClient depClient = (DepClient) constructor.newInstance(args);
-                gta.addDepClient(depClient);
+                DependencyClient dependencyClient = (DependencyClient) constructor.newInstance(args);
+                gta.addDepClient(dependencyClient);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -84,15 +84,15 @@ public class GenericTaintAnalysis {
 
     List<Integer> detectVulns() {
         List<Integer> retMe = new LinkedList<>();
-        for (DepClient depClient : this.depClients) {
-            retMe.addAll(depClient.detectVulns());
+        for (DependencyClient dependencyClient : this.dependencyClients) {
+            retMe.addAll(dependencyClient.detectVulns());
         }
         return retMe;
     }
 
 //  ********************************************************************************
 
-    List<DepClient> getDepClients() {
-        return this.depClients;
+    List<DependencyClient> getDependencyClients() {
+        return this.dependencyClients;
     }
 }

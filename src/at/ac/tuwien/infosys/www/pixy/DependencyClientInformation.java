@@ -5,18 +5,18 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * This class contains meta-information about a DepClient.
+ * This class contains meta-information about a DependencyClient.
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepClientInfo {
+public class DependencyClientInformation {
     private String name;
     private String className;
     private boolean performMe;
     private Map<String, Set<Integer>> sinks;
     private FunctionModels functionModels;
 
-    DepClientInfo(String name, String className) {
+    DependencyClientInformation(String name, String className) {
         this.name = name;
         this.className = className;
         this.performMe = false;

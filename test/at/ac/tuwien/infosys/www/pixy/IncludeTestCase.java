@@ -48,7 +48,7 @@ public class IncludeTestCase extends TestCase {
         TacConverter tac = checker.initialize().getTac();
         checker.analyzeTaint(tac, functional);
         this.depAnalysis = checker.gta.depAnalysis;
-        this.xssAnalysis = (XSSAnalysis) checker.gta.getDepClients().get(0);
+        this.xssAnalysis = (XSSAnalysis) checker.gta.getDependencyClients().get(0);
 
         // collect sinks
         this.sinks = this.xssAnalysis.collectSinks();

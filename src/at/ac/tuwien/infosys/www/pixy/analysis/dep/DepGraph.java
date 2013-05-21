@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.dep;
 
-import at.ac.tuwien.infosys.www.pixy.DepClientInfo;
+import at.ac.tuwien.infosys.www.pixy.DependencyClientInformation;
 import at.ac.tuwien.infosys.www.pixy.Dumper;
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
@@ -1160,13 +1160,13 @@ public class DepGraph {
 
     // dumps this depgraph to a dot file with to the given name (extension
     // is added automatically) and path
-    public void dumpDot(String graphName, String path, DepClientInfo dci) {
+    public void dumpDot(String graphName, String path, DependencyClientInformation dci) {
         this.dumpDot(graphName, path, new HashSet<DepGraphNode>(), dci);
     }
 
     // dumps this depgraph to a dot file with to the given name (extension
     // is added automatically) and path, shading the given nodes
-    public void dumpDot(String graphName, String path, Set<? extends DepGraphNode> fillUs, DepClientInfo dci) {
+    public void dumpDot(String graphName, String path, Set<? extends DepGraphNode> fillUs, DependencyClientInformation dci) {
         try {
             (new File(path)).mkdir();
             Writer outWriter = new FileWriter(path + "/" + graphName + ".dot");
@@ -1180,7 +1180,7 @@ public class DepGraph {
 
 //  ********************************************************************************
 
-    public void writeDot(String graphName, Set<? extends DepGraphNode> fillUs, Writer outWriter, DepClientInfo dci)
+    public void writeDot(String graphName, Set<? extends DepGraphNode> fillUs, Writer outWriter, DependencyClientInformation dci)
         throws IOException {
 
         // distinguish between verbose and normal output
@@ -1192,7 +1192,7 @@ public class DepGraph {
     }
 
     // writes a dot representation of this depgraph to the given writer
-    public void writeDotVerbose(String graphName, Set<? extends DepGraphNode> fillUs, Writer outWriter, DepClientInfo dci)
+    public void writeDotVerbose(String graphName, Set<? extends DepGraphNode> fillUs, Writer outWriter, DependencyClientInformation dci)
         throws IOException {
 
         outWriter.write("digraph cfg {\n  label=\"");

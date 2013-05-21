@@ -16,7 +16,7 @@ import java.util.*;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class XSSAnalysis extends DepClient {
+public class XSSAnalysis extends DependencyClient {
     public XSSAnalysis(DepAnalysis depAnalysis) {
         super(depAnalysis);
     }

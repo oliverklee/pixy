@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.sanitation;
 
-import at.ac.tuwien.infosys.www.pixy.DepClient;
+import at.ac.tuwien.infosys.www.pixy.DependencyClient;
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.Utils;
 import at.ac.tuwien.infosys.www.pixy.VulnerabilityInformation;
@@ -18,7 +18,7 @@ import java.util.*;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public abstract class SanitationAnalysis extends DepClient {
+public abstract class SanitationAnalysis extends DependencyClient {
     // if this flag is active, untainted values (most notably: static strings)
     // are treated as empty strings during depgraph decoration
     private boolean trimUntainted = !MyOptions.optionR;
@@ -37,7 +37,7 @@ public abstract class SanitationAnalysis extends DepClient {
 
 //  ********************************************************************************
 
-    public List<Integer> detectVulns(DepClient depClient) {
+    public List<Integer> detectVulns(DependencyClient dependencyClient) {
 
         System.out.println();
         System.out.println("*****************");
@@ -46,7 +46,7 @@ public abstract class SanitationAnalysis extends DepClient {
         System.out.println();
 
         // let the basic analysis do the preliminary work
-        VulnerabilityInformation vulnerabilityInformation = depClient.detectAlternative();
+        VulnerabilityInformation vulnerabilityInformation = dependencyClient.detectAlternative();
         List<DepGraph> vulnDepGraphs = vulnerabilityInformation.getDepGraphs();
         List<DepGraph> minDepGraphs = vulnerabilityInformation.getDepGraphsMin();
 

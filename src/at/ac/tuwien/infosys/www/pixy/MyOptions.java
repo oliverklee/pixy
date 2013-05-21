@@ -93,14 +93,14 @@ public class MyOptions {
     // builtin function models ****************************************
 
     public static void readModelFiles() {
-        for (DepClientInfo dci : analyses) {
+        for (DependencyClientInformation dci : analyses) {
             FunctionModels fm = readModelFile(dci);
             dci.setFunctionModels(fm);
         }
     }
 
     // read models for builtin php functions
-    private static FunctionModels readModelFile(DepClientInfo dci) {
+    private static FunctionModels readModelFile(DependencyClientInformation dci) {
 
         Set<String> f_evil = new HashSet<>();
         Map<String, Set<Integer>> f_multi = new HashMap<>();
@@ -225,7 +225,7 @@ public class MyOptions {
     // custom, user-defined sinks *************************************
 
     public static boolean isSink(String functionName) {
-        for (DepClientInfo dci : analyses) {
+        for (DependencyClientInformation dci : analyses) {
             if (dci.getSinks().containsKey(functionName)) {
                 return true;
             }
@@ -308,7 +308,7 @@ public class MyOptions {
 
     // add builtin function sinks (represented by CallOfBuiltinFunction)
     public static void initSinks() {
-        for (DepClientInfo dci : analyses) {
+        for (DependencyClientInformation dci : analyses) {
             String sinkFileName = "sinks_" + dci.getName() + ".txt";
             Map<String, Set<Integer>> sinks = new HashMap<>();
             readSinkFile(MyOptions.pixy_home + "/" + MyOptions.configDir + "/" + sinkFileName, sinks);
@@ -336,7 +336,7 @@ public class MyOptions {
                 if (sinkType == null) {
                     System.out.println("Missing sinkType in file " + sinkFileName);
                 } else {
-                    DepClientInfo dci = name2Analysis.get(sinkType);
+                    DependencyClientInformation dci = name2Analysis.get(sinkType);
                     if (dci == null) {
                         System.out.println("Invalid sinkType in file " + sinkFileName);
                         System.out.println("- " + sinkType);
@@ -348,16 +348,16 @@ public class MyOptions {
         }
     }
 
-    private static DepClientInfo[] analyses = {
-        new DepClientInfo("xss", "at.ac.tuwien.infosys.www.pixy.XSSAnalysis"),
-        new DepClientInfo("sql", "at.ac.tuwien.infosys.www.pixy.SQLAnalysis"),
-        new DepClientInfo("sqlsanit", "at.ac.tuwien.infosys.www.pixy.sanitation.SQLSanitationAnalysis"),
-        new DepClientInfo("xsssanit", "at.ac.tuwien.infosys.www.pixy.sanitation.XSSSanitationAnalysis"),
-        new DepClientInfo("file", "at.ac.tuwien.infosys.www.pixy.FileAnalysis")
+    private static DependencyClientInformation[] analyses = {
+        new DependencyClientInformation("xss", "at.ac.tuwien.infosys.www.pixy.XSSAnalysis"),
+        new DependencyClientInformation("sql", "at.ac.tuwien.infosys.www.pixy.SQLAnalysis"),
+        new DependencyClientInformation("sqlsanit", "at.ac.tuwien.infosys.www.pixy.sanitation.SQLSanitationAnalysis"),
+        new DependencyClientInformation("xsssanit", "at.ac.tuwien.infosys.www.pixy.sanitation.XSSSanitationAnalysis"),
+        new DependencyClientInformation("file", "at.ac.tuwien.infosys.www.pixy.FileAnalysis")
     };
 
     // "name to depclientinfo" mapping
-    private static Map<String, DepClientInfo> name2Analysis;
+    private static Map<String, DependencyClientInformation> name2Analysis;
 
     // "class name to analysis name" mapping
     private static Map<String, String> className2Name;
@@ -375,7 +375,7 @@ public class MyOptions {
 
             String taintString = st.nextToken();
 
-            DepClientInfo dci = name2Analysis.get(taintString);
+            DependencyClientInformation dci = name2Analysis.get(taintString);
             if (dci != null) {
                 dci.setPerformMe(true);
             } else {
@@ -420,25 +420,25 @@ public class MyOptions {
 
         name2Analysis = new HashMap<>();
         className2Name = new HashMap<>();
-        for (DepClientInfo dci : analyses) {
+        for (DependencyClientInformation dci : analyses) {
             name2Analysis.put(dci.getName(), dci);
             className2Name.put(dci.getClassName(), dci.getName());
         }
     }
 
-    public static DepClientInfo getDepClientInfo(String analysisClassName) {
+    public static DependencyClientInformation getDepClientInfo(String analysisClassName) {
         String analysisName = className2Name.get(analysisClassName);
         if (analysisName == null) {
             throw new RuntimeException("Illegal analysis class: " + analysisClassName);
         }
-        DepClientInfo dci = name2Analysis.get(analysisName);
+        DependencyClientInformation dci = name2Analysis.get(analysisName);
         if (dci == null) {
             throw new RuntimeException("Illegal analysis name: " + analysisName);
         }
         return dci;
     }
 
-    public static DepClientInfo[] getDepClients() {
+    public static DependencyClientInformation[] getDepClients() {
         return analyses;
     }
 

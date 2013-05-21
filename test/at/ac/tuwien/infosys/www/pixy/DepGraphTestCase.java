@@ -50,7 +50,7 @@ public class DepGraphTestCase extends TestCase {
         TacConverter tac = checker.initialize().getTac();
         checker.analyzeTaint(tac, functional);
         this.depAnalysis = checker.gta.depAnalysis;
-        this.xssAnalysis = (XSSAnalysis) checker.gta.getDepClients().get(0);
+        this.xssAnalysis = (XSSAnalysis) checker.gta.getDependencyClients().get(0);
 
         // collect sinks
         this.sinks = this.xssAnalysis.collectSinks();
@@ -122,7 +122,7 @@ public class DepGraphTestCase extends TestCase {
 
             String xssFileName = "test" + testNum + "_" + graphCount + "_xss";
             DepGraph relevant = this.xssAnalysis.getRelevant(depGraph);
-            Map<DepGraphUninitNode, DepClient.InitialTaint> dangerousUninit = this.xssAnalysis.findDangerousUninit(relevant);
+            Map<DepGraphUninitNode, DependencyClient.InitialTaint> dangerousUninit = this.xssAnalysis.findDangerousUninit(relevant);
             if (!dangerousUninit.isEmpty()) {
                 vulnCount++;
                 relevant.reduceWithLeaves(dangerousUninit.keySet());
