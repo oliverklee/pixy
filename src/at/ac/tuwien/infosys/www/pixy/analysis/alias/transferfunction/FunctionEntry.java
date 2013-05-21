@@ -14,7 +14,7 @@ import java.util.Map;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class AliasTfEntry extends TransferFunction {
+public class FunctionEntry extends TransferFunction {
     private TacFunction function;
     private AliasAnalysis aliasAnalysis;
 
@@ -22,7 +22,7 @@ public class AliasTfEntry extends TransferFunction {
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public AliasTfEntry(TacFunction function, AliasAnalysis aliasRepos) {
+    public FunctionEntry(TacFunction function, AliasAnalysis aliasRepos) {
         this.function = function;
         this.aliasAnalysis = aliasRepos;
     }

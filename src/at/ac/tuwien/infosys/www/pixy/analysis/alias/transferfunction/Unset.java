@@ -6,35 +6,31 @@ import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
 /**
  * Transfer function for simple assignment nodes.
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class AliasTfAssignRef extends TransferFunction {
-    private Variable left;
-    private Variable right;
-
-    private boolean supported;
+public class Unset extends TransferFunction {
+    private Variable operand;
     private AliasAnalysis aliasAnalysis;
+    private boolean supported;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public AliasTfAssignRef(TacPlace left, TacPlace right, AliasAnalysis aliasAnalysis, AbstractCfgNode cfgNode) {
+    public Unset(TacPlace operand, AliasAnalysis aliasAnalysis) {
 
-        // both arguments are variables if the PHP input is correct
-        this.left = (Variable) left;
-        this.right = (Variable) right;
+        // only variables can be unset
+        if (!operand.isVariable()) {
+            throw new RuntimeException("Trying to unset a non-variable.");
+        }
 
+        this.operand = operand.getVariable();
         this.aliasAnalysis = aliasAnalysis;
-
-        // check for unsupported features
-        this.supported =
-            AliasAnalysis.isSupported(this.left, this.right, true, cfgNode.getOrigLineno());
+        this.supported = AliasAnalysis.isSupported(this.operand);
     }
 
 // *********************************************************************************
@@ -43,21 +39,18 @@ public class AliasTfAssignRef extends TransferFunction {
 
     public LatticeElement transfer(LatticeElement inX) {
 
-        // ignore unsupported operations
-        if (!this.supported) {
-            return inX;
-        }
-
-        // ignore useless statements like "$a =& $a"
-        if (this.left == this.right) {
-            return inX;
-        }
-
         AliasLatticeElement in = (AliasLatticeElement) inX;
+
+        // if the operand is not supported for reference statements:
+        // nothing to do, since we don't support such aliases
+        if (!this.supported) {
+            return in;
+        }
+
         AliasLatticeElement out = new AliasLatticeElement(in);
 
-        // perform redirect operation on "out"
-        out.redirect(this.left, this.right);
+        // perform unset operation on "out"
+        out.unset(this.operand);
 
         // recycle
         out = (AliasLatticeElement) this.aliasAnalysis.recycle(out);

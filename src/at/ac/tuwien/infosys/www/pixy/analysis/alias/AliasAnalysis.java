@@ -5,6 +5,8 @@ import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunctionId;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.transferfunction.*;
+import at.ac.tuwien.infosys.www.pixy.analysis.alias.transferfunction.ReturnFromCall;
+import at.ac.tuwien.infosys.www.pixy.analysis.alias.transferfunction.Unset;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AnalysisType;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterAnalysisNode;
@@ -62,7 +64,7 @@ public class AliasAnalysis extends InterAnalysis {
 
     protected TransferFunction assignRef(AbstractCfgNode cfgNodeX) {
         AssignReference cfgNode = (AssignReference) cfgNodeX;
-        return new AliasTfAssignRef(
+        return new Assignment(
             cfgNode.getLeft(),
             cfgNode.getRight(),
             this,
@@ -91,7 +93,7 @@ public class AliasAnalysis extends InterAnalysis {
             // LATER: ignore this case for now
             return TransferFunctionId.INSTANCE;
         } else {
-            return new AliasTfAssignRef(
+            return new Assignment(
                 globalOp,
                 realGlobal,
                 this,
@@ -100,8 +102,8 @@ public class AliasAnalysis extends InterAnalysis {
     }
 
     protected TransferFunction unset(AbstractCfgNode cfgNodeX) {
-        Unset cfgNode = (Unset) cfgNodeX;
-        return new AliasTfUnset(cfgNode.getOperand(), this);
+        at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Unset cfgNode = (at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Unset) cfgNodeX;
+        return new Unset(cfgNode.getOperand(), this);
     }
 
     protected TransferFunction assignArray(AbstractCfgNode cfgNodeX) {
@@ -152,19 +154,19 @@ public class AliasAnalysis extends InterAnalysis {
                 "More actual than formal params for function " +
                     cfgNode.getFunctionNamePlace().toString() + " on line " + cfgNode.getOrigLineno());
         } else {
-            tf = new AliasTfCallPrep(callingFunction, this, cfgNode);
+            tf = new PrepareCall(callingFunction, this, cfgNode);
         }
 
         return tf;
     }
 
     protected TransferFunction entry(TacFunction traversedFunction) {
-        return new AliasTfEntry(traversedFunction, this);
+        return new FunctionEntry(traversedFunction, this);
     }
 
     protected TransferFunction callRet(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
 
-        ReturnFromCall cfgNode = (ReturnFromCall) cfgNodeX;
+        at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.ReturnFromCall cfgNode = (at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.ReturnFromCall) cfgNodeX;
         CallPreperation cfgNodePrep = cfgNode.getCallPrepNode();
         TacFunction calledFunction = cfgNodePrep.getCallee();
 
@@ -176,7 +178,7 @@ public class AliasAnalysis extends InterAnalysis {
         }
 
         // quite powerful transfer function, does many things
-        TransferFunction tf = new AliasTfCallRet(
+        TransferFunction tf = new ReturnFromCall(
             this.interAnalysisInfo.getAnalysisNode(cfgNodePrep),
             calledFunction,
             this,
