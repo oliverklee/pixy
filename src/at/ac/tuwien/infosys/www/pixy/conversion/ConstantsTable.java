@@ -79,8 +79,7 @@ public class ConstantsTable {
     // adds all constants from the given constants table to this table (leaving out
     // duplicates)
     void addAll(ConstantsTable sourceTable) {
-        Map<String, Constant> sourceConstants = sourceTable.getConstants();
-        for (Map.Entry<String, Constant> entry : sourceConstants.entrySet()) {
+        for (Map.Entry<String, Constant> entry : sourceTable.getConstants().entrySet()) {
             String sourceLabel = entry.getKey();
             Constant sourceConst = entry.getValue();
             if (!this.constants.containsKey(sourceLabel)) {

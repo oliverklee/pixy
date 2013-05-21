@@ -125,7 +125,6 @@ public class DepGraph {
     // clones the given DepGraph
     // (nodes are reused)
     public DepGraph(DepGraph orig) {
-
         this.nodes = new LinkedHashMap<>(orig.nodes);
         this.root = orig.root;
         // this would not be real cloning due to list reuse:
@@ -1630,8 +1629,7 @@ public class DepGraph {
             }
         }
         // delete from edges map
-        for (Iterator<Map.Entry<DepGraphNode, List<DepGraphNode>>> iter =
-                 this.edges.entrySet().iterator(); iter.hasNext(); ) {
+        for (Iterator<Map.Entry<DepGraphNode, List<DepGraphNode>>> iter = this.edges.entrySet().iterator(); iter.hasNext(); ) {
             Map.Entry<DepGraphNode, List<DepGraphNode>> entry = iter.next();
             DepGraphNode node = entry.getKey();
             List<DepGraphNode> successors = entry.getValue();
@@ -1875,8 +1873,7 @@ public class DepGraph {
             }
         }
         // delete from edges map
-        for (Iterator<Map.Entry<DepGraphNode, List<DepGraphNode>>> iter =
-                 this.edges.entrySet().iterator(); iter.hasNext(); ) {
+        for (Iterator<Map.Entry<DepGraphNode, List<DepGraphNode>>> iter = this.edges.entrySet().iterator(); iter.hasNext(); ) {
             Map.Entry<DepGraphNode, List<DepGraphNode>> entry = iter.next();
             DepGraphNode node = entry.getKey();
             List<DepGraphNode> successors = entry.getValue();

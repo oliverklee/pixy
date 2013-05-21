@@ -24,9 +24,8 @@ public class TypeLatticeElement extends LatticeElement {
 
     // lubs the given lattice element over <<this>> lattice element
     public void lub(LatticeElement foreignX) {
-        TypeLatticeElement foreign = (TypeLatticeElement) foreignX;
         // for all foreign mappings...
-        for (Map.Entry<Variable, Set<Type>> entry : foreign.var2Type.entrySet()) {
+        for (Map.Entry<Variable, Set<Type>> entry : ((TypeLatticeElement) foreignX).var2Type.entrySet()) {
             Variable foreignVar = entry.getKey();
             Set<Type> foreignTypes = entry.getValue();
             Set<Type> myTypes = this.var2Type.get(foreignVar);
@@ -121,7 +120,6 @@ public class TypeLatticeElement extends LatticeElement {
 
     // resets all temporaries that belong to the given symbol table
     public void resetTemporaries(SymbolTable symTab) {
-
         for (Iterator<Map.Entry<Variable, Set<Type>>> iter = this.var2Type.entrySet().iterator(); iter.hasNext(); ) {
             Map.Entry<Variable, Set<Type>> entry = iter.next();
             Variable var = entry.getKey();
@@ -141,9 +139,7 @@ public class TypeLatticeElement extends LatticeElement {
     // from interIn (i.e., global variables, superglobal variables, and
     // constants)
     public void copyGlobalLike(TypeLatticeElement interIn) {
-
         for (Map.Entry<Variable, Set<Type>> entry : interIn.var2Type.entrySet()) {
-
             Variable origVar = entry.getKey();
             Set<Type> origTypes = entry.getValue();
 
@@ -155,9 +151,7 @@ public class TypeLatticeElement extends LatticeElement {
 
     // copies the mappings for local temporaries of the main function
     public void copyMainTemporaries(TypeLatticeElement origElement) {
-
         for (Map.Entry<Variable, Set<Type>> entry : origElement.var2Type.entrySet()) {
-
             Variable origVar = entry.getKey();
             Set<Type> origTypes = entry.getValue();
 

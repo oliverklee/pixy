@@ -482,8 +482,7 @@ public class DepLatticeElement extends LatticeElement {
 
         // lub the remaining non-default mappings of "foreign" over my
         // default mappings
-        Map<TacPlace, DepSet> foreignPlaceToDep = foreign.getPlaceToDep();
-        for (Map.Entry<TacPlace, DepSet> foreignEntry : foreignPlaceToDep.entrySet()) {
+        for (Map.Entry<TacPlace, DepSet> foreignEntry : foreign.getPlaceToDep().entrySet()) {
             TacPlace foreignPlace = foreignEntry.getKey();
             DepSet foreignDep = foreignEntry.getValue();
 
@@ -496,9 +495,7 @@ public class DepLatticeElement extends LatticeElement {
         }
 
         // cleaning pass: remove defaults
-        for (Iterator<Map.Entry<TacPlace, DepSet>> iter =
-                 this.placeToDep.entrySet().iterator(); iter.hasNext(); ) {
-
+        for (Iterator<Map.Entry<TacPlace, DepSet>> iter = this.placeToDep.entrySet().iterator(); iter.hasNext(); ) {
             Map.Entry<TacPlace, DepSet> entry = iter.next();
             TacPlace place = entry.getKey();
             DepSet dep = entry.getValue();
@@ -521,8 +518,7 @@ public class DepLatticeElement extends LatticeElement {
 
         // lub the remaining non-default mappings of "foreign" over my
         // default mappings
-        Map<Variable, DepSet> foreignArrayLabels = foreign.getArrayLabels();
-        for (Map.Entry<Variable, DepSet> foreignEntry : foreignArrayLabels.entrySet()) {
+        for (Map.Entry<Variable, DepSet> foreignEntry : foreign.getArrayLabels().entrySet()) {
             Variable foreignVar = foreignEntry.getKey();
             DepSet foreignArrayLabel = foreignEntry.getValue();
 
@@ -536,9 +532,7 @@ public class DepLatticeElement extends LatticeElement {
         }
 
         // cleaning pass: remove defaults
-        for (Iterator<Map.Entry<Variable, DepSet>> iter =
-                 this.arrayLabels.entrySet().iterator(); iter.hasNext(); ) {
-
+        for (Iterator<Map.Entry<Variable, DepSet>> iter = this.arrayLabels.entrySet().iterator(); iter.hasNext(); ) {
             Map.Entry<Variable, DepSet> entry = iter.next();
             Variable var = entry.getKey();
             DepSet arrayLabel = entry.getValue();
@@ -883,8 +877,7 @@ public class DepLatticeElement extends LatticeElement {
     public void copyGlobalLike(DepLatticeElement interIn) {
 
         // dep mappings
-        Map<TacPlace, DepSet> origPlaceToDep = interIn.getPlaceToDep();
-        for (Map.Entry<TacPlace, DepSet> entry : origPlaceToDep.entrySet()) {
+        for (Map.Entry<TacPlace, DepSet> entry : interIn.getPlaceToDep().entrySet()) {
             TacPlace origPlace = entry.getKey();
             DepSet origDep = entry.getValue();
 
@@ -907,8 +900,7 @@ public class DepLatticeElement extends LatticeElement {
         }
 
         // array label mappings
-        Map<Variable, DepSet> origArrayLabels = interIn.getArrayLabels();
-        for (Map.Entry<Variable, DepSet> entry : origArrayLabels.entrySet()) {
+        for (Map.Entry<Variable, DepSet> entry : interIn.getArrayLabels().entrySet()) {
             TacPlace origPlace = entry.getKey();
             DepSet origArrayLabel = entry.getValue();
 
@@ -937,8 +929,7 @@ public class DepLatticeElement extends LatticeElement {
                                Set<TacPlace> calleeMod) {
 
         // dep mappings
-        Map<TacPlace, DepSet> origPlaceToDep = interIn.getPlaceToDep();
-        for (Map.Entry<TacPlace, DepSet> entry : origPlaceToDep.entrySet()) {
+        for (Map.Entry<TacPlace, DepSet> entry : interIn.getPlaceToDep().entrySet()) {
             TacPlace interPlace = entry.getKey();
             DepSet interDep = entry.getValue();
 
@@ -968,8 +959,7 @@ public class DepLatticeElement extends LatticeElement {
         }
 
         // array label mappings
-        Map<Variable, DepSet> interArrayLabels = interIn.getArrayLabels();
-        for (Map.Entry<Variable, DepSet> entry : interArrayLabels.entrySet()) {
+        for (Map.Entry<Variable, DepSet> entry : interIn.getArrayLabels().entrySet()) {
             TacPlace interPlace = entry.getKey();
             DepSet interArrayLabel = entry.getValue();
 
@@ -1000,8 +990,7 @@ public class DepLatticeElement extends LatticeElement {
     public void copyMainTemporaries(DepLatticeElement origElement) {
 
         // dep mappings
-        Map<TacPlace, DepSet> origPlaceToDep = origElement.getPlaceToDep();
-        for (Map.Entry<TacPlace, DepSet> entry : origPlaceToDep.entrySet()) {
+        for (Map.Entry<TacPlace, DepSet> entry : origElement.getPlaceToDep().entrySet()) {
             TacPlace origPlace = entry.getKey();
             DepSet origDep = entry.getValue();
 
@@ -1023,8 +1012,7 @@ public class DepLatticeElement extends LatticeElement {
         }
 
         // array label mappings
-        Map<Variable, DepSet> origArrayLabels = origElement.getArrayLabels();
-        for (Map.Entry<Variable, DepSet> entry : origArrayLabels.entrySet()) {
+        for (Map.Entry<Variable, DepSet> entry : origElement.getArrayLabels().entrySet()) {
             TacPlace origPlace = entry.getKey();
             DepSet origArrayLabel = entry.getValue();
 
@@ -1051,8 +1039,7 @@ public class DepLatticeElement extends LatticeElement {
     public void copyMainVariables(DepLatticeElement origElement) {
 
         // dep mappings
-        Map<TacPlace, DepSet> origPlaceToDep = origElement.getPlaceToDep();
-        for (Map.Entry<TacPlace, DepSet> entry : origPlaceToDep.entrySet()) {
+        for (Map.Entry<TacPlace, DepSet> entry : origElement.getPlaceToDep().entrySet()) {
             TacPlace origPlace = entry.getKey();
             DepSet origDep = entry.getValue();
 
@@ -1071,8 +1058,7 @@ public class DepLatticeElement extends LatticeElement {
         }
 
         // array label mappings
-        Map<Variable, DepSet> origArrayLabels = origElement.getArrayLabels();
-        for (Map.Entry<Variable, DepSet> entry : origArrayLabels.entrySet()) {
+        for (Map.Entry<Variable, DepSet> entry : origElement.getArrayLabels().entrySet()) {
             TacPlace origPlace = entry.getKey();
             DepSet origArrayLabel = entry.getValue();
 
@@ -1096,8 +1082,7 @@ public class DepLatticeElement extends LatticeElement {
     public void copyLocals(DepLatticeElement origElement) {
 
         // dep mappings
-        Map<TacPlace, DepSet> origPlaceToDep = origElement.getPlaceToDep();
-        for (Map.Entry<TacPlace, DepSet> entry : origPlaceToDep.entrySet()) {
+        for (Map.Entry<TacPlace, DepSet> entry : origElement.getPlaceToDep().entrySet()) {
             TacPlace origPlace = entry.getKey();
             DepSet origDep = entry.getValue();
 
@@ -1114,8 +1099,7 @@ public class DepLatticeElement extends LatticeElement {
         }
 
         // array label mappings
-        Map<Variable, DepSet> origArrayLabels = origElement.getArrayLabels();
-        for (Map.Entry<Variable, DepSet> entry : origArrayLabels.entrySet()) {
+        for (Map.Entry<Variable, DepSet> entry : origElement.getArrayLabels().entrySet()) {
             TacPlace origPlace = entry.getKey();
             DepSet origArrayLabel = entry.getValue();
 

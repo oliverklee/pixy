@@ -66,8 +66,7 @@ public class ConnectorFunction {
             return "<empty>";
         }
         StringBuilder myString = new StringBuilder();
-        for (Map.Entry<CSContext, CSContext> csContextCSContextEntry : this.pos2pos.entrySet()) {
-            Map.Entry<CSContext, CSContext> entry = csContextCSContextEntry;
+        for (Map.Entry<CSContext, CSContext> entry : this.pos2pos.entrySet()) {
             CSContext from = entry.getKey();
             CSContext to = entry.getValue();
             myString.append(from);

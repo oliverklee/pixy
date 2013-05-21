@@ -475,12 +475,9 @@ public class TacConverter {
         Map<String, Map<String, TacFunction>> includedUserMethods = includedTac.getUserMethods();
 
         for (Map.Entry<String, Map<String, TacFunction>> entry1 : includedUserMethods.entrySet()) {
-
             String includedMethodName = entry1.getKey();
-            Map<String, TacFunction> class2Method = entry1.getValue();
 
-            for (Map.Entry<String, TacFunction> entry2 : class2Method.entrySet()) {
-
+            for (Map.Entry<String, TacFunction> entry2 : entry1.getValue().entrySet()) {
                 String className = entry2.getKey();
                 TacFunction includedMethod = entry2.getValue();
 

@@ -462,7 +462,6 @@ public class DepAnalysis extends InterAnalysis {
 
             // create dependency graphs for all sensitive places in this sink
             for (SinkProblem problem : problems) {
-
                 DepGraph depGraph = DepGraph.create(problem.getPlace(),
                     sink.getNode(), this.interAnalysisInfo, mainSymTab, this);
 
@@ -474,7 +473,6 @@ public class DepAnalysis extends InterAnalysis {
                 retMe.add(depGraph);
 
                 if (statistics) {
-
                     // shape statistics and leaf stringness
                     System.out.println("Dep Graph Shape Info");
                     System.out.println("--------------------");
@@ -507,8 +505,7 @@ public class DepAnalysis extends InterAnalysis {
                     // operation counters
                     System.out.println("Dep Graph Operation Counters");
                     System.out.println("------------------------------");
-                    Map<String, Integer> singleOpMap = depGraph.getOpMap();
-                    for (Map.Entry<String, Integer> entry : singleOpMap.entrySet()) {
+                    for (Map.Entry<String, Integer> entry : depGraph.getOpMap().entrySet()) {
                         String opName = entry.getKey();
                         Integer opCount = entry.getValue();
                         System.out.println(opName + ": " + opCount);
@@ -531,7 +528,6 @@ public class DepAnalysis extends InterAnalysis {
         System.out.println();
 
         if (statistics) {
-
             // print graph shape statistics
             System.out.println("Total Shape Statistics");
             System.out.println("------------------------");

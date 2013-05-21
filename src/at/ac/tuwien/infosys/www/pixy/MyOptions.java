@@ -138,7 +138,6 @@ public class MyOptions {
 
         // convert properties...
         for (Map.Entry<Object, Object> propsEntry : sinkProps.entrySet()) {
-
             String funcName = ((String) propsEntry.getKey()).trim();
             String funcList = (String) propsEntry.getValue();
 

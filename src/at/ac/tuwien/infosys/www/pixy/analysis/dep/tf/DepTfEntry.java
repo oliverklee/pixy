@@ -34,10 +34,7 @@ public class DepTfEntry extends TransferFunction {
         DepLatticeElement out = new DepLatticeElement(in);
 
         // initialize g-shadows
-
-        Map<Variable, Variable> globals2GShadows = this.function.getSymbolTable().getGlobals2GShadows();
-
-        for (Map.Entry<Variable, Variable> entry : globals2GShadows.entrySet()) {
+        for (Map.Entry<Variable, Variable> entry : this.function.getSymbolTable().getGlobals2GShadows().entrySet()) {
             Variable global = entry.getKey();
             Variable gShadow = entry.getValue();
 
@@ -49,9 +46,8 @@ public class DepTfEntry extends TransferFunction {
         }
 
         // initialize f-shadows
-        Map<Variable, Variable> formals2FShadows = this.function.getSymbolTable().getFormals2FShadows();
 
-        for (Map.Entry<Variable, Variable> entry : formals2FShadows.entrySet()) {
+        for (Map.Entry<Variable, Variable> entry : this.function.getSymbolTable().getFormals2FShadows().entrySet()) {
             Variable formal = entry.getKey();
             Variable fShadow = entry.getValue();
 

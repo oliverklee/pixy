@@ -306,9 +306,8 @@ public class LiteralLatticeElement extends LatticeElement {
 
         // lub over my non-default mappings
         for (Map.Entry<TacPlace, Literal> tacPlaceLiteralEntry : this.placeToLit.entrySet()) {
-            Map.Entry<TacPlace, Literal> myEntry = tacPlaceLiteralEntry;
-            TacPlace myPlace = myEntry.getKey();
-            Literal myLiteral = myEntry.getValue();
+            TacPlace myPlace = tacPlaceLiteralEntry.getKey();
+            Literal myLiteral = tacPlaceLiteralEntry.getValue();
 
             Literal foreignLiteral = foreign.getLiteral(myPlace);
             if (!foreignLiteral.equals(myLiteral)) {
