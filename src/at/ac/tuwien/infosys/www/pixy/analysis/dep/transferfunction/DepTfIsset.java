@@ -1,4 +1,4 @@
-package at.ac.tuwien.infosys.www.pixy.analysis.dep.tf;
+package at.ac.tuwien.infosys.www.pixy.analysis.dep.transferfunction;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
@@ -7,27 +7,28 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
- * Transfer function for array assignment nodes ("left = array()").
+ * Transfer function for "isset" tests,
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepTfAssignArray extends TransferFunction {
-    private Variable left;
-    private boolean supported;
+public class DepTfIsset extends TransferFunction {
+    private Variable setMe;
+    private TacPlace testMe;
     private CfgNode cfgNode;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public DepTfAssignArray(TacPlace left, CfgNode cfgNode) {
-
-        this.left = (Variable) left;    // must be a variable
+    public DepTfIsset(TacPlace setMe, TacPlace testMe, CfgNode cfgNode) {
+        this.setMe = (Variable) setMe;  // must be a variable
+        this.testMe = testMe;
         this.cfgNode = cfgNode;
-
-        // note that we DO support such statements for arrays and array elements
-        this.supported = !(this.left.isVariableVariable() || this.left.isMember());
     }
 
 // *********************************************************************************
@@ -36,23 +37,21 @@ public class DepTfAssignArray extends TransferFunction {
 
     public LatticeElement transfer(LatticeElement inX) {
 
-        // if this statement is not supported by our alias analysis,
-        // we simply ignore it
-        if (!supported) {
-            return inX;
-        }
-
+        // System.out.println("transfer method: " + setMe + " = " + setTo);
         DepLatticeElement in = (DepLatticeElement) inX;
         DepLatticeElement out = new DepLatticeElement(in);
 
-        // let the lattice element handle the details (set the whole subtree
-        // and left's caFlag to HARMLESS (if it is an array));
-        // NOTE:
-        // "$x = array()" is translated to "_t0 = array(); $x = _t0", and
-        // since there are no known array elements of _t0, the elements of
-        // $x become would become TAINTED instead of UNTAINTED;
-        // this is solved by using array flags
-        out.assignArray(left, cfgNode);
+        if (!setMe.isTemp()) {
+            throw new RuntimeException("SNH");
+        }
+
+        // always results in a boolean, which is always untainted/clean;
+        // not so elegant, but working: simply use Literal.FALSE
+        Set<Variable> mustAliases = new HashSet<>();
+        mustAliases.add(setMe);
+        Set<Variable> mayAliases = Collections.emptySet();
+        out.assign(setMe, mustAliases, mayAliases, cfgNode);
+
         return out;
     }
 }

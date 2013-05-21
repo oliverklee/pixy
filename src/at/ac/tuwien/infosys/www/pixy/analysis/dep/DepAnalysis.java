@@ -2,7 +2,7 @@ package at.ac.tuwien.infosys.www.pixy.analysis.dep;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.*;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.dep.tf.*;
+import at.ac.tuwien.infosys.www.pixy.analysis.dep.transferfunction.*;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.*;
 import at.ac.tuwien.infosys.www.pixy.analysis.inter.callstring.CSAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralAnalysis;
@@ -275,12 +275,8 @@ public class DepAnalysis extends InterAnalysis {
         // for explanations see above (handling CfgNodeCallPrep)
         TransferFunction tf;
         if (calledFunction == null) {
-
             throw new RuntimeException("SNH");
-            // tf = new DepTfCallRetUnknown(cfgNodeRet, cfgNodePrep.getFunctionNamePlace());
-
         } else {
-
             Set<TacPlace> modSet = null;
             if (this.modAnalysis != null) {
                 modSet = this.modAnalysis.getMod(calledFunction);

@@ -1,26 +1,25 @@
-package at.ac.tuwien.infosys.www.pixy.analysis.dep.tf;
+package at.ac.tuwien.infosys.www.pixy.analysis.dep.transferfunction;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
-import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Transfer function for reference assignment nodes.
+ * Transfer function for unary assignment nodes.
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepTfAssignRef extends TransferFunction {
+public class DepTfAssignUnary extends TransferFunction {
     private Variable left;
-    private Variable right;
-    private boolean supported;
+    private TacPlace right;
+    private int op;
+    private Set<Variable> mustAliases;
+    private Set<Variable> mayAliases;
     private CfgNode cfgNode;
 
 // *********************************************************************************
@@ -28,14 +27,15 @@ public class DepTfAssignRef extends TransferFunction {
 // *********************************************************************************
 
     // mustAliases, mayAliases: of setMe
-    public DepTfAssignRef(TacPlace left, TacPlace right, CfgNode cfgNode) {
-
-        this.left = (Variable) left;    // must be a variable
-        this.right = (Variable) right;  // must be a variable
+    public DepTfAssignUnary(
+        TacPlace left, TacPlace right, int op, Set<Variable> mustAliases, Set<Variable> mayAliases, CfgNode cfgNode
+    ) {
+        this.left = (Variable) left;  // must be a variable
+        this.right = right;
+        this.op = op;
+        this.mustAliases = mustAliases;
+        this.mayAliases = mayAliases;
         this.cfgNode = cfgNode;
-
-        // check for unsupported features
-        this.supported = AliasAnalysis.isSupported(this.left, this.right, false, -1);
     }
 
 // *********************************************************************************
@@ -44,24 +44,8 @@ public class DepTfAssignRef extends TransferFunction {
 
     public LatticeElement transfer(LatticeElement inX) {
 
-        // if this reference assignment is not supported by our alias analysis,
-        // we simply ignore it
-        if (!supported) {
-            return inX;
-        }
-
         DepLatticeElement in = (DepLatticeElement) inX;
         DepLatticeElement out = new DepLatticeElement(in);
-
-        // "left =& right" means that left is redirected to right;
-        // for the taint mapping, this means that nothing changes
-        // except that left receives the taint of right;
-        // array label mapping: the same;
-        // we achieve this through the following actions:
-
-        Set<Variable> mustAliases = new HashSet<>();
-        mustAliases.add(left);
-        Set<Variable> mayAliases = Collections.emptySet();
 
         // let the lattice element handle the details
         out.assign(left, mustAliases, mayAliases, cfgNode);

@@ -1,40 +1,26 @@
-package at.ac.tuwien.infosys.www.pixy.analysis.dep.tf;
+package at.ac.tuwien.infosys.www.pixy.analysis.dep.transferfunction;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
+import at.ac.tuwien.infosys.www.pixy.analysis.dep.Dep;
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
-import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
-import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNode;
+import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepSet;
+import at.ac.tuwien.infosys.www.pixy.conversion.nodes.CfgNodeCallUnknown;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Transfer function for unary assignment nodes.
- *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepTfAssignUnary extends TransferFunction {
-    private Variable left;
-    private TacPlace right;
-    private int op;
-    private Set<Variable> mustAliases;
-    private Set<Variable> mayAliases;
-    private CfgNode cfgNode;
+public class DepTfCallUnknown extends TransferFunction {
+    private CfgNodeCallUnknown cfgNode;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    // mustAliases, mayAliases: of setMe
-    public DepTfAssignUnary(
-        TacPlace left, TacPlace right, int op, Set<Variable> mustAliases, Set<Variable> mayAliases, CfgNode cfgNode
-    ) {
-        this.left = (Variable) left;  // must be a variable
-        this.right = right;
-        this.op = op;
-        this.mustAliases = mustAliases;
-        this.mayAliases = mayAliases;
+    public DepTfCallUnknown(CfgNodeCallUnknown cfgNode) {
         this.cfgNode = cfgNode;
     }
 
@@ -47,8 +33,15 @@ public class DepTfAssignUnary extends TransferFunction {
         DepLatticeElement in = (DepLatticeElement) inX;
         DepLatticeElement out = new DepLatticeElement(in);
 
-        // let the lattice element handle the details
-        out.assign(left, mustAliases, mayAliases, cfgNode);
+        // create an appropariate taint value (holding the function's name);
+        // the array label is identic to the taint value
+        Set<Dep> ets = new HashSet<>();
+        ets.add(Dep.create(this.cfgNode));
+        DepSet retDepSet = DepSet.create(ets);
+        DepSet retArrayLabel = retDepSet;
+
+        // assign this taint/label to the node's temporary
+        out.handleReturnValueBuiltin(this.cfgNode.getTempVar(), retDepSet, retArrayLabel);
 
         return out;
     }

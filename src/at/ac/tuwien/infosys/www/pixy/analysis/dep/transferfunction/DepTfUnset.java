@@ -1,4 +1,4 @@
-package at.ac.tuwien.infosys.www.pixy.analysis.dep.tf;
+package at.ac.tuwien.infosys.www.pixy.analysis.dep.transferfunction;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
@@ -12,23 +12,29 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Transfer function for "isset" tests,
+ * Transfer function for unset nodes.
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepTfIsset extends TransferFunction {
-    private Variable setMe;
-    private TacPlace testMe;
+public class DepTfUnset extends TransferFunction {
+    private Variable operand;
     private CfgNode cfgNode;
+    private boolean supported;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public DepTfIsset(TacPlace setMe, TacPlace testMe, CfgNode cfgNode) {
-        this.setMe = (Variable) setMe;  // must be a variable
-        this.testMe = testMe;
+    public DepTfUnset(TacPlace operand, CfgNode cfgNode) {
+
+        // only variables can be unset
+        if (!operand.isVariable()) {
+            throw new RuntimeException("Trying to unset a non-variable.");
+        }
+
+        this.operand = (Variable) operand;
         this.cfgNode = cfgNode;
+        this.supported = true;
     }
 
 // *********************************************************************************
@@ -37,20 +43,20 @@ public class DepTfIsset extends TransferFunction {
 
     public LatticeElement transfer(LatticeElement inX) {
 
-        // System.out.println("transfer method: " + setMe + " = " + setTo);
+        // if this statement is not supported by our alias analysis,
+        // we simply ignore it
+        if (!supported) {
+            return inX;
+        }
+
         DepLatticeElement in = (DepLatticeElement) inX;
         DepLatticeElement out = new DepLatticeElement(in);
 
-        if (!setMe.isTemp()) {
-            throw new RuntimeException("SNH");
-        }
-
-        // always results in a boolean, which is always untainted/clean;
-        // not so elegant, but working: simply use Literal.FALSE
+        // unsetting a variable means setting it to NULL (untainted/clean)
         Set<Variable> mustAliases = new HashSet<>();
-        mustAliases.add(setMe);
+        mustAliases.add(operand);
         Set<Variable> mayAliases = Collections.emptySet();
-        out.assign(setMe, mustAliases, mayAliases, cfgNode);
+        out.assign(operand, mustAliases, mayAliases, cfgNode);
 
         return out;
     }
