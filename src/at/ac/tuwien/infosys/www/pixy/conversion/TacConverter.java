@@ -5,7 +5,7 @@ import at.ac.tuwien.infosys.www.phpparser.ParseTree;
 import at.ac.tuwien.infosys.www.phpparser.PhpSymbols;
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.Utils;
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.CallGraph;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.CallGraph;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.Type;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.TypeAnalysis;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.*;

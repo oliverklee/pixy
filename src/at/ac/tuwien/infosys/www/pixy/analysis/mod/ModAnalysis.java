@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.mod;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.CallGraph;
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.CallGraphNode;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.CallGraph;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.CallGraphNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;

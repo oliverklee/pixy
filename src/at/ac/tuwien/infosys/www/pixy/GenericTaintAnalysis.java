@@ -1,8 +1,8 @@
 package at.ac.tuwien.infosys.www.pixy;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.dep.DepAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.AnalysisType;
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.InterWorkList;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AnalysisType;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterWorkList;
 import at.ac.tuwien.infosys.www.pixy.analysis.mod.ModAnalysis;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
 

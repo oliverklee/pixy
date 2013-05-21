@@ -5,7 +5,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunctionId;
 import at.ac.tuwien.infosys.www.pixy.analysis.incdom.transferfunction.IncDomTfAdd;
-import at.ac.tuwien.infosys.www.pixy.analysis.intra.IntraAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.intraprocedural.IntraAnalysis;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.BasicBlock;

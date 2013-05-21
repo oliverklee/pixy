@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.analysis;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.inter.Context;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.Context;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
