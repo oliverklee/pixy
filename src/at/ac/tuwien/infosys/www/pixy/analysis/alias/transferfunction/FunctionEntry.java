@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.alias.transferfunction;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
@@ -14,7 +14,7 @@ import java.util.Map;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class FunctionEntry extends TransferFunction {
+public class FunctionEntry extends AbstractTransferFunction {
     private TacFunction function;
     private AliasAnalysis aliasAnalysis;
 
@@ -31,7 +31,7 @@ public class FunctionEntry extends TransferFunction {
 // OTHER ***************************************************************************
 // *********************************************************************************
 
-    public LatticeElement transfer(LatticeElement inX) {
+    public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
 
         AliasLatticeElement in = (AliasLatticeElement) inX;
         AliasLatticeElement out = new AliasLatticeElement(in);

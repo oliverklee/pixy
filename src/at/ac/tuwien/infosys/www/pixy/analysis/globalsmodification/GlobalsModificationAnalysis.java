@@ -2,8 +2,8 @@ package at.ac.tuwien.infosys.www.pixy.analysis.globalsmodification;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.CallGraph;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.CallGraphNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.*;
 
@@ -23,7 +23,7 @@ public class GlobalsModificationAnalysis {
     // a set of modified global-likes for each function
     // (global variables, superglobals, and constants)
     // NOTE: currently, we do NOT support constants for this
-    Map<TacFunction, Set<TacPlace>> func2Mod;
+    Map<TacFunction, Set<AbstractTacPlace>> func2Mod;
 
 //  ********************************************************************************
 
@@ -33,7 +33,7 @@ public class GlobalsModificationAnalysis {
 
 //  ********************************************************************************
 
-    public Set<TacPlace> getMod(TacFunction function) {
+    public Set<AbstractTacPlace> getMod(TacFunction function) {
         return this.func2Mod.get(function);
     }
 
@@ -52,7 +52,7 @@ public class GlobalsModificationAnalysis {
         //     can be modified inside this function;
         //     ignore function calls at this stage
         for (TacFunction function : functions) {
-            Set<TacPlace> modSet = new HashSet<>();
+            Set<AbstractTacPlace> modSet = new HashSet<>();
 
             for (AbstractCfgNode cfgNodeX : function.getControlFlowGraph().dfPreOrder()) {
                 this.processNode(cfgNodeX, modSet);
@@ -87,8 +87,8 @@ public class GlobalsModificationAnalysis {
             Collection<CallGraphNode> callers = callGraph.getCallers(f);
             for (CallGraphNode callerNode : callers) {
                 TacFunction caller = callerNode.getFunction();
-                Set<TacPlace> modF = func2Mod.get(f);
-                Set<TacPlace> modCaller = func2Mod.get(caller);
+                Set<AbstractTacPlace> modF = func2Mod.get(f);
+                Set<AbstractTacPlace> modCaller = func2Mod.get(caller);
                 int modCallerSize = modCaller.size();
                 modCaller.addAll(modF);
                 if (modCallerSize != modCaller.size()) {
@@ -102,7 +102,7 @@ public class GlobalsModificationAnalysis {
 
     // if the given cfg node has an effect on mod info, this method
     // adjusts the given modSet accordingly (i.e., it adds variables to it)
-    private void processNode(AbstractCfgNode cfgNodeX, Set<TacPlace> modSet) {
+    private void processNode(AbstractCfgNode cfgNodeX, Set<AbstractTacPlace> modSet) {
 
         if (cfgNodeX instanceof BasicBlock) {
 
@@ -159,7 +159,7 @@ public class GlobalsModificationAnalysis {
 
 //  ********************************************************************************
 
-    private void modify(Variable modVar, Set<TacPlace> modSet) {
+    private void modify(Variable modVar, Set<AbstractTacPlace> modSet) {
         modSet.add(modVar);
         if (modVar.isArray()) {
             // the whole array subtree is modified as well
@@ -176,11 +176,11 @@ public class GlobalsModificationAnalysis {
 
     public String dump() {
         StringBuilder b = new StringBuilder();
-        for (Map.Entry<TacFunction, Set<TacPlace>> entry : this.func2Mod.entrySet()) {
+        for (Map.Entry<TacFunction, Set<AbstractTacPlace>> entry : this.func2Mod.entrySet()) {
             b.append("** ");
             b.append(entry.getKey().getName());
             b.append("\n");
-            for (TacPlace mod : entry.getValue()) {
+            for (AbstractTacPlace mod : entry.getValue()) {
                 b.append(mod);
                 b.append(" ");
             }

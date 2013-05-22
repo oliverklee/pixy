@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.inclusiondominator;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
 import java.util.Iterator;
@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class InclusionDominatorLatticeElement extends LatticeElement {
+public class InclusionDominatorLatticeElement extends AbstractLatticeElement {
     // an ordered list of CfgNodes (more specifically: of IncludeStart and
     // IncludeEnd) that dominate the current node
     private List<AbstractCfgNode> dominators;
@@ -29,7 +29,7 @@ public class InclusionDominatorLatticeElement extends LatticeElement {
         this.dominators = new LinkedList<>(cloneMe.getDominators());
     }
 
-    public LatticeElement cloneMe() {
+    public AbstractLatticeElement cloneMe() {
         // uses the cloning constructor
         return new InclusionDominatorLatticeElement(this);
     }
@@ -47,7 +47,7 @@ public class InclusionDominatorLatticeElement extends LatticeElement {
 //  ********************************************************************************
 
     // lubs the given element over *this* element
-    public void lub(LatticeElement element) {
+    public void lub(AbstractLatticeElement element) {
         if (!(element instanceof InclusionDominatorLatticeElement)) {
             throw new RuntimeException("SNH");
         }

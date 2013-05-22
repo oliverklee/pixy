@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.inclusiondominator.transferfunction;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.inclusiondominator.InclusionDominatorAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.inclusiondominator.InclusionDominatorLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
@@ -11,7 +11,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class Add extends TransferFunction {
+public class Add extends AbstractTransferFunction {
     private AbstractCfgNode cfgNode;
     private InclusionDominatorAnalysis inclusionDominatorAnalysis;
 
@@ -28,7 +28,7 @@ public class Add extends TransferFunction {
 // OTHER ***************************************************************************
 // *********************************************************************************
 
-    public LatticeElement transfer(LatticeElement inX) {
+    public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
 
         InclusionDominatorLatticeElement in = (InclusionDominatorLatticeElement) inX;
         InclusionDominatorLatticeElement out = new InclusionDominatorLatticeElement(in);

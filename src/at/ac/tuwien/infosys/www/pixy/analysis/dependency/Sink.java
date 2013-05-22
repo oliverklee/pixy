@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.dependency;
 
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
 import java.util.LinkedList;
@@ -15,7 +15,7 @@ import java.util.List;
 public class Sink implements Comparable<Sink> {
     // a list of sensitive places
     // (i.e. places for which we want to get dependency graphs)
-    private List<TacPlace> sensitivePlaces;
+    private List<AbstractTacPlace> sensitivePlaces;
     private AbstractCfgNode cfgNode;
     private int lineNo;
 
@@ -60,7 +60,7 @@ public class Sink implements Comparable<Sink> {
 //  OTHER **************************************************************************
 //  ********************************************************************************
 
-    public void addSensitivePlace(TacPlace place) {
+    public void addSensitivePlace(AbstractTacPlace place) {
         this.sensitivePlaces.add(place);
     }
 
@@ -71,7 +71,7 @@ public class Sink implements Comparable<Sink> {
         List<SinkProblem> problems = new LinkedList<>();
 
         // for each sensitive place
-        for (TacPlace sensitivePlace : this.sensitivePlaces) {
+        for (AbstractTacPlace sensitivePlace : this.sensitivePlaces) {
             // list of CallNode's that call the function containing the sink
             List<AbstractCfgNode> calledBy = new LinkedList<>();
 

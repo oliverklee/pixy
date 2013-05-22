@@ -1,8 +1,8 @@
 package at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes;
 
 import at.ac.tuwien.infosys.www.phpparser.ParseNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParameter;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 import java.util.LinkedList;
@@ -29,7 +29,7 @@ public class CallUnknownFunction extends AbstractCfgNode {
 // CONSTRUCTORS ********************************************************************
 
     public CallUnknownFunction(String functionName, List<TacActualParameter> paramList,
-                               TacPlace tempPlace, ParseNode node, boolean isMethod) {
+                               AbstractTacPlace tempPlace, ParseNode node, boolean isMethod) {
 
         super(node);
         this.functionName = functionName.toLowerCase();
@@ -55,7 +55,7 @@ public class CallUnknownFunction extends AbstractCfgNode {
     public List<Variable> getVariables() {
         List<Variable> retMe = new LinkedList<>();
         for (TacActualParameter param : this.paramList) {
-            TacPlace paramPlace = param.getPlace();
+            AbstractTacPlace paramPlace = param.getPlace();
             if (paramPlace instanceof Variable) {
                 retMe.add((Variable) paramPlace);
             } else {

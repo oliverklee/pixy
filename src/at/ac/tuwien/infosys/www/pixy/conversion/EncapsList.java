@@ -30,7 +30,7 @@ public class EncapsList {
         }
     }
 
-    void add(TacPlace place, ControlFlowGraph controlFlowGraph) {
+    void add(AbstractTacPlace place, ControlFlowGraph controlFlowGraph) {
         this.encapsList.add(place);
         this.encapsList.add(controlFlowGraph);
     }
@@ -66,7 +66,7 @@ public class EncapsList {
                     // start new
                     lastLiteral = lit;
                 }
-            } else if (obj instanceof TacPlace) {
+            } else if (obj instanceof AbstractTacPlace) {
                 if (lastLiteral != null) {
                     // catch the last literal in a temporary
 
@@ -93,11 +93,11 @@ public class EncapsList {
                 AbstractCfgNode cfgNode;
                 if (tempEmpty) {
                     cfgNode = new AssignSimple(
-                        temp, (TacPlace) obj, node);
+                        temp, (AbstractTacPlace) obj, node);
                     tempEmpty = false;
                 } else {
                     cfgNode = new AssignBinary(
-                        temp, temp, (TacPlace) obj, TacOperators.CONCAT, node);
+                        temp, temp, (AbstractTacPlace) obj, TacOperators.CONCAT, node);
                 }
                 TacConverter.connect(contd, nextControlFlowGraph);
                 TacConverter.connect(nextControlFlowGraph, cfgNode);

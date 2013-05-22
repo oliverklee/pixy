@@ -4,9 +4,9 @@ import at.ac.tuwien.infosys.www.pixy.analysis.dependency.*;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph.*;
 import at.ac.tuwien.infosys.www.pixy.automaton.Automaton;
 import at.ac.tuwien.infosys.www.pixy.automaton.Transition;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParameter;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallBuiltinFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreparation;
@@ -22,7 +22,7 @@ import java.util.*;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class FileAnalysis extends DependencyClient {
+public class FileAnalysis extends AbstractDependencyClient {
     public FileAnalysis(DependencyAnalysis dependencyAnalysis) {
         super(dependencyAnalysis);
     }
@@ -176,7 +176,7 @@ public class FileAnalysis extends DependencyClient {
             NormalNode normalNode = (NormalNode) node;
             if (successors == null || successors.isEmpty()) {
                 // this should be a string leaf node
-                TacPlace place = normalNode.getPlace();
+                AbstractTacPlace place = normalNode.getPlace();
                 if (place.isLiteral()) {
                     auto = Automaton.makeString(place.toString());
                 } else {

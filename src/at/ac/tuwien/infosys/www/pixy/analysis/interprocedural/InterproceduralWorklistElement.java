@@ -7,13 +7,13 @@ import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
  */
 public final class InterproceduralWorklistElement {
     private final AbstractCfgNode cfgNode;
-    private final Context context;
+    private final AbstractContext context;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    InterproceduralWorklistElement(AbstractCfgNode cfgNode, Context context) {
+    InterproceduralWorklistElement(AbstractCfgNode cfgNode, AbstractContext context) {
         this.cfgNode = cfgNode;
         this.context = context;
         if (context == null) {
@@ -29,7 +29,7 @@ public final class InterproceduralWorklistElement {
         return this.cfgNode;
     }
 
-    Context getContext() {
+    AbstractContext getContext() {
         return this.context;
     }
 

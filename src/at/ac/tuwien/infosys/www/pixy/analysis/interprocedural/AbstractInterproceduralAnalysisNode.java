@@ -1,8 +1,8 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.interprocedural;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.AnalysisNode;
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractAnalysisNode;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,20 +14,20 @@ import java.util.Set;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public abstract class InterproceduralAnalysisNode extends AnalysisNode {
+public abstract class AbstractInterproceduralAnalysisNode extends AbstractAnalysisNode {
     // context map for interprocedural analysis
-    // (Context -> input LatticeElement at current CFG node)
-    Map<Context, LatticeElement> phi;
+    // (Context -> input AbstractLatticeElement at current CFG node)
+    Map<AbstractContext, AbstractLatticeElement> phi;
 
     // value resulting from lazy table folding; must only be modified
     // via setFoldedValue, since we want it to be recycled for some analyses!
-    LatticeElement foldedValue;
+    AbstractLatticeElement foldedValue;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    protected InterproceduralAnalysisNode(TransferFunction tf) {
+    protected AbstractInterproceduralAnalysisNode(AbstractTransferFunction tf) {
         super(tf);
         this.phi = new HashMap<>();
         this.foldedValue = null;
@@ -37,34 +37,34 @@ public abstract class InterproceduralAnalysisNode extends AnalysisNode {
 // GET *****************************************************************************
 // *********************************************************************************
 
-    public Map<Context, LatticeElement> getPhi() {
+    public Map<AbstractContext, AbstractLatticeElement> getPhi() {
         return this.phi;
     }
 
-    public Set<Context> getContexts() {
+    public Set<AbstractContext> getContexts() {
         return this.phi.keySet();
     }
 
     // returns the lattice element currently stored in the PHI map under the
     // given context; can be null
-    public LatticeElement getPhiValue(Context context) {
+    public AbstractLatticeElement getPhiValue(AbstractContext context) {
         return this.phi.get(context);
     }
 
     // like getUnrecycledFoldedValue, but does not perform caching
-    public LatticeElement computeFoldedValue() {
+    public AbstractLatticeElement computeFoldedValue() {
         if (this.hasFoldedValue()) {
             return this.foldedValue;
         }
 
-        Iterator<? extends LatticeElement> iter = this.phi.values().iterator();
+        Iterator<? extends AbstractLatticeElement> iter = this.phi.values().iterator();
         if (!iter.hasNext()) {
             return null;
         }
 
         // initialize the folded value as a clone of the first value
         // in the phi map
-        LatticeElement foldedValue = iter.next().cloneMe();
+        AbstractLatticeElement foldedValue = iter.next().cloneMe();
 
         // lub the rest of the values over the start value
         while (iter.hasNext()) {
@@ -78,7 +78,7 @@ public abstract class InterproceduralAnalysisNode extends AnalysisNode {
         return (this.foldedValue != null || this.phi == null);
     }
 
-    public void setFoldedValue(LatticeElement foldedValue) {
+    public void setFoldedValue(AbstractLatticeElement foldedValue) {
         this.foldedValue = foldedValue;
     }
 
@@ -89,7 +89,7 @@ public abstract class InterproceduralAnalysisNode extends AnalysisNode {
 
     // don't call this function without having checked whether
     // the folded value exists
-    public LatticeElement getRecycledFoldedValue() {
+    public AbstractLatticeElement getRecycledFoldedValue() {
         if (this.hasFoldedValue()) {
             return this.foldedValue;
         } else {
@@ -101,13 +101,13 @@ public abstract class InterproceduralAnalysisNode extends AnalysisNode {
     // returns NULL if there is not a single value in the phi map
     // DOESN'T PERFORM RECYCLING OF THE FOLDED ELEMENT,
     // and performs caching (might become a memory-eater)
-    public LatticeElement getUnrecycledFoldedValue() {
+    public AbstractLatticeElement getUnrecycledFoldedValue() {
         // no need to recompute it if we already have it
         if (this.hasFoldedValue()) {
             return this.foldedValue;
         }
 
-        Iterator<? extends LatticeElement> iter = this.phi.values().iterator();
+        Iterator<? extends AbstractLatticeElement> iter = this.phi.values().iterator();
         if (!iter.hasNext()) {
             return null;
         }
@@ -129,7 +129,7 @@ public abstract class InterproceduralAnalysisNode extends AnalysisNode {
 // *********************************************************************************
 
     // sets the PHI value for the given context
-    protected void setPhiValue(Context context, LatticeElement value) {
+    protected void setPhiValue(AbstractContext context, AbstractLatticeElement value) {
         this.phi.put(context, value);
     }
 
@@ -137,7 +137,7 @@ public abstract class InterproceduralAnalysisNode extends AnalysisNode {
 // OTHER ***************************************************************************
 // *********************************************************************************
 
-    LatticeElement transfer(LatticeElement value, Context context) {
+    AbstractLatticeElement transfer(AbstractLatticeElement value, AbstractContext context) {
         return tf.transfer(value, context);
     }
 }

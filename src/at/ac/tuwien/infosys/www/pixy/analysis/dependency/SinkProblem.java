@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.dependency;
 
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
 import java.util.LinkedList;
@@ -11,13 +11,13 @@ import java.util.List;
  */
 public class SinkProblem {
     // a place for which we want to know something
-    TacPlace place;
+    AbstractTacPlace place;
 
     // nodes from which the function containing the
     // sensitive sink is called
     List<AbstractCfgNode> callNodes;
 
-    public SinkProblem(TacPlace place) {
+    public SinkProblem(AbstractTacPlace place) {
         this.place = place;
         this.callNodes = new LinkedList<>();
     }
@@ -26,7 +26,7 @@ public class SinkProblem {
         this.callNodes = callNodes;
     }
 
-    public TacPlace getPlace() {
+    public AbstractTacPlace getPlace() {
         return this.place;
     }
 

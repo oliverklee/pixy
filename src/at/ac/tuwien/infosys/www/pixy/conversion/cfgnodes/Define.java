@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes;
 
 import at.ac.tuwien.infosys.www.phpparser.ParseNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 import java.util.LinkedList;
@@ -12,17 +12,17 @@ import java.util.List;
  */
 public class Define extends AbstractCfgNode {
     // the first parameter (the name of the constant to be set)
-    private TacPlace setMe;
+    private AbstractTacPlace setMe;
 
     // the second parameter (the value that the constant shall be set to)
-    private TacPlace setTo;
+    private AbstractTacPlace setTo;
 
     // the third parameter
-    private TacPlace caseInsensitive;
+    private AbstractTacPlace caseInsensitive;
 
 // CONSTRUCTORS ********************************************************************
 
-    public Define(TacPlace setMe, TacPlace setTo, TacPlace caseInsensitive,
+    public Define(AbstractTacPlace setMe, AbstractTacPlace setTo, AbstractTacPlace caseInsensitive,
                   ParseNode node) {
 
         super(node);
@@ -33,15 +33,15 @@ public class Define extends AbstractCfgNode {
 
 // GET *****************************************************************************
 
-    public TacPlace getSetMe() {
+    public AbstractTacPlace getSetMe() {
         return this.setMe;
     }
 
-    public TacPlace getSetTo() {
+    public AbstractTacPlace getSetTo() {
         return this.setTo;
     }
 
-    public TacPlace getCaseInsensitive() {
+    public AbstractTacPlace getCaseInsensitive() {
         return this.caseInsensitive;
     }
 

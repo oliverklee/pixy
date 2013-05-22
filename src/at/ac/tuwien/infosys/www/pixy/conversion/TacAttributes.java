@@ -10,7 +10,7 @@ import java.util.List;
 public class TacAttributes {
     private int arrayIndex = -1;
 
-    private TacPlace place;
+    private AbstractTacPlace place;
     private ControlFlowGraph controlFlowGraph;
 
     private AbstractCfgNode defaultNode;
@@ -27,7 +27,7 @@ public class TacAttributes {
 
 // GET *****************************************************************************
 
-    TacPlace getPlace() {
+    AbstractTacPlace getPlace() {
         return this.place;
     }
 
@@ -61,7 +61,7 @@ public class TacAttributes {
 
 // SET *****************************************************************************
 
-    void setPlace(TacPlace place) {
+    void setPlace(AbstractTacPlace place) {
         this.place = place;
     }
 

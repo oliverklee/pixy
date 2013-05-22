@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class Call extends AbstractCfgNode {
     // can also be a variable
-    private TacPlace functionNamePlace;
+    private AbstractTacPlace functionNamePlace;
 
     private TacFunction callee;
 
@@ -46,8 +46,8 @@ public class Call extends AbstractCfgNode {
 
     // if you pass "null" for "function", don't forget to call "setFunction" later
     public Call(
-        TacPlace functionNamePlace, TacFunction calledFunction, ParseNode node,
-        TacFunction enclosingFunction, Variable retVar, TacPlace tempPlace,
+        AbstractTacPlace functionNamePlace, TacFunction calledFunction, ParseNode node,
+        TacFunction enclosingFunction, Variable retVar, AbstractTacPlace tempPlace,
         List<TacActualParameter> paramList, Variable object) {
 
         super(node);
@@ -74,7 +74,7 @@ public class Call extends AbstractCfgNode {
         return this.callee;
     }
 
-    public TacPlace getFunctionNamePlace() {
+    public AbstractTacPlace getFunctionNamePlace() {
         return this.functionNamePlace;
     }
 
@@ -82,7 +82,7 @@ public class Call extends AbstractCfgNode {
         // only the params are relevant for globals replacement
         List<Variable> retMe = new LinkedList<>();
         for (TacActualParameter param : this.paramList) {
-            TacPlace paramPlace = param.getPlace();
+            AbstractTacPlace paramPlace = param.getPlace();
             if (paramPlace instanceof Variable) {
                 retMe.add((Variable) paramPlace);
             } else {

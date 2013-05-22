@@ -122,7 +122,7 @@ public class DepGraphTestCase extends TestCase {
 
             String xssFileName = "test" + testNum + "_" + graphCount + "_xss";
             DependencyGraph relevant = this.xssAnalysis.getRelevant(dependencyGraph);
-            Map<UninitializedNode, DependencyClient.InitialTaint> dangerousUninit = this.xssAnalysis.findDangerousUninit(relevant);
+            Map<UninitializedNode, AbstractDependencyClient.InitialTaint> dangerousUninit = this.xssAnalysis.findDangerousUninit(relevant);
             if (!dangerousUninit.isEmpty()) {
                 vulnCount++;
                 relevant.reduceWithLeaves(dangerousUninit.keySet());

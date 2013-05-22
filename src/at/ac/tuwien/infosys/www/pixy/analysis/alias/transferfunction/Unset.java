@@ -1,10 +1,10 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.alias.transferfunction;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 /**
@@ -12,7 +12,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class Unset extends TransferFunction {
+public class Unset extends AbstractTransferFunction {
     private Variable operand;
     private AliasAnalysis aliasAnalysis;
     private boolean supported;
@@ -21,7 +21,7 @@ public class Unset extends TransferFunction {
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public Unset(TacPlace operand, AliasAnalysis aliasAnalysis) {
+    public Unset(AbstractTacPlace operand, AliasAnalysis aliasAnalysis) {
 
         // only variables can be unset
         if (!operand.isVariable()) {
@@ -37,7 +37,7 @@ public class Unset extends TransferFunction {
 // OTHER ***************************************************************************
 // *********************************************************************************
 
-    public LatticeElement transfer(LatticeElement inX) {
+    public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
 
         AliasLatticeElement in = (AliasLatticeElement) inX;
 

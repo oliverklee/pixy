@@ -443,7 +443,7 @@ public class ProgramConverter {
     private void removeUnreachables(Set<Include> includeSet, Map<Include, String> includeMap) {
         for (Iterator<Include> iter = includeSet.iterator(); iter.hasNext(); ) {
             Include includeNode = iter.next();
-            InterproceduralAnalysisNode incAnNode = literalAnalysis.getAnalysisNode(includeNode);
+            AbstractInterproceduralAnalysisNode incAnNode = literalAnalysis.getAnalysisNode(includeNode);
             if (incAnNode.getPhi().isEmpty()) {
                 iter.remove();
             }
@@ -452,7 +452,7 @@ public class ProgramConverter {
         for (Iterator<Map.Entry<Include, String>> iter = includeMap.entrySet().iterator(); iter.hasNext(); ) {
             Map.Entry<Include, String> entry = iter.next();
             Include includeNode = entry.getKey();
-            InterproceduralAnalysisNode incAnNode = literalAnalysis.getAnalysisNode(includeNode);
+            AbstractInterproceduralAnalysisNode incAnNode = literalAnalysis.getAnalysisNode(includeNode);
             if (incAnNode.getPhi().isEmpty()) {
                 iter.remove();
             }

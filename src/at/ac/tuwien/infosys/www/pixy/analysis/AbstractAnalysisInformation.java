@@ -9,15 +9,15 @@ import java.util.HashMap;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public abstract class AnalysisInformation {
-    // CfgNode -> AnalysisNode
-    protected HashMap<AbstractCfgNode, AnalysisNode> map;
+public abstract class AbstractAnalysisInformation {
+    // CfgNode -> AbstractAnalysisNode
+    protected HashMap<AbstractCfgNode, AbstractAnalysisNode> map;
 
-    protected AnalysisInformation() {
+    protected AbstractAnalysisInformation() {
         this.map = new HashMap<>();
     }
 
-    public void add(AbstractCfgNode cfgNode, AnalysisNode analysisNode) {
+    public void add(AbstractCfgNode cfgNode, AbstractAnalysisNode analysisNode) {
         this.map.put(cfgNode, analysisNode);
     }
 
@@ -25,7 +25,7 @@ public abstract class AnalysisInformation {
         return this.map.size();
     }
 
-    public HashMap<AbstractCfgNode, AnalysisNode> getMap() {
+    public HashMap<AbstractCfgNode, AbstractAnalysisNode> getMap() {
         return this.map;
     }
 }

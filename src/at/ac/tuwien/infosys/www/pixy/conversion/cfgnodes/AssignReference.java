@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes;
 
 import at.ac.tuwien.infosys.www.phpparser.ParseNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 import java.util.LinkedList;
@@ -28,7 +28,7 @@ public class AssignReference extends AbstractCfgNode {
         return this.left;
     }
 
-    public TacPlace getRight() {
+    public AbstractTacPlace getRight() {
         return this.right;
     }
 

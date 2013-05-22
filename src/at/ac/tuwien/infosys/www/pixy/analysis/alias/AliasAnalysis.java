@@ -1,15 +1,15 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.alias;
 
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.GenericRepository;
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunctionId;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.transferfunction.*;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.transferfunction.CallReturn;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.transferfunction.Unset;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AnalysisType;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralAnalysisNode;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AbstractAnalysisType;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AbstractInterproceduralAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AbstractInterproceduralAnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralWorklistPoor;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.*;
@@ -22,8 +22,8 @@ import java.util.Set;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class AliasAnalysis extends InterproceduralAnalysis {
-    private GenericRepository<LatticeElement> repos;
+public class AliasAnalysis extends AbstractInterproceduralAnalysis {
+    private GenericRepository<AbstractLatticeElement> repos;
 
 //  ********************************************************************************
 //  CONSTRUCTORS *******************************************************************
@@ -31,7 +31,7 @@ public class AliasAnalysis extends InterproceduralAnalysis {
 
 //  AliasAnalysis ******************************************************************
 
-    public AliasAnalysis(TacConverter tac, AnalysisType analysisType) {
+    public AliasAnalysis(TacConverter tac, AbstractAnalysisType analysisType) {
         this.repos = new GenericRepository<>();
         this.initGeneral(tac.getAllFunctions(), tac.getMainFunction(),
             analysisType, new InterproceduralWorklistPoor());
@@ -51,7 +51,7 @@ public class AliasAnalysis extends InterproceduralAnalysis {
 
 //  makeBasicBlockTf ***************************************************************
 
-    protected TransferFunction makeBasicBlockTf(BasicBlock basicBlock, TacFunction traversedFunction) {
+    protected AbstractTransferFunction makeBasicBlockTf(BasicBlock basicBlock, TacFunction traversedFunction) {
         // we can override the general method from Analysis with this, because
         // alias information must not change inside basic blocks
         // (all nodes inside a basic block should have an ID transfer function,
@@ -63,7 +63,7 @@ public class AliasAnalysis extends InterproceduralAnalysis {
 //  TRANSFER FUNCTION GENERATORS ***************************************************
 //  ********************************************************************************
 
-    protected TransferFunction assignRef(AbstractCfgNode cfgNodeX) {
+    protected AbstractTransferFunction assignRef(AbstractCfgNode cfgNodeX) {
         AssignReference cfgNode = (AssignReference) cfgNodeX;
         return new Assign(
             cfgNode.getLeft(),
@@ -72,7 +72,7 @@ public class AliasAnalysis extends InterproceduralAnalysis {
             cfgNode);
     }
 
-    protected TransferFunction global(AbstractCfgNode cfgNodeX) {
+    protected AbstractTransferFunction global(AbstractCfgNode cfgNodeX) {
 
         // "global <var>";
         // equivalent to creating a reference to the variable in the main function with
@@ -102,17 +102,17 @@ public class AliasAnalysis extends InterproceduralAnalysis {
         }
     }
 
-    protected TransferFunction unset(AbstractCfgNode cfgNodeX) {
+    protected AbstractTransferFunction unset(AbstractCfgNode cfgNodeX) {
         at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Unset cfgNode = (at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Unset) cfgNodeX;
         return new Unset(cfgNode.getOperand(), this);
     }
 
-    protected TransferFunction assignArray(AbstractCfgNode cfgNodeX) {
+    protected AbstractTransferFunction assignArray(AbstractCfgNode cfgNodeX) {
         // no effect on alias information
         return TransferFunctionId.INSTANCE;
     }
 
-    protected TransferFunction callPrep(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
+    protected AbstractTransferFunction callPrep(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
 
         CallPreparation cfgNode = (CallPreparation) cfgNodeX;
         TacFunction calledFunction = cfgNode.getCallee();
@@ -143,7 +143,7 @@ public class AliasAnalysis extends InterproceduralAnalysis {
         List<TacFormalParameter> formalParams = calledFunction.getParams();
 
         // the transfer function to be assigned to this node
-        TransferFunction tf = null;
+        AbstractTransferFunction tf = null;
 
         if (actualParams.size() > formalParams.size()) {
             // more actual than formal params; either a bug or a varargs
@@ -161,11 +161,11 @@ public class AliasAnalysis extends InterproceduralAnalysis {
         return tf;
     }
 
-    protected TransferFunction entry(TacFunction traversedFunction) {
+    protected AbstractTransferFunction entry(TacFunction traversedFunction) {
         return new FunctionEntry(traversedFunction, this);
     }
 
-    protected TransferFunction callRet(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
+    protected AbstractTransferFunction callRet(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
 
         at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallReturn cfgNode = (at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallReturn) cfgNodeX;
         CallPreparation cfgNodePrep = cfgNode.getCallPrepNode();
@@ -179,7 +179,7 @@ public class AliasAnalysis extends InterproceduralAnalysis {
         }
 
         // quite powerful transfer function, does many things
-        TransferFunction tf = new CallReturn(
+        AbstractTransferFunction tf = new CallReturn(
             this.interproceduralAnalysisInformation.getAnalysisNode(cfgNodePrep),
             calledFunction,
             this,
@@ -195,7 +195,7 @@ public class AliasAnalysis extends InterproceduralAnalysis {
     // returns the set of must-aliases (Variable's) for the given variable
     // at the given node (folded over all contexts)
     public Set<Variable> getMustAliases(Variable var, AbstractCfgNode cfgNode) {
-        InterproceduralAnalysisNode aNode = this.interproceduralAnalysisInformation.getAnalysisNode(cfgNode);
+        AbstractInterproceduralAnalysisNode aNode = this.interproceduralAnalysisInformation.getAnalysisNode(cfgNode);
         if (aNode == null) {
             System.out.println(cfgNode);
             throw new RuntimeException("gotcha");
@@ -216,7 +216,7 @@ public class AliasAnalysis extends InterproceduralAnalysis {
     // returns the set of may-aliases (Variable's) for the given variable
     // at the given node (folded over all contexts)
     public Set<Variable> getMayAliases(Variable var, AbstractCfgNode cfgNode) {
-        InterproceduralAnalysisNode aNode = this.interproceduralAnalysisInformation.getAnalysisNode(cfgNode);
+        AbstractInterproceduralAnalysisNode aNode = this.interproceduralAnalysisInformation.getAnalysisNode(cfgNode);
         AliasLatticeElement value = this.getFoldedValue(aNode);
         if (value == null) {
             // explanations see: getMustAliases
@@ -349,7 +349,7 @@ public class AliasAnalysis extends InterproceduralAnalysis {
         return supported;
     }
 
-    public AliasLatticeElement getFoldedValue(InterproceduralAnalysisNode node) {
+    public AliasLatticeElement getFoldedValue(AbstractInterproceduralAnalysisNode node) {
 
         // no need to recompute it if we already have it
         if (node.hasFoldedValue()) {
@@ -377,7 +377,7 @@ public class AliasAnalysis extends InterproceduralAnalysis {
 
 //  evalIf *************************************************************************
 
-    protected Boolean evalIf(If ifNode, LatticeElement inValue) {
+    protected Boolean evalIf(If ifNode, AbstractLatticeElement inValue) {
         // alias analysis doesn't have the necessary information for
         // evaluating conditions; hence, it must always return "I don't know"
         return null;
@@ -385,7 +385,7 @@ public class AliasAnalysis extends InterproceduralAnalysis {
 
 //  recycle ************************************************************************
 
-    public LatticeElement recycle(LatticeElement recycleMe) {
+    public AbstractLatticeElement recycle(AbstractLatticeElement recycleMe) {
         return this.repos.recycle(recycleMe);
     }
 

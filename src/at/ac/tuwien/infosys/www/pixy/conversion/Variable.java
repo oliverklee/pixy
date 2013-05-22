@@ -5,7 +5,7 @@ import java.util.*;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class Variable extends TacPlace {
+public class Variable extends AbstractTacPlace {
     private String name;
     private SymbolTable symbolTable; // the symbol table this variable belongs to;
     private boolean isSuperGlobal;   // member of the superglobals symboltable?
@@ -19,9 +19,9 @@ public class Variable extends TacPlace {
     // array properties; array elements can also be arrays, if they have
     // elements themselves
     private boolean isArray;
-    // TacPlace (=index) -> Variable
+    // AbstractTacPlace (=index) -> Variable
     // (only direct elements, i.e., who are one dimension deeper)
-    private Map<TacPlace, Variable> elements;
+    private Map<AbstractTacPlace, Variable> elements;
     // "shortcut": contains all elements with a literal last index;
     // (only direct elements)
     private List<Variable> literalElements;
@@ -30,12 +30,12 @@ public class Variable extends TacPlace {
     private boolean isArrayElement;
     private Variable enclosingArray;
     private Variable topEnclosingArray;
-    private TacPlace index;     // last index for multidimensions
-    private List<TacPlace> indices;   // all indices
+    private AbstractTacPlace index;     // last index for multidimensions
+    private List<AbstractTacPlace> indices;   // all indices
     private boolean hasNonLiteralIndices;
 
     // additional information for variable variables
-    private TacPlace dependsOn;
+    private AbstractTacPlace dependsOn;
 
     // list of array elements whose LAST index is this variable
     private List<Variable> indexFor;
@@ -134,7 +134,7 @@ public class Variable extends TacPlace {
         return retMe;
     }
 
-    public Variable getElement(TacPlace index) {
+    public Variable getElement(AbstractTacPlace index) {
         if (this.elements == null) {
             return null;
         }
@@ -157,11 +157,11 @@ public class Variable extends TacPlace {
         return this.topEnclosingArray;
     }
 
-    public TacPlace getIndex() {
+    public AbstractTacPlace getIndex() {
         return this.index;
     }
 
-    public List<TacPlace> getIndices() {
+    public List<AbstractTacPlace> getIndices() {
         if (this.indices == null) {
             return new LinkedList<>();
         } else {
@@ -174,7 +174,7 @@ public class Variable extends TacPlace {
         return this.hasNonLiteralIndices;
     }
 
-    public TacPlace getDependsOn() {
+    public AbstractTacPlace getDependsOn() {
         return this.dependsOn;
     }
 
@@ -260,7 +260,7 @@ public class Variable extends TacPlace {
         }
     }
 
-    void setArrayElementAttributes(Variable enclosingArray, TacPlace index) {
+    void setArrayElementAttributes(Variable enclosingArray, AbstractTacPlace index) {
 
         this.isArrayElement = true;
         this.indices = new LinkedList<>();
@@ -295,7 +295,7 @@ public class Variable extends TacPlace {
         }
     }
 
-    void setDependsOn(TacPlace dependsOn) {
+    void setDependsOn(AbstractTacPlace dependsOn) {
         this.dependsOn = dependsOn;
     }
 

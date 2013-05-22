@@ -1,11 +1,11 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.Context;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AbstractContext;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CallStringContext extends Context {
+public class CallStringContext extends AbstractContext {
     private int position;
 
     public CallStringContext(int position) {

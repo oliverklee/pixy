@@ -1,12 +1,12 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction;
 
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.Literal;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParameter;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 
 import java.io.*;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CallBuiltinFunction extends TransferFunction {
+public class CallBuiltinFunction extends AbstractTransferFunction {
     private at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallBuiltinFunction cfgNode;
 
 // *********************************************************************************
@@ -29,7 +29,7 @@ public class CallBuiltinFunction extends TransferFunction {
 // OTHER ***************************************************************************
 // *********************************************************************************
 
-    public LatticeElement transfer(LatticeElement inX) {
+    public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
 
         LiteralLatticeElement in = (LiteralLatticeElement) inX;
         LiteralLatticeElement out = new LiteralLatticeElement(in);
@@ -73,7 +73,7 @@ public class CallBuiltinFunction extends TransferFunction {
             // wrong number of params
             return Literal.TOP;
         }
-        TacPlace param0 = paramList.get(0).getPlace();
+        AbstractTacPlace param0 = paramList.get(0).getPlace();
 
         // check if we can resolve the necessary params
         Literal lit0 = in.getLiteral(param0);

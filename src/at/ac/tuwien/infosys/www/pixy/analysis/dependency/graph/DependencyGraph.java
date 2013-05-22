@@ -3,18 +3,18 @@ package at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph;
 import at.ac.tuwien.infosys.www.pixy.DependencyClientInformation;
 import at.ac.tuwien.infosys.www.pixy.Dumper;
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyLabel;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencySet;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.Context;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AbstractContext;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralAnalysisInformation;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.ReverseTarget;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.*;
+import at.ac.tuwien.infosys.www.pixy.sanitation.AbstractSanitationAnalysis;
 import at.ac.tuwien.infosys.www.pixy.sanitation.FSAAutomaton;
-import at.ac.tuwien.infosys.www.pixy.sanitation.SanitationAnalysis;
 
 import java.io.*;
 import java.util.*;
@@ -27,7 +27,7 @@ import java.util.*;
  *
  * If you want a dependency graph to be created, call create(),
  *
- * Passing the TacPlace and the CfgNode that will form the root of the dependency graph.
+ * Passing the AbstractTacPlace and the CfgNode that will form the root of the dependency graph.
  * create() then calls makeDepGraph() with these parameters (will return the root of the created DependencyGraph).
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
@@ -87,7 +87,7 @@ public class DependencyGraph {
     /**
      * Creates a dependency graph.
      *
-     * Passing the TacPlace and the CfgNode that will form the root of the dependency graph.
+     * Passing the AbstractTacPlace and the CfgNode that will form the root of the dependency graph.
      * This function then calls makeDepGraph() with these parameters (will return the root of the created DependencyGraph).
      *
      * @param place
@@ -98,7 +98,7 @@ public class DependencyGraph {
      *
      * @return
      */
-    public static DependencyGraph create(TacPlace place, AbstractCfgNode start, InterproceduralAnalysisInformation analysisInfo,
+    public static DependencyGraph create(AbstractTacPlace place, AbstractCfgNode start, InterproceduralAnalysisInformation analysisInfo,
                                   SymbolTable mainSymTab, DependencyAnalysis dependencyAnalysis) {
 
         DependencyGraph dependencyGraph = new DependencyGraph();
@@ -108,11 +108,11 @@ public class DependencyGraph {
         dependencyGraph.mainSymTab = mainSymTab;
         dependencyGraph.dependencyAnalysis = dependencyAnalysis;
 
-        List<TacPlace> indices = new LinkedList<>();
+        List<AbstractTacPlace> indices = new LinkedList<>();
 
         try {
             // start with all contexts of the start node
-            Set<Context> allC = analysisInfo.getAnalysisNode(start).getContexts();
+            Set<AbstractContext> allC = analysisInfo.getAnalysisNode(start).getContexts();
             dependencyGraph.root = (NormalNode) dependencyGraph.makeDepGraph(
                 place, start, ControlFlowGraph.getFunction(start), indices, allC);
         } catch (NotReachableException ex) {
@@ -187,8 +187,8 @@ public class DependencyGraph {
      * @return
      * @throws NotReachableException
      */
-    private AbstractNode makeDepGraph(TacPlace place, AbstractCfgNode current, TacFunction function,
-                                      List<TacPlace> indices, Set<Context> contexts) throws NotReachableException {
+    private AbstractNode makeDepGraph(AbstractTacPlace place, AbstractCfgNode current, TacFunction function,
+                                      List<AbstractTacPlace> indices, Set<AbstractContext> contexts) throws NotReachableException {
 
         debug("  visiting: " + current.getClass() + ", " + current.getOrigLineno() + ", " + place);
         debug(current.toString());
@@ -256,15 +256,15 @@ public class DependencyGraph {
                 }
 
                 // used for our increased array-awareness
-                List<TacPlace> newIndices = new LinkedList<>();
+                List<AbstractTacPlace> newIndices = new LinkedList<>();
 
                 // context and function switching!
                 ContextSwitch cswitch = this.switchContexts(function, contexts, current, targetNode);
                 TacFunction targetFunction = cswitch.targetFunction;
-                Set<Context> targetContexts = cswitch.targetContexts;
+                Set<AbstractContext> targetContexts = cswitch.targetContexts;
 
                 // for every used place...
-                for (TacPlace used : this.getUsedPlaces(targetNode, place, indices, newIndices)) {
+                for (AbstractTacPlace used : this.getUsedPlaces(targetNode, place, indices, newIndices)) {
 
                     addEdge(connectWith,
                         makeDepGraph(used, targetNode, targetFunction,
@@ -283,7 +283,7 @@ public class DependencyGraph {
     // the given contexts,
     // considering basic blocks and function default cfg's (in these cases,
     // the cfg node has no directly associated analysis info)
-    private DependencySet getDepSet(AbstractCfgNode cfgNode, TacPlace place, Set<Context> contexts)
+    private DependencySet getDepSet(AbstractCfgNode cfgNode, AbstractTacPlace place, Set<AbstractContext> contexts)
         throws NotReachableException {
 
         DependencySet dependencySet = null;
@@ -298,7 +298,7 @@ public class DependencyGraph {
             // apply until we reach the node, or vice versa (apply for the whole
             // table, and fold afterwards)
 
-            Map<Context, LatticeElement> bbPhi = this.analysisInfo.getAnalysisNode(enclosingX).getPhi();
+            Map<AbstractContext, AbstractLatticeElement> bbPhi = this.analysisInfo.getAnalysisNode(enclosingX).getPhi();
 
             if (bbPhi.isEmpty()) {
                 throw new NotReachableException();
@@ -318,7 +318,7 @@ public class DependencyGraph {
                 // if this is a constant, we simply look up the analysis
                 // info in the function's entry node
 
-                Map<Context, LatticeElement> phi = this.analysisInfo.getAnalysisNode(enclosingX).getPhi();
+                Map<AbstractContext, AbstractLatticeElement> phi = this.analysisInfo.getAnalysisNode(enclosingX).getPhi();
                 if (phi.isEmpty()) {
                     throw new NotReachableException();
                 }
@@ -337,7 +337,7 @@ public class DependencyGraph {
                 // use the value at the function's entry node as start value
                 // (since we only have static stuff inside default cfgs, this is
                 // a valid method)
-                Map<Context, LatticeElement> bbPhi = this.analysisInfo.getAnalysisNode(enclosingX).getPhi();
+                Map<AbstractContext, AbstractLatticeElement> bbPhi = this.analysisInfo.getAnalysisNode(enclosingX).getPhi();
                 DependencyLatticeElement latticeElement = this.newFold(bbPhi, contexts);
 
                 DependencyLatticeElement propagated = this.dependencyAnalysis.applyInsideDefaultCfg(
@@ -348,7 +348,7 @@ public class DependencyGraph {
             // none of the above applies, so the current node has
             // directly associated analysis info
 
-            Map<Context, LatticeElement> phi = this.analysisInfo.getAnalysisNode(cfgNode).getPhi();
+            Map<AbstractContext, AbstractLatticeElement> phi = this.analysisInfo.getAnalysisNode(cfgNode).getPhi();
 
             // if the map is empty, it means that the function containing
             // this node is never called;
@@ -374,7 +374,7 @@ public class DependencyGraph {
     // performs context and function switching, making the
     // depgraph construction algorithm context-sensitive;
     // the target function and the target contexts are returned
-    private ContextSwitch switchContexts(TacFunction function, Set<Context> contexts,
+    private ContextSwitch switchContexts(TacFunction function, Set<AbstractContext> contexts,
                                          AbstractCfgNode current, AbstractCfgNode targetNode) {
 
         ContextSwitch retMe = new ContextSwitch();
@@ -382,7 +382,7 @@ public class DependencyGraph {
         // function and contexts of the target cfg node;
         // at the beginning, assume that we are remaining in the same function
         TacFunction targetFunction = function;
-        Set<Context> targetContexts = contexts;
+        Set<AbstractContext> targetContexts = contexts;
 
         // check whether we are jumping from caller to callee
         // (i.e., since we are creating the depgraph backwards, we are
@@ -398,7 +398,7 @@ public class DependencyGraph {
             targetFunction = callNode.getCallee();
             debug("jumping from caller to end of callee: " + function.getName() + " -> " + targetFunction.getName());
             targetContexts = new HashSet<>();
-            for (Context c : contexts) {
+            for (AbstractContext c : contexts) {
                 targetContexts.add(this.dependencyAnalysis.getPropagationContext(callNode, c));
             }
             debug("target contexts: " + targetContexts);
@@ -413,7 +413,7 @@ public class DependencyGraph {
             targetFunction = prep.getCaller();
             debug("caller: " + targetFunction.getName());
             targetContexts = new HashSet<>();
-            for (Context c : contexts) {
+            for (AbstractContext c : contexts) {
                 List<ReverseTarget> revs = this.dependencyAnalysis.getReverseTargets(function, c);
                 for (ReverseTarget rev : revs) {
                     if (!rev.getCallNode().equals(callNode)) {
@@ -607,10 +607,10 @@ public class DependencyGraph {
      *
      * @return
      */
-    private List<TacPlace> getUsedPlaces(AbstractCfgNode cfgNodeX, TacPlace victim,
-                                         List<TacPlace> oldIndices, List<TacPlace> newIndices) {
+    private List<AbstractTacPlace> getUsedPlaces(AbstractCfgNode cfgNodeX, AbstractTacPlace victim,
+                                         List<AbstractTacPlace> oldIndices, List<AbstractTacPlace> newIndices) {
 
-        List<TacPlace> retMe = new LinkedList<>();
+        List<AbstractTacPlace> retMe = new LinkedList<>();
 
         // the node types for which an exception is raised are those
         // that should not even be visited by the algorithm in the first
@@ -632,7 +632,7 @@ public class DependencyGraph {
 
             AssignSimple cfgNode = (AssignSimple) cfgNodeX;
             Variable left = cfgNode.getLeft();
-            TacPlace right = cfgNode.getRight();
+            AbstractTacPlace right = cfgNode.getRight();
 
             // this is a bit more complicated because we are array-aware;
             // if there are some old indices hanging around
@@ -834,18 +834,18 @@ public class DependencyGraph {
     // the additional index [4] into newIndices; if this element also doesn't
     // exist, it returns $b[7] with additional indices [3][4]
     private Variable getCorresponding(Variable left, Variable victim, Variable right,
-                                      List<TacPlace> oldIndices, List<TacPlace> newIndices) {
+                                      List<AbstractTacPlace> oldIndices, List<AbstractTacPlace> newIndices) {
         if (!victim.isArrayElementOf(left)) {
             // can happen for "return" statements (assignments to a
             // superglobal return variable)
             victim = left;
         }
 
-        List<TacPlace> leftIndices = left.getIndices();
-        List<TacPlace> victimIndices = victim.getIndices();
+        List<AbstractTacPlace> leftIndices = left.getIndices();
+        List<AbstractTacPlace> victimIndices = victim.getIndices();
 
         // add oldIndices to victimIndices
-        for (TacPlace oldIndex : oldIndices) {
+        for (AbstractTacPlace oldIndex : oldIndices) {
             victimIndices.add(oldIndex);
         }
 
@@ -855,8 +855,8 @@ public class DependencyGraph {
         // leftIndices
         // -> the resulting indices of victim correspond to the
         // relation between left and victim
-        ListIterator<TacPlace> victimIter = victimIndices.listIterator();
-        for (TacPlace leftIndice : leftIndices) {
+        ListIterator<AbstractTacPlace> victimIter = victimIndices.listIterator();
+        for (AbstractTacPlace leftIndice : leftIndices) {
             victimIter.next();
         }
 
@@ -864,7 +864,7 @@ public class DependencyGraph {
         // try to descend into it as deeply as possible
         Variable retMe = right;
         while (victimIter.hasNext()) {
-            TacPlace victimIndex = victimIter.next();
+            AbstractTacPlace victimIndex = victimIter.next();
             Variable newTarget = retMe.getElement(victimIndex);
             if (newTarget == null) {
                 // the requested element does not exist, so we have
@@ -879,7 +879,7 @@ public class DependencyGraph {
 
         // write the remaining, unmatched indices into newIndices
         while (victimIter.hasNext()) {
-            TacPlace victimIndex = victimIter.next();
+            AbstractTacPlace victimIndex = victimIter.next();
             newIndices.add(victimIndex);
         }
 
@@ -890,11 +890,11 @@ public class DependencyGraph {
 
     // helper function for retrieving the used places for calls to
     // user-defined functions / methods
-    private List<TacPlace> getUsedPlacesForCall(CallReturn retNode,
-                                                TacPlace victim,
-                                                List<TacPlace> oldIndices, List<TacPlace> newIndices) {
+    private List<AbstractTacPlace> getUsedPlacesForCall(CallReturn retNode,
+                                                AbstractTacPlace victim,
+                                                List<AbstractTacPlace> oldIndices, List<AbstractTacPlace> newIndices) {
 
-        List<TacPlace> retMe = new LinkedList<>();
+        List<AbstractTacPlace> retMe = new LinkedList<>();
 
         CallPreparation prepNode = retNode.getCallPrepNode();
         if (prepNode.getCallee() == null) {
@@ -921,9 +921,9 @@ public class DependencyGraph {
 //  ********************************************************************************
 
     // helper function for retrieving the used places for calls to builtin functions
-    private List<TacPlace> getUsedPlacesForBuiltin(CallBuiltinFunction cfgNode) {
+    private List<AbstractTacPlace> getUsedPlacesForBuiltin(CallBuiltinFunction cfgNode) {
 
-        List<TacPlace> retMe = new LinkedList<>();
+        List<AbstractTacPlace> retMe = new LinkedList<>();
         String functionName = cfgNode.getFunctionName();
 
         if (functionName.equals("mysql_query")) {
@@ -944,10 +944,10 @@ public class DependencyGraph {
 
     // determines the "folded" dependency set of the given place by lubbing over
     // the given contexts
-    private DependencySet newFold(Map<Context, LatticeElement> phi, TacPlace place, Set<Context> contexts) {
+    private DependencySet newFold(Map<AbstractContext, AbstractLatticeElement> phi, AbstractTacPlace place, Set<AbstractContext> contexts) {
         DependencySet dependencySet = null;
 
-        for (Context context : contexts) {
+        for (AbstractContext context : contexts) {
             DependencyLatticeElement element = (DependencyLatticeElement) phi.get(context);
             if (element == null) {
                 // there is no associated analysis information for this context
@@ -970,10 +970,10 @@ public class DependencyGraph {
 //  *********************************************************************************
 
     // determines the "folded" lattice element by lubbing over the given contexts
-    private DependencyLatticeElement newFold(Map<Context, LatticeElement> phi, Set<Context> contexts) {
+    private DependencyLatticeElement newFold(Map<AbstractContext, AbstractLatticeElement> phi, Set<AbstractContext> contexts) {
         DependencyLatticeElement retMe = null;
 
-        for (Context context : contexts) {
+        for (AbstractContext context : contexts) {
             DependencyLatticeElement element = (DependencyLatticeElement) phi.get(context);
             if (retMe == null) {
                 // EFF: it should also be possible to say "retMe = element"
@@ -1705,7 +1705,7 @@ public class DependencyGraph {
         // detect function return variables
         if (node instanceof NormalNode) {
             NormalNode normalNode = (NormalNode) node;
-            TacPlace place = normalNode.getPlace();
+            AbstractTacPlace place = normalNode.getPlace();
             if (place.isVariable() && place.getVariable().isReturnVariable()) {
                 retVars.add(normalNode);
             }
@@ -1804,7 +1804,7 @@ public class DependencyGraph {
     // reduces this depgraph to the ineffective sanitization stuff;
     // returns the number of ineffective border sanitizations
     public int reduceToIneffectiveSanit(Map<AbstractNode, FSAAutomaton> deco,
-                                        SanitationAnalysis sanitationAnalysis) {
+                                        AbstractSanitationAnalysis sanitationAnalysis) {
 
         // get the "custom sanitization border"
         List<AbstractNode> border = new LinkedList<>();
@@ -1835,7 +1835,7 @@ public class DependencyGraph {
         visited.add(node);
 
         // reached the border?
-        if (SanitationAnalysis.isCustomSanit(node)) {
+        if (AbstractSanitationAnalysis.isCustomSanit(node)) {
             border.add(node);
             return;
         }
@@ -2010,6 +2010,6 @@ public class DependencyGraph {
     // switchContexts() method
     private class ContextSwitch {
         TacFunction targetFunction;
-        Set<Context> targetContexts;
+        Set<AbstractContext> targetContexts;
     }
 }

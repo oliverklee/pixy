@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes;
 
 import at.ac.tuwien.infosys.www.phpparser.ParseNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 import java.util.LinkedList;
@@ -11,20 +11,20 @@ import java.util.List;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class Static extends AbstractCfgNode {
-    private TacPlace operand;
-    private TacPlace initialPlace;
+    private AbstractTacPlace operand;
+    private AbstractTacPlace initialPlace;
     private boolean hasInitialPlace;
 
 // CONSTRUCTORS ********************************************************************
 
-    public Static(TacPlace operand, ParseNode node) {
+    public Static(AbstractTacPlace operand, ParseNode node) {
         super(node);
         this.operand = operand;
         this.hasInitialPlace = false;
         this.initialPlace = null;
     }
 
-    public Static(TacPlace operand, TacPlace initialPlace, ParseNode node) {
+    public Static(AbstractTacPlace operand, AbstractTacPlace initialPlace, ParseNode node) {
         super(node);
         this.operand = operand;
         this.hasInitialPlace = true;
@@ -37,11 +37,11 @@ public class Static extends AbstractCfgNode {
         return this.hasInitialPlace;
     }
 
-    public TacPlace getOperand() {
+    public AbstractTacPlace getOperand() {
         return this.operand;
     }
 
-    public TacPlace getInitialPlace() {
+    public AbstractTacPlace getInitialPlace() {
         return this.initialPlace;
     }
 

@@ -1,12 +1,12 @@
 package at.ac.tuwien.infosys.www.pixy.sanitation;
 
-import at.ac.tuwien.infosys.www.pixy.DependencyClient;
+import at.ac.tuwien.infosys.www.pixy.AbstractDependencyClient;
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.Utils;
 import at.ac.tuwien.infosys.www.pixy.VulnerabilityInformation;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.*;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph.*;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallBuiltinFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallUnknownFunction;
@@ -19,7 +19,7 @@ import java.util.*;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public abstract class SanitationAnalysis extends DependencyClient {
+public abstract class AbstractSanitationAnalysis extends AbstractDependencyClient {
     // if this flag is active, untainted values (most notably: static strings)
     // are treated as empty strings during depgraph decoration
     private boolean trimUntainted = !MyOptions.optionR;
@@ -30,7 +30,7 @@ public abstract class SanitationAnalysis extends DependencyClient {
     // xss, sql, ...
     protected String name;
 
-    protected SanitationAnalysis(String name, DependencyAnalysis dependencyAnalysis, FSAAutomaton undesired) {
+    protected AbstractSanitationAnalysis(String name, DependencyAnalysis dependencyAnalysis, FSAAutomaton undesired) {
         super(dependencyAnalysis);
         this.name = name;
         this.undesir = undesired;
@@ -38,7 +38,7 @@ public abstract class SanitationAnalysis extends DependencyClient {
 
 //  ********************************************************************************
 
-    public List<Integer> detectVulns(DependencyClient dependencyClient) {
+    public List<Integer> detectVulns(AbstractDependencyClient dependencyClient) {
 
         System.out.println();
         System.out.println("*****************");
@@ -248,7 +248,7 @@ public abstract class SanitationAnalysis extends DependencyClient {
             NormalNode normalNode = (NormalNode) node;
             if (successors == null || successors.isEmpty()) {
                 // this should be a string leaf node
-                TacPlace place = normalNode.getPlace();
+                AbstractTacPlace place = normalNode.getPlace();
                 if (place.isLiteral()) {
                     if (trimUntainted && trimAllowed) {
                         auto = FSAAutomaton.makeString("");

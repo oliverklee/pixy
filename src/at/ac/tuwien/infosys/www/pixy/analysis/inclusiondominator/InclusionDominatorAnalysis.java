@@ -1,11 +1,11 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.inclusiondominator;
 
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.GenericRepository;
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunctionId;
 import at.ac.tuwien.infosys.www.pixy.analysis.inclusiondominator.transferfunction.Add;
-import at.ac.tuwien.infosys.www.pixy.analysis.intraprocedural.IntraproceduralAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.intraprocedural.AbstractIntraproceduralAnalysis;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.BasicBlock;
@@ -20,8 +20,8 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class InclusionDominatorAnalysis extends IntraproceduralAnalysis {
-    private GenericRepository<LatticeElement> repos;
+public class InclusionDominatorAnalysis extends AbstractIntraproceduralAnalysis {
+    private GenericRepository<AbstractLatticeElement> repos;
 
 //  ********************************************************************************
 //  CONSTRUCTORS *******************************************************************
@@ -48,7 +48,7 @@ public class InclusionDominatorAnalysis extends IntraproceduralAnalysis {
 
 //  makeBasicBlockTf ***************************************************************
 
-    protected TransferFunction makeBasicBlockTf(BasicBlock basicBlock, TacFunction traversedFunction) {
+    protected AbstractTransferFunction makeBasicBlockTf(BasicBlock basicBlock, TacFunction traversedFunction) {
         // we can override the general method from Analysis with this, because
         // analysis information must not change inside basic blocks
         // (all nodes inside a basic block should have an ID transfer function,
@@ -56,11 +56,11 @@ public class InclusionDominatorAnalysis extends IntraproceduralAnalysis {
         return TransferFunctionId.INSTANCE;
     }
 
-    protected TransferFunction includeStart(AbstractCfgNode cfgNodeX) {
+    protected AbstractTransferFunction includeStart(AbstractCfgNode cfgNodeX) {
         return new Add(cfgNodeX, this);
     }
 
-    protected TransferFunction includeEnd(AbstractCfgNode cfgNodeX) {
+    protected AbstractTransferFunction includeEnd(AbstractCfgNode cfgNodeX) {
         return includeStart(cfgNodeX);
     }
 
@@ -110,7 +110,7 @@ public class InclusionDominatorAnalysis extends IntraproceduralAnalysis {
 
 //  recycle ************************************************************************
 
-    public LatticeElement recycle(LatticeElement recycleMe) {
+    public AbstractLatticeElement recycle(AbstractLatticeElement recycleMe) {
         return this.repos.recycle(recycleMe);
     }
 }

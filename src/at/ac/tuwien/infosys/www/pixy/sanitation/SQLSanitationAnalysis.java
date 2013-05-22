@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class SQLSanitationAnalysis extends SanitationAnalysis {
+public class SQLSanitationAnalysis extends AbstractSanitationAnalysis {
     public SQLSanitationAnalysis(DependencyAnalysis dependencyAnalysis) {
         this(dependencyAnalysis, true);
     }

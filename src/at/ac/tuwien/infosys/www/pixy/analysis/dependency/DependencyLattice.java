@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.dependency;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.Lattice;
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLattice;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
 
 import java.util.List;
@@ -11,9 +11,9 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-class DependencyLattice extends Lattice {
+class DependencyLattice extends AbstractLattice {
     DependencyLattice(
-        List<TacPlace> places, ConstantsTable constantsTable, List<TacFunction> functions, SymbolTable superSymbolTable,
+        List<AbstractTacPlace> places, ConstantsTable constantsTable, List<TacFunction> functions, SymbolTable superSymbolTable,
         Variable memberPlace
     ) {
         DependencyLatticeElement.initDefault(places, constantsTable, functions, superSymbolTable, memberPlace);
@@ -25,9 +25,9 @@ class DependencyLattice extends Lattice {
 
     // input elements (incoming and target) are not modified,
     // output element is newly allocated
-    public LatticeElement lub(
-        LatticeElement incomingElementX,
-        LatticeElement targetElementX) {
+    public AbstractLatticeElement lub(
+        AbstractLatticeElement incomingElementX,
+        AbstractLatticeElement targetElementX) {
 
         // if the incoming element is the bottom element: return the other element
         if (incomingElementX == this.bottom) {

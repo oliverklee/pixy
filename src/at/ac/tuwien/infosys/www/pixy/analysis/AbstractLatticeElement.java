@@ -8,15 +8,15 @@ package at.ac.tuwien.infosys.www.pixy.analysis;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public abstract class LatticeElement implements Recyclable {
+public abstract class AbstractLatticeElement implements Recyclable {
 
     // lubs the given element over *this* element;
     // can be called on every lattice element except Bottom and Top
-    public abstract void lub(LatticeElement element);
+    public abstract void lub(AbstractLatticeElement element);
 
     // returns a clone (deep copy) of this object;
     // can be called on every lattice element except Bottom and Top
-    public abstract LatticeElement cloneMe();
+    public abstract AbstractLatticeElement cloneMe();
 
     public abstract boolean structureEquals(Object compX);
 

@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes;
 
 import at.ac.tuwien.infosys.www.phpparser.ParseNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 import java.util.LinkedList;
@@ -20,14 +20,14 @@ import java.util.List;
  */
 public class AssignBinary extends AbstractCfgNode {
     private Variable left;
-    private TacPlace leftOperand;
-    private TacPlace rightOperand;
+    private AbstractTacPlace leftOperand;
+    private AbstractTacPlace rightOperand;
     private int op;
 
 //  CONSTRUCTORS *******************************************************************
 
     public AssignBinary(
-        Variable left, TacPlace leftOperand, TacPlace rightOperand,
+        Variable left, AbstractTacPlace leftOperand, AbstractTacPlace rightOperand,
         int op, ParseNode node) {
 
         super(node);
@@ -43,11 +43,11 @@ public class AssignBinary extends AbstractCfgNode {
         return this.left;
     }
 
-    public TacPlace getLeftOperand() {
+    public AbstractTacPlace getLeftOperand() {
         return this.leftOperand;
     }
 
-    public TacPlace getRightOperand() {
+    public AbstractTacPlace getRightOperand() {
         return this.rightOperand;
     }
 

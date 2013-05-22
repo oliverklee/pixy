@@ -1,6 +1,5 @@
 package at.ac.tuwien.infosys.www.pixy.transduction;
 
-import rationals.Builder;
 import rationals.State;
 import rationals.Transition;
 
@@ -10,7 +9,7 @@ import java.util.*;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public abstract class MyAutomaton {
+public abstract class AbstractAutomaton {
     // STATE INFO ***********************************
 
     // counter for state labels
@@ -39,7 +38,7 @@ public abstract class MyAutomaton {
 //  ********************************************************************************
 
     // constructs a new, empty automaton
-    public MyAutomaton() {
+    public AbstractAutomaton() {
         this.counter = 0;
         this.states = new HashSet<>();
         this.initial = null;
@@ -51,7 +50,7 @@ public abstract class MyAutomaton {
 //  ********************************************************************************
 
     // clones the given automaton
-    public MyAutomaton(MyAutomaton orig) {
+    public AbstractAutomaton(AbstractAutomaton orig) {
 
         this();
 
@@ -77,7 +76,7 @@ public abstract class MyAutomaton {
 //  ********************************************************************************
 
     // conversion from rationals.Automaton
-    public MyAutomaton(rationals.Automaton<Transition, ?> automaton) {
+    public AbstractAutomaton(rationals.Automaton<Transition, ?> automaton) {
         this();
 
         // auxiliary map from foreign state to my cloned state

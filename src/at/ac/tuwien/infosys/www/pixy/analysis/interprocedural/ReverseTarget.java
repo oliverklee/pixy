@@ -11,13 +11,13 @@ public class ReverseTarget {
     private Call callNode;
 
     // a set of Contexts
-    private Set<? extends Context> contexts;
+    private Set<? extends AbstractContext> contexts;
 
 //  *********************************************************************************
 //  CONSTRUCTORS ********************************************************************
 //  *********************************************************************************
 
-    public ReverseTarget(Call callNode, Set<? extends Context> contexts) {
+    public ReverseTarget(Call callNode, Set<? extends AbstractContext> contexts) {
         this.callNode = callNode;
         this.contexts = contexts;
     }
@@ -30,7 +30,7 @@ public class ReverseTarget {
         return this.callNode;
     }
 
-    public Set<? extends Context> getContexts() {
+    public Set<? extends AbstractContext> getContexts() {
         return this.contexts;
     }
 }

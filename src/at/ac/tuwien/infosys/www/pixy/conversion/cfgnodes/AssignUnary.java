@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes;
 
 import at.ac.tuwien.infosys.www.phpparser.ParseNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 import java.util.LinkedList;
@@ -17,12 +17,12 @@ import java.util.List;
  */
 public class AssignUnary extends AbstractCfgNode {
     private Variable left;
-    private TacPlace right;
+    private AbstractTacPlace right;
     private int op;
 
 // CONSTRUCTORS ********************************************************************
 
-    public AssignUnary(Variable left, TacPlace right, int op, ParseNode node) {
+    public AssignUnary(Variable left, AbstractTacPlace right, int op, ParseNode node) {
         super(node);
         this.left = left;
         this.right = right;
@@ -35,7 +35,7 @@ public class AssignUnary extends AbstractCfgNode {
         return this.left;
     }
 
-    public TacPlace getRight() {
+    public AbstractTacPlace getRight() {
         return this.right;
     }
 

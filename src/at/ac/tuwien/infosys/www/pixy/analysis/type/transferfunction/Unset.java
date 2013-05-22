@@ -1,14 +1,14 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.type.transferfunction;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.TypeLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class Unset extends TransferFunction {
+public class Unset extends AbstractTransferFunction {
     private Variable operand;
 
 // *********************************************************************************
@@ -23,7 +23,7 @@ public class Unset extends TransferFunction {
 // OTHER ***************************************************************************
 // *********************************************************************************
 
-    public LatticeElement transfer(LatticeElement inX) {
+    public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
 
         TypeLatticeElement in = (TypeLatticeElement) inX;
         TypeLatticeElement out = new TypeLatticeElement(in);

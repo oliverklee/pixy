@@ -1,23 +1,23 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.type;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.Lattice;
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLattice;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
 
 import java.util.Collection;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class TypeLattice extends Lattice {
+public class TypeLattice extends AbstractLattice {
     public TypeLattice(Collection<String> classNames) {
         Type.initTypes(classNames);
     }
 
     // input elements (incoming and target) are not modified,
     // output element is newly allocated
-    public LatticeElement lub(
-        LatticeElement incomingElementX,
-        LatticeElement targetElementX) {
+    public AbstractLatticeElement lub(
+        AbstractLatticeElement incomingElementX,
+        AbstractLatticeElement targetElementX) {
 
         // if the incoming element is the bottom element: return the other element
         if (incomingElementX == this.bottom) {

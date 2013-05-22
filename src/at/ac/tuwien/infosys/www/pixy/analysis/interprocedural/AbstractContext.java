@@ -7,5 +7,5 @@ package at.ac.tuwien.infosys.www.pixy.analysis.interprocedural;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public abstract class Context {
+public abstract class AbstractContext {
 }

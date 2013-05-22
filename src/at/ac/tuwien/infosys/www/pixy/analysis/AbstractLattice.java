@@ -5,15 +5,15 @@ package at.ac.tuwien.infosys.www.pixy.analysis;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public abstract class Lattice {
+public abstract class AbstractLattice {
     // bottom element of this lattice
-    protected final LatticeElement bottom = LatticeElementBottom.INSTANCE;
+    protected final AbstractLatticeElement bottom = LatticeElementBottom.INSTANCE;
 
 // *********************************************************************************
 // GET *****************************************************************************
 // *********************************************************************************
 
-    public LatticeElement getBottom() {
+    public AbstractLatticeElement getBottom() {
         return this.bottom;
     }
 
@@ -21,7 +21,7 @@ public abstract class Lattice {
 // OTHER ***************************************************************************
 // *********************************************************************************
 
-    public abstract LatticeElement lub(
-        LatticeElement incomingElement,
-        LatticeElement targetElement);
+    public abstract AbstractLatticeElement lub(
+        AbstractLatticeElement incomingElement,
+        AbstractLatticeElement targetElement);
 }

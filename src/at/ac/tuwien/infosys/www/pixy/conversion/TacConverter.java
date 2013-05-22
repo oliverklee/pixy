@@ -66,17 +66,17 @@ public class TacConverter {
     private ConstantsTable constantsTable;
 
     // places for predefined constants
-    private final TacPlace lineCPlace;
-    private final TacPlace functionCPlace;
-    private final TacPlace classCPlace;
+    private final AbstractTacPlace lineCPlace;
+    private final AbstractTacPlace functionCPlace;
+    private final AbstractTacPlace classCPlace;
 
     // special places
     //
     // special void place (for functions with "void" return value)
-    private final TacPlace voidPlace;
+    private final AbstractTacPlace voidPlace;
     //
     // empty array offset
-    private final TacPlace emptyOffsetPlace;
+    private final AbstractTacPlace emptyOffsetPlace;
     //
     // an object
     private final Variable objectPlace;
@@ -748,8 +748,8 @@ public class TacConverter {
 // getPlacesList *******************************************************************
 
     // returns a list containing all variables and constants
-    public List<TacPlace> getPlacesList() {
-        List<TacPlace> placesList = new LinkedList<>();
+    public List<AbstractTacPlace> getPlacesList() {
+        List<AbstractTacPlace> placesList = new LinkedList<>();
         placesList.addAll(this.constantsTable.getConstants().values());
         placesList.addAll(this.getVariablesList());
         placesList.addAll(this.superSymbolTable.getVariables().values());
@@ -1061,11 +1061,11 @@ public class TacConverter {
                 // construct name of the corresponding main local
                 StringBuilder varNameBuffer = new StringBuilder();
                 varNameBuffer.append("$");
-                Iterator<TacPlace> indicesIter = var.getIndices().iterator();
-                TacPlace firstIndex = indicesIter.next();
+                Iterator<AbstractTacPlace> indicesIter = var.getIndices().iterator();
+                AbstractTacPlace firstIndex = indicesIter.next();
                 varNameBuffer.append(firstIndex.getLiteral().toString());
                 while (indicesIter.hasNext()) {
-                    TacPlace index = indicesIter.next();
+                    AbstractTacPlace index = indicesIter.next();
                     varNameBuffer.append("[");
                     varNameBuffer.append(index.getLiteral().toString());
                     varNameBuffer.append("]");
@@ -1215,7 +1215,7 @@ public class TacConverter {
 
 // makeConstantPlace ***************************************************************
 
-    private TacPlace makeConstantPlace(String label) {
+    private AbstractTacPlace makeConstantPlace(String label) {
 
         // lookup constant
         Constant constant = this.constantsTable.getConstant(label);
@@ -1234,7 +1234,7 @@ public class TacConverter {
 // addSuperGlobal ******************************************************************
 
     private void addSuperGlobal(String varName) {
-        TacPlace sgPlace = this.makePlace(varName, this.superSymbolTable);
+        AbstractTacPlace sgPlace = this.makePlace(varName, this.superSymbolTable);
         Variable var = sgPlace.getVariable();
         var.setIsSuperGlobal(true);
     }
@@ -1492,7 +1492,7 @@ public class TacConverter {
         // will be the expression's place
         Variable tempPlace = newTemp();
         TacAttributes atts0 = this.rw_cvar(node.getChild(0));
-        TacPlace addMePlace = new Literal("1");
+        AbstractTacPlace addMePlace = new Literal("1");
 
         // assign the variable's old value to the temporary
         AbstractCfgNode rescueNode = new AssignSimple(
@@ -1515,7 +1515,7 @@ public class TacConverter {
     void preIncDec(ParseNode node, int op, TacAttributes myAtts) {
 
         TacAttributes atts1 = this.rw_cvar(node.getChild(1));
-        TacPlace addMePlace = new Literal("1");
+        AbstractTacPlace addMePlace = new Literal("1");
 
         AbstractCfgNode cfgNode = new AssignBinary(
             (Variable) atts1.getPlace(), atts1.getPlace(), addMePlace, op, node);
@@ -1769,7 +1769,7 @@ public class TacConverter {
     //                 (either this.someMethod or this.unknownFunction or null)
     ControlFlowGraph functionCallHelper(
         String calledFuncName, boolean isMethod, TacFunction calledFunction, List<TacActualParameter> paramList,
-        TacPlace tempPlace, boolean backpatch, ParseNode parseNode, String className,
+        AbstractTacPlace tempPlace, boolean backpatch, ParseNode parseNode, String className,
         Variable object) {
 
         // if this is a call to the "define" function, we return a one-node cfg
@@ -1778,9 +1778,9 @@ public class TacConverter {
 
             // extract params
             Iterator<TacActualParameter> paramIter = paramList.iterator();
-            TacPlace setMe = paramIter.next().getPlace();
-            TacPlace setTo = paramIter.next().getPlace();
-            TacPlace caseInsensitive;
+            AbstractTacPlace setMe = paramIter.next().getPlace();
+            AbstractTacPlace setTo = paramIter.next().getPlace();
+            AbstractTacPlace caseInsensitive;
             if (paramIter.hasNext()) {
                 caseInsensitive = paramIter.next().getPlace();
             } else {
@@ -1959,7 +1959,7 @@ public class TacConverter {
     // - determines if the enclosing array is superglobal or not
     // - creates the array element and sets its properties
     // - informs the enclosing array about the element
-    Variable makeArrayElementPlace(TacPlace arrayPlace, TacPlace offsetPlace) {
+    Variable makeArrayElementPlace(AbstractTacPlace arrayPlace, AbstractTacPlace offsetPlace) {
 
         // the enclosing array
         Variable arrayVar = arrayPlace.getVariable();
@@ -2011,7 +2011,7 @@ public class TacConverter {
     //   creates a ControlFlowGraph node which either assigns a value to the array element
     //   or makes the array element a reference to the given valuePlace
     AbstractCfgNode arrayPairListHelper(
-        TacPlace arrayPlace, TacPlace offsetPlace, TacPlace valuePlace,
+        AbstractTacPlace arrayPlace, AbstractTacPlace offsetPlace, AbstractTacPlace valuePlace,
         boolean reference, ParseNode node) {
 
         Variable arrayElementPlace = this.makeArrayElementPlace(arrayPlace, offsetPlace);
@@ -2031,7 +2031,7 @@ public class TacConverter {
     void encapsListHelper(ParseNode node, TacAttributes myAtts) {
 
         TacAttributes attsList = this.encaps_list(node.getChild(0));
-        TacPlace stringPlace = new Literal(node.getChild(1).getLexeme(), false);
+        AbstractTacPlace stringPlace = new Literal(node.getChild(1).getLexeme(), false);
 
         EncapsList encapsList = attsList.getEncapsList();
         encapsList.add((Literal) stringPlace);
@@ -2043,9 +2043,9 @@ public class TacConverter {
     // returns the right place for
     // $ { expr }
     // no matter if it is encountered within double quotes or not
-    TacPlace exprVarHelper(TacPlace exprPlace) {
+    AbstractTacPlace exprVarHelper(AbstractTacPlace exprPlace) {
 
-        TacPlace myPlace = null;
+        AbstractTacPlace myPlace = null;
         if (exprPlace.isLiteral()) {
 
             // intended transformations for literals:
@@ -2104,7 +2104,7 @@ public class TacConverter {
         int logId = this.tempId;
         // place for the array returned by each(); can also be used
         // for reset() since we don't need its return value
-        TacPlace tempPlace = this.newTemp();
+        AbstractTacPlace tempPlace = this.newTemp();
 
         ControlFlowGraph resetCallControlFlowGraph = this.functionCallHelper(
             "reset", false, null, paramList,
@@ -2139,7 +2139,7 @@ public class TacConverter {
 
             TacAttributes attsValue = this.w_cvar(node.getChild(4));
 
-            TacPlace tempPlaceValue = this.makeArrayElementPlace(
+            AbstractTacPlace tempPlaceValue = this.makeArrayElementPlace(
                 tempPlace, new Literal("1"));
 
             AbstractCfgNode valueNode = new AssignSimple(
@@ -2156,9 +2156,9 @@ public class TacConverter {
             TacAttributes attsKey = this.w_cvar(node.getChild(4));
             TacAttributes attsValue = attsOptional;
 
-            TacPlace tempPlaceKey = this.makeArrayElementPlace(
+            AbstractTacPlace tempPlaceKey = this.makeArrayElementPlace(
                 tempPlace, new Literal("0"));
-            TacPlace tempPlaceValue = this.makeArrayElementPlace(
+            AbstractTacPlace tempPlaceValue = this.makeArrayElementPlace(
                 tempPlace, new Literal("1"));
 
             AbstractCfgNode keyNode = new AssignSimple(
@@ -2229,7 +2229,7 @@ public class TacConverter {
                     }
                 }
 
-                TacPlace functionNamePlace = prepNode.getFunctionNamePlace();
+                AbstractTacPlace functionNamePlace = prepNode.getFunctionNamePlace();
 
                 // note: only methods with literal names have been added to the backpatching list
 
@@ -2365,7 +2365,7 @@ public class TacConverter {
                 Call callNode = prepNode.getCallNode();
                 CallReturn retNode = (CallReturn) callNode.getOutEdge(0).getDest();
 
-                TacPlace functionNamePlace = prepNode.getFunctionNamePlace();
+                AbstractTacPlace functionNamePlace = prepNode.getFunctionNamePlace();
 
                 // determine reachability of this call node
                 boolean reachable = true;
@@ -2892,7 +2892,7 @@ public class TacConverter {
             case PhpSymbols.T_VARIABLE: {
                 if (node.getNumChildren() == 1) {
                     // -> T_VARIABLE
-                    TacPlace paramPlace = this.makePlace(firstChild.getLexeme());
+                    AbstractTacPlace paramPlace = this.makePlace(firstChild.getLexeme());
                     TacFormalParameter param = new TacFormalParameter(paramPlace.getVariable());
                     List<TacFormalParameter> paramList = new LinkedList<>();
                     paramList.add(param);
@@ -2921,7 +2921,7 @@ public class TacConverter {
 
             // -> & T_VARIABLE
             case PhpSymbols.T_BITWISE_AND: {
-                TacPlace paramPlace = this.makePlace(node.getChild(1).getLexeme());
+                AbstractTacPlace paramPlace = this.makePlace(node.getChild(1).getLexeme());
                 TacFormalParameter param = new TacFormalParameter(paramPlace.getVariable(), true);
                 List<TacFormalParameter> paramList = new LinkedList<>();
                 paramList.add(param);
@@ -2932,7 +2932,7 @@ public class TacConverter {
             // -> T_CONST T_VARIABLE
             case PhpSymbols.T_CONST: {
                 // undocumented feature, ignore T_CONST
-                TacPlace paramPlace = this.makePlace(node.getChild(1).getLexeme());
+                AbstractTacPlace paramPlace = this.makePlace(node.getChild(1).getLexeme());
                 TacFormalParameter param = new TacFormalParameter(paramPlace.getVariable());
                 List<TacFormalParameter> paramList = new LinkedList<>();
                 paramList.add(param);
@@ -2948,7 +2948,7 @@ public class TacConverter {
                     case PhpSymbols.T_VARIABLE: {
                         if (node.getNumChildren() == 3) {
                             // -> non_empty_parameter_list , T_VARIABLE
-                            TacPlace paramPlace = this.makePlace(node.getChild(2).getLexeme());
+                            AbstractTacPlace paramPlace = this.makePlace(node.getChild(2).getLexeme());
                             TacFormalParameter param = new TacFormalParameter(paramPlace.getVariable());
                             TacAttributes attsList = this.non_empty_parameter_list(firstChild);
                             List<TacFormalParameter> paramList = attsList.getFormalParamList();
@@ -2979,7 +2979,7 @@ public class TacConverter {
                     // -> non_empty_parameter_list , & T_VARIABLE
                     case PhpSymbols.T_BITWISE_AND: {
                         TacAttributes attsList = this.non_empty_parameter_list(firstChild);
-                        TacPlace paramPlace = this.makePlace(node.getChild(3).getLexeme());
+                        AbstractTacPlace paramPlace = this.makePlace(node.getChild(3).getLexeme());
                         TacFormalParameter param = new TacFormalParameter(paramPlace.getVariable(), true);
                         List<TacFormalParameter> paramList = attsList.getFormalParamList();
                         paramList.add(param);
@@ -2990,7 +2990,7 @@ public class TacConverter {
                     // -> non_empty_parameter_list , T_CONST T_VARIABLE
                     case PhpSymbols.T_CONST: {
                         // undocumented feature, ignore T_CONST
-                        TacPlace paramPlace = this.makePlace(node.getChild(3).getLexeme());
+                        AbstractTacPlace paramPlace = this.makePlace(node.getChild(3).getLexeme());
                         TacFormalParameter param = new TacFormalParameter(paramPlace.getVariable());
                         TacAttributes attsList = this.non_empty_parameter_list(firstChild);
                         List<TacFormalParameter> paramList = attsList.getFormalParamList();
@@ -3079,7 +3079,7 @@ public class TacConverter {
 // static_array_pair_list *****************************************************************
 
     // - cfg
-    TacAttributes static_array_pair_list(ParseNode node, TacPlace arrayPlace) {
+    TacAttributes static_array_pair_list(ParseNode node, AbstractTacPlace arrayPlace) {
         TacAttributes myAtts = new TacAttributes();
 
         ParseNode firstChild = node.getChild(0);
@@ -3102,7 +3102,7 @@ public class TacConverter {
 
     // - cfg
     // very similar to parts of non_empty_array_pair_list
-    TacAttributes non_empty_static_array_pair_list(ParseNode node, TacPlace arrayPlace) {
+    TacAttributes non_empty_static_array_pair_list(ParseNode node, AbstractTacPlace arrayPlace) {
         TacAttributes myAtts = new TacAttributes();
 
         int logId = this.tempId;
@@ -3139,7 +3139,7 @@ public class TacConverter {
                     this.non_empty_static_array_pair_list(firstChild, arrayPlace);
                 TacAttributes attsScalar = this.static_scalar(node.getChild(2));
 
-                TacPlace offsetPlace;
+                AbstractTacPlace offsetPlace;
                 int largestIndex = attsList.getArrayIndex();
                 if (largestIndex == -1) {
                     offsetPlace = this.emptyOffsetPlace;
@@ -3786,7 +3786,7 @@ public class TacConverter {
 
                 TacAttributes atts0 = this.static_var_list(firstChild);
 
-                TacPlace varPlace = makePlace(node.getChild(2).getLexeme());
+                AbstractTacPlace varPlace = makePlace(node.getChild(2).getLexeme());
                 AbstractCfgNode cfgNode = new Static(varPlace, node);
 
                 connect(atts0.getControlFlowGraph(), cfgNode);
@@ -3800,7 +3800,7 @@ public class TacConverter {
                 TacAttributes atts0 = this.static_var_list(firstChild);
                 TacAttributes atts4 = this.static_scalar(node.getChild(4));
 
-                TacPlace varPlace = makePlace(node.getChild(2).getLexeme());
+                AbstractTacPlace varPlace = makePlace(node.getChild(2).getLexeme());
                 AbstractCfgNode cfgNode = new Static(varPlace, atts4.getPlace(), node);
 
                 connect(atts0.getControlFlowGraph(), atts4.getControlFlowGraph());
@@ -3814,7 +3814,7 @@ public class TacConverter {
             if (node.getNumChildren() == 1) {
                 // -> T_VARIABLE
 
-                TacPlace varPlace = makePlace(firstChild.getLexeme());
+                AbstractTacPlace varPlace = makePlace(firstChild.getLexeme());
                 AbstractCfgNode cfgNode = new Static(varPlace, node);
                 myAtts.setControlFlowGraph(new ControlFlowGraph(cfgNode, cfgNode));
             } else {
@@ -3822,7 +3822,7 @@ public class TacConverter {
 
                 TacAttributes atts2 = this.static_scalar(node.getChild(2));
 
-                TacPlace varPlace = makePlace(firstChild.getLexeme());
+                AbstractTacPlace varPlace = makePlace(firstChild.getLexeme());
                 AbstractCfgNode cfgNode = new Static(varPlace, atts2.getPlace(), node);
 
                 connect(atts2.getControlFlowGraph(), cfgNode);
@@ -3872,7 +3872,7 @@ public class TacConverter {
             // -> T_VARIABLE
 
             String varLex = node.getChild(0).getLexeme();
-            TacPlace varPlace = makePlace(varLex);
+            AbstractTacPlace varPlace = makePlace(varLex);
             // there also has to be a global variable with the same name
             makePlace(varLex, this.mainSymbolTable);
             AbstractCfgNode cfgNode = new Global(varPlace, node);
@@ -3881,8 +3881,8 @@ public class TacConverter {
             // -> $ r_cvar
             // ex: global $$a
             TacAttributes attsCvar = this.r_cvar(node.getChild(1));
-            TacPlace cvarPlace = attsCvar.getPlace();
-            TacPlace varPlace = makePlace("${" + cvarPlace.toString() + "}");
+            AbstractTacPlace cvarPlace = attsCvar.getPlace();
+            AbstractTacPlace varPlace = makePlace("${" + cvarPlace.toString() + "}");
             varPlace.getVariable().setDependsOn(cvarPlace);
             AbstractCfgNode cfgNode = new Global(varPlace, node);
 
@@ -3894,7 +3894,7 @@ public class TacConverter {
             // -> $ { expr }
             // ex: global ${$a} or something more complicated
             TacAttributes attsExpr = this.expr(node.getChild(2));
-            TacPlace varPlace = this.exprVarHelper(attsExpr.getPlace());
+            AbstractTacPlace varPlace = this.exprVarHelper(attsExpr.getPlace());
             AbstractCfgNode cfgNode = new Global(varPlace, node);
             connect(attsExpr.getControlFlowGraph(), cfgNode);
             myAtts.setControlFlowGraph(new ControlFlowGraph(attsExpr.getControlFlowGraph().getHead(), cfgNode));
@@ -4170,7 +4170,7 @@ public class TacConverter {
                     // don't really return a value (they return the object);
                     // this is why we call myAtts.setPlace(this.objectPlace) in
                     // any case (see below)
-                    TacPlace tempPlace = newTemp();
+                    AbstractTacPlace tempPlace = newTemp();
 
                     ControlFlowGraph callControlFlowGraph = this.functionCallHelper(
                         className + InternalStrings.methodSuffix, true, null,
@@ -4635,7 +4635,7 @@ public class TacConverter {
                 // identical to shell_exec() with double quotes:
                 // `echo $a` <=> shell_exec("echo $a")
 
-                TacPlace tempPlace = this.newTemp();
+                AbstractTacPlace tempPlace = this.newTemp();
                 TacAttributes attsList = this.encaps_list(node.getChild(1));
 
                 EncapsList encapsList = attsList.getEncapsList();
@@ -4724,7 +4724,7 @@ public class TacConverter {
 
             // -> T_EMPTY ( cvar )
             case PhpSymbols.T_EMPTY: {
-                TacPlace tempPlace = this.newTemp();
+                AbstractTacPlace tempPlace = this.newTemp();
                 TacAttributes attsCvar = this.cvar(node.getChild(2));
                 AbstractCfgNode cfgNode =
                     new EmptyTest(tempPlace, attsCvar.getPlace(), node);
@@ -4738,7 +4738,7 @@ public class TacConverter {
 
             // -> T_INCLUDE expr
             case PhpSymbols.T_INCLUDE: {
-                TacPlace tempPlace = this.newTemp();
+                AbstractTacPlace tempPlace = this.newTemp();
                 TacAttributes attsExpr = this.expr(node.getChild(1));
                 Include cfgNode = new Include(tempPlace, attsExpr.getPlace(),
                     this.file, this.functionStack.getLast(), node);
@@ -4753,7 +4753,7 @@ public class TacConverter {
 
             // -> T_INCLUDE_ONCE expr
             case PhpSymbols.T_INCLUDE_ONCE: {
-                TacPlace tempPlace = this.newTemp();
+                AbstractTacPlace tempPlace = this.newTemp();
                 TacAttributes attsExpr = this.expr(node.getChild(1));
                 Include cfgNode = new Include(tempPlace, attsExpr.getPlace(),
                     this.file, this.functionStack.getLast(), node);
@@ -4768,7 +4768,7 @@ public class TacConverter {
 
             // -> T_EVAL ( expr )
             case PhpSymbols.T_EVAL: {
-                TacPlace tempPlace = this.newTemp();
+                AbstractTacPlace tempPlace = this.newTemp();
                 TacAttributes attsExpr = this.expr(node.getChild(2));
                 AbstractCfgNode cfgNode = new Eval(tempPlace, attsExpr.getPlace(), node);
                 connect(attsExpr.getControlFlowGraph(), cfgNode);
@@ -4782,7 +4782,7 @@ public class TacConverter {
             // -> T_REQUIRE expr
             case PhpSymbols.T_REQUIRE: {
                 // no need to distinguish between "require" and "include"
-                TacPlace tempPlace = this.newTemp();
+                AbstractTacPlace tempPlace = this.newTemp();
                 TacAttributes attsExpr = this.expr(node.getChild(1));
                 Include cfgNode = new Include(tempPlace, attsExpr.getPlace(),
                     this.file, this.functionStack.getLast(), node);
@@ -4797,7 +4797,7 @@ public class TacConverter {
 
             // -> T_REQUIRE_ONCE expr
             case PhpSymbols.T_REQUIRE_ONCE: {
-                TacPlace tempPlace = this.newTemp();
+                AbstractTacPlace tempPlace = this.newTemp();
                 TacAttributes attsExpr = this.expr(node.getChild(1));
                 Include cfgNode = new Include(tempPlace, attsExpr.getPlace(),
                     this.file, this.functionStack.getLast(), node);
@@ -4840,7 +4840,7 @@ public class TacConverter {
             TacAttributes attsVariables = this.isset_variables(firstChild);
             TacAttributes attsCvar = this.cvar(node.getChild(2));
 
-            TacPlace tempPlaceIsset = this.newTemp();
+            AbstractTacPlace tempPlaceIsset = this.newTemp();
             AbstractCfgNode cfgNodeIsset = new Isset(tempPlaceIsset, attsCvar.getPlace(), node);
             // no need for short-circuit code here
             AbstractCfgNode cfgNode = new AssignBinary(
@@ -5196,7 +5196,7 @@ public class TacConverter {
                     TacAttributes attsList = this.non_empty_array_pair_list(firstChild, arrayPlace);
                     TacAttributes attsExpr = this.expr(node.getChild(2));
 
-                    TacPlace offsetPlace;
+                    AbstractTacPlace offsetPlace;
                     int largestIndex = attsList.getArrayIndex();
                     if (largestIndex == -1) {
                         offsetPlace = this.emptyOffsetPlace;
@@ -5672,18 +5672,18 @@ public class TacConverter {
 // simple_indirect_reference ********************************************************
 
     // - place
-    TacAttributes simple_indirect_reference(ParseNode node, TacPlace depPlace) {
+    TacAttributes simple_indirect_reference(ParseNode node, AbstractTacPlace depPlace) {
         TacAttributes myAtts = new TacAttributes();
 
         ParseNode firstChild = node.getChild(0);
         if (firstChild.getSymbol() == PhpSymbols.T_DOLLAR) {
             // -> $
-            TacPlace myPlace = this.makePlace("${" + depPlace.toString() + "}");
+            AbstractTacPlace myPlace = this.makePlace("${" + depPlace.toString() + "}");
             myPlace.getVariable().setDependsOn(depPlace);
             myAtts.setPlace(myPlace);
         } else {
             // -> simple_indirect_reference $
-            TacPlace transPlace = this.makePlace("${" + depPlace.toString() + "}");
+            AbstractTacPlace transPlace = this.makePlace("${" + depPlace.toString() + "}");
             transPlace.getVariable().setDependsOn(depPlace);
             TacAttributes attsRef = this.simple_indirect_reference(
                 firstChild, transPlace);
@@ -5794,7 +5794,7 @@ public class TacConverter {
             // -> $ { expr }
             case PhpSymbols.T_DOLLAR: {
                 TacAttributes attsExpr = this.expr(node.getChild(2));
-                TacPlace myPlace = this.exprVarHelper(attsExpr.getPlace());
+                AbstractTacPlace myPlace = this.exprVarHelper(attsExpr.getPlace());
                 myAtts.setControlFlowGraph(attsExpr.getControlFlowGraph());
                 myAtts.setPlace(myPlace);
                 break;
@@ -5999,7 +5999,7 @@ public class TacConverter {
             // -> T_VARIABLE [ encaps_var_offset ]
             case PhpSymbols.T_OPEN_RECT_BRACES: {
                 TacAttributes attsOffset = this.encaps_var_offset(node.getChild(2));
-                TacPlace varPlace = this.makePlace(node.getChild(0).getLexeme());
+                AbstractTacPlace varPlace = this.makePlace(node.getChild(0).getLexeme());
                 myAtts.setPlace(this.makeArrayElementPlace(
                     varPlace, attsOffset.getPlace()));
                 AbstractCfgNode emptyNode = new Empty();
@@ -6019,7 +6019,7 @@ public class TacConverter {
             // -> T_DOLLAR_OPEN_CURLY_BRACES expr }
             case PhpSymbols.expr: {
                 TacAttributes attsExpr = this.expr(node.getChild(1));
-                TacPlace varPlace = this.exprVarHelper(attsExpr.getPlace());
+                AbstractTacPlace varPlace = this.exprVarHelper(attsExpr.getPlace());
                 myAtts.setPlace(varPlace);
                 myAtts.setControlFlowGraph(attsExpr.getControlFlowGraph());
                 break;
@@ -6028,8 +6028,8 @@ public class TacConverter {
             // -> T_DOLLAR_OPEN_CURLY_BRACES T_STRING_VARNAME [ expr ] }
             case PhpSymbols.T_STRING_VARNAME: {
                 TacAttributes attsExpr = this.expr(node.getChild(3));
-                TacPlace arrayPlace = this.makePlace("$" + node.getChild(1).getLexeme());
-                TacPlace myPlace = this.makeArrayElementPlace(
+                AbstractTacPlace arrayPlace = this.makePlace("$" + node.getChild(1).getLexeme());
+                AbstractTacPlace myPlace = this.makeArrayElementPlace(
                     arrayPlace,
                     attsExpr.getPlace());
                 myAtts.setControlFlowGraph(attsExpr.getControlFlowGraph());
@@ -6439,7 +6439,7 @@ public class TacConverter {
     // - cfg
     // - defaultNode
     TacAttributes switch_case_list(ParseNode node,
-                                   TacPlace switchPlace, AbstractCfgNode nextTest, AbstractCfgNode nextStatement) {
+                                   AbstractTacPlace switchPlace, AbstractCfgNode nextTest, AbstractCfgNode nextStatement) {
 
         ParseNode listNode = null;
         switch (node.getChild(2).getSymbol()) {
@@ -6480,7 +6480,7 @@ public class TacConverter {
     // - cfg
     // - defaultNode
     TacAttributes case_list(ParseNode node,
-                            TacPlace switchPlace, AbstractCfgNode nextTest, AbstractCfgNode nextStatement) {
+                            AbstractTacPlace switchPlace, AbstractCfgNode nextTest, AbstractCfgNode nextStatement) {
 
         TacAttributes myAtts = new TacAttributes();
 
@@ -6659,7 +6659,7 @@ public class TacConverter {
 
     // - arrayIndex
     // - cfg
-    TacAttributes assignment_list(ParseNode node, TacPlace arrayPlace, int arrayIndex) {
+    TacAttributes assignment_list(ParseNode node, AbstractTacPlace arrayPlace, int arrayIndex) {
         TacAttributes myAtts = new TacAttributes();
 
         if (node.getNumChildren() == 3) {
@@ -6700,7 +6700,7 @@ public class TacConverter {
 // assignment_list_element *****************************************************************
 
     // - cfg
-    TacAttributes assignment_list_element(ParseNode node, TacPlace arrayPlace, int arrayIndex) {
+    TacAttributes assignment_list_element(ParseNode node, AbstractTacPlace arrayPlace, int arrayIndex) {
         TacAttributes myAtts = new TacAttributes();
 
         ParseNode firstChild = node.getChild(0);
@@ -6710,7 +6710,7 @@ public class TacConverter {
             case PhpSymbols.cvar: {
                 TacAttributes attsCvar = this.cvar(firstChild);
 
-                TacPlace arrayElementPlace = this.makeArrayElementPlace(
+                AbstractTacPlace arrayElementPlace = this.makeArrayElementPlace(
                     arrayPlace, new Literal(String.valueOf(arrayIndex)));
 
                 AbstractCfgNode cfgNode = new AssignSimple(
@@ -6729,7 +6729,7 @@ public class TacConverter {
 
             // -> T_LIST ( assignment_list )
             case PhpSymbols.T_LIST: {
-                TacPlace arrayElementPlace = this.makeArrayElementPlace(
+                AbstractTacPlace arrayElementPlace = this.makeArrayElementPlace(
                     arrayPlace, new Literal(String.valueOf(arrayIndex)));
 
                 // recurse

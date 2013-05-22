@@ -1,10 +1,10 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.alias.transferfunction;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
@@ -13,7 +13,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class Assign extends TransferFunction {
+public class Assign extends AbstractTransferFunction {
     private Variable left;
     private Variable right;
 
@@ -24,7 +24,7 @@ public class Assign extends TransferFunction {
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public Assign(TacPlace left, TacPlace right, AliasAnalysis aliasAnalysis, AbstractCfgNode cfgNode) {
+    public Assign(AbstractTacPlace left, AbstractTacPlace right, AliasAnalysis aliasAnalysis, AbstractCfgNode cfgNode) {
 
         // both arguments are variables if the PHP input is correct
         this.left = (Variable) left;
@@ -41,7 +41,7 @@ public class Assign extends TransferFunction {
 // OTHER ***************************************************************************
 // *********************************************************************************
 
-    public LatticeElement transfer(LatticeElement inX) {
+    public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
 
         // ignore unsupported operations
         if (!this.supported) {

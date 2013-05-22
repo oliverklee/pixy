@@ -1,21 +1,21 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.alias;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.Lattice;
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLattice;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class AliasLattice extends Lattice {
+public class AliasLattice extends AbstractLattice {
     private AliasAnalysis aliasAnalysis;
 
     public AliasLattice(AliasAnalysis aliasAnalysis) {
         this.aliasAnalysis = aliasAnalysis;
     }
 
-    public LatticeElement lub(
-        LatticeElement incomingElementX,
-        LatticeElement targetElementX) {
+    public AbstractLatticeElement lub(
+        AbstractLatticeElement incomingElementX,
+        AbstractLatticeElement targetElementX) {
 
         // if the incoming element is the bottom element: return the other element
         if (incomingElementX == this.bottom) {

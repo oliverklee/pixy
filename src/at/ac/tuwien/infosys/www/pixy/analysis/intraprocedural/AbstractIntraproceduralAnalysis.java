@@ -1,10 +1,10 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.intraprocedural;
 
 import at.ac.tuwien.infosys.www.pixy.Dumper;
-import at.ac.tuwien.infosys.www.pixy.analysis.Analysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.AnalysisNode;
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractAnalysisNode;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.CfgEdge;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
@@ -16,7 +16,7 @@ import java.util.LinkedList;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public abstract class IntraproceduralAnalysis extends Analysis {
+public abstract class AbstractIntraproceduralAnalysis extends AbstractAnalysis {
     // INPUT ***********************************************************************
 
     // <see superclass>
@@ -73,7 +73,7 @@ public abstract class IntraproceduralAnalysis extends Analysis {
 
 // getTransferFunction *************************************************************
 
-    public TransferFunction getTransferFunction(AbstractCfgNode cfgNode) {
+    public AbstractTransferFunction getTransferFunction(AbstractCfgNode cfgNode) {
         return this.analysisInfo.getAnalysisNode(cfgNode).getTransferFunction();
     }
 
@@ -96,13 +96,13 @@ public abstract class IntraproceduralAnalysis extends Analysis {
 //  makeAnalysisNode ***************************************************************
 
     // creates and returns an analysis node for the given parameters
-    protected AnalysisNode makeAnalysisNode(AbstractCfgNode node, TransferFunction tf) {
+    protected AbstractAnalysisNode makeAnalysisNode(AbstractCfgNode node, AbstractTransferFunction tf) {
         return new IntraproceduralAnalysisNode(tf);
     }
 
 //  recycle ************************************************************************
 
-    public abstract LatticeElement recycle(LatticeElement recycleMe);
+    public abstract AbstractLatticeElement recycle(AbstractLatticeElement recycleMe);
 
 // analyze *************************************************************************
 
@@ -117,7 +117,7 @@ public abstract class IntraproceduralAnalysis extends Analysis {
 
             // get incoming value at node n
             IntraproceduralAnalysisNode analysisNode = this.analysisInfo.getAnalysisNode(node);
-            LatticeElement inValue = analysisNode.getInValue();
+            AbstractLatticeElement inValue = analysisNode.getInValue();
             if (inValue == null) {
                 throw new RuntimeException("SNH");
             }
@@ -125,7 +125,7 @@ public abstract class IntraproceduralAnalysis extends Analysis {
             try {
 
                 // apply transfer function to incoming value
-                LatticeElement outValue;
+                AbstractLatticeElement outValue;
                 outValue = this.analysisInfo.getAnalysisNode(node).transfer(inValue);
 
                 // for each outgoing edge...
@@ -154,7 +154,7 @@ public abstract class IntraproceduralAnalysis extends Analysis {
 
     // helper method for analyze();
     // propagates a value to the target node
-    void propagate(LatticeElement value, AbstractCfgNode target) {
+    void propagate(AbstractLatticeElement value, AbstractCfgNode target) {
 
         // analysis information for the target node
         IntraproceduralAnalysisNode analysisNode = this.analysisInfo.getAnalysisNode(target);
@@ -165,7 +165,7 @@ public abstract class IntraproceduralAnalysis extends Analysis {
         }
 
         // determine the target's old invalue
-        LatticeElement oldInValue = analysisNode.getInValue();
+        AbstractLatticeElement oldInValue = analysisNode.getInValue();
         if (oldInValue == null) {
             // initial value of this analysis
             oldInValue = this.initialValue;
@@ -178,7 +178,7 @@ public abstract class IntraproceduralAnalysis extends Analysis {
         }
 
         // the new invalue is computed as usual (with lub)
-        LatticeElement newInValue = this.lattice.lub(value, oldInValue);
+        AbstractLatticeElement newInValue = this.lattice.lub(value, oldInValue);
 
         // if the invalue changed...
         if (!oldInValue.equals(newInValue)) {

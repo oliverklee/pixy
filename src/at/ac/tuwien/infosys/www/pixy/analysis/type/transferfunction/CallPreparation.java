@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.type.transferfunction;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.TypeAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.TypeLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
@@ -14,7 +14,7 @@ import java.util.ListIterator;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CallPreparation extends TransferFunction {
+public class CallPreparation extends AbstractTransferFunction {
     private List<TacActualParameter> actualParams;
     private List<TacFormalParameter> formalParams;
     private TacFunction caller;
@@ -40,7 +40,7 @@ public class CallPreparation extends TransferFunction {
 //  OTHER ***************************************************************************
 //  *********************************************************************************
 
-    public LatticeElement transfer(LatticeElement inX) {
+    public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
 
         TypeLatticeElement in = (TypeLatticeElement) inX;
         TypeLatticeElement out = new TypeLatticeElement(in);
@@ -78,7 +78,7 @@ public class CallPreparation extends TransferFunction {
                         // start at the CFG's head and apply all transfer functions
                         AbstractCfgNode defaultNode = defaultControlFlowGraph.getHead();
                         while (defaultNode != null) {
-                            TransferFunction tf = this.typeAnalysis.getTransferFunction(defaultNode);
+                            AbstractTransferFunction tf = this.typeAnalysis.getTransferFunction(defaultNode);
                             out = (TypeLatticeElement) tf.transfer(out);
                             defaultNode = defaultNode.getSuccessor(0);
                         }

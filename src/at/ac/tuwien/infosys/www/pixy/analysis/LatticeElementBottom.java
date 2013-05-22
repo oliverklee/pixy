@@ -3,7 +3,7 @@ package at.ac.tuwien.infosys.www.pixy.analysis;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class LatticeElementBottom extends LatticeElement {
+public class LatticeElementBottom extends AbstractLatticeElement {
     public static final LatticeElementBottom INSTANCE = new LatticeElementBottom();
 
 // *********************************************************************************
@@ -14,11 +14,11 @@ public class LatticeElementBottom extends LatticeElement {
     private LatticeElementBottom() {
     }
 
-    public LatticeElement cloneMe() {
+    public AbstractLatticeElement cloneMe() {
         throw new RuntimeException("SNH");
     }
 
-    public void lub(LatticeElement element) {
+    public void lub(AbstractLatticeElement element) {
         throw new RuntimeException("SNH");
     }
 

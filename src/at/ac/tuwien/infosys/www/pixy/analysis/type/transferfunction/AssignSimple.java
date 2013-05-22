@@ -1,9 +1,9 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.type.transferfunction;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.TypeLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 /**
@@ -11,15 +11,15 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class AssignSimple extends TransferFunction {
+public class AssignSimple extends AbstractTransferFunction {
     private Variable left;
-    private TacPlace right;
+    private AbstractTacPlace right;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public AssignSimple(Variable left, TacPlace right) {
+    public AssignSimple(Variable left, AbstractTacPlace right) {
         this.left = left;
         this.right = right;
     }
@@ -28,7 +28,7 @@ public class AssignSimple extends TransferFunction {
 // OTHER ***************************************************************************
 // *********************************************************************************
 
-    public LatticeElement transfer(LatticeElement inX) {
+    public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
 
         TypeLatticeElement in = (TypeLatticeElement) inX;
         TypeLatticeElement out = new TypeLatticeElement(in);

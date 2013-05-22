@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
@@ -14,7 +14,7 @@ import java.util.ListIterator;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CallPreparation extends TransferFunction {
+public class CallPreparation extends AbstractTransferFunction {
     private List<TacActualParameter> actualParams;
     private List<TacFormalParameter> formalParams;
     private TacFunction caller;
@@ -42,7 +42,7 @@ public class CallPreparation extends TransferFunction {
 //  OTHER ***************************************************************************
 //  *********************************************************************************
 
-    public LatticeElement transfer(LatticeElement inX) {
+    public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
 
         LiteralLatticeElement in = (LiteralLatticeElement) inX;
         LiteralLatticeElement out = new LiteralLatticeElement(in);
@@ -60,7 +60,7 @@ public class CallPreparation extends TransferFunction {
             if (actualIter.hasNext()) {
                 // there is a corresponding actual parameter
                 TacActualParameter actualParam = actualIter.next();
-                TacPlace actualPlace = actualParam.getPlace();
+                AbstractTacPlace actualPlace = actualParam.getPlace();
 
                 // set the literal of the formal to the literal of the actual
                 out.setFormal(formalParam, actualPlace);
@@ -81,7 +81,7 @@ public class CallPreparation extends TransferFunction {
                         // start at the CFG's head and apply all transfer functions
                         AbstractCfgNode defaultNode = defaultControlFlowGraph.getHead();
                         while (defaultNode != null) {
-                            TransferFunction tf = this.literalAnalysis.getTransferFunction(defaultNode);
+                            AbstractTransferFunction tf = this.literalAnalysis.getTransferFunction(defaultNode);
                             out = (LiteralLatticeElement) tf.transfer(out);
                             defaultNode = defaultNode.getSuccessor(0);
                         }

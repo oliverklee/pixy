@@ -3,7 +3,7 @@ package at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes;
 import at.ac.tuwien.infosys.www.phpparser.ParseNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParameter;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 import java.util.Collections;
@@ -33,7 +33,7 @@ public class CallPreparation extends AbstractCfgNode {
         return this.getCallNode().getEnclosingFunction();
     }
 
-    public TacPlace getFunctionNamePlace() {
+    public AbstractTacPlace getFunctionNamePlace() {
         return this.getCallNode().getFunctionNamePlace();
     }
 

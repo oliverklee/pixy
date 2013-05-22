@@ -2,9 +2,9 @@ package at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph;
 
 import at.ac.tuwien.infosys.www.pixy.Dumper;
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Constant;
 import at.ac.tuwien.infosys.www.pixy.conversion.Literal;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
@@ -12,13 +12,13 @@ import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class NormalNode extends AbstractNode {
-    private TacPlace place;
+    private AbstractTacPlace place;
     private AbstractCfgNode cfgNode;
     private boolean isTainted;
 
 //  ********************************************************************************
 
-    public NormalNode(TacPlace place, AbstractCfgNode cfgNode) {
+    public NormalNode(AbstractTacPlace place, AbstractCfgNode cfgNode) {
         this.place = place;
         this.cfgNode = cfgNode;
         this.isTainted = false;
@@ -90,7 +90,7 @@ public class NormalNode extends AbstractNode {
 
 //  ********************************************************************************
 
-    public TacPlace getPlace() {
+    public AbstractTacPlace getPlace() {
         return this.place;
     }
 

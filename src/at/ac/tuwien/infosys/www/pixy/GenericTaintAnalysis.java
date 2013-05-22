@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AnalysisType;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AbstractAnalysisType;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralWorklist;
 import at.ac.tuwien.infosys.www.pixy.analysis.globalsmodification.GlobalsModificationAnalysis;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
@@ -18,7 +18,7 @@ import java.util.List;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class GenericTaintAnalysis {
-    private List<DependencyClient> dependencyClients;
+    private List<AbstractDependencyClient> dependencyClients;
 
     public DependencyAnalysis dependencyAnalysis;
 
@@ -30,7 +30,7 @@ public class GenericTaintAnalysis {
 
 //  ********************************************************************************
 
-    private void addDepClient(DependencyClient dependencyClient) {
+    private void addDepClient(AbstractDependencyClient dependencyClient) {
         this.dependencyClients.add(dependencyClient);
     }
 
@@ -38,7 +38,7 @@ public class GenericTaintAnalysis {
 
     // returns null if the given taintString is illegal
     static GenericTaintAnalysis createAnalysis(TacConverter tac,
-                                               AnalysisType enclosingAnalysis, Checker checker,
+                                               AbstractAnalysisType enclosingAnalysis, Checker checker,
                                                InterproceduralWorklist workList, GlobalsModificationAnalysis globalsModificationAnalysis) {
 
         GenericTaintAnalysis gta = new GenericTaintAnalysis();
@@ -61,7 +61,7 @@ public class GenericTaintAnalysis {
                 }
                 Class<?> clientDefinition = Class.forName(dci.getClassName());
                 Constructor<?> constructor = clientDefinition.getConstructor(argsClass);
-                DependencyClient dependencyClient = (DependencyClient) constructor.newInstance(args);
+                AbstractDependencyClient dependencyClient = (AbstractDependencyClient) constructor.newInstance(args);
                 gta.addDepClient(dependencyClient);
             }
         } catch (Exception e) {
@@ -84,7 +84,7 @@ public class GenericTaintAnalysis {
 
     List<Integer> detectVulns() {
         List<Integer> retMe = new LinkedList<>();
-        for (DependencyClient dependencyClient : this.dependencyClients) {
+        for (AbstractDependencyClient dependencyClient : this.dependencyClients) {
             retMe.addAll(dependencyClient.detectVulns());
         }
         return retMe;
@@ -92,7 +92,7 @@ public class GenericTaintAnalysis {
 
 //  ********************************************************************************
 
-    List<DependencyClient> getDependencyClients() {
+    List<AbstractDependencyClient> getDependencyClients() {
         return this.dependencyClients;
     }
 }

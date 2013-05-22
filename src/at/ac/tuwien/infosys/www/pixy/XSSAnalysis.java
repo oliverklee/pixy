@@ -8,7 +8,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallBuiltinFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreparation;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Echo;
-import at.ac.tuwien.infosys.www.pixy.sanitation.SanitationAnalysis;
+import at.ac.tuwien.infosys.www.pixy.sanitation.AbstractSanitationAnalysis;
 
 import java.util.*;
 
@@ -17,7 +17,7 @@ import java.util.*;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class XSSAnalysis extends DependencyClient {
+public class XSSAnalysis extends AbstractDependencyClient {
     public XSSAnalysis(DependencyAnalysis dependencyAnalysis) {
         super(dependencyAnalysis);
     }
@@ -211,7 +211,7 @@ public class XSSAnalysis extends DependencyClient {
                     }
                 }
 
-                if (!SanitationAnalysis.findCustomSanit(dependencyGraph).isEmpty()) {
+                if (!AbstractSanitationAnalysis.findCustomSanit(dependencyGraph).isEmpty()) {
                     hasCustomSanitCount++;
                     if (!tainted) {
                         customSanitThrownAwayCount++;

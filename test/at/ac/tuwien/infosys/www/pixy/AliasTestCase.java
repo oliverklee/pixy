@@ -1,8 +1,8 @@
 package at.ac.tuwien.infosys.www.pixy;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.*;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.Context;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AbstractContext;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.functional.FunctionalAnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.InternalStrings;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
@@ -89,15 +89,15 @@ public class AliasTestCase extends TestCase {
     // checks if the context table at the given hotspot ID contains exactly the
     // lattice elements contained in expectedElements
     private void checkContext(List<AliasLatticeElement> expectedElements, int hotspotId) {
-        HashMap<Context, LatticeElement> hotspotPhi = new HashMap<>(this.getHotspotInfo(hotspotId).getPhi());
+        HashMap<AbstractContext, AbstractLatticeElement> hotspotPhi = new HashMap<>(this.getHotspotInfo(hotspotId).getPhi());
 
         // for each expected element...
         for (AliasLatticeElement expected : expectedElements) {
             // if you find it in the real context map: OK and remove it from there
             boolean foundIt = false;
-            for (Iterator<Map.Entry<Context, LatticeElement>> elementIter = hotspotPhi.entrySet().iterator(); elementIter.hasNext(); ) {
-                Map.Entry<Context, LatticeElement> entry = elementIter.next();
-                LatticeElement element = entry.getValue();
+            for (Iterator<Map.Entry<AbstractContext, AbstractLatticeElement>> elementIter = hotspotPhi.entrySet().iterator(); elementIter.hasNext(); ) {
+                Map.Entry<AbstractContext, AbstractLatticeElement> entry = elementIter.next();
+                AbstractLatticeElement element = entry.getValue();
                 if (element.structureEquals(expected)) {
                     foundIt = true;
                     elementIter.remove();

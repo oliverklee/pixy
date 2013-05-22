@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes;
 
 import at.ac.tuwien.infosys.www.phpparser.ParseNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 import java.util.LinkedList;
@@ -11,12 +11,12 @@ import java.util.List;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class Eval extends AbstractCfgNode {
-    private TacPlace left;
-    private TacPlace right;
+    private AbstractTacPlace left;
+    private AbstractTacPlace right;
 
 // CONSTRUCTORS ********************************************************************
 
-    public Eval(TacPlace left, TacPlace right, ParseNode node) {
+    public Eval(AbstractTacPlace left, AbstractTacPlace right, ParseNode node) {
         super(node);
         this.left = left;
         this.right = right;
@@ -24,11 +24,11 @@ public class Eval extends AbstractCfgNode {
 
 // GET *****************************************************************************
 
-    public TacPlace getLeft() {
+    public AbstractTacPlace getLeft() {
         return this.left;
     }
 
-    public TacPlace getRight() {
+    public AbstractTacPlace getRight() {
         return this.right;
     }
 

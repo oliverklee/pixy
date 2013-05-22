@@ -1,9 +1,9 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
@@ -14,10 +14,10 @@ import java.util.Set;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class AssignBinary extends TransferFunction {
+public class AssignBinary extends AbstractTransferFunction {
     private Variable left;
-    private TacPlace leftOperand;
-    private TacPlace rightOperand;
+    private AbstractTacPlace leftOperand;
+    private AbstractTacPlace rightOperand;
     private int op;
     private Set<Variable> mustAliases;
     private Set<Variable> mayAliases;
@@ -29,7 +29,7 @@ public class AssignBinary extends TransferFunction {
 
     // mustAliases, mayAliases: of setMe
     public AssignBinary(
-        TacPlace left, TacPlace leftOperand, TacPlace rightOperand, int op, Set<Variable> mustAliases,
+        AbstractTacPlace left, AbstractTacPlace leftOperand, AbstractTacPlace rightOperand, int op, Set<Variable> mustAliases,
         Set<Variable> mayAliases, AbstractCfgNode cfgNode
     ) {
         this.left = (Variable) left;  // must be a variable
@@ -45,7 +45,7 @@ public class AssignBinary extends TransferFunction {
 // OTHER ***************************************************************************
 // *********************************************************************************
 
-    public LatticeElement transfer(LatticeElement inX) {
+    public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
 
         DependencyLatticeElement in = (DependencyLatticeElement) inX;
         DependencyLatticeElement out = new DependencyLatticeElement(in);

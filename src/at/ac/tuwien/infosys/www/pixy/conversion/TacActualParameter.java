@@ -4,14 +4,14 @@ package at.ac.tuwien.infosys.www.pixy.conversion;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class TacActualParameter {
-    private TacPlace place;
+    private AbstractTacPlace place;
     private boolean isReference;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    TacActualParameter(TacPlace place, boolean isReference) {
+    TacActualParameter(AbstractTacPlace place, boolean isReference) {
         this.place = place;
         this.isReference = isReference;
     }
@@ -20,7 +20,7 @@ public class TacActualParameter {
 // GET *****************************************************************************
 // *********************************************************************************
 
-    public TacPlace getPlace() {
+    public AbstractTacPlace getPlace() {
         return this.place;
     }
 
@@ -32,7 +32,7 @@ public class TacActualParameter {
 //  SET ****************************************************************************
 //  ********************************************************************************
 
-    public void setPlace(TacPlace place) {
+    public void setPlace(AbstractTacPlace place) {
         this.place = place;
     }
 }

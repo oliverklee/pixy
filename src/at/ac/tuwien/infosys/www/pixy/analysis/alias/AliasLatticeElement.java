@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.alias;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.Recyclable;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.completegraph.Edge;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.completegraph.Graph;
@@ -15,7 +15,7 @@ import java.util.Set;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class AliasLatticeElement extends LatticeElement implements Recyclable {
+public class AliasLatticeElement extends AbstractLatticeElement implements Recyclable {
     private MustAliases mustAliases;
     private MayAliases mayAliases;
 
@@ -40,7 +40,7 @@ public class AliasLatticeElement extends LatticeElement implements Recyclable {
         this.mayAliases = new MayAliases(cloneMe.getMayAliases());
     }
 
-    public LatticeElement cloneMe() {
+    public AbstractLatticeElement cloneMe() {
         // uses the cloning constructor
         return new AliasLatticeElement(this);
     }
@@ -178,7 +178,7 @@ public class AliasLatticeElement extends LatticeElement implements Recyclable {
     }
 
     // lubs the given element over *this* element
-    public void lub(LatticeElement element) {
+    public void lub(AbstractLatticeElement element) {
         if (!(element instanceof AliasLatticeElement)) {
             throw new RuntimeException("SNH");
         }

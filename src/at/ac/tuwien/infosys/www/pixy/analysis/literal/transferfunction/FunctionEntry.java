@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
@@ -13,7 +13,7 @@ import java.util.Map;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class FunctionEntry extends TransferFunction {
+public class FunctionEntry extends AbstractTransferFunction {
     private TacFunction function;
 
 // *********************************************************************************
@@ -28,7 +28,7 @@ public class FunctionEntry extends TransferFunction {
 // OTHER ***************************************************************************
 // *********************************************************************************
 
-    public LatticeElement transfer(LatticeElement inX) {
+    public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
 
         LiteralLatticeElement in = (LiteralLatticeElement) inX;
         LiteralLatticeElement out = new LiteralLatticeElement(in);

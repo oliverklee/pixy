@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class Literal extends TacPlace {
+public class Literal extends AbstractTacPlace {
     public static final Literal TRUE = new Literal("_true");
     public static final Literal FALSE = new Literal("_false");
     public static final Literal NULL = new Literal("_null");

@@ -1,9 +1,9 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.type.transferfunction;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.Context;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralAnalysisNode;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AbstractContext;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AbstractInterproceduralAnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.TypeLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
@@ -12,8 +12,8 @@ import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Call;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CallReturn extends TransferFunction {
-    private InterproceduralAnalysisNode analysisNodeAtCallPrep;
+public class CallReturn extends AbstractTransferFunction {
+    private AbstractInterproceduralAnalysisNode analysisNodeAtCallPrep;
     private TacFunction caller;
     private TacFunction callee;
     private Call callNode;
@@ -23,7 +23,7 @@ public class CallReturn extends TransferFunction {
 // *********************************************************************************
 
     public CallReturn(
-        InterproceduralAnalysisNode analysisNodeAtCallPrep,
+        AbstractInterproceduralAnalysisNode analysisNodeAtCallPrep,
         TacFunction caller,
         TacFunction callee,
         Call retNode) {
@@ -39,7 +39,7 @@ public class CallReturn extends TransferFunction {
 // OTHER ***************************************************************************
 // *********************************************************************************
 
-    public LatticeElement transfer(LatticeElement inX, Context context) {
+    public AbstractLatticeElement transfer(AbstractLatticeElement inX, AbstractContext context) {
 
         // lattice element entering the call prep node under the current
         // context
@@ -90,7 +90,7 @@ public class CallReturn extends TransferFunction {
 
     // just a dummy method in order to make me conform to the interface;
     // the Analysis uses the other transfer method instead
-    public LatticeElement transfer(LatticeElement inX) {
+    public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
         throw new RuntimeException("SNH");
     }
 }

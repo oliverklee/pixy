@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes;
 
 import at.ac.tuwien.infosys.www.phpparser.ParseNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 import java.util.LinkedList;
@@ -14,11 +14,11 @@ import java.util.List;
  */
 public class AssignSimple extends AbstractCfgNode {
     private Variable left;
-    private TacPlace right;
+    private AbstractTacPlace right;
 
 //  CONSTRUCTORS *******************************************************************
 
-    public AssignSimple(Variable left, TacPlace right, ParseNode parseNode) {
+    public AssignSimple(Variable left, AbstractTacPlace right, ParseNode parseNode) {
         super(parseNode);
         this.left = left;
         this.right = right;
@@ -30,7 +30,7 @@ public class AssignSimple extends AbstractCfgNode {
         return this.left;
     }
 
-    public TacPlace getRight() {
+    public AbstractTacPlace getRight() {
         return this.right;
     }
 

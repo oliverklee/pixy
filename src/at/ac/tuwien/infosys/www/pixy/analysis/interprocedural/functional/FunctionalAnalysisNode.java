@@ -1,9 +1,9 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.functional;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.Context;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralAnalysisNode;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AbstractContext;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AbstractInterproceduralAnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Call;
 
@@ -17,16 +17,16 @@ import java.util.Set;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class FunctionalAnalysisNode extends InterproceduralAnalysisNode {
-    // mapping input LatticeElement -> Set of context LatticeElements;
+public class FunctionalAnalysisNode extends AbstractInterproceduralAnalysisNode {
+    // mapping input AbstractLatticeElement -> Set of context LatticeElements;
     // only needed for call nodes
-    Map<LatticeElement, Set<FunctionalContext>> reversePhi;
+    Map<AbstractLatticeElement, Set<FunctionalContext>> reversePhi;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public FunctionalAnalysisNode(AbstractCfgNode node, TransferFunction tf) {
+    public FunctionalAnalysisNode(AbstractCfgNode node, AbstractTransferFunction tf) {
         super(tf);
         // maintain reverse mapping for call nodes
         if (node instanceof Call) {
@@ -41,7 +41,7 @@ public class FunctionalAnalysisNode extends InterproceduralAnalysisNode {
 // *********************************************************************************
 
     // returns a set of contexts that are mapped to the given value
-    Set<FunctionalContext> getReversePhiContexts(LatticeElement value) {
+    Set<FunctionalContext> getReversePhiContexts(AbstractLatticeElement value) {
         return this.reversePhi.get(value);
     }
 
@@ -50,7 +50,7 @@ public class FunctionalAnalysisNode extends InterproceduralAnalysisNode {
 // *********************************************************************************
 
     // sets the PHI value for the given context
-    protected void setPhiValue(Context contextX, LatticeElement value) {
+    protected void setPhiValue(AbstractContext contextX, AbstractLatticeElement value) {
 
         FunctionalContext context = (FunctionalContext) contextX;
 

@@ -1,21 +1,21 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.inclusiondominator;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.Lattice;
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLattice;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class InclusionDominatorLattice extends Lattice {
+public class InclusionDominatorLattice extends AbstractLattice {
     private InclusionDominatorAnalysis inclusionDominatorAnalysis;
 
     public InclusionDominatorLattice(InclusionDominatorAnalysis inclusionDominatorAnalysis) {
         this.inclusionDominatorAnalysis = inclusionDominatorAnalysis;
     }
 
-    public LatticeElement lub(
-        LatticeElement incomingElementX,
-        LatticeElement targetElementX) {
+    public AbstractLatticeElement lub(
+        AbstractLatticeElement incomingElementX,
+        AbstractLatticeElement targetElementX) {
         // if the incoming element is the bottom element: return the other element
         if (incomingElementX == this.bottom) {
             // no need for cloning, since we work with a repository of alias

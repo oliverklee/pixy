@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.dependency;
 
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallReturn;
@@ -11,13 +11,13 @@ import java.util.*;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DependencyLatticeElement extends LatticeElement {
+public class DependencyLatticeElement extends AbstractLatticeElement {
     // contains only non-default mappings;
     // does not contain mappings for non-literal array elements, because:
     // the dependency value of such elements solely depends on the array label
     // of their root array;
     // also: contains only mappings for Variables and Constants, not for Literals
-    private Map<TacPlace, DependencySet> placeToDep;
+    private Map<AbstractTacPlace, DependencySet> placeToDep;
 
     // "array labels";
     // remotely resemble "clean array flags" (caFlags) from XSS taint analysis;
@@ -55,7 +55,7 @@ public class DependencyLatticeElement extends LatticeElement {
 
 //  cloneMe ************************************************************************
 
-    public LatticeElement cloneMe() {
+    public AbstractLatticeElement cloneMe() {
         // uses the cloning constructor
         return new DependencyLatticeElement(this);
     }
@@ -67,7 +67,7 @@ public class DependencyLatticeElement extends LatticeElement {
     // TODO: the code for this can probably be simplified dramatically ;
     // also, the comments inside this function are partly obsolete
     private DependencyLatticeElement(
-        List<TacPlace> places,
+        List<AbstractTacPlace> places,
         ConstantsTable constantsTable,
         List<TacFunction> functions,
         SymbolTable superSymbolTable,
@@ -78,7 +78,7 @@ public class DependencyLatticeElement extends LatticeElement {
         // that of their top enclosing array)
         this.placeToDep = new HashMap<>();
         this.arrayLabels = new HashMap<>();
-        for (TacPlace place : places) {
+        for (AbstractTacPlace place : places) {
             if ((place instanceof Variable) &&
                 place.getVariable().isArrayElement() &&
                 place.getVariable().hasNonLiteralIndices()) {
@@ -99,7 +99,7 @@ public class DependencyLatticeElement extends LatticeElement {
         // since the real-world return value is then "NULL", the default mapping
         // for return variables has to have the same properties as the default
         // mapping for NULL (i.e., harmless);
-        for (TacPlace place : places) {
+        for (AbstractTacPlace place : places) {
             if ((place instanceof Variable) && place.getVariable().isReturnVariable()) {
                 this.placeToDep.put(place, DependencySet.UNINIT);
                 this.arrayLabels.put((Variable) place, DependencySet.UNINIT);
@@ -212,7 +212,7 @@ public class DependencyLatticeElement extends LatticeElement {
 
     // initializes the default lattice element
     static void initDefault(
-        List<TacPlace> places, ConstantsTable constantsTable, List<TacFunction> functions, SymbolTable superSymbolTable,
+        List<AbstractTacPlace> places, ConstantsTable constantsTable, List<TacFunction> functions, SymbolTable superSymbolTable,
         Variable memberPlace
     ) {
         DependencyLatticeElement.DEFAULT
@@ -225,7 +225,7 @@ public class DependencyLatticeElement extends LatticeElement {
 
 //  getPlaceToDep *****************************************************************
 
-    public Map<TacPlace, DependencySet> getPlaceToDep() {
+    public Map<AbstractTacPlace, DependencySet> getPlaceToDep() {
         return this.placeToDep;
     }
 
@@ -237,7 +237,7 @@ public class DependencyLatticeElement extends LatticeElement {
 
 //  ********************************************************************************
 
-    public DependencySet getDep(TacPlace place) {
+    public DependencySet getDep(AbstractTacPlace place) {
         return this.getDepFrom(place, this.placeToDep);
     }
 
@@ -246,7 +246,7 @@ public class DependencyLatticeElement extends LatticeElement {
     // returns the non-default dependency for this place if that mapping exists,
     // or the default dependency otherwise
     private DependencySet getDepFrom(
-        TacPlace place, Map<? extends TacPlace, DependencySet> readFrom) {
+        AbstractTacPlace place, Map<? extends AbstractTacPlace, DependencySet> readFrom) {
 
         if (place instanceof Literal) {
             throw new RuntimeException("SNH any longer");
@@ -278,7 +278,7 @@ public class DependencyLatticeElement extends LatticeElement {
 
 //  ********************************************************************************
 
-    private static DependencySet getDefaultDep(TacPlace place) {
+    private static DependencySet getDefaultDep(AbstractTacPlace place) {
         if (place instanceof Literal) {
             throw new RuntimeException("SNH");
         }
@@ -289,7 +289,7 @@ public class DependencyLatticeElement extends LatticeElement {
 
     // returns the non-default dependency for the given place;
     // null if there is no non-default dependency for it
-    private DependencySet getNonDefaultDep(TacPlace place) {
+    private DependencySet getNonDefaultDep(AbstractTacPlace place) {
         if (place instanceof Literal) {
             throw new RuntimeException("SNH");
         }
@@ -300,7 +300,7 @@ public class DependencyLatticeElement extends LatticeElement {
 
     // returns the non-default array label for the given variable if that mapping
     // exists, or the default label otherwise;
-    public DependencySet getArrayLabel(TacPlace place) {
+    public DependencySet getArrayLabel(AbstractTacPlace place) {
         if ((place instanceof Literal) || (place instanceof Constant)) {
             throw new RuntimeException("SNH any longer");
         }
@@ -340,7 +340,7 @@ public class DependencyLatticeElement extends LatticeElement {
 
 //  ***********************************************************************
 
-    private void setDep(TacPlace place, DependencySet dependencySet) {
+    private void setDep(AbstractTacPlace place, DependencySet dependencySet) {
 
         if (place instanceof Literal) {
             throw new RuntimeException("SNH");
@@ -360,7 +360,7 @@ public class DependencyLatticeElement extends LatticeElement {
 
 //  ***********************************************************************
 
-    private void lubDep(TacPlace place, DependencySet dependencySet) {
+    private void lubDep(AbstractTacPlace place, DependencySet dependencySet) {
 
         if (place instanceof Literal) {
             throw new RuntimeException("SNH");
@@ -454,7 +454,7 @@ public class DependencyLatticeElement extends LatticeElement {
 //  lub ****************************************************************************
 
     // lubs the given lattice element over <<this>> lattice element
-    public void lub(LatticeElement foreignX) {
+    public void lub(AbstractLatticeElement foreignX) {
 
         DependencyLatticeElement foreign = (DependencyLatticeElement) foreignX;
 
@@ -463,10 +463,10 @@ public class DependencyLatticeElement extends LatticeElement {
         // lub over my non-default mappings;
         // this one is necessary because we must not modify a map while
         // iterating over it
-        Map<TacPlace, DependencySet> newPlaceToDep =
+        Map<AbstractTacPlace, DependencySet> newPlaceToDep =
             new HashMap<>(this.placeToDep);
-        for (Map.Entry<TacPlace, DependencySet> myEntry : this.placeToDep.entrySet()) {
-            TacPlace myPlace = myEntry.getKey();
+        for (Map.Entry<AbstractTacPlace, DependencySet> myEntry : this.placeToDep.entrySet()) {
+            AbstractTacPlace myPlace = myEntry.getKey();
             DependencySet myDep = myEntry.getValue();
             DependencySet foreignDep = foreign.getDep(myPlace);
             newPlaceToDep.put(myPlace, DependencySet.lub(myDep, foreignDep));
@@ -475,8 +475,8 @@ public class DependencyLatticeElement extends LatticeElement {
 
         // lub the remaining non-default mappings of "foreign" over my
         // default mappings
-        for (Map.Entry<TacPlace, DependencySet> foreignEntry : foreign.getPlaceToDep().entrySet()) {
-            TacPlace foreignPlace = foreignEntry.getKey();
+        for (Map.Entry<AbstractTacPlace, DependencySet> foreignEntry : foreign.getPlaceToDep().entrySet()) {
+            AbstractTacPlace foreignPlace = foreignEntry.getKey();
             DependencySet foreignDep = foreignEntry.getValue();
 
             DependencySet myDep = this.getNonDefaultDep(foreignPlace);
@@ -488,9 +488,9 @@ public class DependencyLatticeElement extends LatticeElement {
         }
 
         // cleaning pass: remove defaults
-        for (Iterator<Map.Entry<TacPlace, DependencySet>> iter = this.placeToDep.entrySet().iterator(); iter.hasNext(); ) {
-            Map.Entry<TacPlace, DependencySet> entry = iter.next();
-            TacPlace place = entry.getKey();
+        for (Iterator<Map.Entry<AbstractTacPlace, DependencySet>> iter = this.placeToDep.entrySet().iterator(); iter.hasNext(); ) {
+            Map.Entry<AbstractTacPlace, DependencySet> entry = iter.next();
+            AbstractTacPlace place = entry.getKey();
             DependencySet dep = entry.getValue();
             if (getDefaultDep(place).equals(dep)) {
                 iter.remove();
@@ -692,7 +692,7 @@ public class DependencyLatticeElement extends LatticeElement {
 
         // root of the array tree, indices of the array element
         Variable root = var.getTopEnclosingArray();
-        List<TacPlace> indices = var.getIndices();
+        List<AbstractTacPlace> indices = var.getIndices();
 
         this.miRecurse(miList, root, new LinkedList<>(indices));
         return miList;
@@ -702,7 +702,7 @@ public class DependencyLatticeElement extends LatticeElement {
 
     // CAUTION: the indices list is modified inside this method, so you might
     // want to pass a shallow copy instead of a reference to the list
-    private void miRecurse(List<Variable> miList, Variable root, List<TacPlace> indices) {
+    private void miRecurse(List<Variable> miList, Variable root, List<AbstractTacPlace> indices) {
         /*
          * - separate head from the indices list
          * - if this first index is literal:
@@ -726,7 +726,7 @@ public class DependencyLatticeElement extends LatticeElement {
             return;
         }
 
-        TacPlace index = indices.remove(0);
+        AbstractTacPlace index = indices.remove(0);
         if (index instanceof Literal) {
 
             Variable target = root.getElement(index);
@@ -757,9 +757,9 @@ public class DependencyLatticeElement extends LatticeElement {
     public void resetVariables(SymbolTable symTab) {
 
         // reset deps
-        for (Iterator<Map.Entry<TacPlace, DependencySet>> iter = this.placeToDep.entrySet().iterator(); iter.hasNext(); ) {
-            Map.Entry<TacPlace, DependencySet> entry = iter.next();
-            TacPlace place = entry.getKey();
+        for (Iterator<Map.Entry<AbstractTacPlace, DependencySet>> iter = this.placeToDep.entrySet().iterator(); iter.hasNext(); ) {
+            Map.Entry<AbstractTacPlace, DependencySet> entry = iter.next();
+            AbstractTacPlace place = entry.getKey();
 
             if (!(place instanceof Variable)) {
                 // nothing to do for non-variables (i.e., constants)
@@ -775,7 +775,7 @@ public class DependencyLatticeElement extends LatticeElement {
         // reset array labels
         for (Iterator<Map.Entry<Variable, DependencySet>> iter = this.arrayLabels.entrySet().iterator(); iter.hasNext(); ) {
             Map.Entry<Variable, DependencySet> entry = iter.next();
-            TacPlace place = entry.getKey();
+            AbstractTacPlace place = entry.getKey();
 
             if (!(place != null)) {
                 // nothing to do for non-variables (i.e., constants)
@@ -797,9 +797,9 @@ public class DependencyLatticeElement extends LatticeElement {
     public void resetTemporaries(SymbolTable symTab) {
 
         // reset deps
-        for (Iterator<Map.Entry<TacPlace, DependencySet>> iter = this.placeToDep.entrySet().iterator(); iter.hasNext(); ) {
-            Map.Entry<TacPlace, DependencySet> entry = iter.next();
-            TacPlace place = entry.getKey();
+        for (Iterator<Map.Entry<AbstractTacPlace, DependencySet>> iter = this.placeToDep.entrySet().iterator(); iter.hasNext(); ) {
+            Map.Entry<AbstractTacPlace, DependencySet> entry = iter.next();
+            AbstractTacPlace place = entry.getKey();
 
             if (!(place instanceof Variable)) {
                 // nothing to do for non-variables (i.e., constants)
@@ -820,7 +820,7 @@ public class DependencyLatticeElement extends LatticeElement {
         // reset array labels
         for (Iterator<Map.Entry<Variable, DependencySet>>  iter = this.arrayLabels.entrySet().iterator(); iter.hasNext(); ) {
             Map.Entry<Variable, DependencySet> entry = iter.next();
-            TacPlace place = entry.getKey();
+            AbstractTacPlace place = entry.getKey();
 
             if (!(place != null)) {
                 // nothing to do for non-variables (i.e., constants)
@@ -870,8 +870,8 @@ public class DependencyLatticeElement extends LatticeElement {
     public void copyGlobalLike(DependencyLatticeElement interIn) {
 
         // dependency mappings
-        for (Map.Entry<TacPlace, DependencySet> entry : interIn.getPlaceToDep().entrySet()) {
-            TacPlace origPlace = entry.getKey();
+        for (Map.Entry<AbstractTacPlace, DependencySet> entry : interIn.getPlaceToDep().entrySet()) {
+            AbstractTacPlace origPlace = entry.getKey();
             DependencySet origDep = entry.getValue();
 
             // decide whether to copy this place
@@ -894,7 +894,7 @@ public class DependencyLatticeElement extends LatticeElement {
 
         // array label mappings
         for (Map.Entry<Variable, DependencySet> entry : interIn.getArrayLabels().entrySet()) {
-            TacPlace origPlace = entry.getKey();
+            AbstractTacPlace origPlace = entry.getKey();
             DependencySet origArrayLabel = entry.getValue();
 
             // decide whether to copy this place
@@ -919,11 +919,11 @@ public class DependencyLatticeElement extends LatticeElement {
     // analogous to the one-parameter copyGlobalLike, but also takes into account
     // MOD-info; currently, constants are not considered as global-like for this
     public void copyGlobalLike(DependencyLatticeElement interIn, DependencyLatticeElement intraIn,
-                               Set<TacPlace> calleeMod) {
+                               Set<AbstractTacPlace> calleeMod) {
 
         // dependency mappings
-        for (Map.Entry<TacPlace, DependencySet> entry : interIn.getPlaceToDep().entrySet()) {
-            TacPlace interPlace = entry.getKey();
+        for (Map.Entry<AbstractTacPlace, DependencySet> entry : interIn.getPlaceToDep().entrySet()) {
+            AbstractTacPlace interPlace = entry.getKey();
             DependencySet interDep = entry.getValue();
 
             // decide whether to copy this place
@@ -953,7 +953,7 @@ public class DependencyLatticeElement extends LatticeElement {
 
         // array label mappings
         for (Map.Entry<Variable, DependencySet> entry : interIn.getArrayLabels().entrySet()) {
-            TacPlace interPlace = entry.getKey();
+            AbstractTacPlace interPlace = entry.getKey();
             DependencySet interArrayLabel = entry.getValue();
 
             // decide whether to copy this place
@@ -983,8 +983,8 @@ public class DependencyLatticeElement extends LatticeElement {
     public void copyMainTemporaries(DependencyLatticeElement origElement) {
 
         // dependency mappings
-        for (Map.Entry<TacPlace, DependencySet> entry : origElement.getPlaceToDep().entrySet()) {
-            TacPlace origPlace = entry.getKey();
+        for (Map.Entry<AbstractTacPlace, DependencySet> entry : origElement.getPlaceToDep().entrySet()) {
+            AbstractTacPlace origPlace = entry.getKey();
             DependencySet origDep = entry.getValue();
 
             // nothing to do for non-variables, non-main's, and non-temporaries
@@ -1006,7 +1006,7 @@ public class DependencyLatticeElement extends LatticeElement {
 
         // array label mappings
         for (Map.Entry<Variable, DependencySet> entry : origElement.getArrayLabels().entrySet()) {
-            TacPlace origPlace = entry.getKey();
+            AbstractTacPlace origPlace = entry.getKey();
             DependencySet origArrayLabel = entry.getValue();
 
             // nothing to do for non-variables, non-main's, and non-temporaries
@@ -1032,8 +1032,8 @@ public class DependencyLatticeElement extends LatticeElement {
     public void copyMainVariables(DependencyLatticeElement origElement) {
 
         // dependency mappings
-        for (Map.Entry<TacPlace, DependencySet> entry : origElement.getPlaceToDep().entrySet()) {
-            TacPlace origPlace = entry.getKey();
+        for (Map.Entry<AbstractTacPlace, DependencySet> entry : origElement.getPlaceToDep().entrySet()) {
+            AbstractTacPlace origPlace = entry.getKey();
             DependencySet origDep = entry.getValue();
 
             // nothing to do for non-variables and non-main's
@@ -1052,7 +1052,7 @@ public class DependencyLatticeElement extends LatticeElement {
 
         // array label mappings
         for (Map.Entry<Variable, DependencySet> entry : origElement.getArrayLabels().entrySet()) {
-            TacPlace origPlace = entry.getKey();
+            AbstractTacPlace origPlace = entry.getKey();
             DependencySet origArrayLabel = entry.getValue();
 
             // nothing to do for non-variables and non-main's
@@ -1075,8 +1075,8 @@ public class DependencyLatticeElement extends LatticeElement {
     public void copyLocals(DependencyLatticeElement origElement) {
 
         // dependency mappings
-        for (Map.Entry<TacPlace, DependencySet> entry : origElement.getPlaceToDep().entrySet()) {
-            TacPlace origPlace = entry.getKey();
+        for (Map.Entry<AbstractTacPlace, DependencySet> entry : origElement.getPlaceToDep().entrySet()) {
+            AbstractTacPlace origPlace = entry.getKey();
             DependencySet origDep = entry.getValue();
 
             // nothing to do for non-variables and non-locals
@@ -1093,7 +1093,7 @@ public class DependencyLatticeElement extends LatticeElement {
 
         // array label mappings
         for (Map.Entry<Variable, DependencySet> entry : origElement.getArrayLabels().entrySet()) {
-            TacPlace origPlace = entry.getKey();
+            AbstractTacPlace origPlace = entry.getKey();
             DependencySet origArrayLabel = entry.getValue();
 
             // nothing to do for non-variables and non-locals

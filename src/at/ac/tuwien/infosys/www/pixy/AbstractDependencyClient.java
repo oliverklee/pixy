@@ -16,7 +16,7 @@ import java.util.*;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public abstract class DependencyClient {
+public abstract class AbstractDependencyClient {
     protected DependencyAnalysis dependencyAnalysis;
     protected DependencyClientInformation dci;
 
@@ -33,7 +33,7 @@ public abstract class DependencyClient {
 
 //  ********************************************************************************
 
-    protected DependencyClient(DependencyAnalysis dependencyAnalysis) {
+    protected AbstractDependencyClient(DependencyAnalysis dependencyAnalysis) {
         this.dependencyAnalysis = dependencyAnalysis;
         this.dci = MyOptions.getDepClientInfo(this.getClass().getName());
     }
@@ -117,7 +117,7 @@ public abstract class DependencyClient {
 
 //  ********************************************************************************
 
-    protected DependencyClient.InitialTaint initiallyTainted(TacPlace place) {
+    protected AbstractDependencyClient.InitialTaint initiallyTainted(AbstractTacPlace place) {
 
         if (place instanceof Variable) {
             Variable var = place.getVariable();
@@ -128,28 +128,28 @@ public abstract class DependencyClient {
 
                 // return variables
                 if (var.isReturnVariable()) {
-                    return DependencyClient.InitialTaint.NEVER;
+                    return AbstractDependencyClient.InitialTaint.NEVER;
                 } else if (MyOptions.isHarmlessServerVar(varName) ||
                     varName.equals("$_SERVER")) {
                     // harmless member of the SERVER array,
                     // or the SERVER array itself
-                    return DependencyClient.InitialTaint.NEVER;
+                    return AbstractDependencyClient.InitialTaint.NEVER;
                 } else if (varName.startsWith("$_SESSION[")) {
                     // the whole session array
-                    return DependencyClient.InitialTaint.NEVER;
+                    return AbstractDependencyClient.InitialTaint.NEVER;
                 } else if (varName.equals("$_ENV") ||
                     varName.equals("$_HTTP_ENV_VARS") ||
                     varName.startsWith("$_ENV[") ||
                     varName.startsWith("$HTTP_ENV_VARS[")) {
                     // the whole env array
-                    return DependencyClient.InitialTaint.NEVER;
+                    return AbstractDependencyClient.InitialTaint.NEVER;
                 } else if (!this.getIsTainted && varName.startsWith("$_GET[")) {
                     // the whole GET array, if it shall be considered
                     // as not tainted
-                    return DependencyClient.InitialTaint.NEVER;
+                    return AbstractDependencyClient.InitialTaint.NEVER;
                 } else {
                     // non-harmless superglobal
-                    return DependencyClient.InitialTaint.ALWAYS;
+                    return AbstractDependencyClient.InitialTaint.ALWAYS;
                 }
 
                 // non-superglobals
@@ -157,37 +157,37 @@ public abstract class DependencyClient {
 
                 if (var.getSymbolTable().getName().equals("_special")) {
                     if (varName.equals(InternalStrings.memberName)) {
-                        return DependencyClient.InitialTaint.NEVER;
+                        return AbstractDependencyClient.InitialTaint.NEVER;
                     }
                 } else if (varName.equals("$PHPSESSID")) {
                     // the special php session id variable is harmless
-                    return DependencyClient.InitialTaint.NEVER;
+                    return AbstractDependencyClient.InitialTaint.NEVER;
                 } else if (MyOptions.harmlessServerIndices.contains(varName.substring(1))) {
                     // something like $SERVER_NAME etc.
                     // (i.e. harmless indices of the SERVER array that have been
                     // exported into main's scope due to register_globals
-                    return DependencyClient.InitialTaint.NEVER;
+                    return AbstractDependencyClient.InitialTaint.NEVER;
                 } else if (!var.getSymbolTable().isMain()) {
                     // local function variables are untainted
-                    return DependencyClient.InitialTaint.NEVER;
+                    return AbstractDependencyClient.InitialTaint.NEVER;
                 } else {
                     // a global variable
                     if (!MyOptions.optionG) {
                         // if the user decided to disable register_globals,
                         // ignore these cases
-                        return DependencyClient.InitialTaint.NEVER;
+                        return AbstractDependencyClient.InitialTaint.NEVER;
                     } else {
-                        return DependencyClient.InitialTaint.IFRG;
+                        return AbstractDependencyClient.InitialTaint.IFRG;
                     }
                 }
             }
         } else if (place instanceof Constant) {
             // uninitialized constants are untainted
-            return DependencyClient.InitialTaint.NEVER;
+            return AbstractDependencyClient.InitialTaint.NEVER;
         }
 
         // did we miss something? everything else is tainted
-        return DependencyClient.InitialTaint.ALWAYS;
+        return AbstractDependencyClient.InitialTaint.ALWAYS;
     }
 
 //  ********************************************************************************

@@ -1,27 +1,27 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.literal;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.Lattice;
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLattice;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.ConstantsTable;
 import at.ac.tuwien.infosys.www.pixy.conversion.SymbolTable;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 
 import java.util.List;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class LiteralLattice extends Lattice {
+public class LiteralLattice extends AbstractLattice {
     public LiteralLattice(
-        List<TacPlace> places, ConstantsTable constantsTable, List<TacFunction> functions, SymbolTable superSymbolTable
+        List<AbstractTacPlace> places, ConstantsTable constantsTable, List<TacFunction> functions, SymbolTable superSymbolTable
     ) {
         LiteralLatticeElement.initDefault(places, constantsTable, functions, superSymbolTable);
     }
 
-    public LatticeElement lub(
-        LatticeElement incomingElementX,
-        LatticeElement targetElementX) {
+    public AbstractLatticeElement lub(
+        AbstractLatticeElement incomingElementX,
+        AbstractLatticeElement targetElementX) {
 
         // if the incoming element is the bottom element:
         // return (a clone of) the other element

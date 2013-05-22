@@ -1,9 +1,9 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
@@ -16,16 +16,16 @@ import java.util.Set;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class Isset extends TransferFunction {
+public class Isset extends AbstractTransferFunction {
     private Variable setMe;
-    private TacPlace testMe;
+    private AbstractTacPlace testMe;
     private AbstractCfgNode cfgNode;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public Isset(TacPlace setMe, TacPlace testMe, AbstractCfgNode cfgNode) {
+    public Isset(AbstractTacPlace setMe, AbstractTacPlace testMe, AbstractCfgNode cfgNode) {
         this.setMe = (Variable) setMe;  // must be a variable
         this.testMe = testMe;
         this.cfgNode = cfgNode;
@@ -35,7 +35,7 @@ public class Isset extends TransferFunction {
 // OTHER ***************************************************************************
 // *********************************************************************************
 
-    public LatticeElement transfer(LatticeElement inX) {
+    public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
 
         // System.out.println("transfer method: " + setMe + " = " + setTo);
         DependencyLatticeElement in = (DependencyLatticeElement) inX;

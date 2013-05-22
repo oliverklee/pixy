@@ -20,7 +20,7 @@ public class TacClass {
     // method name -> TacFunction
     private Map<String, TacFunction> methods;
 
-    // member name -> Pair(initializer controlFlowGraph, TacPlace that summarizes the controlFlowGraph)
+    // member name -> Pair(initializer controlFlowGraph, AbstractTacPlace that summarizes the controlFlowGraph)
     private Map<String, TacMember> members;
 
     TacClass(String name, ParseNode parseNode) {
@@ -61,7 +61,7 @@ public class TacClass {
         }
     }
 
-    public void addMember(String name, ControlFlowGraph controlFlowGraph, TacPlace place) {
+    public void addMember(String name, ControlFlowGraph controlFlowGraph, AbstractTacPlace place) {
         TacMember member = new TacMember(name, controlFlowGraph, place);
         this.members.put(name, member);
     }
@@ -97,9 +97,9 @@ public class TacClass {
 
         // place that summarizes the initializer controlFlowGraph; e.g., if you have
         // a member declaration such as
-        private TacPlace place;
+        private AbstractTacPlace place;
 
-        TacMember(String name, ControlFlowGraph controlFlowGraph, TacPlace place) {
+        TacMember(String name, ControlFlowGraph controlFlowGraph, AbstractTacPlace place) {
             this.name = name;
             this.controlFlowGraph = controlFlowGraph;
             this.place = place;
@@ -113,7 +113,7 @@ public class TacClass {
             return this.controlFlowGraph;
         }
 
-        TacPlace getPlace() {
+        AbstractTacPlace getPlace() {
             return this.place;
         }
 

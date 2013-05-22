@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.functional;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
 import java.util.LinkedList;
@@ -27,7 +27,7 @@ public final class FunctionalWorkList {
         this.workList.add(element);
     }
 
-    void add(AbstractCfgNode cfgNode, LatticeElement context) {
+    void add(AbstractCfgNode cfgNode, AbstractLatticeElement context) {
         this.workList.add(new FunctionalWorkListElement(cfgNode, context));
     }
 

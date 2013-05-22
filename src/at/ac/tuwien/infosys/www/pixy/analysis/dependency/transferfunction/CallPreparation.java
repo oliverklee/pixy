@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
@@ -14,7 +14,7 @@ import java.util.ListIterator;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CallPreparation extends TransferFunction {
+public class CallPreparation extends AbstractTransferFunction {
     private List<TacActualParameter> actualParams;
     private List<TacFormalParameter> formalParams;
     private TacFunction caller;
@@ -42,7 +42,7 @@ public class CallPreparation extends TransferFunction {
 //  OTHER ***************************************************************************
 //  *********************************************************************************
 
-    public LatticeElement transfer(LatticeElement inX) {
+    public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
         DependencyLatticeElement in = (DependencyLatticeElement) inX;
         DependencyLatticeElement out = new DependencyLatticeElement(in);
 
@@ -79,7 +79,7 @@ public class CallPreparation extends TransferFunction {
                         // start at the CFG's head and apply all transfer functions
                         AbstractCfgNode defaultNode = defaultControlFlowGraph.getHead();
                         while (defaultNode != null) {
-                            TransferFunction tf = this.dependencyAnalysis.getTransferFunction(defaultNode);
+                            AbstractTransferFunction tf = this.dependencyAnalysis.getTransferFunction(defaultNode);
                             out = (DependencyLatticeElement) tf.transfer(out);
                             defaultNode = defaultNode.getSuccessor(0);
                         }

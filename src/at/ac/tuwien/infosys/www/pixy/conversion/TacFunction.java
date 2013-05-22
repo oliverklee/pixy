@@ -65,7 +65,7 @@ public class TacFunction {
         // for assigning functions to controlFlowGraph nodes; the reason is that assignFunction()
         // is called in the final stage of program conversion, but we need function
         // information already during conversion (literals analysis for include
-        // file resolution: InterproceduralAnalysis);
+        // file resolution: AbstractInterproceduralAnalysis);
         // a cleaner solution would be to force the assignment of functions to
         // cfgnodes by requiring this information in each cfgnode's constructor
         this.controlFlowGraph.getTail().setEnclosingFunction(this);

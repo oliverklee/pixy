@@ -108,7 +108,7 @@ public class InterproceduralWorklistOrder {
                     // enter function under corresponding context
 
                     CfgEntry entryNode = (CfgEntry) callee.getControlFlowGraph().getHead();
-                    Context propagationContext = cc.getTargetContext(callNode, context.getPosition());
+                    AbstractContext propagationContext = cc.getTargetContext(callNode, context.getPosition());
                     if (propagationContext == null) {
                         throw new RuntimeException("SNH: " + callNode.getLoc());
                     }
@@ -134,11 +134,11 @@ public class InterproceduralWorklistOrder {
                         ReverseTarget revTarget = revTargetsIter.next();
                         Call revCall = revTarget.getCallNode();
                         AbstractCfgNode revRet = revCall.getSuccessor(0);
-                        Iterator<? extends Context> reverseContextsIter = revTarget.getContexts().iterator();
+                        Iterator<? extends AbstractContext> reverseContextsIter = revTarget.getContexts().iterator();
 
                         while ((nextElement == null) && reverseContextsIter.hasNext()) {
 
-                            Context reverseContext = reverseContextsIter.next();
+                            AbstractContext reverseContext = reverseContextsIter.next();
                             nextElement = new InterproceduralWorklistElement(revRet, reverseContext);
 
                             if (visited.contains(nextElement)) {

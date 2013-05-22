@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.literal;
 
 import at.ac.tuwien.infosys.www.pixy.conversion.Literal;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.If;
 
@@ -14,7 +14,7 @@ public class DummyLiteralAnalysis extends LiteralAnalysis {
     }
 
     // best-effort resolution
-    public Literal getLiteral(TacPlace place, AbstractCfgNode cfgNode) {
+    public Literal getLiteral(AbstractTacPlace place, AbstractCfgNode cfgNode) {
         if (place instanceof Literal) {
             return (Literal) place;
         } else {

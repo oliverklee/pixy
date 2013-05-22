@@ -1,10 +1,10 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 import java.util.Collections;
@@ -16,7 +16,7 @@ import java.util.Set;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class AssignReference extends TransferFunction {
+public class AssignReference extends AbstractTransferFunction {
     private Variable left;
     private Variable right;
     private boolean supported;
@@ -26,7 +26,7 @@ public class AssignReference extends TransferFunction {
 // *********************************************************************************
 
     // mustAliases, mayAliases: of setMe
-    public AssignReference(TacPlace left, TacPlace right) {
+    public AssignReference(AbstractTacPlace left, AbstractTacPlace right) {
 
         this.left = (Variable) left;    // must be a variable
         this.right = (Variable) right;  // must be a variable
@@ -39,7 +39,7 @@ public class AssignReference extends TransferFunction {
 // OTHER ***************************************************************************
 // *********************************************************************************
 
-    public LatticeElement transfer(LatticeElement inX) {
+    public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
 
         // if this reference assignment is not supported by our alias analysis,
         // we simply ignore it

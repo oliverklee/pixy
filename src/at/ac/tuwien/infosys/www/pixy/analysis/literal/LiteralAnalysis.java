@@ -1,12 +1,12 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.literal;
 
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.GenericRepository;
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunctionId;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AnalysisType;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AbstractAnalysisType;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AbstractInterproceduralAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralWorklist;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction.*;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction.AssignArray;
@@ -31,10 +31,10 @@ import java.util.Set;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class LiteralAnalysis extends InterproceduralAnalysis {
+public class LiteralAnalysis extends AbstractInterproceduralAnalysis {
     private TacConverter tac;
 
-    private GenericRepository<LatticeElement> repos;
+    private GenericRepository<AbstractLatticeElement> repos;
 
     // preceding alias analysis (required for correct results)
     private AliasAnalysis aliasAnalysis;
@@ -50,7 +50,7 @@ public class LiteralAnalysis extends InterproceduralAnalysis {
 
     public LiteralAnalysis(
         TacConverter tac,
-        AliasAnalysis aliasAnalysis, AnalysisType analysisType,
+        AliasAnalysis aliasAnalysis, AbstractAnalysisType analysisType,
         InterproceduralWorklist workList) {
 
         this.tac = tac;
@@ -86,7 +86,7 @@ public class LiteralAnalysis extends InterproceduralAnalysis {
     // aliasInNode:
     // - if cfgNodeX is not inside a basic block: the same node
     // - else: the basic block
-    protected TransferFunction assignSimple(AbstractCfgNode cfgNodeX, AbstractCfgNode aliasInNode) {
+    protected AbstractTransferFunction assignSimple(AbstractCfgNode cfgNodeX, AbstractCfgNode aliasInNode) {
 
         at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AssignSimple cfgNode = (at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AssignSimple) cfgNodeX;
         Variable left = cfgNode.getLeft();
@@ -100,7 +100,7 @@ public class LiteralAnalysis extends InterproceduralAnalysis {
             mayAliases);
     }
 
-    protected TransferFunction assignUnary(AbstractCfgNode cfgNodeX, AbstractCfgNode aliasInNode) {
+    protected AbstractTransferFunction assignUnary(AbstractCfgNode cfgNodeX, AbstractCfgNode aliasInNode) {
 
         at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AssignUnary cfgNode = (at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AssignUnary) cfgNodeX;
         Variable left = cfgNode.getLeft();
@@ -115,7 +115,7 @@ public class LiteralAnalysis extends InterproceduralAnalysis {
             mayAliases);
     }
 
-    protected TransferFunction assignBinary(AbstractCfgNode cfgNodeX, AbstractCfgNode aliasInNode) {
+    protected AbstractTransferFunction assignBinary(AbstractCfgNode cfgNodeX, AbstractCfgNode aliasInNode) {
 
         at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AssignBinary cfgNode = (at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AssignBinary) cfgNodeX;
         Variable left = cfgNode.getLeft();
@@ -132,24 +132,24 @@ public class LiteralAnalysis extends InterproceduralAnalysis {
             cfgNode);
     }
 
-    protected TransferFunction assignRef(AbstractCfgNode cfgNodeX) {
+    protected AbstractTransferFunction assignRef(AbstractCfgNode cfgNodeX) {
         at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AssignReference cfgNode = (at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AssignReference) cfgNodeX;
         return new AssignReference(
             cfgNode.getLeft(),
             cfgNode.getRight());
     }
 
-    protected TransferFunction unset(AbstractCfgNode cfgNodeX) {
+    protected AbstractTransferFunction unset(AbstractCfgNode cfgNodeX) {
         at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Unset cfgNode = (at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Unset) cfgNodeX;
         return new Unset(cfgNode.getOperand());
     }
 
-    protected TransferFunction assignArray(AbstractCfgNode cfgNodeX) {
+    protected AbstractTransferFunction assignArray(AbstractCfgNode cfgNodeX) {
         at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AssignArray cfgNode = (at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AssignArray) cfgNodeX;
         return new AssignArray(cfgNode.getLeft());
     }
 
-    protected TransferFunction callPrep(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
+    protected AbstractTransferFunction callPrep(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
 
         at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreparation cfgNode = (at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreparation) cfgNodeX;
         TacFunction calledFunction = cfgNode.getCallee();
@@ -177,7 +177,7 @@ public class LiteralAnalysis extends InterproceduralAnalysis {
         List<TacFormalParameter> formalParams = calledFunction.getParams();
 
         // the transfer function to be assigned to this node
-        TransferFunction tf = null;
+        AbstractTransferFunction tf = null;
 
         if (actualParams.size() > formalParams.size()) {
             // more actual than formal params; either a bug or a varargs
@@ -197,11 +197,11 @@ public class LiteralAnalysis extends InterproceduralAnalysis {
         return tf;
     }
 
-    protected TransferFunction entry(TacFunction traversedFunction) {
+    protected AbstractTransferFunction entry(TacFunction traversedFunction) {
         return new FunctionEntry(traversedFunction);
     }
 
-    protected TransferFunction callRet(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
+    protected AbstractTransferFunction callRet(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
 
         at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallReturn cfgNodeRet = (at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallReturn) cfgNodeX;
         at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreparation cfgNodePrep = cfgNodeRet.getCallPrepNode();
@@ -212,7 +212,7 @@ public class LiteralAnalysis extends InterproceduralAnalysis {
 
         // call to an unknown function;
         // for explanations see above (handling CallPreparation)
-        TransferFunction tf;
+        AbstractTransferFunction tf;
         if (calledFunction == null) {
             tf = new CallReturnUnknown(cfgNodeRet);
         } else {
@@ -231,17 +231,17 @@ public class LiteralAnalysis extends InterproceduralAnalysis {
         return tf;
     }
 
-    protected TransferFunction callBuiltin(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
+    protected AbstractTransferFunction callBuiltin(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
         at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallBuiltinFunction cfgNode = (at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallBuiltinFunction) cfgNodeX;
         return new CallBuiltinFunction(cfgNode);
     }
 
-    protected TransferFunction callUnknown(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
+    protected AbstractTransferFunction callUnknown(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
         CallUnknownFunction cfgNode = (CallUnknownFunction) cfgNodeX;
         return new CallUnknown(cfgNode);
     }
 
-    protected TransferFunction global(AbstractCfgNode cfgNodeX) {
+    protected AbstractTransferFunction global(AbstractCfgNode cfgNodeX) {
 
         // "global <var>";
         // equivalent to: creating a reference to the variable in the main function with
@@ -275,7 +275,7 @@ public class LiteralAnalysis extends InterproceduralAnalysis {
         }
     }
 
-    protected TransferFunction isset(AbstractCfgNode cfgNodeX) {
+    protected AbstractTransferFunction isset(AbstractCfgNode cfgNodeX) {
 
         at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Isset cfgNode = (at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Isset) cfgNodeX;
         return new Isset(
@@ -283,18 +283,18 @@ public class LiteralAnalysis extends InterproceduralAnalysis {
             cfgNode.getRight());
     }
 
-    protected TransferFunction define(AbstractCfgNode cfgNodeX) {
+    protected AbstractTransferFunction define(AbstractCfgNode cfgNodeX) {
         at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Define cfgNode = (at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Define) cfgNodeX;
         return new Define(this.tac.getConstantsTable(), cfgNode);
     }
 
-    protected TransferFunction tester(AbstractCfgNode cfgNodeX) {
+    protected AbstractTransferFunction tester(AbstractCfgNode cfgNodeX) {
         // special node that only occurs inside the builtin functions file
         at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Tester cfgNode = (at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Tester) cfgNodeX;
         return new Tester(cfgNode);
     }
 
-    protected TransferFunction include(AbstractCfgNode cfgNodeX) {
+    protected AbstractTransferFunction include(AbstractCfgNode cfgNodeX) {
         this.includeNodes.add((Include) cfgNodeX);
         return TransferFunctionId.INSTANCE;
     }
@@ -305,7 +305,7 @@ public class LiteralAnalysis extends InterproceduralAnalysis {
 
     // returns the (folded) literal of the given place coming in to the given node;
     // TOP if the cfgNode is unreachable (and hence can't return a folded value)
-    public Literal getLiteral(TacPlace place, AbstractCfgNode cfgNode) {
+    public Literal getLiteral(AbstractTacPlace place, AbstractCfgNode cfgNode) {
 
         LiteralLatticeElement element =
             (LiteralLatticeElement) this.interproceduralAnalysisInformation.getAnalysisNode(cfgNode).getUnrecycledFoldedValue();
@@ -341,7 +341,7 @@ public class LiteralAnalysis extends InterproceduralAnalysis {
     // of an analysis bug: it only means that under the current analysis state,
     // the condition clearly evaluates to a known boolean; further iterations
     // might change this
-    protected Boolean evalIf(If ifNode, LatticeElement inValueX) {
+    protected Boolean evalIf(If ifNode, AbstractLatticeElement inValueX) {
         return null;
     }
 
@@ -363,7 +363,7 @@ public class LiteralAnalysis extends InterproceduralAnalysis {
 
 //  recycle ************************************************************************
 
-    public LatticeElement recycle(LatticeElement recycleMe) {
+    public AbstractLatticeElement recycle(AbstractLatticeElement recycleMe) {
         return this.repos.recycle(recycleMe);
     }
 

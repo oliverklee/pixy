@@ -200,7 +200,7 @@ public class ConnectorComputation {
             // i.e., |EncodedCallStrings| = 1 for each function
 
             // prepare one-element context set
-            Set<Context> contextSet = new HashSet<>();
+            Set<AbstractContext> contextSet = new HashSet<>();
             contextSet.add(new CallStringContext(0));
 
             // for each call to this function...

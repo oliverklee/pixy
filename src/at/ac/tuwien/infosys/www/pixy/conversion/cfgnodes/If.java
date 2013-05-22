@@ -2,7 +2,7 @@ package at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes;
 
 import at.ac.tuwien.infosys.www.phpparser.ParseNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.Constant;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 import java.util.LinkedList;
@@ -12,13 +12,13 @@ import java.util.List;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class If extends AbstractCfgNode {
-    private TacPlace leftOperand;
-    private TacPlace rightOperand;  // may only be Constant.TRUE or Constant.FALSE
+    private AbstractTacPlace leftOperand;
+    private AbstractTacPlace rightOperand;  // may only be Constant.TRUE or Constant.FALSE
     private int op;
 
 //CONSTRUCTORS ********************************************************************
 
-    public If(TacPlace leftOperand, TacPlace rightOperand, int op, ParseNode node) {
+    public If(AbstractTacPlace leftOperand, AbstractTacPlace rightOperand, int op, ParseNode node) {
         super(node);
         // make sure that right operand is valid (i.e. true or false)
         if (!(rightOperand == Constant.TRUE || rightOperand == Constant.FALSE)) {
@@ -31,11 +31,11 @@ public class If extends AbstractCfgNode {
         this.op = op;
     }
 
-    public TacPlace getLeftOperand() {
+    public AbstractTacPlace getLeftOperand() {
         return this.leftOperand;
     }
 
-    public TacPlace getRightOperand() {
+    public AbstractTacPlace getRightOperand() {
         return this.rightOperand;
     }
 

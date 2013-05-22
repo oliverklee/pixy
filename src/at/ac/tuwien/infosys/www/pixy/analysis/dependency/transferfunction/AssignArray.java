@@ -1,9 +1,9 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
@@ -12,7 +12,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class AssignArray extends TransferFunction {
+public class AssignArray extends AbstractTransferFunction {
     private Variable left;
     private boolean supported;
     private AbstractCfgNode cfgNode;
@@ -21,7 +21,7 @@ public class AssignArray extends TransferFunction {
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public AssignArray(TacPlace left, AbstractCfgNode cfgNode) {
+    public AssignArray(AbstractTacPlace left, AbstractCfgNode cfgNode) {
 
         this.left = (Variable) left;    // must be a variable
         this.cfgNode = cfgNode;
@@ -34,7 +34,7 @@ public class AssignArray extends TransferFunction {
 // OTHER ***************************************************************************
 // *********************************************************************************
 
-    public LatticeElement transfer(LatticeElement inX) {
+    public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
 
         // if this statement is not supported by our alias analysis,
         // we simply ignore it

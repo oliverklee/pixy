@@ -1,8 +1,8 @@
 package at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes;
 
 import at.ac.tuwien.infosys.www.phpparser.ParseNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParameter;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 import java.util.LinkedList;
@@ -26,7 +26,7 @@ public class CallBuiltinFunction extends AbstractCfgNode {
 // CONSTRUCTORS ********************************************************************
 
     public CallBuiltinFunction(String functionName,
-                               List<TacActualParameter> paramList, TacPlace tempPlace, ParseNode node) {
+                               List<TacActualParameter> paramList, AbstractTacPlace tempPlace, ParseNode node) {
 
         super(node);
         this.functionName = functionName.toLowerCase();
@@ -51,7 +51,7 @@ public class CallBuiltinFunction extends AbstractCfgNode {
     public List<Variable> getVariables() {
         List<Variable> retMe = new LinkedList<>();
         for (TacActualParameter param : this.paramList) {
-            TacPlace paramPlace = param.getPlace();
+            AbstractTacPlace paramPlace = param.getPlace();
             if (paramPlace instanceof Variable) {
                 retMe.add((Variable) paramPlace);
             } else {

@@ -11,12 +11,12 @@ import java.util.Set;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class MyAcceptor extends MyAutomaton {
+public class MyAcceptor extends AbstractAutomaton {
     public MyAcceptor() {
         super();
     }
 
-    public MyAcceptor(MyAutomaton orig) {
+    public MyAcceptor(AbstractAutomaton orig) {
         super(orig);
     }
 

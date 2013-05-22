@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyLabel;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencySet;
@@ -13,7 +13,7 @@ import java.util.Set;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CallUnknown extends TransferFunction {
+public class CallUnknown extends AbstractTransferFunction {
     private CallUnknownFunction cfgNode;
 
 // *********************************************************************************
@@ -28,7 +28,7 @@ public class CallUnknown extends TransferFunction {
 // OTHER ***************************************************************************
 // *********************************************************************************
 
-    public LatticeElement transfer(LatticeElement inX) {
+    public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
 
         DependencyLatticeElement in = (DependencyLatticeElement) inX;
         DependencyLatticeElement out = new DependencyLatticeElement(in);

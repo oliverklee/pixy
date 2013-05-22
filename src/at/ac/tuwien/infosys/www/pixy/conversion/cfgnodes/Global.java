@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes;
 
 import at.ac.tuwien.infosys.www.phpparser.ParseNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 import java.util.LinkedList;
@@ -15,7 +15,7 @@ public class Global extends AbstractCfgNode {
 
 // CONSTRUCTORS ********************************************************************
 
-    public Global(TacPlace operand, ParseNode node) {
+    public Global(AbstractTacPlace operand, ParseNode node) {
         super(node);
         this.operand = (Variable) operand;  // must be a variable
     }

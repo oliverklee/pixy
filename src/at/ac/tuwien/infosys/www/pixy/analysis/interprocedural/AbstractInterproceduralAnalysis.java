@@ -2,10 +2,10 @@ package at.ac.tuwien.infosys.www.pixy.analysis.interprocedural;
 
 import at.ac.tuwien.infosys.www.pixy.Dumper;
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
-import at.ac.tuwien.infosys.www.pixy.analysis.Analysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.AnalysisNode;
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractAnalysisNode;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.CallStringAnalysis;
 import at.ac.tuwien.infosys.www.pixy.conversion.CfgEdge;
 import at.ac.tuwien.infosys.www.pixy.conversion.ControlFlowGraph;
@@ -31,15 +31,15 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public abstract class InterproceduralAnalysis extends Analysis {
+public abstract class AbstractInterproceduralAnalysis extends AbstractAnalysis {
     // INPUT ***********************************************************************
 
     // functional or CS analysis
-    protected AnalysisType analysisType;
+    protected AbstractAnalysisType analysisType;
 
     // OUTPUT **********************************************************************
 
-    // analysis information (maps each CfgNode to an InterproceduralAnalysisNode)
+    // analysis information (maps each CfgNode to an AbstractInterproceduralAnalysisNode)
     protected InterproceduralAnalysisInformation interproceduralAnalysisInformation;
 
     // OTHER ***********************************************************************
@@ -48,7 +48,7 @@ public abstract class InterproceduralAnalysis extends Analysis {
     protected TacFunction mainFunction;
 
     // context for the main function
-    protected Context mainContext;
+    protected AbstractContext mainContext;
 
     // worklist consisting of pairs (ControlFlowGraph node, lattice element)
     InterproceduralWorklist workList;
@@ -63,7 +63,7 @@ public abstract class InterproceduralAnalysis extends Analysis {
     // restriction that superclass constructors have to be called first;
     // the "functions" map has to map function name -> TacFunction object
     protected void initGeneral(List<TacFunction> functions, TacFunction mainFunction,
-                               AnalysisType analysisType, InterproceduralWorklist workList) {
+                               AbstractAnalysisType analysisType, InterproceduralWorklist workList) {
 
         this.analysisType = analysisType;
         this.analysisType.setAnalysis(this);
@@ -91,7 +91,7 @@ public abstract class InterproceduralAnalysis extends Analysis {
         this.initTransferFunctions();
 
         // initialize PHI map for start node
-        InterproceduralAnalysisNode startAnalysisNode = this.interproceduralAnalysisInformation.getAnalysisNode(mainHead);
+        AbstractInterproceduralAnalysisNode startAnalysisNode = this.interproceduralAnalysisInformation.getAnalysisNode(mainHead);
         startAnalysisNode.setPhiValue(this.mainContext, this.startValue);
     }
 
@@ -133,7 +133,7 @@ public abstract class InterproceduralAnalysis extends Analysis {
 
     // returns the context to which interprocedural propagation shall
     // be conducted (used at call nodes)
-    public Context getPropagationContext(Call callNode, Context context) {
+    public AbstractContext getPropagationContext(Call callNode, AbstractContext context) {
         return this.analysisType.getPropagationContext(callNode, context);
     }
 
@@ -141,13 +141,13 @@ public abstract class InterproceduralAnalysis extends Analysis {
 
     // returns a set of ReverseTarget objects to which interprocedural
     // propagation shall be conducted (used at exit nodes)
-    public List<ReverseTarget> getReverseTargets(TacFunction exitedFunction, Context context) {
+    public List<ReverseTarget> getReverseTargets(TacFunction exitedFunction, AbstractContext context) {
         return this.analysisType.getReverseTargets(exitedFunction, context);
     }
 
 //  getTransferFunction ************************************************************
 
-    public TransferFunction getTransferFunction(AbstractCfgNode cfgNode) {
+    public AbstractTransferFunction getTransferFunction(AbstractCfgNode cfgNode) {
         return this.interproceduralAnalysisInformation.getTransferFunction(cfgNode);
     }
 
@@ -159,7 +159,7 @@ public abstract class InterproceduralAnalysis extends Analysis {
 
 //  getAnalysisNode ****************************************************************
 
-    public InterproceduralAnalysisNode getAnalysisNode(AbstractCfgNode cfgNode) {
+    public AbstractInterproceduralAnalysisNode getAnalysisNode(AbstractCfgNode cfgNode) {
         return this.interproceduralAnalysisInformation.getAnalysisNode(cfgNode);
     }
 
@@ -171,14 +171,14 @@ public abstract class InterproceduralAnalysis extends Analysis {
 
     // creates and returns an analysis node for the given parameters that is
     // appropriate for the analysis type (functional / call-string)
-    protected AnalysisNode makeAnalysisNode(AbstractCfgNode cfgNode, TransferFunction tf) {
+    protected AbstractAnalysisNode makeAnalysisNode(AbstractCfgNode cfgNode, AbstractTransferFunction tf) {
         return this.analysisType.makeAnalysisNode(cfgNode, tf);
     }
 
 //  evalIf **************************************************************************
 
     // returns Boolean.TRUE, Boolean.FALSE, or null if it can't be evaluated
-    protected abstract Boolean evalIf(If ifNode, LatticeElement inValue);
+    protected abstract Boolean evalIf(If ifNode, AbstractLatticeElement inValue);
 
 //  useSummaries *******************************************************************
 
@@ -214,11 +214,11 @@ public abstract class InterproceduralAnalysis extends Analysis {
 
             // extract information from the element
             AbstractCfgNode node = element.getCfgNode();
-            Context context = element.getContext();
+            AbstractContext context = element.getContext();
 
             // get incoming value at node n (you need to understand the PHI table :)
-            InterproceduralAnalysisNode analysisNode = this.interproceduralAnalysisInformation.getAnalysisNode(node);
-            LatticeElement inValue = analysisNode.getPhiValue(context);
+            AbstractInterproceduralAnalysisNode analysisNode = this.interproceduralAnalysisInformation.getAnalysisNode(node);
+            AbstractLatticeElement inValue = analysisNode.getPhiValue(context);
             if (inValue == null) {
                 throw new RuntimeException("SNH");
             }
@@ -259,11 +259,11 @@ public abstract class InterproceduralAnalysis extends Analysis {
                         throw new RuntimeException("SNH");
                     }
 
-                    Context propagationContext = this.getPropagationContext(callNode, context);
+                    AbstractContext propagationContext = this.getPropagationContext(callNode, context);
 
                     // look if the exit node's PHI map has an entry under the context
                     // resulting from this call
-                    InterproceduralAnalysisNode exitAnalysisNode = this.interproceduralAnalysisInformation.getAnalysisNode(exitNode);
+                    AbstractInterproceduralAnalysisNode exitAnalysisNode = this.interproceduralAnalysisInformation.getAnalysisNode(exitNode);
                     if (exitAnalysisNode == null) {
                         // this can only mean that there is no way to reach the
                         // function's natural exit node, i.e. there is something like
@@ -276,7 +276,7 @@ public abstract class InterproceduralAnalysis extends Analysis {
                         continue;
                     }
 
-                    LatticeElement exitInValue = exitAnalysisNode.getPhiValue(propagationContext);
+                    AbstractLatticeElement exitInValue = exitAnalysisNode.getPhiValue(propagationContext);
 
                     if (this.useSummaries() && exitInValue != null) {
 
@@ -321,8 +321,8 @@ public abstract class InterproceduralAnalysis extends Analysis {
 
                     // the exit node gets a special treatment: pass incoming value
                     // in a lazy manner
-                    // LatticeElement outValue = this.analysisInfo[node.getId()].transfer(inValue);
-                    LatticeElement outValue = inValue;
+                    // AbstractLatticeElement outValue = this.analysisInfo[node.getId()].transfer(inValue);
+                    AbstractLatticeElement outValue = inValue;
 
                     // get targets that we have to return to
                     for (ReverseTarget reverseTarget : this.getReverseTargets(function, context)) {
@@ -336,13 +336,13 @@ public abstract class InterproceduralAnalysis extends Analysis {
                         // determine predecessor node (unique) of the call node
                         CallPreparation callPrepNode = callRetNode.getCallPrepNode();
 
-                        for (Context targetContext : reverseTarget.getContexts()) {
+                        for (AbstractContext targetContext : reverseTarget.getContexts()) {
                             // if the incoming value at the callprep node is undefined, this means
                             // that the analysis hasn't made the call under this context
                             // (can happen for call-string analysis);
                             // => don't propagate
                             //if (this.analysisInfo[callPrepNode.getId()].getPhiValue(targetContext) == null) {
-                            InterproceduralAnalysisNode callPrepANode = this.interproceduralAnalysisInformation.getAnalysisNode(callPrepNode);
+                            AbstractInterproceduralAnalysisNode callPrepANode = this.interproceduralAnalysisInformation.getAnalysisNode(callPrepNode);
                             if (callPrepANode.getPhiValue(targetContext) == null) {
                                 // don't propagate
                             } else {
@@ -355,7 +355,7 @@ public abstract class InterproceduralAnalysis extends Analysis {
 
                     If ifNode = (If) node;
 
-                    LatticeElement outValue = this.interproceduralAnalysisInformation.getAnalysisNode(node).transfer(inValue);
+                    AbstractLatticeElement outValue = this.interproceduralAnalysisInformation.getAnalysisNode(node).transfer(inValue);
                     CfgEdge[] outEdges = node.getOutEdges();
 
                     // try to evaluate the "if" condition
@@ -381,8 +381,8 @@ public abstract class InterproceduralAnalysis extends Analysis {
                     // current context
 
                     // apply transfer function to incoming value
-                    InterproceduralAnalysisNode aNode = this.interproceduralAnalysisInformation.getAnalysisNode(node);
-                    LatticeElement outValue = aNode.transfer(inValue, context);
+                    AbstractInterproceduralAnalysisNode aNode = this.interproceduralAnalysisInformation.getAnalysisNode(node);
+                    AbstractLatticeElement outValue = aNode.transfer(inValue, context);
 
                     // for each outgoing edge...
                     CfgEdge[] outEdges = node.getOutEdges();
@@ -400,7 +400,7 @@ public abstract class InterproceduralAnalysis extends Analysis {
                 } else {
 
                     // apply transfer function to incoming value
-                    LatticeElement outValue;
+                    AbstractLatticeElement outValue;
                     outValue = this.interproceduralAnalysisInformation.getAnalysisNode(node).transfer(inValue);
 
                     // for each outgoing edge...
@@ -433,9 +433,9 @@ public abstract class InterproceduralAnalysis extends Analysis {
 
     // helper method for analyze();
     // propagates a value under the given context to the target node
-    void propagate(Context context, LatticeElement value, AbstractCfgNode target) {
+    void propagate(AbstractContext context, AbstractLatticeElement value, AbstractCfgNode target) {
         // analysis information for the target node
-        InterproceduralAnalysisNode analysisNode = this.interproceduralAnalysisInformation.getAnalysisNode(target);
+        AbstractInterproceduralAnalysisNode analysisNode = this.interproceduralAnalysisInformation.getAnalysisNode(target);
 
         if (analysisNode == null) {
             System.out.println(Dumper.makeCfgNodeName(target));
@@ -443,7 +443,7 @@ public abstract class InterproceduralAnalysis extends Analysis {
         }
 
         // determine the target's old PHI value
-        LatticeElement oldPhiValue = analysisNode.getPhiValue(context);
+        AbstractLatticeElement oldPhiValue = analysisNode.getPhiValue(context);
         if (oldPhiValue == null) {
             // initial value of this analysis
             oldPhiValue = this.initialValue;
@@ -457,7 +457,7 @@ public abstract class InterproceduralAnalysis extends Analysis {
         }
 
         // the new PHI value is computed as usual (with lub)
-        LatticeElement newPhiValue = this.lattice.lub(value, oldPhiValue);
+        AbstractLatticeElement newPhiValue = this.lattice.lub(value, oldPhiValue);
 
         // if the PHI value changed...
         if (!oldPhiValue.equals(newPhiValue)) {

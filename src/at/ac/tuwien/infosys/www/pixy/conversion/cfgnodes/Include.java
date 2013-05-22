@@ -1,8 +1,8 @@
 package at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes;
 
 import at.ac.tuwien.infosys.www.phpparser.ParseNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 import java.io.File;
@@ -16,13 +16,13 @@ import java.util.List;
  */
 public class Include extends AbstractCfgNode implements Comparable<Include> {
     private Variable temp;
-    private TacPlace includeMe;
+    private AbstractTacPlace includeMe;
     private File file;  // file in which this node occurs
     private TacFunction includeFunction; // function in which this node occurs
 
 //  CONSTRUCTORS *******************************************************************
 
-    public Include(TacPlace temp, TacPlace includeMe,
+    public Include(AbstractTacPlace temp, AbstractTacPlace includeMe,
                    File file, TacFunction includeFunction, ParseNode parseNode) {
         super(parseNode);
         this.temp = (Variable) temp;
@@ -33,11 +33,11 @@ public class Include extends AbstractCfgNode implements Comparable<Include> {
 
 //  GET ****************************************************************************
 
-    public TacPlace getTemp() {
+    public AbstractTacPlace getTemp() {
         return this.temp;
     }
 
-    public TacPlace getIncludeMe() {
+    public AbstractTacPlace getIncludeMe() {
         return this.includeMe;
     }
 

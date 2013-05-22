@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes;
 
 import at.ac.tuwien.infosys.www.phpparser.ParseNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 import java.util.Collections;
@@ -12,18 +12,18 @@ import java.util.List;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class Echo extends AbstractCfgNode {
-    private TacPlace place;
+    private AbstractTacPlace place;
 
 // CONSTRUCTORS ********************************************************************
 
-    public Echo(TacPlace place, ParseNode node) {
+    public Echo(AbstractTacPlace place, ParseNode node) {
         super(node);
         this.place = place;
     }
 
 //  GET *****************************************************************************
 
-    public TacPlace getPlace() {
+    public AbstractTacPlace getPlace() {
         return this.place;
     }
 

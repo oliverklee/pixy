@@ -2,17 +2,17 @@ package at.ac.tuwien.infosys.www.pixy;
 
 import at.ac.tuwien.infosys.www.phpparser.ParseNode;
 import at.ac.tuwien.infosys.www.phpparser.ParseTree;
-import at.ac.tuwien.infosys.www.pixy.analysis.AnalysisNode;
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractAnalysisNode;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElementBottom;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.*;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencySet;
 import at.ac.tuwien.infosys.www.pixy.analysis.inclusiondominator.InclusionDominatorAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.inclusiondominator.InclusionDominatorLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AbstractInterproceduralAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AbstractInterproceduralAnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralAnalysisInformation;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralAnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.EncodedCallStrings;
 import at.ac.tuwien.infosys.www.pixy.analysis.intraprocedural.IntraproceduralAnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.DummyLiteralAnalysis;
@@ -446,7 +446,7 @@ public final class Dumper {
 
 // getPlaceString ******************************************************************
 
-    static String getPlaceString(TacPlace place) {
+    static String getPlaceString(AbstractTacPlace place) {
         if (place.isVariable()) {
             return place.toString();
         } else if (place.isConstant()) {
@@ -556,7 +556,7 @@ public final class Dumper {
                 variable.getEnclosingArray().getName());
             System.out.println("topEnclosingArray:  " +
                 variable.getTopEnclosingArray().getName());
-            TacPlace indexPlace = variable.getIndex();
+            AbstractTacPlace indexPlace = variable.getIndex();
             System.out.print("index type:         ");
             if (indexPlace.isLiteral()) {
                 System.out.println("literal");
@@ -568,14 +568,14 @@ public final class Dumper {
                 System.out.println("UNKNOWN!");
             }
             System.out.print("indices:            ");
-            for (TacPlace index : variable.getIndices()) {
+            for (AbstractTacPlace index : variable.getIndices()) {
                 System.out.print(index + " ");
             }
             System.out.println();
         }
 
         // if it is a variable variable
-        TacPlace depPlace = variable.getDependsOn();
+        AbstractTacPlace depPlace = variable.getDependsOn();
         if (depPlace != null) {
             System.out.println("dependsOn:          " + depPlace.toString());
         }
@@ -615,7 +615,7 @@ public final class Dumper {
     }
 
     static public void dump(InclusionDominatorAnalysis analysis) {
-        for (Map.Entry<AbstractCfgNode, AnalysisNode> entry : analysis.getAnalysisInfo().getMap().entrySet()) {
+        for (Map.Entry<AbstractCfgNode, AbstractAnalysisNode> entry : analysis.getAnalysisInfo().getMap().entrySet()) {
             AbstractCfgNode cfgNode = entry.getKey();
             IntraproceduralAnalysisNode analysisNode = (IntraproceduralAnalysisNode) entry.getValue();
             System.out.println("dominators for cfg node " + cfgNode.toString() + ", " + cfgNode.getOrigLineno());
@@ -623,7 +623,7 @@ public final class Dumper {
         }
     }
 
-    static public void dump(InterproceduralAnalysis analysis, String path, String filename) {
+    static public void dump(AbstractInterproceduralAnalysis analysis, String path, String filename) {
 
         // create directory
         (new File(path)).mkdir();
@@ -671,7 +671,7 @@ public final class Dumper {
 
 // dump(AnalysisNode) **************************************************************
 
-    static public void dump(InterproceduralAnalysisNode node) {
+    static public void dump(AbstractInterproceduralAnalysisNode node) {
         System.out.print("Transfer Function: ");
         try {
             System.out.println(node.getTransferFunction().getClass().getName());
@@ -679,13 +679,13 @@ public final class Dumper {
             System.out.println("<<null>>");
         }
         // dump the lattice element for each context
-        for (LatticeElement element : node.getPhi().values()) {
+        for (AbstractLatticeElement element : node.getPhi().values()) {
             System.out.println("~~~~~~~~~~~~~~~");
             dump(element);
         }
     }
 
-    static public void dump(LatticeElement elementX) {
+    static public void dump(AbstractLatticeElement elementX) {
 
         try {
             Writer writer = new OutputStreamWriter(System.out);
@@ -698,7 +698,7 @@ public final class Dumper {
 
 //  dump(LatticeElement) ************************************************************
 
-    static public void dump(LatticeElement elementX, Writer writer) throws IOException {
+    static public void dump(AbstractLatticeElement elementX, Writer writer) throws IOException {
         if (elementX instanceof AliasLatticeElement) {
             AliasLatticeElement element = (AliasLatticeElement) elementX;
             dump(element.getMustAliases(), writer);
@@ -707,8 +707,8 @@ public final class Dumper {
             LiteralLatticeElement element = (LiteralLatticeElement) elementX;
 
             // dump non-default literal mappings
-            for (Map.Entry<TacPlace, Literal> entry : element.getPlaceToLit().entrySet()) {
-                TacPlace place = entry.getKey();
+            for (Map.Entry<AbstractTacPlace, Literal> entry : element.getPlaceToLit().entrySet()) {
+                AbstractTacPlace place = entry.getKey();
                 Literal lit = entry.getValue();
                 writer.write(place + ":      " + lit + linesep);
             }
@@ -756,8 +756,8 @@ public final class Dumper {
 
         // dump non-default dependency mappings
         writer.write(linesep + "DEP MAPPINGS" + linesep + linesep);
-        for (Map.Entry<TacPlace, DependencySet> entry : element.getPlaceToDep().entrySet()) {
-            TacPlace place = entry.getKey();
+        for (Map.Entry<AbstractTacPlace, DependencySet> entry : element.getPlaceToDep().entrySet()) {
+            AbstractTacPlace place = entry.getKey();
             DependencySet dependencySet = entry.getValue();
             writer.write(place + ":      " + dependencySet + linesep);
         }
@@ -788,8 +788,8 @@ public final class Dumper {
     static public void dump(DependencyLatticeElement element, Writer writer) throws IOException {
         // dump non-default taint mappings
         writer.write(linesep + "TAINT MAPPINGS" + linesep + linesep);
-        for (Map.Entry<TacPlace, DependencySet> entry : element.getPlaceToDep().entrySet()) {
-            TacPlace place = entry.getKey();
+        for (Map.Entry<AbstractTacPlace, DependencySet> entry : element.getPlaceToDep().entrySet()) {
+            AbstractTacPlace place = entry.getKey();
             if (place.isVariable()) {
                 Variable var = place.getVariable();
                 if (doNotDump(var)) {

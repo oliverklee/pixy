@@ -33,7 +33,7 @@ public final class InterproceduralWorklistPoor implements InterproceduralWorklis
 // OTHER ***************************************************************************
 // *********************************************************************************
 
-    public void add(AbstractCfgNode cfgNode, Context context) {
+    public void add(AbstractCfgNode cfgNode, AbstractContext context) {
         // null contexts are not allowed
         if (context == null) {
             throw new RuntimeException("SNH");

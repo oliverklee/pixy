@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.functional;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
@@ -17,23 +17,23 @@ import java.util.Set;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class FunctionalAnalysis extends AnalysisType {
+public class FunctionalAnalysis extends AbstractAnalysisType {
 // *********************************************************************************
 // GET *****************************************************************************
 // *********************************************************************************
 
 //  getPropagationContext ***********************************************************
 
-    public Context getPropagationContext(Call callNode, Context context) {
+    public AbstractContext getPropagationContext(Call callNode, AbstractContext context) {
         // propagation context = incoming value at the call node under the
         // current context
-        LatticeElement inValue = this.enclosedAnalysis.getInterproceduralAnalysisInformation().getAnalysisNode(callNode).getPhiValue(context);
+        AbstractLatticeElement inValue = this.enclosedAnalysis.getInterproceduralAnalysisInformation().getAnalysisNode(callNode).getPhiValue(context);
         return new FunctionalContext(inValue);
     }
 
 //  getReverseTargets ***************************************************************
 
-    public List<ReverseTarget> getReverseTargets(TacFunction exitedFunction, Context contextX) {
+    public List<ReverseTarget> getReverseTargets(TacFunction exitedFunction, AbstractContext contextX) {
 
         //System.out.println("call to getReverseTarget!");
 
@@ -54,7 +54,7 @@ public class FunctionalAnalysis extends AnalysisType {
             if (analysisNode == null) {
                 continue;
             }
-            Set<? extends Context> calleeContexts = analysisNode.getReversePhiContexts(context.getLatticeElement());
+            Set<? extends AbstractContext> calleeContexts = analysisNode.getReversePhiContexts(context.getLatticeElement());
 
             // during this for loop, there is always at least one non-null set, i.e.
             // the following branch is entered at least once (for all exit nodes
@@ -75,7 +75,7 @@ public class FunctionalAnalysis extends AnalysisType {
 //  OTHER ***************************************************************************
 //  *********************************************************************************
 
-    public InterproceduralAnalysisNode makeAnalysisNode(AbstractCfgNode cfgNode, TransferFunction tf) {
+    public AbstractInterproceduralAnalysisNode makeAnalysisNode(AbstractCfgNode cfgNode, AbstractTransferFunction tf) {
         return new FunctionalAnalysisNode(cfgNode, tf);
     }
 
@@ -83,7 +83,7 @@ public class FunctionalAnalysis extends AnalysisType {
         return true;
     }
 
-    public Context initContext(InterproceduralAnalysis analysis) {
+    public AbstractContext initContext(AbstractInterproceduralAnalysis analysis) {
         return new FunctionalContext(analysis.getStartValue());
     }
 }

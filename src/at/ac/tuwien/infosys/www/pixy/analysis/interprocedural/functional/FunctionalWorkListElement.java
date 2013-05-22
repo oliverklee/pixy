@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.functional;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
 /**
@@ -8,13 +8,13 @@ import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
  */
 public final class FunctionalWorkListElement {
     private final AbstractCfgNode cfgNode;
-    private final LatticeElement context;
+    private final AbstractLatticeElement context;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    FunctionalWorkListElement(AbstractCfgNode cfgNode, LatticeElement context) {
+    FunctionalWorkListElement(AbstractCfgNode cfgNode, AbstractLatticeElement context) {
         this.cfgNode = cfgNode;
         this.context = context;
     }
@@ -27,7 +27,7 @@ public final class FunctionalWorkListElement {
         return this.cfgNode;
     }
 
-    LatticeElement getContext() {
+    AbstractLatticeElement getContext() {
         return this.context;
     }
 }

@@ -1,23 +1,23 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.intraprocedural;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.AnalysisNode;
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractAnalysisNode;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 
 /**
  * An AnalysisNode holds analysis-specific information for a certain CFGNode.
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class IntraproceduralAnalysisNode extends AnalysisNode {
+public class IntraproceduralAnalysisNode extends AbstractAnalysisNode {
     // input lattice element at current CFG node
-    LatticeElement inValue;
+    AbstractLatticeElement inValue;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    protected IntraproceduralAnalysisNode(TransferFunction tf) {
+    protected IntraproceduralAnalysisNode(AbstractTransferFunction tf) {
         super(tf);
         this.inValue = null;
     }
@@ -26,7 +26,7 @@ public class IntraproceduralAnalysisNode extends AnalysisNode {
 // GET *****************************************************************************
 // *********************************************************************************
 
-    public LatticeElement getInValue() {
+    public AbstractLatticeElement getInValue() {
         return this.inValue;
     }
 
@@ -34,7 +34,7 @@ public class IntraproceduralAnalysisNode extends AnalysisNode {
 // SET *****************************************************************************
 // *********************************************************************************
 
-    protected void setInValue(LatticeElement inValue) {
+    protected void setInValue(AbstractLatticeElement inValue) {
         this.inValue = inValue;
     }
 

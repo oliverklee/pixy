@@ -1,11 +1,11 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.Literal;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 import java.util.Collections;
@@ -17,7 +17,7 @@ import java.util.Set;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class Unset extends TransferFunction {
+public class Unset extends AbstractTransferFunction {
     private Variable operand;
     private boolean supported;
 
@@ -25,7 +25,7 @@ public class Unset extends TransferFunction {
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public Unset(TacPlace operand) {
+    public Unset(AbstractTacPlace operand) {
 
         // only variables can be unset
         if (!operand.isVariable()) {
@@ -40,7 +40,7 @@ public class Unset extends TransferFunction {
 // OTHER ***************************************************************************
 // *********************************************************************************
 
-    public LatticeElement transfer(LatticeElement inX) {
+    public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
 
         // if this statement is not supported by our alias analysis,
         // we simply ignore it

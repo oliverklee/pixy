@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.type;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Call;
 
@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class TypeLatticeElement extends LatticeElement {
+public class TypeLatticeElement extends AbstractLatticeElement {
     private Map<Variable, Set<Type>> var2Type;
 
     // an empty lattice element (the analysis starts with this one)
@@ -23,7 +23,7 @@ public class TypeLatticeElement extends LatticeElement {
     }
 
     // lubs the given lattice element over <<this>> lattice element
-    public void lub(LatticeElement foreignX) {
+    public void lub(AbstractLatticeElement foreignX) {
         // for all foreign mappings...
         for (Map.Entry<Variable, Set<Type>> entry : ((TypeLatticeElement) foreignX).var2Type.entrySet()) {
             Variable foreignVar = entry.getKey();
@@ -67,7 +67,7 @@ public class TypeLatticeElement extends LatticeElement {
         return this.var2Type.get(var);
     }
 
-    public void assign(Variable left, TacPlace right) {
+    public void assign(Variable left, AbstractTacPlace right) {
         if (!(right instanceof Variable)) {
             // we are only tracking object types at the moment
             this.var2Type.remove(left);
@@ -101,7 +101,7 @@ public class TypeLatticeElement extends LatticeElement {
     }
 
     // sets the dependency and array label of the given formal
-    public void setFormal(TacFormalParameter formalParam, TacPlace setTo) {
+    public void setFormal(TacFormalParameter formalParam, AbstractTacPlace setTo) {
         Variable formalVar = formalParam.getVariable();
         this.assign(formalVar, setTo);
     }
@@ -208,7 +208,7 @@ public class TypeLatticeElement extends LatticeElement {
         this.setType(tempVar, null);
     }
 
-    public LatticeElement cloneMe() {
+    public AbstractLatticeElement cloneMe() {
         // uses the cloning constructor
         return new TypeLatticeElement(this);
     }

@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CallStringAnalysis extends AnalysisType {
+public class CallStringAnalysis extends AbstractAnalysisType {
     // INPUT ***********************************************************************
 
     // results from preceding connector computation (for interprocedural
@@ -37,7 +37,7 @@ public class CallStringAnalysis extends AnalysisType {
 
 //  getPropagationContext ***********************************************************
 
-    public Context getPropagationContext(Call callNode, Context contextX) {
+    public AbstractContext getPropagationContext(Call callNode, AbstractContext contextX) {
 
         CallStringContext context = (CallStringContext) contextX;
         return this.connectorComp.getTargetContext(callNode, context.getPosition());
@@ -45,7 +45,7 @@ public class CallStringAnalysis extends AnalysisType {
 
 //  getReverseTargets ***************************************************************
 
-    public List<ReverseTarget> getReverseTargets(TacFunction exitedFunction, Context contextX) {
+    public List<ReverseTarget> getReverseTargets(TacFunction exitedFunction, AbstractContext contextX) {
 
         CallStringContext context = (CallStringContext) contextX;
         return this.connectorComp.getReverseTargets(exitedFunction, context.getPosition());
@@ -65,11 +65,11 @@ public class CallStringAnalysis extends AnalysisType {
         return false;
     }
 
-    public InterproceduralAnalysisNode makeAnalysisNode(AbstractCfgNode cfgNode, TransferFunction tf) {
+    public AbstractInterproceduralAnalysisNode makeAnalysisNode(AbstractCfgNode cfgNode, AbstractTransferFunction tf) {
         return new CallStringAnalysisNode(cfgNode, tf);
     }
 
-    public Context initContext(InterproceduralAnalysis analysis) {
+    public AbstractContext initContext(AbstractInterproceduralAnalysis analysis) {
         return new CallStringContext(0);
     }
 }

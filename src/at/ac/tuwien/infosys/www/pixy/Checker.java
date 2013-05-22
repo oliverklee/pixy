@@ -477,7 +477,7 @@ public final class Checker {
         // PERFORM TAINT ANALYSIS
         // ***********************
 
-        AnalysisType enclosingAnalysis;
+        AbstractAnalysisType enclosingAnalysis;
         CallGraph callGraph = null;
         GlobalsModificationAnalysis globalsModificationAnalysis = null;
         if (functional) {

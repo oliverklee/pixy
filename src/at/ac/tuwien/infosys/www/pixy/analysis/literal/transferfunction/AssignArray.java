@@ -1,16 +1,16 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 /**
  * Transfer function for array assignment nodes ("left = array()").
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class AssignArray extends TransferFunction {
+public class AssignArray extends AbstractTransferFunction {
     private Variable left;
     private boolean supported;
 
@@ -18,7 +18,7 @@ public class AssignArray extends TransferFunction {
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public AssignArray(TacPlace left) {
+    public AssignArray(AbstractTacPlace left) {
 
         this.left = (Variable) left;    // must be a variable
 
@@ -30,7 +30,7 @@ public class AssignArray extends TransferFunction {
 // OTHER ***************************************************************************
 // *********************************************************************************
 
-    public LatticeElement transfer(LatticeElement inX) {
+    public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
 
         // if this statement is not supported by our alias analysis,
         // we simply ignore it

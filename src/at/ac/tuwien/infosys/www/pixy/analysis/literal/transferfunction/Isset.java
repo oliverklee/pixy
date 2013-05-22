@@ -1,10 +1,10 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.Literal;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 import java.util.Collections;
@@ -16,15 +16,15 @@ import java.util.Set;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class Isset extends TransferFunction {
+public class Isset extends AbstractTransferFunction {
     private Variable setMe;
-    private TacPlace testMe;
+    private AbstractTacPlace testMe;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public Isset(TacPlace setMe, TacPlace testMe) {
+    public Isset(AbstractTacPlace setMe, AbstractTacPlace testMe) {
         this.setMe = (Variable) setMe;  // must be a variable
         this.testMe = testMe;
     }
@@ -33,7 +33,7 @@ public class Isset extends TransferFunction {
 // OTHER ***************************************************************************
 // *********************************************************************************
 
-    public LatticeElement transfer(LatticeElement inX) {
+    public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
 
         // System.out.println("transfer method: " + setMe + " = " + setTo);
         LiteralLatticeElement in = (LiteralLatticeElement) inX;

@@ -3,7 +3,7 @@ package at.ac.tuwien.infosys.www.pixy.conversion;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class Constant extends TacPlace {
+public class Constant extends AbstractTacPlace {
     private String label;
 
     static public final Constant TRUE = new Constant("TRUE", Literal.TRUE);

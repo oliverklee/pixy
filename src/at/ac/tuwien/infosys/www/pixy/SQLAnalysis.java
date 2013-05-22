@@ -4,14 +4,14 @@ import at.ac.tuwien.infosys.www.pixy.analysis.dependency.*;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph.*;
 import at.ac.tuwien.infosys.www.pixy.automaton.Automaton;
 import at.ac.tuwien.infosys.www.pixy.automaton.Transition;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParameter;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallBuiltinFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreparation;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallUnknownFunction;
-import at.ac.tuwien.infosys.www.pixy.sanitation.SanitationAnalysis;
+import at.ac.tuwien.infosys.www.pixy.sanitation.AbstractSanitationAnalysis;
 import at.ac.tuwien.infosys.www.pixy.transduction.MyTransductions;
 
 import java.io.File;
@@ -25,7 +25,7 @@ import java.util.*;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class SQLAnalysis extends DependencyClient {
+public class SQLAnalysis extends AbstractDependencyClient {
     // flag indicating whether to use transducers or not (are still unstable)
     private boolean useTransducers = false;
 
@@ -200,7 +200,7 @@ public class SQLAnalysis extends DependencyClient {
                     }
                 }
 
-                if (!SanitationAnalysis.findCustomSanit(dependencyGraph).isEmpty()) {
+                if (!AbstractSanitationAnalysis.findCustomSanit(dependencyGraph).isEmpty()) {
                     hasCustomSanitCount++;
                     if (!tainted) {
                         customSanitThrownAwayCount++;
@@ -259,7 +259,7 @@ public class SQLAnalysis extends DependencyClient {
             NormalNode normalNode = (NormalNode) node;
             if (successors == null || successors.isEmpty()) {
                 // this should be a string leaf node
-                TacPlace place = normalNode.getPlace();
+                AbstractTacPlace place = normalNode.getPlace();
                 if (place.isLiteral()) {
                     auto = Automaton.makeString(place.toString());
                 } else {
