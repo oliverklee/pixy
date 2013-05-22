@@ -8,8 +8,8 @@ import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElementBottom;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.*;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencySet;
-import at.ac.tuwien.infosys.www.pixy.analysis.incdom.IncDomAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.incdom.IncDomLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.inclusiondominator.InclusionDominatorAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.inclusiondominator.InclusionDominatorLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterAnalysisInfo;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterAnalysisNode;
@@ -614,7 +614,7 @@ public final class Dumper {
         System.out.println();
     }
 
-    static public void dump(IncDomAnalysis analysis) {
+    static public void dump(InclusionDominatorAnalysis analysis) {
         for (Map.Entry<AbstractCfgNode, AnalysisNode> entry : analysis.getAnalysisInfo().getMap().entrySet()) {
             AbstractCfgNode cfgNode = entry.getKey();
             IntraAnalysisNode analysisNode = (IntraAnalysisNode) entry.getValue();
@@ -714,8 +714,8 @@ public final class Dumper {
             }
         } else if (elementX instanceof DependencyLatticeElement) {
             dumpComplete((DependencyLatticeElement) elementX, writer);
-        } else if (elementX instanceof IncDomLatticeElement) {
-            IncDomLatticeElement element = (IncDomLatticeElement) elementX;
+        } else if (elementX instanceof InclusionDominatorLatticeElement) {
+            InclusionDominatorLatticeElement element = (InclusionDominatorLatticeElement) elementX;
             List<AbstractCfgNode> dominators = element.getDominators();
             if (dominators.isEmpty()) {
                 System.out.println("<<empty>>");

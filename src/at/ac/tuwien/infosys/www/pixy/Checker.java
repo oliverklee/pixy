@@ -3,7 +3,7 @@ package at.ac.tuwien.infosys.www.pixy;
 import at.ac.tuwien.infosys.www.phpparser.ParseTree;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.DummyAliasAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.incdom.IncDomAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.inclusiondominator.InclusionDominatorAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.*;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.CSAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.functional.FunctionalAnalysis;
@@ -46,7 +46,7 @@ public final class Checker {
     LiteralAnalysis literalAnalysis;
     public GenericTaintAnalysis gta;
 
-    IncDomAnalysis incDomAnalysis;
+    InclusionDominatorAnalysis inclusionDominatorAnalysis;
 
 //  ********************************************************************************
 //  MAIN ***************************************************************************
@@ -520,18 +520,18 @@ public final class Checker {
 
 //  analyzeIncDom ******************************************************************
 
-    IncDomAnalysis analyzeIncDom(TacFunction function) {
+    InclusionDominatorAnalysis analyzeIncDom(TacFunction function) {
 
         // ***********************************
         // PERFORM INCLUDE DOMINATOR ANALYSIS
         // ***********************************
 
-        System.out.println("\n*** initializing incdom analysis ***\n");
-        this.incDomAnalysis = new IncDomAnalysis(function);
-        System.out.println("\n*** performing incdom analysis ***\n");
-        this.incDomAnalysis.analyze();
+        System.out.println("\n*** initializing inclusiondominator analysis ***\n");
+        this.inclusionDominatorAnalysis = new InclusionDominatorAnalysis(function);
+        System.out.println("\n*** performing inclusiondominator analysis ***\n");
+        this.inclusionDominatorAnalysis.analyze();
 
-        return this.incDomAnalysis;
+        return this.inclusionDominatorAnalysis;
     }
 
 //  report *************************************************************************

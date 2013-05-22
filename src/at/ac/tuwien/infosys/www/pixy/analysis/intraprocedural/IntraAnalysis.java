@@ -56,7 +56,7 @@ public abstract class IntraAnalysis extends Analysis {
 
         // initialize analysis nodes
         this.analysisInfo = new IntraAnalysisInfo();
-        this.genericAnalysisInfo = analysisInfo;
+        this.genericAnalysisInformation = analysisInfo;
 
         // assign transfer functions to analysis nodes
         this.traverseCfg(function.getControlFlowGraph(), function);

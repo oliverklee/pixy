@@ -1,9 +1,9 @@
-package at.ac.tuwien.infosys.www.pixy.analysis.incdom.transferfunction;
+package at.ac.tuwien.infosys.www.pixy.analysis.inclusiondominator.transferfunction;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
-import at.ac.tuwien.infosys.www.pixy.analysis.incdom.IncDomAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.incdom.IncDomLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.inclusiondominator.InclusionDominatorAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.inclusiondominator.InclusionDominatorLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
 /**
@@ -11,17 +11,17 @@ import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class IncDomTfAdd extends TransferFunction {
+public class Add extends TransferFunction {
     private AbstractCfgNode cfgNode;
-    private IncDomAnalysis incDomAnalysis;
+    private InclusionDominatorAnalysis inclusionDominatorAnalysis;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public IncDomTfAdd(AbstractCfgNode cfgNode, IncDomAnalysis incDomAnalysis) {
+    public Add(AbstractCfgNode cfgNode, InclusionDominatorAnalysis inclusionDominatorAnalysis) {
         this.cfgNode = cfgNode;
-        this.incDomAnalysis = incDomAnalysis;
+        this.inclusionDominatorAnalysis = inclusionDominatorAnalysis;
     }
 
 // *********************************************************************************
@@ -30,12 +30,12 @@ public class IncDomTfAdd extends TransferFunction {
 
     public LatticeElement transfer(LatticeElement inX) {
 
-        IncDomLatticeElement in = (IncDomLatticeElement) inX;
-        IncDomLatticeElement out = new IncDomLatticeElement(in);
+        InclusionDominatorLatticeElement in = (InclusionDominatorLatticeElement) inX;
+        InclusionDominatorLatticeElement out = new InclusionDominatorLatticeElement(in);
         out.add(this.cfgNode);
 
         // recycle
-        out = (IncDomLatticeElement) this.incDomAnalysis.recycle(out);
+        out = (InclusionDominatorLatticeElement) this.inclusionDominatorAnalysis.recycle(out);
 
         return out;
     }

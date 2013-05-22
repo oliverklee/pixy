@@ -1,10 +1,10 @@
-package at.ac.tuwien.infosys.www.pixy.analysis.incdom;
+package at.ac.tuwien.infosys.www.pixy.analysis.inclusiondominator;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.GenericRepository;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunctionId;
-import at.ac.tuwien.infosys.www.pixy.analysis.incdom.transferfunction.IncDomTfAdd;
+import at.ac.tuwien.infosys.www.pixy.analysis.inclusiondominator.transferfunction.Add;
 import at.ac.tuwien.infosys.www.pixy.analysis.intraprocedural.IntraAnalysis;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
@@ -20,16 +20,16 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class IncDomAnalysis extends IntraAnalysis {
+public class InclusionDominatorAnalysis extends IntraAnalysis {
     private GenericRepository<LatticeElement> repos;
 
 //  ********************************************************************************
 //  CONSTRUCTORS *******************************************************************
 //  ********************************************************************************
 
-//  IncDomAnalysis *****************************************************************
+//  InclusionDominatorAnalysis *****************************************************************
 
-    public IncDomAnalysis(TacFunction function) {
+    public InclusionDominatorAnalysis(TacFunction function) {
         this.repos = new GenericRepository<>();
         this.initGeneral(function);
     }
@@ -37,8 +37,8 @@ public class IncDomAnalysis extends IntraAnalysis {
 //  initLattice ********************************************************************
 
     protected void initLattice() {
-        this.lattice = new IncDomLattice(this);
-        this.startValue = this.recycle(new IncDomLatticeElement());
+        this.lattice = new InclusionDominatorLattice(this);
+        this.startValue = this.recycle(new InclusionDominatorLatticeElement());
         this.initialValue = this.lattice.getBottom();
     }
 
@@ -57,7 +57,7 @@ public class IncDomAnalysis extends IntraAnalysis {
     }
 
     protected TransferFunction includeStart(AbstractCfgNode cfgNodeX) {
-        return new IncDomTfAdd(cfgNodeX, this);
+        return new Add(cfgNodeX, this);
     }
 
     protected TransferFunction includeEnd(AbstractCfgNode cfgNodeX) {
@@ -71,7 +71,7 @@ public class IncDomAnalysis extends IntraAnalysis {
     // computes and returns the include chain list (consisting of cfg nodes)
     // for the given cfg node
     public LinkedList<AbstractCfgNode> getIncludeChain(AbstractCfgNode cfgNode) {
-        IncDomLatticeElement latElem = (IncDomLatticeElement) this.getAnalysisNode(cfgNode).getInValue();
+        InclusionDominatorLatticeElement latElem = (InclusionDominatorLatticeElement) this.getAnalysisNode(cfgNode).getInValue();
         List<AbstractCfgNode> dominators = latElem.getDominators();
 
         // * input: a list of (dominating) cfg nodes, both includeEnd and
@@ -103,9 +103,9 @@ public class IncDomAnalysis extends IntraAnalysis {
 
     // shortcut function
     public static LinkedList<AbstractCfgNode> computeChain(TacFunction function, AbstractCfgNode cfgNode) {
-        IncDomAnalysis incDomAnalysis = new IncDomAnalysis(function);
-        incDomAnalysis.analyze();
-        return incDomAnalysis.getIncludeChain(cfgNode);
+        InclusionDominatorAnalysis inclusionDominatorAnalysis = new InclusionDominatorAnalysis(function);
+        inclusionDominatorAnalysis.analyze();
+        return inclusionDominatorAnalysis.getIncludeChain(cfgNode);
     }
 
 //  recycle ************************************************************************

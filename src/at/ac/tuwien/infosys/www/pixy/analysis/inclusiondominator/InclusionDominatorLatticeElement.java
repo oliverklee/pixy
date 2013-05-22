@@ -1,4 +1,4 @@
-package at.ac.tuwien.infosys.www.pixy.analysis.incdom;
+package at.ac.tuwien.infosys.www.pixy.analysis.inclusiondominator;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class IncDomLatticeElement extends LatticeElement {
+public class InclusionDominatorLatticeElement extends LatticeElement {
     // an ordered list of CfgNodes (more specifically: of IncludeStart and
     // IncludeEnd) that dominate the current node
     private List<AbstractCfgNode> dominators;
@@ -20,18 +20,18 @@ public class IncDomLatticeElement extends LatticeElement {
 //  ********************************************************************************
 
     // creates an empty lattice element
-    public IncDomLatticeElement() {
+    public InclusionDominatorLatticeElement() {
         this.dominators = new LinkedList<>();
     }
 
     // clones the given element
-    public IncDomLatticeElement(IncDomLatticeElement cloneMe) {
+    public InclusionDominatorLatticeElement(InclusionDominatorLatticeElement cloneMe) {
         this.dominators = new LinkedList<>(cloneMe.getDominators());
     }
 
     public LatticeElement cloneMe() {
         // uses the cloning constructor
-        return new IncDomLatticeElement(this);
+        return new InclusionDominatorLatticeElement(this);
     }
 
 //  ********************************************************************************
@@ -48,13 +48,13 @@ public class IncDomLatticeElement extends LatticeElement {
 
     // lubs the given element over *this* element
     public void lub(LatticeElement element) {
-        if (!(element instanceof IncDomLatticeElement)) {
+        if (!(element instanceof InclusionDominatorLatticeElement)) {
             throw new RuntimeException("SNH");
         }
-        this.lub((IncDomLatticeElement) element);
+        this.lub((InclusionDominatorLatticeElement) element);
     }
 
-    public void lub(IncDomLatticeElement element) {
+    public void lub(InclusionDominatorLatticeElement element) {
         // longest matching prefix
         Iterator<AbstractCfgNode> foreignIter = element.getDominators().iterator();
         Iterator<AbstractCfgNode> myIter = this.dominators.iterator();
@@ -79,7 +79,7 @@ public class IncDomLatticeElement extends LatticeElement {
 
     // thorough (and slower) structural comparison required by the repository
     public boolean structureEquals(Object compX) {
-        IncDomLatticeElement comp = (IncDomLatticeElement) compX;
+        InclusionDominatorLatticeElement comp = (InclusionDominatorLatticeElement) compX;
         return this.dominators.equals(comp.getDominators());
     }
 
@@ -88,6 +88,6 @@ public class IncDomLatticeElement extends LatticeElement {
     }
 
     public void dump() {
-        System.out.println("IncDomLatticeElement.dump(): not yet");
+        System.out.println("InclusionDominatorLatticeElement.dump(): not yet");
     }
 }

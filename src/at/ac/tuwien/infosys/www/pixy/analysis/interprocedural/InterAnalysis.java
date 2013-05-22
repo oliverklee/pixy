@@ -86,7 +86,7 @@ public abstract class InterAnalysis extends Analysis {
 
         // initialize analysis nodes
         this.interAnalysisInfo = new InterAnalysisInfo();
-        this.genericAnalysisInfo = interAnalysisInfo;
+        this.genericAnalysisInformation = interAnalysisInfo;
         // assign transfer functions
         this.initTransferFunctions();
 

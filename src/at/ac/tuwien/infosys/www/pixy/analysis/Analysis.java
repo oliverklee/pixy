@@ -20,7 +20,7 @@ public abstract class Analysis {
     // OUTPUT **********************************************************************
 
     // analysis information (maps each CfgNode to an AnalysisNode)
-    protected AnalysisInfo genericAnalysisInfo;
+    protected AnalysisInformation genericAnalysisInformation;
 
     // OTHER ***********************************************************************
 
@@ -133,7 +133,7 @@ public abstract class Analysis {
                 System.out.println(cfgNodeX.getLoc());
                 throw new RuntimeException("SNH");
             }
-            this.genericAnalysisInfo.add(cfgNodeX, this.makeAnalysisNode(
+            this.genericAnalysisInformation.add(cfgNodeX, this.makeAnalysisNode(
                 cfgNodeX, tf));
         }
     }
@@ -150,9 +150,9 @@ public abstract class Analysis {
 
 //  size ***************************************************************************
 
-    // returns the number of cfgnode -> AnalysisNode mappings from AnalysisInfo
+    // returns the number of cfgnode -> AnalysisNode mappings from AnalysisInformation
     public int size() {
-        return this.genericAnalysisInfo.size();
+        return this.genericAnalysisInformation.size();
     }
 
 // getStartValue *******************************************************************

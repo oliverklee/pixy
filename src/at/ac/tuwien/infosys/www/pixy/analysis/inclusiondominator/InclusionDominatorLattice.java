@@ -1,4 +1,4 @@
-package at.ac.tuwien.infosys.www.pixy.analysis.incdom;
+package at.ac.tuwien.infosys.www.pixy.analysis.inclusiondominator;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.Lattice;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
@@ -6,11 +6,11 @@ import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class IncDomLattice extends Lattice {
-    private IncDomAnalysis incDomAnalysis;
+public class InclusionDominatorLattice extends Lattice {
+    private InclusionDominatorAnalysis inclusionDominatorAnalysis;
 
-    public IncDomLattice(IncDomAnalysis incDomAnalysis) {
-        this.incDomAnalysis = incDomAnalysis;
+    public InclusionDominatorLattice(InclusionDominatorAnalysis inclusionDominatorAnalysis) {
+        this.inclusionDominatorAnalysis = inclusionDominatorAnalysis;
     }
 
     public LatticeElement lub(
@@ -34,8 +34,8 @@ public class IncDomLattice extends Lattice {
         // not necessary here: we will never encounter the top element
 
         // class cast
-        IncDomLatticeElement incomingElement = (IncDomLatticeElement) incomingElementX;
-        IncDomLatticeElement targetElement = (IncDomLatticeElement) targetElementX;
+        InclusionDominatorLatticeElement incomingElement = (InclusionDominatorLatticeElement) incomingElementX;
+        InclusionDominatorLatticeElement targetElement = (InclusionDominatorLatticeElement) targetElementX;
 
         // initialize the resulting lattice element as clone of the target
         // lattice element (we don't want to modify the target lattice element
@@ -45,14 +45,14 @@ public class IncDomLattice extends Lattice {
         // could be reused, the ID transfer function simply passes on the
         // reference; if you reuse here, the ID transfer function must return
         // a new element (not clear which method is more efficient)
-        IncDomLatticeElement resultElement = new IncDomLatticeElement(targetElement);
+        InclusionDominatorLatticeElement resultElement = new InclusionDominatorLatticeElement(targetElement);
 
         // lub the incoming element over the clone of the target element
         resultElement.lub(incomingElement);
 
         // check if the result element is already in the repository, and
         // recycle it in this case
-        resultElement = (IncDomLatticeElement) this.incDomAnalysis.recycle(resultElement);
+        resultElement = (InclusionDominatorLatticeElement) this.inclusionDominatorAnalysis.recycle(resultElement);
 
         return resultElement;
     }
