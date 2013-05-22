@@ -9,7 +9,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencySet;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.Context;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterAnalysisInfo;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralAnalysisInformation;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.ReverseTarget;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.*;
@@ -44,7 +44,7 @@ public class DependencyGraph {
     private Map<AbstractNode, List<AbstractNode>> edges;
 
     // required for building the graph
-    private InterAnalysisInfo analysisInfo;
+    private InterproceduralAnalysisInformation analysisInfo;
 
     // symbol table of the main function
     private SymbolTable mainSymTab;
@@ -98,7 +98,7 @@ public class DependencyGraph {
      *
      * @return
      */
-    public static DependencyGraph create(TacPlace place, AbstractCfgNode start, InterAnalysisInfo analysisInfo,
+    public static DependencyGraph create(TacPlace place, AbstractCfgNode start, InterproceduralAnalysisInformation analysisInfo,
                                   SymbolTable mainSymTab, DependencyAnalysis dependencyAnalysis) {
 
         DependencyGraph dependencyGraph = new DependencyGraph();

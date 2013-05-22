@@ -4,7 +4,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.Context;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterAnalysisNode;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralAnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.Literal;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
@@ -18,7 +18,7 @@ import java.util.*;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class LiteralTfCallRet extends TransferFunction {
-    private InterAnalysisNode analysisNodeAtCallPrep;
+    private InterproceduralAnalysisNode analysisNodeAtCallPrep;
     private TacFunction caller;
     private TacFunction callee;
     private CallPreperation prepNode;
@@ -36,7 +36,7 @@ public class LiteralTfCallRet extends TransferFunction {
 // *********************************************************************************
 
     public LiteralTfCallRet(
-        InterAnalysisNode analysisNodeAtCallPrep,
+        InterproceduralAnalysisNode analysisNodeAtCallPrep,
         TacFunction caller,
         TacFunction callee,
         CallPreperation prepNode,

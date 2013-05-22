@@ -5,7 +5,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public final class InterWorkListElement {
+public final class InterproceduralWorklistElement {
     private final AbstractCfgNode cfgNode;
     private final Context context;
 
@@ -13,7 +13,7 @@ public final class InterWorkListElement {
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    InterWorkListElement(AbstractCfgNode cfgNode, Context context) {
+    InterproceduralWorklistElement(AbstractCfgNode cfgNode, Context context) {
         this.cfgNode = cfgNode;
         this.context = context;
         if (context == null) {
@@ -43,10 +43,10 @@ public final class InterWorkListElement {
         if (compX == this) {
             return true;
         }
-        if (!(compX instanceof InterWorkListElement)) {
+        if (!(compX instanceof InterproceduralWorklistElement)) {
             return false;
         }
-        InterWorkListElement comp = (InterWorkListElement) compX;
+        InterproceduralWorklistElement comp = (InterproceduralWorklistElement) compX;
 
         // the dependency and CA maps have to be equal
         return this.cfgNode.equals(comp.cfgNode) && this.context.equals(comp.context);

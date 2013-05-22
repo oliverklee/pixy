@@ -8,9 +8,9 @@ import at.ac.tuwien.infosys.www.pixy.analysis.alias.transferfunction.*;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.transferfunction.CallReturn;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.transferfunction.Unset;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AnalysisType;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterAnalysisNode;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterWorkListPoor;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralAnalysisNode;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralWorklistPoor;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.*;
 
@@ -21,7 +21,7 @@ import java.util.Set;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class AliasAnalysis extends InterAnalysis {
+public class AliasAnalysis extends InterproceduralAnalysis {
     private GenericRepository<LatticeElement> repos;
 
 //  ********************************************************************************
@@ -33,7 +33,7 @@ public class AliasAnalysis extends InterAnalysis {
     public AliasAnalysis(TacConverter tac, AnalysisType analysisType) {
         this.repos = new GenericRepository<>();
         this.initGeneral(tac.getAllFunctions(), tac.getMainFunction(),
-            analysisType, new InterWorkListPoor());
+            analysisType, new InterproceduralWorklistPoor());
     }
 
     // dummy constructor
@@ -179,7 +179,7 @@ public class AliasAnalysis extends InterAnalysis {
 
         // quite powerful transfer function, does many things
         TransferFunction tf = new CallReturn(
-            this.interAnalysisInfo.getAnalysisNode(cfgNodePrep),
+            this.interproceduralAnalysisInformation.getAnalysisNode(cfgNodePrep),
             calledFunction,
             this,
             cfgNodePrep);
@@ -194,7 +194,7 @@ public class AliasAnalysis extends InterAnalysis {
     // returns the set of must-aliases (Variable's) for the given variable
     // at the given node (folded over all contexts)
     public Set<Variable> getMustAliases(Variable var, AbstractCfgNode cfgNode) {
-        InterAnalysisNode aNode = this.interAnalysisInfo.getAnalysisNode(cfgNode);
+        InterproceduralAnalysisNode aNode = this.interproceduralAnalysisInformation.getAnalysisNode(cfgNode);
         if (aNode == null) {
             System.out.println(cfgNode);
             throw new RuntimeException("gotcha");
@@ -215,7 +215,7 @@ public class AliasAnalysis extends InterAnalysis {
     // returns the set of may-aliases (Variable's) for the given variable
     // at the given node (folded over all contexts)
     public Set<Variable> getMayAliases(Variable var, AbstractCfgNode cfgNode) {
-        InterAnalysisNode aNode = this.interAnalysisInfo.getAnalysisNode(cfgNode);
+        InterproceduralAnalysisNode aNode = this.interproceduralAnalysisInformation.getAnalysisNode(cfgNode);
         AliasLatticeElement value = this.getFoldedValue(aNode);
         if (value == null) {
             // explanations see: getMustAliases
@@ -348,7 +348,7 @@ public class AliasAnalysis extends InterAnalysis {
         return supported;
     }
 
-    public AliasLatticeElement getFoldedValue(InterAnalysisNode node) {
+    public AliasLatticeElement getFoldedValue(InterproceduralAnalysisNode node) {
 
         // no need to recompute it if we already have it
         if (node.hasFoldedValue()) {
@@ -392,6 +392,6 @@ public class AliasAnalysis extends InterAnalysis {
 
     // performs post-analysis cleanup operations to save memory
     public void clean() {
-        this.interAnalysisInfo.foldRecycledAndClean(this);
+        this.interproceduralAnalysisInformation.foldRecycledAndClean(this);
     }
 }

@@ -13,7 +13,7 @@ import java.util.List;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public abstract class AnalysisType {
-    protected InterAnalysis enclosedAnalysis;
+    protected InterproceduralAnalysis enclosedAnalysis;
 
     // returns the context to which interprocedural propagation shall
     // be conducted (used at call nodes)
@@ -24,15 +24,15 @@ public abstract class AnalysisType {
     public abstract List<ReverseTarget> getReverseTargets(TacFunction exitedFunction, Context contextX);
 
     // sets the enclosed analysis
-    public void setAnalysis(InterAnalysis enclosedAnalysis) {
+    public void setAnalysis(InterproceduralAnalysis enclosedAnalysis) {
         this.enclosedAnalysis = enclosedAnalysis;
     }
 
     // creates an appropriate AnalysisNode
-    public abstract InterAnalysisNode makeAnalysisNode(AbstractCfgNode cfgNode, TransferFunction tf);
+    public abstract InterproceduralAnalysisNode makeAnalysisNode(AbstractCfgNode cfgNode, TransferFunction tf);
 
     // use function summaries?
     public abstract boolean useSummaries();
 
-    public abstract Context initContext(InterAnalysis analysis);
+    public abstract Context initContext(InterproceduralAnalysis analysis);
 }

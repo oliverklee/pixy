@@ -10,15 +10,15 @@ import java.util.TreeMap;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public final class InterWorkListBetter implements InterWorkList {
-    private InterWorkListOrder order;
-    private SortedMap<Integer, InterWorkListElement> sortedWorkList;
+public final class InterproceduralWorklistBetter implements InterproceduralWorklist {
+    private InterproceduralWorklistOrder order;
+    private SortedMap<Integer, InterproceduralWorklistElement> sortedWorkList;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public InterWorkListBetter(InterWorkListOrder order) {
+    public InterproceduralWorklistBetter(InterproceduralWorklistOrder order) {
         this.order = order;
         this.sortedWorkList = new TreeMap<>();
     }
@@ -32,7 +32,7 @@ public final class InterWorkListBetter implements InterWorkList {
         if (context == null) {
             throw new RuntimeException("SNH");
         }
-        InterWorkListElement element = new InterWorkListElement(cfgNode, context);
+        InterproceduralWorklistElement element = new InterproceduralWorklistElement(cfgNode, context);
 
         Integer rpo = this.order.getReversePostOrder(element);
         if (rpo == null) {
@@ -41,7 +41,7 @@ public final class InterWorkListBetter implements InterWorkList {
         this.sortedWorkList.put(rpo, element);
     }
 
-    public InterWorkListElement removeNext() {
+    public InterproceduralWorklistElement removeNext() {
         Integer key = this.sortedWorkList.firstKey();
         return this.sortedWorkList.remove(key);
     }

@@ -30,7 +30,7 @@ import java.util.*;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DependencyAnalysis extends InterAnalysis {
+public class DependencyAnalysis extends InterproceduralAnalysis {
     private TacConverter tac;
     private List<TacPlace> places;
     private ConstantsTable constantsTable;
@@ -55,7 +55,7 @@ public class DependencyAnalysis extends InterAnalysis {
                               AliasAnalysis aliasAnalysis,
                               LiteralAnalysis literalAnalysis,
                               AnalysisType analysisType,
-                              InterWorkList workList,
+                              InterproceduralWorklist workList,
                               GlobalsModificationAnalysis globalsModificationAnalysis) {
 
         this.tac = tac;
@@ -297,7 +297,7 @@ public class DependencyAnalysis extends InterAnalysis {
 
             // quite powerful transfer function, does many things
             tf = new at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.CallReturn(
-                this.interAnalysisInfo.getAnalysisNode(cfgNodePrep),
+                this.interproceduralAnalysisInformation.getAnalysisNode(cfgNodePrep),
                 callingFunction,
                 calledFunction,
                 cfgNodePrep,
@@ -404,7 +404,7 @@ public class DependencyAnalysis extends InterAnalysis {
         for (SinkProblem problem : problems) {
 
             DependencyGraph dependencyGraph = DependencyGraph.create(problem.getPlace(),
-                sink.getNode(), this.interAnalysisInfo, mainSymTab, this);
+                sink.getNode(), this.interproceduralAnalysisInformation, mainSymTab, this);
 
             // a null dependencyGraph is returned if this sink is unreachable
             if (dependencyGraph == null) {
@@ -472,7 +472,7 @@ public class DependencyAnalysis extends InterAnalysis {
             // create dependency graphs for all sensitive places in this sink
             for (SinkProblem problem : problems) {
                 DependencyGraph dependencyGraph = DependencyGraph.create(problem.getPlace(),
-                    sink.getNode(), this.interAnalysisInfo, mainSymTab, this);
+                    sink.getNode(), this.interproceduralAnalysisInformation, mainSymTab, this);
 
                 // a null dependencyGraph is returned if this sink is unreachable
                 if (dependencyGraph == null) {
@@ -517,7 +517,7 @@ public class DependencyAnalysis extends InterAnalysis {
         // do perform recycling for folding & cleaning; otherwise, cleaning
         // could result in bigger memory consumption than before
         if (this.finishedDetection) {
-            this.interAnalysisInfo.foldRecycledAndClean(this);
+            this.interproceduralAnalysisInformation.foldRecycledAndClean(this);
         } else {
             throw new RuntimeException("Refusing to clean extaint analysis: no detection yet");
         }
@@ -605,7 +605,7 @@ public class DependencyAnalysis extends InterAnalysis {
     }
 
     private boolean isReachable(AbstractCfgNode cfgNode, int numContexts) {
-        Map<Context, LatticeElement> phi = this.interAnalysisInfo.getAnalysisNode(cfgNode).getPhi();
+        Map<Context, LatticeElement> phi = this.interproceduralAnalysisInformation.getAnalysisNode(cfgNode).getPhi();
         if (phi.size() == 0) {
             // there is not a single context for this node
             return false;

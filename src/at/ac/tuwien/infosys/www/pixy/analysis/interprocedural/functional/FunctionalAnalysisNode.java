@@ -3,7 +3,7 @@ package at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.functional;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.Context;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterAnalysisNode;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralAnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Call;
 
@@ -17,7 +17,7 @@ import java.util.Set;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class FunctionalAnalysisNode extends InterAnalysisNode {
+public class FunctionalAnalysisNode extends InterproceduralAnalysisNode {
     // mapping input LatticeElement -> Set of context LatticeElements;
     // only needed for call nodes
     Map<LatticeElement, Set<FunctionalContext>> reversePhi;

@@ -7,7 +7,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.MayAliasPair;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.MustAliasGroup;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.Context;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterAnalysisNode;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralAnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreperation;
@@ -20,7 +20,7 @@ import java.util.Set;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class CallReturn extends TransferFunction {
-    private InterAnalysisNode analysisNodeAtCallPrep;
+    private InterproceduralAnalysisNode analysisNodeAtCallPrep;
     private TacFunction callee;
     private List<List<Variable>> cbrParams;
     private AliasAnalysis aliasAnalysis;
@@ -30,7 +30,7 @@ public class CallReturn extends TransferFunction {
 // *********************************************************************************
 
     public CallReturn(
-        InterAnalysisNode analysisNodeAtCallPrep,
+        InterproceduralAnalysisNode analysisNodeAtCallPrep,
         TacFunction callee, AliasAnalysis aliasAnalysis,
         CallPreperation cfgNode) {
 

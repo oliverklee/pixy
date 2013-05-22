@@ -10,9 +10,9 @@ import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyLatticeElemen
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencySet;
 import at.ac.tuwien.infosys.www.pixy.analysis.inclusiondominator.InclusionDominatorAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.inclusiondominator.InclusionDominatorLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterAnalysisInfo;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterAnalysisNode;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralAnalysisInformation;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralAnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.ECS;
 import at.ac.tuwien.infosys.www.pixy.analysis.intraprocedural.IntraAnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.DummyLiteralAnalysis;
@@ -623,7 +623,7 @@ public final class Dumper {
         }
     }
 
-    static public void dump(InterAnalysis analysis, String path, String filename) {
+    static public void dump(InterproceduralAnalysis analysis, String path, String filename) {
 
         // create directory
         (new File(path)).mkdir();
@@ -639,7 +639,7 @@ public final class Dumper {
             }
 
             List<TacFunction> functions = analysis.getFunctions();
-            InterAnalysisInfo analysisInfoNew = analysis.getInterAnalysisInfo();
+            InterproceduralAnalysisInformation analysisInfoNew = analysis.getInterproceduralAnalysisInformation();
 
             if (analysis instanceof LiteralAnalysis) {
                 writer.write(linesep + "Default Lattice Element:" + linesep + linesep);
@@ -671,7 +671,7 @@ public final class Dumper {
 
 // dump(AnalysisNode) **************************************************************
 
-    static public void dump(InterAnalysisNode node) {
+    static public void dump(InterproceduralAnalysisNode node) {
         System.out.print("Transfer Function: ");
         try {
             System.out.println(node.getTransferFunction().getClass().getName());

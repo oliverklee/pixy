@@ -31,7 +31,7 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public abstract class InterAnalysis extends Analysis {
+public abstract class InterproceduralAnalysis extends Analysis {
     // INPUT ***********************************************************************
 
     // functional or CS analysis
@@ -39,8 +39,8 @@ public abstract class InterAnalysis extends Analysis {
 
     // OUTPUT **********************************************************************
 
-    // analysis information (maps each CfgNode to an InterAnalysisNode)
-    protected InterAnalysisInfo interAnalysisInfo;
+    // analysis information (maps each CfgNode to an InterproceduralAnalysisNode)
+    protected InterproceduralAnalysisInformation interproceduralAnalysisInformation;
 
     // OTHER ***********************************************************************
 
@@ -51,7 +51,7 @@ public abstract class InterAnalysis extends Analysis {
     protected Context mainContext;
 
     // worklist consisting of pairs (ControlFlowGraph node, lattice element)
-    InterWorkList workList;
+    InterproceduralWorklist workList;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
@@ -63,7 +63,7 @@ public abstract class InterAnalysis extends Analysis {
     // restriction that superclass constructors have to be called first;
     // the "functions" map has to map function name -> TacFunction object
     protected void initGeneral(List<TacFunction> functions, TacFunction mainFunction,
-                               AnalysisType analysisType, InterWorkList workList) {
+                               AnalysisType analysisType, InterproceduralWorklist workList) {
 
         this.analysisType = analysisType;
         this.analysisType.setAnalysis(this);
@@ -85,13 +85,13 @@ public abstract class InterAnalysis extends Analysis {
         this.workList.add(mainHead, this.mainContext);
 
         // initialize analysis nodes
-        this.interAnalysisInfo = new InterAnalysisInfo();
-        this.genericAnalysisInformation = interAnalysisInfo;
+        this.interproceduralAnalysisInformation = new InterproceduralAnalysisInformation();
+        this.genericAnalysisInformation = interproceduralAnalysisInformation;
         // assign transfer functions
         this.initTransferFunctions();
 
         // initialize PHI map for start node
-        InterAnalysisNode startAnalysisNode = this.interAnalysisInfo.getAnalysisNode(mainHead);
+        InterproceduralAnalysisNode startAnalysisNode = this.interproceduralAnalysisInformation.getAnalysisNode(mainHead);
         startAnalysisNode.setPhiValue(this.mainContext, this.startValue);
     }
 
@@ -148,19 +148,19 @@ public abstract class InterAnalysis extends Analysis {
 //  getTransferFunction ************************************************************
 
     public TransferFunction getTransferFunction(AbstractCfgNode cfgNode) {
-        return this.interAnalysisInfo.getTransferFunction(cfgNode);
+        return this.interproceduralAnalysisInformation.getTransferFunction(cfgNode);
     }
 
 //  getAnalysisInfo *****************************************************************
 
-    public InterAnalysisInfo getInterAnalysisInfo() {
-        return this.interAnalysisInfo;
+    public InterproceduralAnalysisInformation getInterproceduralAnalysisInformation() {
+        return this.interproceduralAnalysisInformation;
     }
 
 //  getAnalysisNode ****************************************************************
 
-    public InterAnalysisNode getAnalysisNode(AbstractCfgNode cfgNode) {
-        return this.interAnalysisInfo.getAnalysisNode(cfgNode);
+    public InterproceduralAnalysisNode getAnalysisNode(AbstractCfgNode cfgNode) {
+        return this.interproceduralAnalysisInformation.getAnalysisNode(cfgNode);
     }
 
 // *********************************************************************************
@@ -210,14 +210,14 @@ public abstract class InterAnalysis extends Analysis {
             if (steps % 10000 == 0) System.out.println("Steps so far: " + steps);
 
             // remove the element from the worklist
-            InterWorkListElement element = this.workList.removeNext();
+            InterproceduralWorklistElement element = this.workList.removeNext();
 
             // extract information from the element
             AbstractCfgNode node = element.getCfgNode();
             Context context = element.getContext();
 
             // get incoming value at node n (you need to understand the PHI table :)
-            InterAnalysisNode analysisNode = this.interAnalysisInfo.getAnalysisNode(node);
+            InterproceduralAnalysisNode analysisNode = this.interproceduralAnalysisInformation.getAnalysisNode(node);
             LatticeElement inValue = analysisNode.getPhiValue(context);
             if (inValue == null) {
                 throw new RuntimeException("SNH");
@@ -263,7 +263,7 @@ public abstract class InterAnalysis extends Analysis {
 
                     // look if the exit node's PHI map has an entry under the context
                     // resulting from this call
-                    InterAnalysisNode exitAnalysisNode = this.interAnalysisInfo.getAnalysisNode(exitNode);
+                    InterproceduralAnalysisNode exitAnalysisNode = this.interproceduralAnalysisInformation.getAnalysisNode(exitNode);
                     if (exitAnalysisNode == null) {
                         // this can only mean that there is no way to reach the
                         // function's natural exit node, i.e. there is something like
@@ -342,7 +342,7 @@ public abstract class InterAnalysis extends Analysis {
                             // (can happen for call-string analysis);
                             // => don't propagate
                             //if (this.analysisInfo[callPrepNode.getId()].getPhiValue(targetContext) == null) {
-                            InterAnalysisNode callPrepANode = this.interAnalysisInfo.getAnalysisNode(callPrepNode);
+                            InterproceduralAnalysisNode callPrepANode = this.interproceduralAnalysisInformation.getAnalysisNode(callPrepNode);
                             if (callPrepANode.getPhiValue(targetContext) == null) {
                                 // don't propagate
                             } else {
@@ -355,7 +355,7 @@ public abstract class InterAnalysis extends Analysis {
 
                     If ifNode = (If) node;
 
-                    LatticeElement outValue = this.interAnalysisInfo.getAnalysisNode(node).transfer(inValue);
+                    LatticeElement outValue = this.interproceduralAnalysisInformation.getAnalysisNode(node).transfer(inValue);
                     CfgEdge[] outEdges = node.getOutEdges();
 
                     // try to evaluate the "if" condition
@@ -381,7 +381,7 @@ public abstract class InterAnalysis extends Analysis {
                     // current context
 
                     // apply transfer function to incoming value
-                    InterAnalysisNode aNode = this.interAnalysisInfo.getAnalysisNode(node);
+                    InterproceduralAnalysisNode aNode = this.interproceduralAnalysisInformation.getAnalysisNode(node);
                     LatticeElement outValue = aNode.transfer(inValue, context);
 
                     // for each outgoing edge...
@@ -401,7 +401,7 @@ public abstract class InterAnalysis extends Analysis {
 
                     // apply transfer function to incoming value
                     LatticeElement outValue;
-                    outValue = this.interAnalysisInfo.getAnalysisNode(node).transfer(inValue);
+                    outValue = this.interproceduralAnalysisInformation.getAnalysisNode(node).transfer(inValue);
 
                     // for each outgoing edge...
                     CfgEdge[] outEdges = node.getOutEdges();
@@ -435,7 +435,7 @@ public abstract class InterAnalysis extends Analysis {
     // propagates a value under the given context to the target node
     void propagate(Context context, LatticeElement value, AbstractCfgNode target) {
         // analysis information for the target node
-        InterAnalysisNode analysisNode = this.interAnalysisInfo.getAnalysisNode(target);
+        InterproceduralAnalysisNode analysisNode = this.interproceduralAnalysisInformation.getAnalysisNode(target);
 
         if (analysisNode == null) {
             System.out.println(Dumper.makeCfgNodeName(target));

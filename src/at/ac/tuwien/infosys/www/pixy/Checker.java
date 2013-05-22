@@ -35,8 +35,8 @@ public final class Checker {
 
     // required by call-string analyses
     private ConnectorComputation connectorComp = null;
-    //private InterWorkListOrder order;
-    private InterWorkList workList;
+    //private InterproceduralWorklistOrder order;
+    private InterproceduralWorklist workList;
 
     // k-size for call-string analyses
     private int kSize = 1;
@@ -445,7 +445,7 @@ public final class Checker {
             this.connectorComp = new ConnectorComputation(
                 tac.getAllFunctions(), tac.getMainFunction(), this.kSize);
             connectorComp.compute();
-            this.workList = new InterWorkListBetter(new InterWorkListOrder(tac, this.connectorComp));
+            this.workList = new InterproceduralWorklistBetter(new InterproceduralWorklistOrder(tac, this.connectorComp));
         }
 
         System.out.println("\n*** initializing literal analysis ***\n");
@@ -483,13 +483,13 @@ public final class Checker {
         if (functional) {
             System.out.println("functional analysis!");
             enclosingAnalysis = new FunctionalAnalysis();
-            this.workList = new InterWorkListPoor();
+            this.workList = new InterproceduralWorklistPoor();
         } else {
             if (this.connectorComp == null) {
                 this.connectorComp = new ConnectorComputation(
                     tac.getAllFunctions(), tac.getMainFunction(), this.kSize);
                 connectorComp.compute();
-                this.workList = new InterWorkListBetter(new InterWorkListOrder(tac, this.connectorComp));
+                this.workList = new InterproceduralWorklistBetter(new InterproceduralWorklistOrder(tac, this.connectorComp));
                 connectorComp.stats(false);
             }
             if (MyOptions.optionV) {

@@ -5,9 +5,9 @@ import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunctionId;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AnalysisType;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterAnalysisNode;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterWorkList;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralAnalysisNode;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralWorklist;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.transferfunction.*;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.transferfunction.AssignArray;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.transferfunction.AssignBinary;
@@ -32,7 +32,7 @@ import java.util.Set;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class TypeAnalysis extends InterAnalysis {
+public class TypeAnalysis extends InterproceduralAnalysis {
     private GenericRepository<LatticeElement> repos;
     private Collection<String> classNames;
 
@@ -40,7 +40,7 @@ public class TypeAnalysis extends InterAnalysis {
 
     public TypeAnalysis(TacConverter tac,
                         AnalysisType analysisType,
-                        InterWorkList workList) {
+                        InterproceduralWorklist workList) {
 
         this.repos = new GenericRepository<>();
         this.classNames = tac.getUserClasses().keySet();
@@ -51,7 +51,7 @@ public class TypeAnalysis extends InterAnalysis {
 //  ********************************************************************************
 
     public Set<Type> getType(Variable var, AbstractCfgNode cfgNode) {
-        InterAnalysisNode ian = this.interAnalysisInfo.getAnalysisNode(cfgNode);
+        InterproceduralAnalysisNode ian = this.interproceduralAnalysisInformation.getAnalysisNode(cfgNode);
         if (ian == null) {
             // this means that this cfg node was not assigned an analysis node
             // (should never happen)
@@ -205,7 +205,7 @@ public class TypeAnalysis extends InterAnalysis {
         } else {
 
             tf = new CallReturn(
-                this.interAnalysisInfo.getAnalysisNode(cfgNodePrep),
+                this.interproceduralAnalysisInformation.getAnalysisNode(cfgNodePrep),
                 callingFunction,
                 calledFunction,
                 cfgNodeCall);

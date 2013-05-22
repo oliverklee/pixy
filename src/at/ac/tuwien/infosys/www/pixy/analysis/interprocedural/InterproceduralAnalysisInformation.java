@@ -9,16 +9,16 @@ import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class InterAnalysisInfo extends AnalysisInformation {
-    public InterAnalysisInfo() {
+public class InterproceduralAnalysisInformation extends AnalysisInformation {
+    public InterproceduralAnalysisInformation() {
         super();
     }
 
     // folds all analysis nodes (using recycling) and clears the phi maps
     // (=> saves memory)
-    public void foldRecycledAndClean(InterAnalysis analysis) {
+    public void foldRecycledAndClean(InterproceduralAnalysis analysis) {
         for (AnalysisNode analysisNode1 : this.map.values()) {
-            InterAnalysisNode analysisNode = (InterAnalysisNode) analysisNode1;
+            InterproceduralAnalysisNode analysisNode = (InterproceduralAnalysisNode) analysisNode1;
             LatticeElement foldedValue = analysisNode.computeFoldedValue();
             foldedValue = analysis.recycle(foldedValue);
             analysisNode.setFoldedValue(foldedValue);
@@ -32,8 +32,8 @@ public class InterAnalysisInfo extends AnalysisInformation {
     // for such nodes, you should query the enclosing basic block, or the
     // entry node of the function default cfg; use the appropriate "get"
     // method of CfgNode to retrieve these nodes
-    public InterAnalysisNode getAnalysisNode(AbstractCfgNode cfgNode) {
-        return (InterAnalysisNode) this.map.get(cfgNode);
+    public InterproceduralAnalysisNode getAnalysisNode(AbstractCfgNode cfgNode) {
+        return (InterproceduralAnalysisNode) this.map.get(cfgNode);
     }
 
     public TransferFunction getTransferFunction(AbstractCfgNode cfgNode) {

@@ -19,14 +19,14 @@ import java.util.*;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class InterWorkListOrder {
+public class InterproceduralWorklistOrder {
     // this is what we want to compute: a mapping of interprocedural
     // worklist elements to some number (order)
-    private Map<InterWorkListElement, Integer> order;
+    private Map<InterproceduralWorklistElement, Integer> order;
 
 //  ********************************************************************************
 
-    public InterWorkListOrder(TacConverter tac, ConnectorComputation cc) {
+    public InterproceduralWorklistOrder(TacConverter tac, ConnectorComputation cc) {
         this.order = new HashMap<>();
 
         TacFunction mainFunction = tac.getMainFunction();
@@ -38,14 +38,14 @@ public class InterWorkListOrder {
             throw new RuntimeException("SNH");
         }
 
-        InterWorkListElement start = new InterWorkListElement(startNode, new CSContext(0));
-        LinkedList<InterWorkListElement> postorder = this.getPostorder(start, cc);
+        InterproceduralWorklistElement start = new InterproceduralWorklistElement(startNode, new CSContext(0));
+        LinkedList<InterproceduralWorklistElement> postorder = this.getPostorder(start, cc);
 
         // get *reverse* postorder
-        ListIterator<InterWorkListElement> iter = postorder.listIterator(postorder.size());
+        ListIterator<InterproceduralWorklistElement> iter = postorder.listIterator(postorder.size());
         int i = 0;
         while (iter.hasPrevious()) {
-            InterWorkListElement iwle = iter.previous();
+            InterproceduralWorklistElement iwle = iter.previous();
             this.order.put(iwle, i);
             i++;
         }
@@ -54,15 +54,15 @@ public class InterWorkListOrder {
 //  ********************************************************************************
 
     // non-recursive postorder
-    private LinkedList<InterWorkListElement> getPostorder(
-        InterWorkListElement start, ConnectorComputation cc) {
+    private LinkedList<InterproceduralWorklistElement> getPostorder(
+        InterproceduralWorklistElement start, ConnectorComputation cc) {
 
         // this is what we want to compute
-        LinkedList<InterWorkListElement> postorder = new LinkedList<>();
+        LinkedList<InterproceduralWorklistElement> postorder = new LinkedList<>();
 
         // auxiliary stack and visited set
-        LinkedList<InterWorkListElement> stack = new LinkedList<>();
-        Set<InterWorkListElement> visited = new HashSet<>();
+        LinkedList<InterproceduralWorklistElement> stack = new LinkedList<>();
+        Set<InterproceduralWorklistElement> visited = new HashSet<>();
 
         // begin with start element
         stack.add(start);
@@ -76,7 +76,7 @@ public class InterWorkListOrder {
         while (!stack.isEmpty()) {
 
             // mark the top stack element as visited
-            InterWorkListElement element = stack.getLast();
+            InterproceduralWorklistElement element = stack.getLast();
             visited.add(element);
 
             // interior of this element
@@ -84,7 +84,7 @@ public class InterWorkListOrder {
             CSContext context = (CSContext) element.getContext();
 
             // we will try to get an unvisited successor element
-            InterWorkListElement nextElement = null;
+            InterproceduralWorklistElement nextElement = null;
 
             if (cfgNode instanceof Call) {
 
@@ -98,7 +98,7 @@ public class InterWorkListOrder {
                     // simply move on to the callret node; context stays the same
 
                     AbstractCfgNode retNode = callNode.getSuccessor(0);
-                    nextElement = new InterWorkListElement(retNode, context);
+                    nextElement = new InterproceduralWorklistElement(retNode, context);
 
                     if (visited.contains(nextElement)) {
                         nextElement = null;
@@ -112,7 +112,7 @@ public class InterWorkListOrder {
                     if (propagationContext == null) {
                         throw new RuntimeException("SNH: " + callNode.getLoc());
                     }
-                    nextElement = new InterWorkListElement(entryNode, propagationContext);
+                    nextElement = new InterproceduralWorklistElement(entryNode, propagationContext);
 
                     if (visited.contains(nextElement)) {
                         nextElement = null;
@@ -139,7 +139,7 @@ public class InterWorkListOrder {
                         while ((nextElement == null) && reverseContextsIter.hasNext()) {
 
                             Context reverseContext = reverseContextsIter.next();
-                            nextElement = new InterWorkListElement(revRet, reverseContext);
+                            nextElement = new InterproceduralWorklistElement(revRet, reverseContext);
 
                             if (visited.contains(nextElement)) {
                                 // try the next one
@@ -157,7 +157,7 @@ public class InterWorkListOrder {
                     CfgEdge outEdge = cfgNode.getOutEdge(i);
                     if (outEdge != null) {
                         AbstractCfgNode succNode = outEdge.getDest();
-                        nextElement = new InterWorkListElement(succNode, context);
+                        nextElement = new InterproceduralWorklistElement(succNode, context);
                         if (visited.contains(nextElement)) {
                             // try next one
                             nextElement = null;
@@ -182,7 +182,7 @@ public class InterWorkListOrder {
 
 //  ********************************************************************************
 
-    public Integer getReversePostOrder(InterWorkListElement element) {
+    public Integer getReversePostOrder(InterproceduralWorklistElement element) {
         return this.order.get(element);
     }
 }

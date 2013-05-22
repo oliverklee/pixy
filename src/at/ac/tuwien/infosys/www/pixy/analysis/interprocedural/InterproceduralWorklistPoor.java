@@ -16,15 +16,15 @@ import java.util.TreeMap;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public final class InterWorkListPoor implements InterWorkList {
-    private LinkedList<InterWorkListElement> unsortedWorkList;
-    private SortedMap<Integer, InterWorkListElement> sortedWorkList;
+public final class InterproceduralWorklistPoor implements InterproceduralWorklist {
+    private LinkedList<InterproceduralWorklistElement> unsortedWorkList;
+    private SortedMap<Integer, InterproceduralWorklistElement> sortedWorkList;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public InterWorkListPoor() {
+    public InterproceduralWorklistPoor() {
         this.unsortedWorkList = new LinkedList<>();
         this.sortedWorkList = new TreeMap<>();
     }
@@ -38,7 +38,7 @@ public final class InterWorkListPoor implements InterWorkList {
         if (context == null) {
             throw new RuntimeException("SNH");
         }
-        InterWorkListElement element = new InterWorkListElement(cfgNode, context);
+        InterproceduralWorklistElement element = new InterproceduralWorklistElement(cfgNode, context);
 
         int rpo = cfgNode.getReversePostOrder();
         if (rpo == -1) {
@@ -48,7 +48,7 @@ public final class InterWorkListPoor implements InterWorkList {
         }
     }
 
-    public InterWorkListElement removeNext() {
+    public InterproceduralWorklistElement removeNext() {
         if (!this.unsortedWorkList.isEmpty()) {
             return this.unsortedWorkList.removeFirst();
         } else {

@@ -65,11 +65,11 @@ public class CSAnalysis extends AnalysisType {
         return false;
     }
 
-    public InterAnalysisNode makeAnalysisNode(AbstractCfgNode cfgNode, TransferFunction tf) {
+    public InterproceduralAnalysisNode makeAnalysisNode(AbstractCfgNode cfgNode, TransferFunction tf) {
         return new CSAnalysisNode(cfgNode, tf);
     }
 
-    public Context initContext(InterAnalysis analysis) {
+    public Context initContext(InterproceduralAnalysis analysis) {
         return new CSContext(0);
     }
 }

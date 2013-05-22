@@ -27,7 +27,7 @@ public class FunctionalAnalysis extends AnalysisType {
     public Context getPropagationContext(Call callNode, Context context) {
         // propagation context = incoming value at the call node under the
         // current context
-        LatticeElement inValue = this.enclosedAnalysis.getInterAnalysisInfo().getAnalysisNode(callNode).getPhiValue(context);
+        LatticeElement inValue = this.enclosedAnalysis.getInterproceduralAnalysisInformation().getAnalysisNode(callNode).getPhiValue(context);
         return new FunctionalContext(inValue);
     }
 
@@ -50,7 +50,7 @@ public class FunctionalAnalysis extends AnalysisType {
             // returning from the callee, we have to propagate the info back
             // to both caller contexts c1 and c2
             FunctionalAnalysisNode analysisNode = (FunctionalAnalysisNode)
-                this.enclosedAnalysis.getInterAnalysisInfo().getAnalysisNode(callNode);
+                this.enclosedAnalysis.getInterproceduralAnalysisInformation().getAnalysisNode(callNode);
             if (analysisNode == null) {
                 continue;
             }
@@ -75,7 +75,7 @@ public class FunctionalAnalysis extends AnalysisType {
 //  OTHER ***************************************************************************
 //  *********************************************************************************
 
-    public InterAnalysisNode makeAnalysisNode(AbstractCfgNode cfgNode, TransferFunction tf) {
+    public InterproceduralAnalysisNode makeAnalysisNode(AbstractCfgNode cfgNode, TransferFunction tf) {
         return new FunctionalAnalysisNode(cfgNode, tf);
     }
 
@@ -83,7 +83,7 @@ public class FunctionalAnalysis extends AnalysisType {
         return true;
     }
 
-    public Context initContext(InterAnalysis analysis) {
+    public Context initContext(InterproceduralAnalysis analysis) {
         return new FunctionalContext(analysis.getStartValue());
     }
 }

@@ -252,7 +252,7 @@ public class ProgramConverter {
             ConnectorComputation connectorComp = new ConnectorComputation(
                 baseTac.getAllFunctions(), baseTac.getMainFunction(), kSize);
             connectorComp.compute();
-            InterWorkList workList = new InterWorkListBetter(new InterWorkListOrder(baseTac, connectorComp));
+            InterproceduralWorklist workList = new InterproceduralWorklistBetter(new InterproceduralWorklistOrder(baseTac, connectorComp));
             connectorComp.stats(false);
 
             AliasAnalysis aliasAnalysis = new DummyAliasAnalysis();
@@ -365,7 +365,7 @@ public class ProgramConverter {
             ConnectorComputation connectorComp = new ConnectorComputation(
                 baseTac.getAllFunctions(), baseTac.getMainFunction(), 0);
             connectorComp.compute();
-            InterWorkList workList = new InterWorkListBetter(new InterWorkListOrder(baseTac, connectorComp));
+            InterproceduralWorklist workList = new InterproceduralWorklistBetter(new InterproceduralWorklistOrder(baseTac, connectorComp));
             this.typeAnalysis = new TypeAnalysis(
                 this.baseTac, new CSAnalysis(connectorComp), workList);
             typeAnalysis.analyze();
@@ -443,7 +443,7 @@ public class ProgramConverter {
     private void removeUnreachables(Set<Include> includeSet, Map<Include, String> includeMap) {
         for (Iterator<Include> iter = includeSet.iterator(); iter.hasNext(); ) {
             Include includeNode = iter.next();
-            InterAnalysisNode incAnNode = literalAnalysis.getAnalysisNode(includeNode);
+            InterproceduralAnalysisNode incAnNode = literalAnalysis.getAnalysisNode(includeNode);
             if (incAnNode.getPhi().isEmpty()) {
                 iter.remove();
             }
@@ -452,7 +452,7 @@ public class ProgramConverter {
         for (Iterator<Map.Entry<Include, String>> iter = includeMap.entrySet().iterator(); iter.hasNext(); ) {
             Map.Entry<Include, String> entry = iter.next();
             Include includeNode = entry.getKey();
-            InterAnalysisNode incAnNode = literalAnalysis.getAnalysisNode(includeNode);
+            InterproceduralAnalysisNode incAnNode = literalAnalysis.getAnalysisNode(includeNode);
             if (incAnNode.getPhi().isEmpty()) {
                 iter.remove();
             }

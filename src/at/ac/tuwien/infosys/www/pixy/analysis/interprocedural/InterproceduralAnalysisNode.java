@@ -14,7 +14,7 @@ import java.util.Set;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public abstract class InterAnalysisNode extends AnalysisNode {
+public abstract class InterproceduralAnalysisNode extends AnalysisNode {
     // context map for interprocedural analysis
     // (Context -> input LatticeElement at current CFG node)
     Map<Context, LatticeElement> phi;
@@ -27,7 +27,7 @@ public abstract class InterAnalysisNode extends AnalysisNode {
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    protected InterAnalysisNode(TransferFunction tf) {
+    protected InterproceduralAnalysisNode(TransferFunction tf) {
         super(tf);
         this.phi = new HashMap<>();
         this.foldedValue = null;

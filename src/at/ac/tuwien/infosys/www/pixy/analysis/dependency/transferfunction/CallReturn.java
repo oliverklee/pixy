@@ -6,7 +6,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencySet;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.Context;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterAnalysisNode;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralAnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
@@ -18,7 +18,7 @@ import java.util.*;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class CallReturn extends TransferFunction {
-    private InterAnalysisNode analysisNodeAtCallPrep;
+    private InterproceduralAnalysisNode analysisNodeAtCallPrep;
     private TacFunction caller;
     private TacFunction callee;
     private CallPreperation prepNode;
@@ -39,7 +39,7 @@ public class CallReturn extends TransferFunction {
 // *********************************************************************************
 
     public CallReturn(
-        InterAnalysisNode analysisNodeAtCallPrep,
+        InterproceduralAnalysisNode analysisNodeAtCallPrep,
         TacFunction caller,
         TacFunction callee,
         CallPreperation prepNode,

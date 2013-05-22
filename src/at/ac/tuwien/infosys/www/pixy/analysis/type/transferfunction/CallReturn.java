@@ -3,7 +3,7 @@ package at.ac.tuwien.infosys.www.pixy.analysis.type.transferfunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.Context;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterAnalysisNode;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralAnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.TypeLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
@@ -13,7 +13,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Call;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class CallReturn extends TransferFunction {
-    private InterAnalysisNode analysisNodeAtCallPrep;
+    private InterproceduralAnalysisNode analysisNodeAtCallPrep;
     private TacFunction caller;
     private TacFunction callee;
     private Call callNode;
@@ -23,7 +23,7 @@ public class CallReturn extends TransferFunction {
 // *********************************************************************************
 
     public CallReturn(
-        InterAnalysisNode analysisNodeAtCallPrep,
+        InterproceduralAnalysisNode analysisNodeAtCallPrep,
         TacFunction caller,
         TacFunction callee,
         Call retNode) {

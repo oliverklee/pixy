@@ -6,8 +6,8 @@ import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunctionId;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AnalysisType;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterWorkList;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralWorklist;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.*;
@@ -19,7 +19,7 @@ import java.util.Set;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class LiteralAnalysis extends InterAnalysis {
+public class LiteralAnalysis extends InterproceduralAnalysis {
     private TacConverter tac;
 
     private GenericRepository<LatticeElement> repos;
@@ -39,7 +39,7 @@ public class LiteralAnalysis extends InterAnalysis {
     public LiteralAnalysis(
         TacConverter tac,
         AliasAnalysis aliasAnalysis, AnalysisType analysisType,
-        InterWorkList workList) {
+        InterproceduralWorklist workList) {
 
         this.tac = tac;
         this.repos = new GenericRepository<>();
@@ -207,7 +207,7 @@ public class LiteralAnalysis extends InterAnalysis {
 
             // quite powerful transfer function, does many things
             tf = new LiteralTfCallRet(
-                this.interAnalysisInfo.getAnalysisNode(cfgNodePrep),
+                this.interproceduralAnalysisInformation.getAnalysisNode(cfgNodePrep),
                 callingFunction,
                 calledFunction,
                 cfgNodePrep,
@@ -296,7 +296,7 @@ public class LiteralAnalysis extends InterAnalysis {
     public Literal getLiteral(TacPlace place, AbstractCfgNode cfgNode) {
 
         LiteralLatticeElement element =
-            (LiteralLatticeElement) this.interAnalysisInfo.getAnalysisNode(cfgNode).getUnrecycledFoldedValue();
+            (LiteralLatticeElement) this.interproceduralAnalysisInformation.getAnalysisNode(cfgNode).getUnrecycledFoldedValue();
 
         if (element == null) {
             return Literal.TOP;
@@ -362,6 +362,6 @@ public class LiteralAnalysis extends InterAnalysis {
         // although we don't perform recycling during the analysis, we
         // do perform recycling for folding & cleaning; otherwise, cleaning
         // could result in bigger memory consumption than before
-        this.interAnalysisInfo.foldRecycledAndClean(this);
+        this.interproceduralAnalysisInformation.foldRecycledAndClean(this);
     }
 }

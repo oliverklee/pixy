@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterAnalysisNode;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralAnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.InternalStrings;
@@ -58,7 +58,7 @@ public class LiteralTestCase extends TestCase {
 //  ********************************************************************************
 
     // returns the analysis node associated with the hotspot given by its ID
-    private InterAnalysisNode getHotspotInfo(int hotspotId) {
+    private InterproceduralAnalysisNode getHotspotInfo(int hotspotId) {
 
         Hotspot hot = this.tac.getHotspot(hotspotId);
         if (hot == null) {
