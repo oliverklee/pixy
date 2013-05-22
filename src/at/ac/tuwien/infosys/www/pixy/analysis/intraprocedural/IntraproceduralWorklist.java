@@ -7,14 +7,14 @@ import java.util.LinkedList;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public final class IntraWorkList {
+public final class IntraproceduralWorklist {
     private LinkedList<AbstractCfgNode> workList;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    IntraWorkList() {
+    IntraproceduralWorklist() {
         this.workList = new LinkedList<>();
     }
 

@@ -8,13 +8,13 @@ import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class IntraAnalysisInfo extends AnalysisInformation {
-    public IntraAnalysisInfo() {
+public class IntraproceduralAnalysisInformation extends AnalysisInformation {
+    public IntraproceduralAnalysisInformation() {
         super();
     }
 
-    public IntraAnalysisNode getAnalysisNode(AbstractCfgNode cfgNode) {
-        return (IntraAnalysisNode) this.map.get(cfgNode);
+    public IntraproceduralAnalysisNode getAnalysisNode(AbstractCfgNode cfgNode) {
+        return (IntraproceduralAnalysisNode) this.map.get(cfgNode);
     }
 
     public TransferFunction getTransferFunction(AbstractCfgNode cfgNode) {

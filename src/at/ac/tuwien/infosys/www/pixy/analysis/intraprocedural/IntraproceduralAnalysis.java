@@ -16,20 +16,20 @@ import java.util.LinkedList;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public abstract class IntraAnalysis extends Analysis {
+public abstract class IntraproceduralAnalysis extends Analysis {
     // INPUT ***********************************************************************
 
     // <see superclass>
 
     // OUTPUT **********************************************************************
 
-    // analysis information (maps each CfgNode to an IntraAnalysisNode)
-    protected IntraAnalysisInfo analysisInfo;
+    // analysis information (maps each CfgNode to an IntraproceduralAnalysisNode)
+    protected IntraproceduralAnalysisInformation analysisInfo;
 
     // OTHER ***********************************************************************
 
     // worklist consisting of pairs (ControlFlowGraph node, lattice element)
-    IntraWorkList workList;
+    IntraproceduralWorklist workList;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
@@ -51,11 +51,11 @@ public abstract class IntraAnalysis extends Analysis {
         this.functions.add(function);
 
         // initialize worklist
-        this.workList = new IntraWorkList();
+        this.workList = new IntraproceduralWorklist();
         this.workList.add(function.getControlFlowGraph().getHead());
 
         // initialize analysis nodes
-        this.analysisInfo = new IntraAnalysisInfo();
+        this.analysisInfo = new IntraproceduralAnalysisInformation();
         this.genericAnalysisInformation = analysisInfo;
 
         // assign transfer functions to analysis nodes
@@ -63,7 +63,7 @@ public abstract class IntraAnalysis extends Analysis {
         // this.asfsafsaf: initTransferFunctions
 
         // initialize inValue for start node
-        IntraAnalysisNode startAnalysisNode = this.analysisInfo.getAnalysisNode(function.getControlFlowGraph().getHead());
+        IntraproceduralAnalysisNode startAnalysisNode = this.analysisInfo.getAnalysisNode(function.getControlFlowGraph().getHead());
         startAnalysisNode.setInValue(this.startValue);
     }
 
@@ -79,13 +79,13 @@ public abstract class IntraAnalysis extends Analysis {
 
 //  getAnalysisInfo *****************************************************************
 
-    public IntraAnalysisInfo getAnalysisInfo() {
+    public IntraproceduralAnalysisInformation getAnalysisInfo() {
         return this.analysisInfo;
     }
 
 //  getAnalysisNode ****************************************************************
 
-    public IntraAnalysisNode getAnalysisNode(AbstractCfgNode cfgNode) {
+    public IntraproceduralAnalysisNode getAnalysisNode(AbstractCfgNode cfgNode) {
         return this.analysisInfo.getAnalysisNode(cfgNode);
     }
 
@@ -97,7 +97,7 @@ public abstract class IntraAnalysis extends Analysis {
 
     // creates and returns an analysis node for the given parameters
     protected AnalysisNode makeAnalysisNode(AbstractCfgNode node, TransferFunction tf) {
-        return new IntraAnalysisNode(tf);
+        return new IntraproceduralAnalysisNode(tf);
     }
 
 //  recycle ************************************************************************
@@ -116,7 +116,7 @@ public abstract class IntraAnalysis extends Analysis {
             AbstractCfgNode node = this.workList.removeNext();
 
             // get incoming value at node n
-            IntraAnalysisNode analysisNode = this.analysisInfo.getAnalysisNode(node);
+            IntraproceduralAnalysisNode analysisNode = this.analysisInfo.getAnalysisNode(node);
             LatticeElement inValue = analysisNode.getInValue();
             if (inValue == null) {
                 throw new RuntimeException("SNH");
@@ -157,7 +157,7 @@ public abstract class IntraAnalysis extends Analysis {
     void propagate(LatticeElement value, AbstractCfgNode target) {
 
         // analysis information for the target node
-        IntraAnalysisNode analysisNode = this.analysisInfo.getAnalysisNode(target);
+        IntraproceduralAnalysisNode analysisNode = this.analysisInfo.getAnalysisNode(target);
 
         if (analysisNode == null) {
             System.out.println(Dumper.makeCfgNodeName(target));

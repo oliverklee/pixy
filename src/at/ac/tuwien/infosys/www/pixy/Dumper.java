@@ -14,7 +14,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralAna
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralAnalysisInformation;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralAnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.EncodedCallStrings;
-import at.ac.tuwien.infosys.www.pixy.analysis.intraprocedural.IntraAnalysisNode;
+import at.ac.tuwien.infosys.www.pixy.analysis.intraprocedural.IntraproceduralAnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.DummyLiteralAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralLatticeElement;
@@ -617,7 +617,7 @@ public final class Dumper {
     static public void dump(InclusionDominatorAnalysis analysis) {
         for (Map.Entry<AbstractCfgNode, AnalysisNode> entry : analysis.getAnalysisInfo().getMap().entrySet()) {
             AbstractCfgNode cfgNode = entry.getKey();
-            IntraAnalysisNode analysisNode = (IntraAnalysisNode) entry.getValue();
+            IntraproceduralAnalysisNode analysisNode = (IntraproceduralAnalysisNode) entry.getValue();
             System.out.println("dominators for cfg node " + cfgNode.toString() + ", " + cfgNode.getOrigLineno());
             Dumper.dump(analysisNode.getInValue());
         }
