@@ -1,4 +1,4 @@
-package at.ac.tuwien.infosys.www.pixy.analysis.mod;
+package at.ac.tuwien.infosys.www.pixy.analysis.globalsmodification;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.CallGraph;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.CallGraphNode;
@@ -14,11 +14,11 @@ import java.util.*;
  *
  * It  does NOT consider aliases: This is particularly important for the use of the "global" keyword.
  *
- * If you want reasonable results, don't use this ModAnalysis together with a real alias analysis.
+ * If you want reasonable results, don't use this GlobalsModificationAnalysis together with a real alias analysis.
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class ModAnalysis {
+public class GlobalsModificationAnalysis {
     // this is what we want to compute:
     // a set of modified global-likes for each function
     // (global variables, superglobals, and constants)
@@ -27,7 +27,7 @@ public class ModAnalysis {
 
 //  ********************************************************************************
 
-    public ModAnalysis(List<TacFunction> functions, CallGraph callGraph) {
+    public GlobalsModificationAnalysis(List<TacFunction> functions, CallGraph callGraph) {
         this.analyze(functions, callGraph);
     }
 

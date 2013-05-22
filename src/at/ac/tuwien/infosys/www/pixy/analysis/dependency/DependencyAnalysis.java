@@ -17,7 +17,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.Unset;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.*;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.CSAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.mod.ModAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.globalsmodification.GlobalsModificationAnalysis;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallBuiltinFunction;
@@ -40,7 +40,7 @@ public class DependencyAnalysis extends InterAnalysis {
 
     private AliasAnalysis aliasAnalysis;
     private LiteralAnalysis literalAnalysis;
-    private ModAnalysis modAnalysis;
+    private GlobalsModificationAnalysis globalsModificationAnalysis;
 
     // has detectVulns() already been called?
     private boolean finishedDetection;
@@ -56,7 +56,7 @@ public class DependencyAnalysis extends InterAnalysis {
                               LiteralAnalysis literalAnalysis,
                               AnalysisType analysisType,
                               InterWorkList workList,
-                              ModAnalysis modAnalysis) {
+                              GlobalsModificationAnalysis globalsModificationAnalysis) {
 
         this.tac = tac;
         this.places = tac.getPlacesList();
@@ -67,7 +67,7 @@ public class DependencyAnalysis extends InterAnalysis {
 
         this.aliasAnalysis = aliasAnalysis;
         this.literalAnalysis = literalAnalysis;
-        this.modAnalysis = modAnalysis;
+        this.globalsModificationAnalysis = globalsModificationAnalysis;
 
         this.finishedDetection = false;
 
@@ -291,8 +291,8 @@ public class DependencyAnalysis extends InterAnalysis {
             throw new RuntimeException("SNH");
         } else {
             Set<TacPlace> modSet = null;
-            if (this.modAnalysis != null) {
-                modSet = this.modAnalysis.getMod(calledFunction);
+            if (this.globalsModificationAnalysis != null) {
+                modSet = this.globalsModificationAnalysis.getMod(calledFunction);
             }
 
             // quite powerful transfer function, does many things

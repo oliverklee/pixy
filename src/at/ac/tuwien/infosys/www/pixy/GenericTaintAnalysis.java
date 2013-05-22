@@ -3,7 +3,7 @@ package at.ac.tuwien.infosys.www.pixy;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AnalysisType;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterWorkList;
-import at.ac.tuwien.infosys.www.pixy.analysis.mod.ModAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.globalsmodification.GlobalsModificationAnalysis;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
 
 import java.lang.reflect.Constructor;
@@ -39,13 +39,13 @@ public class GenericTaintAnalysis {
     // returns null if the given taintString is illegal
     static GenericTaintAnalysis createAnalysis(TacConverter tac,
                                                AnalysisType enclosingAnalysis, Checker checker,
-                                               InterWorkList workList, ModAnalysis modAnalysis) {
+                                               InterWorkList workList, GlobalsModificationAnalysis globalsModificationAnalysis) {
 
         GenericTaintAnalysis gta = new GenericTaintAnalysis();
 
         gta.dependencyAnalysis = new DependencyAnalysis(tac,
             checker.aliasAnalysis, checker.literalAnalysis, enclosingAnalysis,
-            workList, modAnalysis);
+            workList, globalsModificationAnalysis);
 
         try {
 

@@ -9,7 +9,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.CSAnaly
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.functional.FunctionalAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.DummyLiteralAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.mod.ModAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.globalsmodification.GlobalsModificationAnalysis;
 import at.ac.tuwien.infosys.www.pixy.conversion.InternalStrings;
 import at.ac.tuwien.infosys.www.pixy.conversion.ProgramConverter;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
@@ -479,7 +479,7 @@ public final class Checker {
 
         AnalysisType enclosingAnalysis;
         CallGraph callGraph = null;
-        ModAnalysis modAnalysis = null;
+        GlobalsModificationAnalysis globalsModificationAnalysis = null;
         if (functional) {
             System.out.println("functional analysis!");
             enclosingAnalysis = new FunctionalAnalysis();
@@ -503,12 +503,12 @@ public final class Checker {
 
             callGraph = this.connectorComp.getCallGraph();
             if (this.aliasAnalysis instanceof DummyAliasAnalysis) {
-                modAnalysis = new ModAnalysis(tac.getAllFunctions(), callGraph);
+                globalsModificationAnalysis = new GlobalsModificationAnalysis(tac.getAllFunctions(), callGraph);
             }
         }
 
         this.gta = GenericTaintAnalysis.createAnalysis(tac, enclosingAnalysis,
-            this, this.workList, modAnalysis);
+            this, this.workList, globalsModificationAnalysis);
         if (this.gta == null) {
             Utils.bail("Please specify a valid type of taint analysis.");
         }
