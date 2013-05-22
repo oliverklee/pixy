@@ -1,6 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.*;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallUnknownFunction;
@@ -200,20 +201,20 @@ public abstract class DependencyClient {
     // - multi-dependency: the algorithm only follows those successors that are
     //   defined as relevant for XSS
     // - unmodeled functions are treated as if they were evil functions
-    protected DepGraph getRelevant(DepGraph depGraph) {
+    protected DependencyGraph getRelevant(DependencyGraph dependencyGraph) {
         // start with a one-element graph
-        DepGraph relevant = new DepGraph(depGraph.getRoot());
-        this.getRelevantHelper(relevant.getRoot(), relevant, depGraph);
+        DependencyGraph relevant = new DependencyGraph(dependencyGraph.getRoot());
+        this.getRelevantHelper(relevant.getRoot(), relevant, dependencyGraph);
         return relevant;
     }
 
 //  ********************************************************************************
 
-    protected void getRelevantHelper(DepGraphNode node, DepGraph relevant, DepGraph orig) {
+    protected void getRelevantHelper(AbstractNode node, DependencyGraph relevant, DependencyGraph orig) {
 
-        if (node instanceof DepGraphNormalNode) {
+        if (node instanceof NormalNode) {
 
-            for (DepGraphNode succ : orig.getSuccessors(node)) {
+            for (AbstractNode succ : orig.getSuccessors(node)) {
 
                 // if this node has already been added to the relevant graph...
                 if (relevant.containsNode(succ)) {
@@ -225,30 +226,30 @@ public abstract class DependencyClient {
                 relevant.addEdge(node, succ);
                 getRelevantHelper(succ, relevant, orig);
             }
-        } else if (node instanceof DepGraphOpNode) {
+        } else if (node instanceof BuiltinFunctionNode) {
 
-            DepGraphOpNode opNode = (DepGraphOpNode) node;
-            String opName = opNode.getName();
+            BuiltinFunctionNode builtinFunctionNode = (BuiltinFunctionNode) node;
+            String opName = builtinFunctionNode.getName();
             // list for indices of multi-dependency functions
             List<Integer> multiList = new LinkedList<>();
 
-            if (!opNode.isBuiltin()) {
+            if (!builtinFunctionNode.isBuiltin()) {
 
                 // call to function or method for which no definition
                 // could be found
 
-                AbstractCfgNode cfgNodeX = opNode.getCfgNode();
+                AbstractCfgNode cfgNodeX = builtinFunctionNode.getCfgNode();
                 if (cfgNodeX instanceof CallUnknownFunction) {
                     CallUnknownFunction callUnknown = (CallUnknownFunction) cfgNodeX;
                     if (callUnknown.isMethod()) {
-                        DepGraphNode sanitNode = new DepGraphNormalNode(
-                            new Literal("<method-call>"), opNode.getCfgNode());
+                        AbstractNode sanitNode = new NormalNode(
+                            new Literal("<method-call>"), builtinFunctionNode.getCfgNode());
                         relevant.addNode(sanitNode);
-                        relevant.addEdge(opNode, sanitNode);
+                        relevant.addEdge(builtinFunctionNode, sanitNode);
                     } else {
-                        DepGraphNode uninitNode = new DepGraphUninitNode();
+                        AbstractNode uninitNode = new UninitializedNode();
                         relevant.addNode(uninitNode);
-                        relevant.addEdge(opNode, uninitNode);
+                        relevant.addEdge(builtinFunctionNode, uninitNode);
                     }
                 } else {
                     throw new RuntimeException("SNH");
@@ -259,25 +260,25 @@ public abstract class DependencyClient {
 
             } else if (isStrongSanit(opName)) {
 
-                DepGraphNode sanitNode = new DepGraphNormalNode(
-                    new Literal("<sanitization>"), opNode.getCfgNode());
+                AbstractNode sanitNode = new NormalNode(
+                    new Literal("<sanitization>"), builtinFunctionNode.getCfgNode());
                 relevant.addNode(sanitNode);
-                relevant.addEdge(opNode, sanitNode);
+                relevant.addEdge(builtinFunctionNode, sanitNode);
                 // end of recursion
 
                 // WEAK SANITIZATION FUNCTIONS ************************
 
             } else if (isWeakSanit(opName, multiList)) {
 
-                multiDependencyRelevant(opNode, relevant, orig, multiList, false);
+                multiDependencyRelevant(builtinFunctionNode, relevant, orig, multiList, false);
 
                 // EVIL FUNCTIONS ***************************************
 
             } else if (isEvil(opName)) {
 
-                DepGraphNode uninitNode = new DepGraphUninitNode();
+                AbstractNode uninitNode = new UninitializedNode();
                 relevant.addNode(uninitNode);
-                relevant.addEdge(opNode, uninitNode);
+                relevant.addEdge(builtinFunctionNode, uninitNode);
                 // end of recursion
 
                 // MULTI-OR-DEPENDENCY **********************************
@@ -286,24 +287,24 @@ public abstract class DependencyClient {
                 // depgraph construction, and not here
             } else if (isMulti(opName, multiList)) {
 
-                multiDependencyRelevant(opNode, relevant, orig, multiList, false);
+                multiDependencyRelevant(builtinFunctionNode, relevant, orig, multiList, false);
 
                 // INVERSE MULTI-OR-DEPENDENCY **************************
 
             } else if (isInverseMulti(opName, multiList)) {
 
-                multiDependencyRelevant(opNode, relevant, orig, multiList, true);
+                multiDependencyRelevant(builtinFunctionNode, relevant, orig, multiList, true);
 
                 // CATCH-ALL ********************************************
 
             } else {
                 System.out.println("Unmodeled builtin function: " + opName);
-                DepGraphNode uninitNode = new DepGraphUninitNode();
+                AbstractNode uninitNode = new UninitializedNode();
                 relevant.addNode(uninitNode);
-                relevant.addEdge(opNode, uninitNode);
+                relevant.addEdge(builtinFunctionNode, uninitNode);
                 // end of recursion
             }
-        } else if (node instanceof DepGraphUninitNode) {
+        } else if (node instanceof UninitializedNode) {
             // end of recursion: this is always a leaf node
         } else {
             throw new RuntimeException("SNH: " + node.getClass());
@@ -314,15 +315,15 @@ public abstract class DependencyClient {
 
     // helper function for multi-dependency builtin functions
     // (in relevant subgraph construction)
-    protected void multiDependencyRelevant(DepGraphOpNode opNode, DepGraph relevant,
-                                           DepGraph orig, List<Integer> indices, boolean inverse) {
+    protected void multiDependencyRelevant(BuiltinFunctionNode builtinFunctionNode, DependencyGraph relevant,
+                                           DependencyGraph orig, List<Integer> indices, boolean inverse) {
 
-        List<DepGraphNode> succs = orig.getSuccessors(opNode);
+        List<AbstractNode> succs = orig.getSuccessors(builtinFunctionNode);
         Set<Integer> indexSet = new HashSet<>(indices);
 
         int count = -1;
         boolean created = false;
-        for (DepGraphNode succ : succs) {
+        for (AbstractNode succ : succs) {
             count++;
 
             // check if there is a dependency on this successor
@@ -339,46 +340,46 @@ public abstract class DependencyClient {
             created = true;
 
             if (relevant.containsNode(succ)) {
-                relevant.addEdge(opNode, succ);
+                relevant.addEdge(builtinFunctionNode, succ);
                 continue;
             }
             relevant.addNode(succ);
-            relevant.addEdge(opNode, succ);
+            relevant.addEdge(builtinFunctionNode, succ);
             this.getRelevantHelper(succ, relevant, orig);
         }
 
         if (!created) {
             // if no successors have been created: make a harmless one
-            DepGraphNode sanitNode = new DepGraphNormalNode(
-                new Literal("<no-dep>"), opNode.getCfgNode());
+            AbstractNode sanitNode = new NormalNode(
+                new Literal("<no-dep>"), builtinFunctionNode.getCfgNode());
             relevant.addNode(sanitNode);
-            relevant.addEdge(opNode, sanitNode);
+            relevant.addEdge(builtinFunctionNode, sanitNode);
         }
     }
 
 //  ********************************************************************************
 
     // finds those uninit nodes in the given *relevant* depgraph that are dangerous
-    protected Map<DepGraphUninitNode, InitialTaint> findDangerousUninit(DepGraph relevant) {
+    protected Map<UninitializedNode, InitialTaint> findDangerousUninit(DependencyGraph relevant) {
 
-        Set<DepGraphUninitNode> uninitNodes = relevant.getUninitNodes();
+        Set<UninitializedNode> uninitializedNodes = relevant.getUninitNodes();
 
-        Map<DepGraphUninitNode, InitialTaint> retMe = new HashMap<>();
+        Map<UninitializedNode, InitialTaint> retMe = new HashMap<>();
 
-        for (DepGraphUninitNode uninitNode : uninitNodes) {
-            Set<DepGraphNode> preds = relevant.getPredecessors(uninitNode);
+        for (UninitializedNode uninitializedNode : uninitializedNodes) {
+            Set<AbstractNode> preds = relevant.getPredecessors(uninitializedNode);
             if (preds.size() != 1) {
                 throw new RuntimeException("SNH");
             }
-            DepGraphNode pre = preds.iterator().next();
-            if (pre instanceof DepGraphNormalNode) {
-                DepGraphNormalNode preNormal = (DepGraphNormalNode) pre;
+            AbstractNode pre = preds.iterator().next();
+            if (pre instanceof NormalNode) {
+                NormalNode preNormal = (NormalNode) pre;
                 switch (this.initiallyTainted(preNormal.getPlace())) {
                     case ALWAYS:
-                        retMe.put(uninitNode, InitialTaint.ALWAYS);
+                        retMe.put(uninitializedNode, InitialTaint.ALWAYS);
                         break;
                     case IFRG:
-                        retMe.put(uninitNode, InitialTaint.IFRG);
+                        retMe.put(uninitializedNode, InitialTaint.IFRG);
                         break;
                     case NEVER:
                         // nothing to do here
@@ -386,9 +387,9 @@ public abstract class DependencyClient {
                     default:
                         throw new RuntimeException("SNH");
                 }
-            } else if (pre instanceof DepGraphOpNode) {
+            } else if (pre instanceof BuiltinFunctionNode) {
                 // evil function, don't remove
-                retMe.put(uninitNode, InitialTaint.ALWAYS);
+                retMe.put(uninitializedNode, InitialTaint.ALWAYS);
             } else {
                 throw new RuntimeException("SNH");
             }
@@ -399,23 +400,23 @@ public abstract class DependencyClient {
 
 //  ********************************************************************************
 
-    protected List<DepGraphNormalNode> findDangerousSources(DepGraph relevant) {
+    protected List<NormalNode> findDangerousSources(DependencyGraph relevant) {
 
-        List<DepGraphNormalNode> retMe = new LinkedList<>();
+        List<NormalNode> retMe = new LinkedList<>();
 
         // get dangerous uninit nodes, and then inspect their predecessors
-        Set<DepGraphUninitNode> uninitNodes = this.findDangerousUninit(relevant).keySet();
-        for (DepGraphUninitNode uninitNode : uninitNodes) {
+        Set<UninitializedNode> uninitializedNodes = this.findDangerousUninit(relevant).keySet();
+        for (UninitializedNode uninitializedNode : uninitializedNodes) {
 
-            Set<DepGraphNode> preds = relevant.getPredecessors(uninitNode);
+            Set<AbstractNode> preds = relevant.getPredecessors(uninitializedNode);
             if (preds.size() != 1) {
                 throw new RuntimeException("SNH");
             }
-            DepGraphNode pre = preds.iterator().next();
-            if (pre instanceof DepGraphNormalNode) {
-                DepGraphNormalNode preNormal = (DepGraphNormalNode) pre;
+            AbstractNode pre = preds.iterator().next();
+            if (pre instanceof NormalNode) {
+                NormalNode preNormal = (NormalNode) pre;
                 retMe.add(preNormal);
-            } else if (pre instanceof DepGraphOpNode) {
+            } else if (pre instanceof BuiltinFunctionNode) {
                 // evil function, ignore
 
             } else {

@@ -1,4 +1,4 @@
-package at.ac.tuwien.infosys.www.pixy.analysis.dependency;
+package at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph;
 
 import at.ac.tuwien.infosys.www.pixy.Dumper;
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
@@ -11,14 +11,14 @@ import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepGraphNormalNode extends DepGraphNode {
+public class NormalNode extends AbstractNode {
     private TacPlace place;
     private AbstractCfgNode cfgNode;
     private boolean isTainted;
 
 //  ********************************************************************************
 
-    public DepGraphNormalNode(TacPlace place, AbstractCfgNode cfgNode) {
+    public NormalNode(TacPlace place, AbstractCfgNode cfgNode) {
         this.place = place;
         this.cfgNode = cfgNode;
         this.isTainted = false;
@@ -113,10 +113,10 @@ public class DepGraphNormalNode extends DepGraphNode {
         if (compX == this) {
             return true;
         }
-        if (!(compX instanceof DepGraphNormalNode)) {
+        if (!(compX instanceof NormalNode)) {
             return false;
         }
-        DepGraphNormalNode comp = (DepGraphNormalNode) compX;
+        NormalNode comp = (NormalNode) compX;
 
         return this.place.equals(comp.place) && this.cfgNode.equals(comp.cfgNode);
     }

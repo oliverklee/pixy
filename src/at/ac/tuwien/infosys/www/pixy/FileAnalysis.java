@@ -1,6 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.*;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph.*;
 import at.ac.tuwien.infosys.www.pixy.automaton.Automaton;
 import at.ac.tuwien.infosys.www.pixy.automaton.Transition;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParameter;
@@ -41,21 +42,21 @@ public class FileAnalysis extends DependencyClient {
 
         System.out.println("Creating DepGraphs for " + sinks.size() + " sinks...");
         System.out.println();
-        Collection<DepGraph> depGraphs = depAnalysis.getDepGraphs(sinks);
+        Collection<DependencyGraph> dependencyGraphs = depAnalysis.getDepGraphs(sinks);
 
         System.out.println("File Capab Analysis Output");
         System.out.println("----------------------------");
         System.out.println();
 
         int graphcount = 0;
-        for (DepGraph depGraph : depGraphs) {
+        for (DependencyGraph dependencyGraph : dependencyGraphs) {
             graphcount++;
 
-            DepGraph stringGraph = new DepGraph(depGraph);
-            DepGraphNormalNode root = depGraph.getRoot();
+            DependencyGraph stringGraph = new DependencyGraph(dependencyGraph);
+            NormalNode root = dependencyGraph.getRoot();
             AbstractCfgNode cfgNode = root.getCfgNode();
 
-            depGraph = null;    // don't touch this one
+            dependencyGraph = null;    // don't touch this one
 
             Automaton auto = this.toAutomaton(stringGraph);
 
@@ -138,12 +139,12 @@ public class FileAnalysis extends DependencyClient {
     // is done by decorating the nodes of the graph with automata bottom-up,
     // and returning the automaton that eventually decorates the root;
     // BEWARE: this also eliminates cycles!
-    private Automaton toAutomaton(DepGraph depGraph) {
-        depGraph.eliminateCycles();
-        DepGraphNode root = depGraph.getRoot();
-        Map<DepGraphNode, Automaton> deco = new HashMap<>();
-        Set<DepGraphNode> visited = new HashSet<>();
-        this.decorate(root, deco, visited, depGraph);
+    private Automaton toAutomaton(DependencyGraph dependencyGraph) {
+        dependencyGraph.eliminateCycles();
+        AbstractNode root = dependencyGraph.getRoot();
+        Map<AbstractNode, Automaton> deco = new HashMap<>();
+        Set<AbstractNode> visited = new HashSet<>();
+        this.decorate(root, deco, visited, dependencyGraph);
         Automaton rootDeco = deco.get(root).clone();
         // BEWARE: minimization can lead to an automaton that is less human-readable
         //rootDeco.minimize();
@@ -153,17 +154,17 @@ public class FileAnalysis extends DependencyClient {
 //  ********************************************************************************
 
     // decorates the given node (and all its successors) with an automaton
-    private void decorate(DepGraphNode node, Map<DepGraphNode, Automaton> deco,
-                          Set<DepGraphNode> visited, DepGraph depGraph) {
+    private void decorate(AbstractNode node, Map<AbstractNode, Automaton> deco,
+                          Set<AbstractNode> visited, DependencyGraph dependencyGraph) {
 
         visited.add(node);
 
         // if this node has successors, decorate them first (if not done yet)
-        List<DepGraphNode> successors = depGraph.getSuccessors(node);
+        List<AbstractNode> successors = dependencyGraph.getSuccessors(node);
         if (successors != null && !successors.isEmpty()) {
-            for (DepGraphNode succ : successors) {
+            for (AbstractNode succ : successors) {
                 if (!visited.contains(succ) && deco.get(succ) == null) {
-                    decorate(succ, deco, visited, depGraph);
+                    decorate(succ, deco, visited, dependencyGraph);
                 }
             }
         }
@@ -171,8 +172,8 @@ public class FileAnalysis extends DependencyClient {
         // now that all successors are decorated, we can decorate this node
 
         Automaton auto = null;
-        if (node instanceof DepGraphNormalNode) {
-            DepGraphNormalNode normalNode = (DepGraphNormalNode) node;
+        if (node instanceof NormalNode) {
+            NormalNode normalNode = (NormalNode) node;
             if (successors == null || successors.isEmpty()) {
                 // this should be a string leaf node
                 TacPlace place = normalNode.getPlace();
@@ -188,7 +189,7 @@ public class FileAnalysis extends DependencyClient {
                 // this is an interior node, not a leaf node;
                 // the automaton for this node is the union of all the
                 // successor automatas
-                for (DepGraphNode succ : successors) {
+                for (AbstractNode succ : successors) {
                     Automaton succAuto = deco.get(succ);
                     if (auto == null) {
                         auto = succAuto;  // cloning not necessary here
@@ -197,22 +198,22 @@ public class FileAnalysis extends DependencyClient {
                     }
                 }
             }
-        } else if (node instanceof DepGraphOpNode) {
-            auto = this.makeAutoForOp((DepGraphOpNode) node, deco, depGraph);
-        } else if (node instanceof DepGraphSccNode) {
+        } else if (node instanceof BuiltinFunctionNode) {
+            auto = this.makeAutoForOp((BuiltinFunctionNode) node, deco, dependencyGraph);
+        } else if (node instanceof CompleteGraphNode) {
             // conservative decision for SCCs
             auto = Automaton.makeAnyString(Transition.Taint.Directly);
-        } else if (node instanceof DepGraphUninitNode) {
+        } else if (node instanceof UninitializedNode) {
 
             // retrieve predecessor
-            Set<DepGraphNode> preds = depGraph.getPredecessors(node);
+            Set<AbstractNode> preds = dependencyGraph.getPredecessors(node);
             if (preds.size() != 1) {
                 throw new RuntimeException("SNH");
             }
-            DepGraphNode pre = preds.iterator().next();
+            AbstractNode pre = preds.iterator().next();
 
-            if (pre instanceof DepGraphNormalNode) {
-                DepGraphNormalNode preNormal = (DepGraphNormalNode) pre;
+            if (pre instanceof NormalNode) {
+                NormalNode preNormal = (NormalNode) pre;
 
                 switch (this.initiallyTainted(preNormal.getPlace())) {
                     case ALWAYS:
@@ -225,9 +226,9 @@ public class FileAnalysis extends DependencyClient {
                     default:
                         throw new RuntimeException("SNH");
                 }
-            } else if (pre instanceof DepGraphOpNode) {
+            } else if (pre instanceof BuiltinFunctionNode) {
                 throw new RuntimeException("not yet");
-            } else if (pre instanceof DepGraphSccNode) {
+            } else if (pre instanceof CompleteGraphNode) {
                 // conservative decision for SCCs
                 auto = Automaton.makeAnyString(Transition.Taint.Directly);
             } else {
@@ -247,10 +248,10 @@ public class FileAnalysis extends DependencyClient {
 //  ********************************************************************************
 
     // returns an automaton for the given operation node
-    private Automaton makeAutoForOp(DepGraphOpNode node, Map<DepGraphNode, Automaton> deco,
-                                    DepGraph depGraph) {
+    private Automaton makeAutoForOp(BuiltinFunctionNode node, Map<AbstractNode, Automaton> deco,
+                                    DependencyGraph dependencyGraph) {
 
-        List<DepGraphNode> successors = depGraph.getSuccessors(node);
+        List<AbstractNode> successors = dependencyGraph.getSuccessors(node);
         if (successors == null) {
             successors = new LinkedList<>();
         }
@@ -261,7 +262,7 @@ public class FileAnalysis extends DependencyClient {
         if (opName.equals(".")) {
 
             // CONCAT
-            for (DepGraphNode succ : successors) {
+            for (AbstractNode succ : successors) {
                 Automaton succAuto = deco.get(succ);
                 if (retMe == null) {
                     retMe = succAuto;

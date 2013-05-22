@@ -2,13 +2,14 @@ package at.ac.tuwien.infosys.www.pixy.analysis.dependency;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.*;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.*;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph.DependencyGraph;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.AssignArray;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.AssignBinary;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.AssignReference;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.AssignSimple;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.AssignUnary;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.CallPreperation;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.*;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.Define;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.Isset;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.Tester;
@@ -96,7 +97,7 @@ public class DepAnalysis extends InterAnalysis {
     // takes the given invalue and applies transfer functions from the start of the
     // basic block until the beginning of "untilHere" (i.e., the transfer function
     // of this node is NOT applied);
-    // only required by DepGraph
+    // only required by DependencyGraph
     public DepLatticeElement applyInsideBasicBlock(
         BasicBlock basicBlock, AbstractCfgNode untilHere, DepLatticeElement invalue) {
 
@@ -124,7 +125,7 @@ public class DepAnalysis extends InterAnalysis {
     // takes the given invalue and applies transfer functions from the start of the
     // default cfg (given by "defaultNode") until the beginning of "untilHere"
     // (i.e., the transfer function of this node is NOT applied);
-    // only required by DepGraph
+    // only required by DependencyGraph
     public DepLatticeElement applyInsideDefaultCfg(AbstractCfgNode defaultNode,
                                                    AbstractCfgNode untilHere, DepLatticeElement invalue) {
         DepLatticeElement out = new DepLatticeElement(invalue);
@@ -383,9 +384,9 @@ public class DepAnalysis extends InterAnalysis {
 //  getDepGraph ********************************************************************
 
     // returns the dependency graphs for the given sink
-    public List<DepGraph> getDepGraph(Sink sink) {
+    public List<DependencyGraph> getDepGraph(Sink sink) {
 
-        List<DepGraph> retMe = new LinkedList<>();
+        List<DependencyGraph> retMe = new LinkedList<>();
 
         TacFunction mainFunc = this.mainFunction;
         SymbolTable mainSymTab = mainFunc.getSymbolTable();
@@ -402,15 +403,15 @@ public class DepAnalysis extends InterAnalysis {
         // create dependency graphs for all sensitive places in this sink
         for (SinkProblem problem : problems) {
 
-            DepGraph depGraph = DepGraph.create(problem.getPlace(),
+            DependencyGraph dependencyGraph = DependencyGraph.create(problem.getPlace(),
                 sink.getNode(), this.interAnalysisInfo, mainSymTab, this);
 
-            // a null depGraph is returned if this sink is unreachable
-            if (depGraph == null) {
+            // a null dependencyGraph is returned if this sink is unreachable
+            if (dependencyGraph == null) {
                 continue;
             }
 
-            retMe.add(depGraph);
+            retMe.add(dependencyGraph);
         }
 
         return retMe;
@@ -422,13 +423,13 @@ public class DepAnalysis extends InterAnalysis {
         return this.tac;
     }
 
-// getDepGraphs ********************************************************************
+// getDependencyGraphs ********************************************************************
 
     // returns the dependency graphs for all given sinks;
     // this (older) function collects some nice statistics
-    public List<DepGraph> getDepGraphs(List<Sink> sinks) {
+    public List<DependencyGraph> getDepGraphs(List<Sink> sinks) {
 
-        List<DepGraph> retMe = new LinkedList<>();
+        List<DependencyGraph> retMe = new LinkedList<>();
 
         // sort sinks by line
         Collections.sort(sinks);
@@ -470,15 +471,15 @@ public class DepAnalysis extends InterAnalysis {
 
             // create dependency graphs for all sensitive places in this sink
             for (SinkProblem problem : problems) {
-                DepGraph depGraph = DepGraph.create(problem.getPlace(),
+                DependencyGraph dependencyGraph = DependencyGraph.create(problem.getPlace(),
                     sink.getNode(), this.interAnalysisInfo, mainSymTab, this);
 
-                // a null depGraph is returned if this sink is unreachable
-                if (depGraph == null) {
+                // a null dependencyGraph is returned if this sink is unreachable
+                if (dependencyGraph == null) {
                     continue;
                 }
 
-                retMe.add(depGraph);
+                retMe.add(dependencyGraph);
            }
         }
 

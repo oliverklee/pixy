@@ -1,9 +1,9 @@
-package at.ac.tuwien.infosys.www.pixy.analysis.dependency;
+package at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public abstract class DepGraphNode {
+public abstract class AbstractNode {
     public abstract String dotName();
 
     public abstract String comparableName();

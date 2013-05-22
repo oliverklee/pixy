@@ -1,8 +1,8 @@
 package at.ac.tuwien.infosys.www.pixy;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepGraph;
-import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepGraphUninitNode;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph.UninitializedNode;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph.DependencyGraph;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.Sink;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
 import junit.framework.Assert;
@@ -91,27 +91,27 @@ public class TypeTestCase extends TestCase {
         Assert.assertTrue("Sinks real: " + sinks.size() + ", expected: "
             + sinkNum, sinks.size() == sinkNum);
 
-        // collect depGraphs
-        List<DepGraph> depGraphs = new LinkedList<>();
+        // collect dependencyGraphs
+        List<DependencyGraph> dependencyGraphs = new LinkedList<>();
         for (Sink sink : sinks) {
-            depGraphs.addAll(depAnalysis.getDepGraph(sink));
+            dependencyGraphs.addAll(depAnalysis.getDepGraph(sink));
         }
 
-        Assert.assertTrue("Graphs real: " + depGraphs.size() + ", expected: "
-            + graphNum, depGraphs.size() == graphNum);
+        Assert.assertTrue("Graphs real: " + dependencyGraphs.size() + ", expected: "
+            + graphNum, dependencyGraphs.size() == graphNum);
 
         int graphCount = 0;
         int vulnCount = 0;
-        for (DepGraph depGraph : depGraphs) {
+        for (DependencyGraph dependencyGraph : dependencyGraphs) {
 
             // check depgraph
 
             graphCount++;
             String fileName = "test" + testNum + "_" + graphCount;
             if (generate) {
-                depGraph.dumpDotUnique(fileName, this.path);
+                dependencyGraph.dumpDotUnique(fileName, this.path);
             } else {
-                String encountered = depGraph.makeDotUnique(fileName);
+                String encountered = dependencyGraph.makeDotUnique(fileName);
                 String expected = this.readFile(this.path + fileName + ".dot");
                 Assert.assertEquals(expected, encountered);
             }
@@ -119,8 +119,8 @@ public class TypeTestCase extends TestCase {
             // check xssgraph
 
             String xssFileName = "test" + testNum + "_" + graphCount + "_xss";
-            DepGraph relevant = this.xssAnalysis.getRelevant(depGraph);
-            Map<DepGraphUninitNode, DependencyClient.InitialTaint> dangerousUninit = this.xssAnalysis.findDangerousUninit(relevant);
+            DependencyGraph relevant = this.xssAnalysis.getRelevant(dependencyGraph);
+            Map<UninitializedNode, DependencyClient.InitialTaint> dangerousUninit = this.xssAnalysis.findDangerousUninit(relevant);
             if (!dangerousUninit.isEmpty()) {
                 vulnCount++;
                 relevant.reduceWithLeaves(dangerousUninit.keySet());

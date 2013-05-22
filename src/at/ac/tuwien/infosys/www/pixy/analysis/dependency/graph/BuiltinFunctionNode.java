@@ -1,4 +1,4 @@
-package at.ac.tuwien.infosys.www.pixy.analysis.dependency;
+package at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph;
 
 import at.ac.tuwien.infosys.www.pixy.Dumper;
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
@@ -11,14 +11,14 @@ import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepGraphOpNode extends DepGraphNode {
+public class BuiltinFunctionNode extends AbstractNode {
     private AbstractCfgNode cfgNode;
     private String name;
     private boolean builtin;    // builtin function?
 
 //  ********************************************************************************
 
-    DepGraphOpNode(AbstractCfgNode cfgNode, String name, boolean builtin) {
+    BuiltinFunctionNode(AbstractCfgNode cfgNode, String name, boolean builtin) {
         //this.place = place;
         this.cfgNode = cfgNode;
         this.name = name;
@@ -123,10 +123,10 @@ public class DepGraphOpNode extends DepGraphNode {
         if (compX == this) {
             return true;
         }
-        if (!(compX instanceof DepGraphOpNode)) {
+        if (!(compX instanceof BuiltinFunctionNode)) {
             return false;
         }
-        DepGraphOpNode comp = (DepGraphOpNode) compX;
+        BuiltinFunctionNode comp = (BuiltinFunctionNode) compX;
 
         return this.cfgNode.equals(comp.cfgNode);
     }

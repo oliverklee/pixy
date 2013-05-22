@@ -1,6 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.*;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParameter;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
@@ -60,23 +61,23 @@ public class XSSAnalysis extends DependencyClient {
         int vulncount = 0;
         for (Sink sink : sinks) {
 
-            Collection<DepGraph> depGraphs = depAnalysis.getDepGraph(sink);
+            Collection<DependencyGraph> dependencyGraphs = depAnalysis.getDepGraph(sink);
 
-            for (DepGraph depGraph : depGraphs) {
+            for (DependencyGraph dependencyGraph : dependencyGraphs) {
 
                 graphcount++;
 
                 String graphNameBase = "xss_" + fileName + "_" + graphcount;
 
                 if (!MyOptions.optionW) {
-                    depGraph.dumpDot(graphNameBase + "_dep", MyOptions.graphPath, this.dci);
+                    dependencyGraph.dumpDot(graphNameBase + "_dep", MyOptions.graphPath, this.dci);
                 }
 
                 // create the relevant subgraph
-                DepGraph relevant = this.getRelevant(depGraph);
+                DependencyGraph relevant = this.getRelevant(dependencyGraph);
 
                 // find those uninit nodes that are dangerous
-                Map<DepGraphUninitNode, InitialTaint> dangerousUninit = this.findDangerousUninit(relevant);
+                Map<UninitializedNode, InitialTaint> dangerousUninit = this.findDangerousUninit(relevant);
 
                 // if there are any dangerous uninit nodes...
                 if (!dangerousUninit.isEmpty()) {
@@ -84,7 +85,7 @@ public class XSSAnalysis extends DependencyClient {
                     // make the relevant subgraph smaller
                     relevant.reduceWithLeaves(dangerousUninit.keySet());
 
-                    Set<? extends DepGraphNode> fillUs;
+                    Set<? extends AbstractNode> fillUs;
                     if (MyOptions.option_V) {
                         relevant.removeTemporaries();
                         fillUs = relevant.removeUninitNodes();
@@ -93,7 +94,7 @@ public class XSSAnalysis extends DependencyClient {
                     }
 
                     vulncount++;
-                    DepGraphNormalNode root = depGraph.getRoot();
+                    NormalNode root = dependencyGraph.getRoot();
                     AbstractCfgNode cfgNode = root.getCfgNode();
                     retMe.add(cfgNode.getOrigLineno());
                     System.out.println("Vulnerability detected!");
@@ -117,15 +118,15 @@ public class XSSAnalysis extends DependencyClient {
                         quickReport.append("Line ");
                         quickReport.append(sink.getLineNo());
                         quickReport.append("\nSources:\n");
-                        for (DepGraphNode leafX : relevant.getLeafNodes()) {
+                        for (AbstractNode leafX : relevant.getLeafNodes()) {
                             quickReport.append("  ");
-                            if (leafX instanceof DepGraphNormalNode) {
-                                DepGraphNormalNode leaf = (DepGraphNormalNode) leafX;
+                            if (leafX instanceof NormalNode) {
+                                NormalNode leaf = (NormalNode) leafX;
                                 quickReport.append(leaf.getLine());
                                 quickReport.append(" : ");
                                 quickReport.append(leaf.getPlace());
-                            } else if (leafX instanceof DepGraphOpNode) {
-                                DepGraphOpNode leaf = (DepGraphOpNode) leafX;
+                            } else if (leafX instanceof BuiltinFunctionNode) {
+                                BuiltinFunctionNode leaf = (BuiltinFunctionNode) leafX;
                                 quickReport.append(leaf.getLine());
                                 quickReport.append(" : ");
                                 quickReport.append(leaf.getName());
@@ -179,17 +180,17 @@ public class XSSAnalysis extends DependencyClient {
         int customSanitThrownAwayCount = 0;
         for (Sink sink : sinks) {
 
-            Collection<DepGraph> depGraphs = depAnalysis.getDepGraph(sink);
+            Collection<DependencyGraph> dependencyGraphs = depAnalysis.getDepGraph(sink);
 
-            for (DepGraph depGraph : depGraphs) {
+            for (DependencyGraph dependencyGraph : dependencyGraphs) {
 
                 graphcount++;
 
                 // create the relevant subgraph
-                DepGraph relevant = this.getRelevant(depGraph);
+                DependencyGraph relevant = this.getRelevant(dependencyGraph);
 
                 // find those uninit nodes that are dangerous
-                Map<DepGraphUninitNode, InitialTaint> dangerousUninit = this.findDangerousUninit(relevant);
+                Map<UninitializedNode, InitialTaint> dangerousUninit = this.findDangerousUninit(relevant);
 
                 // if there are any dangerous uninit nodes...
                 boolean tainted = false;
@@ -199,18 +200,18 @@ public class XSSAnalysis extends DependencyClient {
                     // make the relevant subgraph smaller
                     relevant.reduceWithLeaves(dangerousUninit.keySet());
 
-                    retMe.addDepGraph(depGraph, relevant);
+                    retMe.addDepGraph(dependencyGraph, relevant);
                 }
 
                 if (MyOptions.countPaths) {
-                    int pathNum = depGraph.countPaths();
+                    int pathNum = dependencyGraph.countPaths();
                     totalPathCount += pathNum;
                     if (tainted) {
                         basicPathCount += pathNum;
                     }
                 }
 
-                if (!SanitationAnalysis.findCustomSanit(depGraph).isEmpty()) {
+                if (!SanitationAnalysis.findCustomSanit(dependencyGraph).isEmpty()) {
                     hasCustomSanitCount++;
                     if (!tainted) {
                         customSanitThrownAwayCount++;

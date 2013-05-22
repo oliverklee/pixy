@@ -1,6 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.*;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph.*;
 import at.ac.tuwien.infosys.www.pixy.automaton.Automaton;
 import at.ac.tuwien.infosys.www.pixy.automaton.Transition;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParameter;
@@ -64,20 +65,20 @@ public class SQLAnalysis extends DependencyClient {
         int vulncount = 0;
         for (Sink sink : sinks) {
 
-            Collection<DepGraph> depGraphs = depAnalysis.getDepGraph(sink);
+            Collection<DependencyGraph> dependencyGraphs = depAnalysis.getDepGraph(sink);
 
-            for (DepGraph depGraph : depGraphs) {
+            for (DependencyGraph dependencyGraph : dependencyGraphs) {
 
                 graphcount++;
 
                 String graphNameBase = "sql_" + fileName + "_" + graphcount;
 
-                DepGraph sqlGraph = new DepGraph(depGraph);
-                AbstractCfgNode cfgNode = depGraph.getRoot().getCfgNode();
+                DependencyGraph sqlGraph = new DependencyGraph(dependencyGraph);
+                AbstractCfgNode cfgNode = dependencyGraph.getRoot().getCfgNode();
 
-                depGraph.dumpDot(graphNameBase + "_dep", MyOptions.graphPath, depGraph.getUninitNodes(), this.dci);
+                dependencyGraph.dumpDot(graphNameBase + "_dep", MyOptions.graphPath, dependencyGraph.getUninitNodes(), this.dci);
 
-                Automaton auto = this.toAutomaton(sqlGraph, depGraph);
+                Automaton auto = this.toAutomaton(sqlGraph, dependencyGraph);
 
                 boolean tainted = false;
                 if (auto.hasDirectlyTaintedTransitions()) {
@@ -101,8 +102,8 @@ public class SQLAnalysis extends DependencyClient {
                 // if we have detected a vulnerability, also dump a reduced
                 // SQL dependency graph
                 if (tainted) {
-                    DepGraph relevant = this.getRelevant(depGraph);
-                    Map<DepGraphUninitNode, InitialTaint> dangerousUninit = this.findDangerousUninit(relevant);
+                    DependencyGraph relevant = this.getRelevant(dependencyGraph);
+                    Map<UninitializedNode, InitialTaint> dangerousUninit = this.findDangerousUninit(relevant);
                     if (!dangerousUninit.isEmpty()) {
                         if (dangerousUninit.values().contains(InitialTaint.ALWAYS)) {
                             System.out.println("- unconditional");
@@ -110,7 +111,7 @@ public class SQLAnalysis extends DependencyClient {
                             System.out.println("- conditional on register_globals=on");
                         }
                         relevant.reduceWithLeaves(dangerousUninit.keySet());
-                        Set<? extends DepGraphNode> fillUs;
+                        Set<? extends AbstractNode> fillUs;
                         if (MyOptions.option_V) {
                             relevant.removeTemporaries();
                             fillUs = relevant.removeUninitNodes();
@@ -163,14 +164,14 @@ public class SQLAnalysis extends DependencyClient {
         int customSanitThrownAwayCount = 0;
         for (Sink sink : sinks) {
 
-            Collection<DepGraph> depGraphs = depAnalysis.getDepGraph(sink);
+            Collection<DependencyGraph> dependencyGraphs = depAnalysis.getDepGraph(sink);
 
-            for (DepGraph depGraph : depGraphs) {
+            for (DependencyGraph dependencyGraph : dependencyGraphs) {
 
                 graphcount++;
 
-                DepGraph workGraph = new DepGraph(depGraph);
-                Automaton auto = this.toAutomaton(workGraph, depGraph);
+                DependencyGraph workGraph = new DependencyGraph(dependencyGraph);
+                Automaton auto = this.toAutomaton(workGraph, dependencyGraph);
 
                 boolean tainted = false;
                 if (auto.hasDirectlyTaintedTransitions()) {
@@ -184,22 +185,22 @@ public class SQLAnalysis extends DependencyClient {
                 if (tainted) {
 
                     // create a smaller version of this graph
-                    DepGraph relevant = this.getRelevant(depGraph);
-                    Map<DepGraphUninitNode, InitialTaint> dangerousUninit = this.findDangerousUninit(relevant);
+                    DependencyGraph relevant = this.getRelevant(dependencyGraph);
+                    Map<UninitializedNode, InitialTaint> dangerousUninit = this.findDangerousUninit(relevant);
                     relevant.reduceWithLeaves(dangerousUninit.keySet());
 
-                    retMe.addDepGraph(depGraph, relevant);
+                    retMe.addDepGraph(dependencyGraph, relevant);
                 }
 
                 if (MyOptions.countPaths) {
-                    int pathNum = depGraph.countPaths();
+                    int pathNum = dependencyGraph.countPaths();
                     totalPathCount += pathNum;
                     if (tainted) {
                         basicPathCount += pathNum;
                     }
                 }
 
-                if (!SanitationAnalysis.findCustomSanit(depGraph).isEmpty()) {
+                if (!SanitationAnalysis.findCustomSanit(dependencyGraph).isEmpty()) {
                     hasCustomSanitCount++;
                     if (!tainted) {
                         customSanitThrownAwayCount++;
@@ -222,12 +223,12 @@ public class SQLAnalysis extends DependencyClient {
     // is done by decorating the nodes of the graph with automata bottom-up,
     // and returning the automaton that eventually decorates the root;
     // BEWARE: this also eliminates cycles!
-    Automaton toAutomaton(DepGraph depGraph, DepGraph origDepGraph) {
-        depGraph.eliminateCycles();
-        DepGraphNode root = depGraph.getRoot();
-        Map<DepGraphNode, Automaton> deco = new HashMap<>();
-        Set<DepGraphNode> visited = new HashSet<>();
-        this.decorate(root, deco, visited, depGraph, origDepGraph);
+    Automaton toAutomaton(DependencyGraph dependencyGraph, DependencyGraph origDependencyGraph) {
+        dependencyGraph.eliminateCycles();
+        AbstractNode root = dependencyGraph.getRoot();
+        Map<AbstractNode, Automaton> deco = new HashMap<>();
+        Set<AbstractNode> visited = new HashSet<>();
+        this.decorate(root, deco, visited, dependencyGraph, origDependencyGraph);
         Automaton rootDeco = deco.get(root).clone();
 
         return rootDeco;
@@ -236,17 +237,17 @@ public class SQLAnalysis extends DependencyClient {
 //  ********************************************************************************
 
     // decorates the given node (and all its successors) with an automaton
-    private void decorate(DepGraphNode node, Map<DepGraphNode, Automaton> deco,
-                          Set<DepGraphNode> visited, DepGraph depGraph, DepGraph origDepGraph) {
+    private void decorate(AbstractNode node, Map<AbstractNode, Automaton> deco,
+                          Set<AbstractNode> visited, DependencyGraph dependencyGraph, DependencyGraph origDependencyGraph) {
 
         visited.add(node);
 
         // if this node has successors, decorate them first (if not done yet)
-        List<DepGraphNode> successors = depGraph.getSuccessors(node);
+        List<AbstractNode> successors = dependencyGraph.getSuccessors(node);
         if (successors != null && !successors.isEmpty()) {
-            for (DepGraphNode succ : successors) {
+            for (AbstractNode succ : successors) {
                 if (!visited.contains(succ) && deco.get(succ) == null) {
-                    decorate(succ, deco, visited, depGraph, origDepGraph);
+                    decorate(succ, deco, visited, dependencyGraph, origDependencyGraph);
                 }
             }
         }
@@ -254,8 +255,8 @@ public class SQLAnalysis extends DependencyClient {
         // now that all successors are decorated, we can decorate this node
 
         Automaton auto = null;
-        if (node instanceof DepGraphNormalNode) {
-            DepGraphNormalNode normalNode = (DepGraphNormalNode) node;
+        if (node instanceof NormalNode) {
+            NormalNode normalNode = (NormalNode) node;
             if (successors == null || successors.isEmpty()) {
                 // this should be a string leaf node
                 TacPlace place = normalNode.getPlace();
@@ -271,7 +272,7 @@ public class SQLAnalysis extends DependencyClient {
                 // this is an interior node, not a leaf node;
                 // the automaton for this node is the union of all the
                 // successor automatas
-                for (DepGraphNode succ : successors) {
+                for (AbstractNode succ : successors) {
                     if (succ == node) {
                         // a simple loop, can be ignored
                         continue;
@@ -287,9 +288,9 @@ public class SQLAnalysis extends DependencyClient {
                     }
                 }
             }
-        } else if (node instanceof DepGraphOpNode) {
-            auto = this.makeAutoForOp((DepGraphOpNode) node, deco, depGraph);
-        } else if (node instanceof DepGraphSccNode) {
+        } else if (node instanceof BuiltinFunctionNode) {
+            auto = this.makeAutoForOp((BuiltinFunctionNode) node, deco, dependencyGraph);
+        } else if (node instanceof CompleteGraphNode) {
 
             // for SCC nodes, we generate a coarse string approximation (.* automaton);
             // the taint value depends on the taint value of the successors:
@@ -312,7 +313,7 @@ public class SQLAnalysis extends DependencyClient {
              */
 
             Transition.Taint taint = Transition.Taint.Untainted;
-            for (DepGraphNode succ : successors) {
+            for (AbstractNode succ : successors) {
                 if (succ == node) {
                     // a simple loop, should be part of the SCC
                     throw new RuntimeException("SNH");
@@ -328,17 +329,17 @@ public class SQLAnalysis extends DependencyClient {
             }
 
             auto = Automaton.makeAnyString(taint);
-        } else if (node instanceof DepGraphUninitNode) {
+        } else if (node instanceof UninitializedNode) {
 
             // retrieve predecessor
-            Set<DepGraphNode> preds = depGraph.getPredecessors(node);
+            Set<AbstractNode> preds = dependencyGraph.getPredecessors(node);
             if (preds.size() != 1) {
                 throw new RuntimeException("SNH");
             }
-            DepGraphNode pre = preds.iterator().next();
+            AbstractNode pre = preds.iterator().next();
 
-            if (pre instanceof DepGraphNormalNode) {
-                DepGraphNormalNode preNormal = (DepGraphNormalNode) pre;
+            if (pre instanceof NormalNode) {
+                NormalNode preNormal = (NormalNode) pre;
                 switch (this.initiallyTainted(preNormal.getPlace())) {
                     case ALWAYS:
                     case IFRG:
@@ -350,18 +351,18 @@ public class SQLAnalysis extends DependencyClient {
                     default:
                         throw new RuntimeException("SNH");
                 }
-            } else if (pre instanceof DepGraphSccNode) {
+            } else if (pre instanceof CompleteGraphNode) {
                 // this case can really happen (e.g.: dcpportal: advertiser.php, forums.php);
 
                 // take a look at the "real" predecessors (i.e., take a look "into"
                 // the SCC node): if there is exactly one predecessor, namely a
-                // DepGraphNormalNode, and if the contained place is initially untainted,
+                // NormalNode, and if the contained place is initially untainted,
                 // there is no danger from here; else: we will have to set it to tainted
-                Set<DepGraphNode> origPreds = origDepGraph.getPredecessors(node);
+                Set<AbstractNode> origPreds = origDependencyGraph.getPredecessors(node);
                 if (origPreds.size() == 1) {
-                    DepGraphNode origPre = origPreds.iterator().next();
-                    if (origPre instanceof DepGraphNormalNode) {
-                        DepGraphNormalNode origPreNormal = (DepGraphNormalNode) origPre;
+                    AbstractNode origPre = origPreds.iterator().next();
+                    if (origPre instanceof NormalNode) {
+                        NormalNode origPreNormal = (NormalNode) origPre;
 
                         switch (this.initiallyTainted(origPreNormal.getPlace())) {
                             case ALWAYS:
@@ -398,10 +399,10 @@ public class SQLAnalysis extends DependencyClient {
 //  ********************************************************************************
 
     // returns an automaton for the given operation node
-    private Automaton makeAutoForOp(DepGraphOpNode node, Map<DepGraphNode, Automaton> deco,
-                                    DepGraph depGraph) {
+    private Automaton makeAutoForOp(BuiltinFunctionNode node, Map<AbstractNode, Automaton> deco,
+                                    DependencyGraph dependencyGraph) {
 
-        List<DepGraphNode> successors = depGraph.getSuccessors(node);
+        List<AbstractNode> successors = dependencyGraph.getSuccessors(node);
         if (successors == null) {
             successors = new LinkedList<>();
         }
@@ -430,7 +431,7 @@ public class SQLAnalysis extends DependencyClient {
             }
         } else if (opName.equals(".")) {
             // CONCAT
-            for (DepGraphNode succ : successors) {
+            for (AbstractNode succ : successors) {
                 Automaton succAuto = deco.get(succ);
                 if (retMe == null) {
                     retMe = succAuto;
@@ -559,14 +560,14 @@ public class SQLAnalysis extends DependencyClient {
 
 //  ********************************************************************************
 
-    private Transition.Taint multiDependencyAuto(List<DepGraphNode> succs,
-                                                 Map<DepGraphNode, Automaton> deco, List<Integer> indices, boolean inverse) {
+    private Transition.Taint multiDependencyAuto(List<AbstractNode> succs,
+                                                 Map<AbstractNode, Automaton> deco, List<Integer> indices, boolean inverse) {
 
         boolean indirectly = false;
         Set<Integer> indexSet = new HashSet<>(indices);
 
         int count = -1;
-        for (DepGraphNode succ : succs) {
+        for (AbstractNode succ : succs) {
             count++;
 
             // check if there is a dependency on this successor

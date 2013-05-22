@@ -9,7 +9,6 @@ import at.ac.tuwien.infosys.www.pixy.conversion.ConstantsTable;
 import at.ac.tuwien.infosys.www.pixy.conversion.Literal;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Define;
 
 import java.util.List;
 

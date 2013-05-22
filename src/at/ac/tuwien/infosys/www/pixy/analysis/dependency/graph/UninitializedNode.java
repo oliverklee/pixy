@@ -1,17 +1,17 @@
-package at.ac.tuwien.infosys.www.pixy.analysis.dependency;
+package at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph;
 
 /**
- * Special node for approximating SCCs in the string graph.
+ * Special node representing uninitialized variables.
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepGraphSccNode extends DepGraphNode {
-    DepGraphSccNode() {
+public class UninitializedNode extends AbstractNode {
+    public UninitializedNode() {
     }
 
     // returns a name that can be used in dot file representation
     public String dotName() {
-        return "SCC";
+        return "<uninit>";
     }
 
     public String comparableName() {

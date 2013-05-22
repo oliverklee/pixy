@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Node in the Graph.
+ * AbstractNode in the Graph.
  *
  * SCC stands for "strongly connected component".
  *
@@ -18,7 +18,7 @@ import java.util.Set;
  */
 public class Node {
     private Variable label;
-    // Map Node -> Edge (i.e., target node -> edge)
+    // Map AbstractNode -> Edge (i.e., target node -> edge)
     private Map<Node, Edge> doubleEdges;
 
     public Node(Variable label) {

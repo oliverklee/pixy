@@ -5,6 +5,7 @@ import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.Utils;
 import at.ac.tuwien.infosys.www.pixy.VulnerabilityInformation;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.*;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallBuiltinFunction;
@@ -47,12 +48,12 @@ public abstract class SanitationAnalysis extends DependencyClient {
 
         // let the basic analysis do the preliminary work
         VulnerabilityInformation vulnerabilityInformation = dependencyClient.detectAlternative();
-        List<DepGraph> vulnDepGraphs = vulnerabilityInformation.getDepGraphs();
-        List<DepGraph> minDepGraphs = vulnerabilityInformation.getDepGraphsMin();
+        List<DependencyGraph> vulnDependencyGraphs = vulnerabilityInformation.getDependencyGraphs();
+        List<DependencyGraph> minDependencyGraphs = vulnerabilityInformation.getDependencyGraphsMin();
 
         // stats
         int scanned = vulnerabilityInformation.getInitialGraphCount();
-        int reported_by_basic = vulnDepGraphs.size();
+        int reported_by_basic = vulnDependencyGraphs.size();
         int have_sanit = 0;
         int no_sanit = 0;
         int sure_vuln_1 = 0;
@@ -73,20 +74,20 @@ public abstract class SanitationAnalysis extends DependencyClient {
         int dynpathcount = 0;
 
         int graphcount = 0;
-        Iterator<DepGraph> minIter = minDepGraphs.iterator();
-        for (DepGraph depGraph : vulnDepGraphs) {
+        Iterator<DependencyGraph> minIter = minDependencyGraphs.iterator();
+        for (DependencyGraph dependencyGraph : vulnDependencyGraphs) {
             graphcount++;
 
-            DepGraph minGraph = minIter.next();
+            DependencyGraph minGraph = minIter.next();
 
             // in any case, dump the vulnerable depgraphs
-            depGraph.dumpDot(name + "sanitation" + graphcount + "i", MyOptions.graphPath, depGraph.getUninitNodes(), this.dci);
-            minGraph.dumpDot(name + "sanitation" + graphcount + "m", MyOptions.graphPath, depGraph.getUninitNodes(), this.dci);
+            dependencyGraph.dumpDot(name + "sanitation" + graphcount + "i", MyOptions.graphPath, dependencyGraph.getUninitNodes(), this.dci);
+            minGraph.dumpDot(name + "sanitation" + graphcount + "m", MyOptions.graphPath, dependencyGraph.getUninitNodes(), this.dci);
 
-            AbstractCfgNode cfgNode = depGraph.getRoot().getCfgNode();
+            AbstractCfgNode cfgNode = dependencyGraph.getRoot().getCfgNode();
 
             // retrieve custom sanitization routines from the minGraph
-            List<DepGraphNode> customSanitNodes = findCustomSanit(minGraph);
+            List<AbstractNode> customSanitNodes = findCustomSanit(minGraph);
 
             if (customSanitNodes.isEmpty()) {
                 // we don't have to perform our detailed sanitization analysis
@@ -100,10 +101,10 @@ public abstract class SanitationAnalysis extends DependencyClient {
             }
             have_sanit++;
 
-            DepGraph workGraph = new DepGraph(depGraph);
+            DependencyGraph workGraph = new DependencyGraph(dependencyGraph);
 
-            Map<DepGraphNode, FSAAutomaton> deco = new HashMap<>();
-            FSAAutomaton auto = this.toAutomatonSanit(workGraph, depGraph, deco);
+            Map<AbstractNode, FSAAutomaton> deco = new HashMap<>();
+            FSAAutomaton auto = this.toAutomatonSanit(workGraph, dependencyGraph, deco);
 
             // intersect this automaton with the undesired stuff;
             // if the intersection is empty, it means that we are safe!
@@ -116,7 +117,7 @@ public abstract class SanitationAnalysis extends DependencyClient {
 
                 // create a graph that is further minimized to the sanitization routines
                 // (regardless of the effectiveness of the applied sanitization)
-                DepGraph sanitMinGraph = new DepGraph(minGraph);
+                DependencyGraph sanitMinGraph = new DependencyGraph(minGraph);
                 sanitMinGraph.reduceToInnerNodes(customSanitNodes);
 
                 // and now reduce this graph to the ineffective sanitization routines
@@ -130,21 +131,21 @@ public abstract class SanitationAnalysis extends DependencyClient {
                     possible_vuln++;
 
                     // dump the minimized graph
-                    sanitMinGraph.dumpDot(name + "sanitation" + graphcount + "mm", MyOptions.graphPath, depGraph.getUninitNodes(), this.dci);
+                    sanitMinGraph.dumpDot(name + "sanitation" + graphcount + "mm", MyOptions.graphPath, dependencyGraph.getUninitNodes(), this.dci);
 
                     dynInfo.append("SINK:\n");
                     dynInfo.append(sanitMinGraph.getRoot().toString());
                     dynInfo.append("\n");
                     dynInfo.append("SOURCES:\n");
-                    List<DepGraphNormalNode> dangerousSources = this.findDangerousSources(sanitMinGraph);
-                    for (DepGraphNormalNode dangerousSource : dangerousSources) {
+                    List<NormalNode> dangerousSources = this.findDangerousSources(sanitMinGraph);
+                    for (NormalNode dangerousSource : dangerousSources) {
                         dynInfo.append(dangerousSource.toString());
                         dynInfo.append("\n");
                     }
                     dynInfo.append("\n");
 
                     if (MyOptions.countPaths) {
-                        int paths = new DepGraph(sanitMinGraph).countPaths();
+                        int paths = new DependencyGraph(sanitMinGraph).countPaths();
                         dynpathcount += paths;
                         // System.out.println("- paths: " + paths);
                     }
@@ -200,12 +201,12 @@ public abstract class SanitationAnalysis extends DependencyClient {
     // is done by decorating the nodes of the graph with automata bottom-up,
     // and returning the automaton that eventually decorates the root;
     // BEWARE: this also eliminates cycles!
-    protected FSAAutomaton toAutomatonSanit(DepGraph depGraph, DepGraph origDepGraph,
-                                            Map<DepGraphNode, FSAAutomaton> deco) {
-        depGraph.eliminateCycles();
-        DepGraphNode root = depGraph.getRoot();
-        Set<DepGraphNode> visited = new HashSet<>();
-        this.decorateSanit(root, deco, visited, depGraph, origDepGraph, true);
+    protected FSAAutomaton toAutomatonSanit(DependencyGraph dependencyGraph, DependencyGraph origDependencyGraph,
+                                            Map<AbstractNode, FSAAutomaton> deco) {
+        dependencyGraph.eliminateCycles();
+        AbstractNode root = dependencyGraph.getRoot();
+        Set<AbstractNode> visited = new HashSet<>();
+        this.decorateSanit(root, deco, visited, dependencyGraph, origDependencyGraph, true);
         FSAAutomaton rootDeco = deco.get(root).clone();
 
         return rootDeco;
@@ -214,8 +215,8 @@ public abstract class SanitationAnalysis extends DependencyClient {
 //  ********************************************************************************
 
     // decorates the given node (and all its successors) with an automaton
-    private void decorateSanit(DepGraphNode node, Map<DepGraphNode, FSAAutomaton> deco,
-                                     Set<DepGraphNode> visited, DepGraph depGraph, DepGraph origDepGraph,
+    private void decorateSanit(AbstractNode node, Map<AbstractNode, FSAAutomaton> deco,
+                                     Set<AbstractNode> visited, DependencyGraph dependencyGraph, DependencyGraph origDependencyGraph,
                                      boolean trimAllowed) {
 
         visited.add(node);
@@ -229,12 +230,12 @@ public abstract class SanitationAnalysis extends DependencyClient {
         }
 
         // if this node has successors, decorate them first (if not done yet)
-        List<DepGraphNode> successors = depGraph.getSuccessors(node);
+        List<AbstractNode> successors = dependencyGraph.getSuccessors(node);
         if (successors != null && !successors.isEmpty()) {
             int i = 0;
-            for (DepGraphNode succ : successors) {
+            for (AbstractNode succ : successors) {
                 if (!visited.contains(succ) && deco.get(succ) == null) {
-                    decorateSanit(succ, deco, visited, depGraph, origDepGraph, trimInfo.mayTrim(i));
+                    decorateSanit(succ, deco, visited, dependencyGraph, origDependencyGraph, trimInfo.mayTrim(i));
                 }
                 i++;
             }
@@ -243,8 +244,8 @@ public abstract class SanitationAnalysis extends DependencyClient {
         // now that all successors are decorated, we can decorate this node
 
         FSAAutomaton auto = null;
-        if (node instanceof DepGraphNormalNode) {
-            DepGraphNormalNode normalNode = (DepGraphNormalNode) node;
+        if (node instanceof NormalNode) {
+            NormalNode normalNode = (NormalNode) node;
             if (successors == null || successors.isEmpty()) {
                 // this should be a string leaf node
                 TacPlace place = normalNode.getPlace();
@@ -264,7 +265,7 @@ public abstract class SanitationAnalysis extends DependencyClient {
                 // this is an interior node, not a leaf node;
                 // the automaton for this node is the union of all the
                 // successor automatas
-                for (DepGraphNode succ : successors) {
+                for (AbstractNode succ : successors) {
                     if (succ == node) {
                         // a simple loop, can be ignored
                         continue;
@@ -280,9 +281,9 @@ public abstract class SanitationAnalysis extends DependencyClient {
                     }
                 }
             }
-        } else if (node instanceof DepGraphOpNode) {
-            auto = this.makeAutoForOp((DepGraphOpNode) node, deco, depGraph, trimAllowed);
-        } else if (node instanceof DepGraphSccNode) {
+        } else if (node instanceof BuiltinFunctionNode) {
+            auto = this.makeAutoForOp((BuiltinFunctionNode) node, deco, dependencyGraph, trimAllowed);
+        } else if (node instanceof CompleteGraphNode) {
 
             // for SCC nodes, we generate a coarse string approximation (.* automaton);
             // the taint value depends on the taint value of the successors:
@@ -308,7 +309,7 @@ public abstract class SanitationAnalysis extends DependencyClient {
 
                 auto = FSAAutomaton.makeString("");
 
-                for (DepGraphNode succ : successors) {
+                for (AbstractNode succ : successors) {
                     if (succ == node) {
                         // a simple loop, should be part of the SCC
                         throw new RuntimeException("SNH");
@@ -325,17 +326,17 @@ public abstract class SanitationAnalysis extends DependencyClient {
             } else {
                 auto = FSAAutomaton.makeAnyString();
             }
-        } else if (node instanceof DepGraphUninitNode) {
+        } else if (node instanceof UninitializedNode) {
 
             // retrieve predecessor
-            Set<DepGraphNode> preds = depGraph.getPredecessors(node);
+            Set<AbstractNode> preds = dependencyGraph.getPredecessors(node);
             if (preds.size() != 1) {
                 throw new RuntimeException("SNH");
             }
-            DepGraphNode pre = preds.iterator().next();
+            AbstractNode pre = preds.iterator().next();
 
-            if (pre instanceof DepGraphNormalNode) {
-                DepGraphNormalNode preNormal = (DepGraphNormalNode) pre;
+            if (pre instanceof NormalNode) {
+                NormalNode preNormal = (NormalNode) pre;
                 switch (this.initiallyTainted(preNormal.getPlace())) {
                     case ALWAYS:
                     case IFRG:
@@ -351,18 +352,18 @@ public abstract class SanitationAnalysis extends DependencyClient {
                     default:
                         throw new RuntimeException("SNH");
                 }
-            } else if (pre instanceof DepGraphSccNode) {
+            } else if (pre instanceof CompleteGraphNode) {
                 // this case can really happen (e.g.: dcpportal: advertiser.php, forums.php);
 
                 // take a look at the "real" predecessors (i.e., take a look "into"
                 // the SCC node): if there is exactly one predecessor, namely a
-                // DepGraphNormalNode, and if the contained place is initially untainted,
+                // NormalNode, and if the contained place is initially untainted,
                 // there is no danger from here; else: we will have to set it to tainted
-                Set<DepGraphNode> origPreds = origDepGraph.getPredecessors(node);
+                Set<AbstractNode> origPreds = origDependencyGraph.getPredecessors(node);
                 if (origPreds.size() == 1) {
-                    DepGraphNode origPre = origPreds.iterator().next();
-                    if (origPre instanceof DepGraphNormalNode) {
-                        DepGraphNormalNode origPreNormal = (DepGraphNormalNode) origPre;
+                    AbstractNode origPre = origPreds.iterator().next();
+                    if (origPre instanceof NormalNode) {
+                        NormalNode origPreNormal = (NormalNode) origPre;
 
                         switch (this.initiallyTainted(origPreNormal.getPlace())) {
                             case ALWAYS:
@@ -403,9 +404,9 @@ public abstract class SanitationAnalysis extends DependencyClient {
 //  ********************************************************************************
 
     // returns an automaton for the given operation node
-    private FSAAutomaton makeAutoForOp(DepGraphOpNode node, Map<DepGraphNode, FSAAutomaton> deco,
-                                             DepGraph depGraph, boolean trimAllowed) {
-        List<DepGraphNode> successors = depGraph.getSuccessors(node);
+    private FSAAutomaton makeAutoForOp(BuiltinFunctionNode node, Map<AbstractNode, FSAAutomaton> deco,
+                                             DependencyGraph dependencyGraph, boolean trimAllowed) {
+        List<AbstractNode> successors = dependencyGraph.getSuccessors(node);
         if (successors == null) {
             successors = new LinkedList<>();
         }
@@ -436,7 +437,7 @@ public abstract class SanitationAnalysis extends DependencyClient {
             }
         } else if (opName.equals(".")) {
             // CONCAT
-            for (DepGraphNode succ : successors) {
+            for (AbstractNode succ : successors) {
                 FSAAutomaton succAuto = deco.get(succ);
                 if (retMe == null) {
                     retMe = succAuto;
@@ -564,8 +565,8 @@ public abstract class SanitationAnalysis extends DependencyClient {
     // else:
     // - if all successors are empty: returns empty
     // - else: returns .*
-    private FSAAutomaton multiDependencyAutoSanit(List<DepGraphNode> succs,
-                                                  Map<DepGraphNode, FSAAutomaton> deco, List<Integer> indices, boolean inverse) {
+    private FSAAutomaton multiDependencyAutoSanit(List<AbstractNode> succs,
+                                                  Map<AbstractNode, FSAAutomaton> deco, List<Integer> indices, boolean inverse) {
 
         if (!trimUntainted) {
             return FSAAutomaton.makeAnyString();
@@ -574,7 +575,7 @@ public abstract class SanitationAnalysis extends DependencyClient {
         Set<Integer> indexSet = new HashSet<>(indices);
 
         int count = -1;
-        for (DepGraphNode succ : succs) {
+        for (AbstractNode succ : succs) {
             count++;
 
             // check if there is a dependency on this successor
@@ -615,17 +616,17 @@ public abstract class SanitationAnalysis extends DependencyClient {
 //  ********************************************************************************
 
     // checks if the given node is a custom sanitization node
-    public static boolean isCustomSanit(DepGraphNode node) {
+    public static boolean isCustomSanit(AbstractNode node) {
 
-        if (node instanceof DepGraphNormalNode) {
+        if (node instanceof NormalNode) {
             return false;
-        } else if (node instanceof DepGraphUninitNode) {
+        } else if (node instanceof UninitializedNode) {
             return false;
-        } else if (node instanceof DepGraphOpNode) {
+        } else if (node instanceof BuiltinFunctionNode) {
             // check if this operation could be used for custom sanitization
-            DepGraphOpNode opNode = (DepGraphOpNode) node;
-            if (opNode.isBuiltin()) {
-                AbstractCfgNode cfgNode = opNode.getCfgNode();
+            BuiltinFunctionNode builtinFunctionNode = (BuiltinFunctionNode) node;
+            if (builtinFunctionNode.isBuiltin()) {
+                AbstractCfgNode cfgNode = builtinFunctionNode.getCfgNode();
                 if (cfgNode instanceof CallBuiltinFunction) {
                     CallBuiltinFunction callBuiltin = (CallBuiltinFunction) cfgNode;
                     String funcName = callBuiltin.getFunctionName();
@@ -640,7 +641,7 @@ public abstract class SanitationAnalysis extends DependencyClient {
             } else {
                 return false;
             }
-        } else if (node instanceof DepGraphSccNode) {
+        } else if (node instanceof CompleteGraphNode) {
             throw new RuntimeException("SNH");
         } else {
             throw new RuntimeException("SNH");
@@ -649,8 +650,8 @@ public abstract class SanitationAnalysis extends DependencyClient {
 
 //  ********************************************************************************
 
-    public boolean isIneffective(DepGraphNode customSanit,
-                                 Map<DepGraphNode, FSAAutomaton> deco) {
+    public boolean isIneffective(AbstractNode customSanit,
+                                 Map<AbstractNode, FSAAutomaton> deco) {
 
         FSAAutomaton auto = deco.get(customSanit);
         if (auto == null) {
@@ -666,9 +667,9 @@ public abstract class SanitationAnalysis extends DependencyClient {
 //  ********************************************************************************
 
     // locates custom sanitization nodes in the given depgraph and returns them
-    public static List<DepGraphNode> findCustomSanit(DepGraph depGraph) {
-        List<DepGraphNode> retMe = new LinkedList<>();
-        for (DepGraphNode node : depGraph.getNodes()) {
+    public static List<AbstractNode> findCustomSanit(DependencyGraph dependencyGraph) {
+        List<AbstractNode> retMe = new LinkedList<>();
+        for (AbstractNode node : dependencyGraph.getNodes()) {
             if (isCustomSanit(node)) {
                 retMe.add(node);
             }
@@ -679,16 +680,16 @@ public abstract class SanitationAnalysis extends DependencyClient {
 //  ********************************************************************************
 
     // take care: if trimAllowed == false, no need to call this method...
-    private TrimInfo checkTrim(DepGraphNode node) {
+    private TrimInfo checkTrim(AbstractNode node) {
 
         // start with default triminfo: everything can be trimmed
         TrimInfo retMe = new TrimInfo();
 
         // handle cases where trimming is not allowed
-        if (node instanceof DepGraphOpNode) {
-            DepGraphOpNode opNode = (DepGraphOpNode) node;
-            if (opNode.isBuiltin()) {
-                String opName = opNode.getName();
+        if (node instanceof BuiltinFunctionNode) {
+            BuiltinFunctionNode builtinFunctionNode = (BuiltinFunctionNode) node;
+            if (builtinFunctionNode.isBuiltin()) {
+                String opName = builtinFunctionNode.getName();
                 if (opName.equals("preg_replace") ||
                     opName.equals("ereg_replace") ||
                     opName.equals("str_replace")) {

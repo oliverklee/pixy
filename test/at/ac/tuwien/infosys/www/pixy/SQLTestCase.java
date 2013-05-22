@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepGraph;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph.DependencyGraph;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.Sink;
 import at.ac.tuwien.infosys.www.pixy.automaton.Automaton;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
@@ -87,21 +87,21 @@ public class SQLTestCase extends TestCase {
         Assert.assertTrue("Sinks real: " + sinks.size() + ", expected: "
             + sinkNum, sinks.size() == sinkNum);
 
-        // collect depGraphs
-        List<DepGraph> depGraphs = new LinkedList<>();
+        // collect dependencyGraphs
+        List<DependencyGraph> dependencyGraphs = new LinkedList<>();
         for (Sink sink : sinks) {
-            depGraphs.addAll(depAnalysis.getDepGraph(sink));
+            dependencyGraphs.addAll(depAnalysis.getDepGraph(sink));
         }
 
-        Assert.assertTrue("Graphs real: " + depGraphs.size() + ", expected: "
-            + graphNum, depGraphs.size() == graphNum);
+        Assert.assertTrue("Graphs real: " + dependencyGraphs.size() + ", expected: "
+            + graphNum, dependencyGraphs.size() == graphNum);
 
         int graphCount = 0;
-        for (DepGraph depGraph : depGraphs) {
+        for (DependencyGraph dependencyGraph : dependencyGraphs) {
             graphCount++;
 
-            DepGraph sqlGraph = new DepGraph(depGraph);
-            Automaton auto = this.sqlAnalysis.toAutomaton(sqlGraph, depGraph);
+            DependencyGraph sqlGraph = new DependencyGraph(dependencyGraph);
+            Automaton auto = this.sqlAnalysis.toAutomaton(sqlGraph, dependencyGraph);
 
             String fileName = "test" + testNum + "_" + graphCount;
             if (generate) {
