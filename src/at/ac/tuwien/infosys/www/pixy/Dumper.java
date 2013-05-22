@@ -13,7 +13,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.inclusiondominator.InclusionDomina
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralAnalysisInformation;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralAnalysisNode;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.ECS;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.EncodedCallStrings;
 import at.ac.tuwien.infosys.www.pixy.analysis.intraprocedural.IntraAnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.DummyLiteralAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralAnalysis;
@@ -842,12 +842,12 @@ public final class Dumper {
         writer.write("(" + pairArray[0] + " " + pairArray[1] + ")" + linesep);
     }
 
-    static public void dumpFunction2ECS(Map<TacFunction, ECS> function2ECS) {
-        for (Map.Entry<TacFunction, ECS> entry : function2ECS.entrySet()) {
+    static public void dumpFunction2ECS(Map<TacFunction, EncodedCallStrings> function2ECS) {
+        for (Map.Entry<TacFunction, EncodedCallStrings> entry : function2ECS.entrySet()) {
             TacFunction function = entry.getKey();
-            ECS ecs = entry.getValue();
-            System.out.println("ECS for Function " + function.getName() + ": ");
-            System.out.println(ecs);
+            EncodedCallStrings encodedCallStrings = entry.getValue();
+            System.out.println("EncodedCallStrings for Function " + function.getName() + ": ");
+            System.out.println(encodedCallStrings);
             System.out.println();
         }
     }

@@ -5,7 +5,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.DummyAliasAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.inclusiondominator.InclusionDominatorAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.*;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.CSAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.CallStringAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.functional.FunctionalAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.DummyLiteralAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralAnalysis;
@@ -451,7 +451,7 @@ public final class Checker {
         System.out.println("\n*** initializing literal analysis ***\n");
         this.literalAnalysis =
             new LiteralAnalysis(tac, this.aliasAnalysis,
-                new CSAnalysis(this.connectorComp), this.workList);
+                new CallStringAnalysis(this.connectorComp), this.workList);
         System.out.println("\n*** performing literal analysis ***\n");
         this.literalAnalysis.analyze();
         System.out.println("\n*** cleaning up ***\n");
@@ -495,7 +495,7 @@ public final class Checker {
             if (MyOptions.optionV) {
                 System.out.println("call-string analysis!");
             }
-            enclosingAnalysis = new CSAnalysis(this.connectorComp);
+            enclosingAnalysis = new CallStringAnalysis(this.connectorComp);
 
             // write called-by relations to file; can be quite useful
             Utils.writeToFile(this.connectorComp.dump(),

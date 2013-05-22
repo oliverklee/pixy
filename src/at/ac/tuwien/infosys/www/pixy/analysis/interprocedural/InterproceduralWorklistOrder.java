@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.interprocedural;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.CSContext;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.ECS;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.CallStringContext;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.EncodedCallStrings;
 import at.ac.tuwien.infosys.www.pixy.conversion.CfgEdge;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
@@ -32,13 +32,13 @@ public class InterproceduralWorklistOrder {
         TacFunction mainFunction = tac.getMainFunction();
         AbstractCfgNode startNode = mainFunction.getControlFlowGraph().getHead();
 
-        Map<TacFunction, ECS> function2ECS = cc.getFunction2ECS();
-        ECS mainECS = function2ECS.get(mainFunction);
-        if (mainECS.size() != 1) {
+        Map<TacFunction, EncodedCallStrings> function2ECS = cc.getFunction2ECS();
+        EncodedCallStrings mainEncodedCallStrings = function2ECS.get(mainFunction);
+        if (mainEncodedCallStrings.size() != 1) {
             throw new RuntimeException("SNH");
         }
 
-        InterproceduralWorklistElement start = new InterproceduralWorklistElement(startNode, new CSContext(0));
+        InterproceduralWorklistElement start = new InterproceduralWorklistElement(startNode, new CallStringContext(0));
         LinkedList<InterproceduralWorklistElement> postorder = this.getPostorder(start, cc);
 
         // get *reverse* postorder
@@ -81,7 +81,7 @@ public class InterproceduralWorklistOrder {
 
             // interior of this element
             AbstractCfgNode cfgNode = element.getCfgNode();
-            CSContext context = (CSContext) element.getContext();
+            CallStringContext context = (CallStringContext) element.getContext();
 
             // we will try to get an unvisited successor element
             InterproceduralWorklistElement nextElement = null;

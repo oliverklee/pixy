@@ -1,35 +1,32 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring;
 
-import java.util.LinkedList;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public final class CSWorkList {
-    private LinkedList<CSWorkListElement> workList;
+public final class CallStringWorklistElement {
+    private final AbstractCfgNode cfgNode;
+    private final int position;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    CSWorkList() {
-        this.workList = new LinkedList<>();
+    CallStringWorklistElement(AbstractCfgNode cfgNode, int position) {
+        this.cfgNode = cfgNode;
+        this.position = position;
     }
 
 // *********************************************************************************
-// OTHER ***************************************************************************
+// GET *****************************************************************************
 // *********************************************************************************
 
-    void add(CSWorkListElement element) {
-        this.workList.add(element);
+    AbstractCfgNode getCfgNode() {
+        return this.cfgNode;
     }
 
-    // actually implemented as FIFO
-    CSWorkListElement removeNext() {
-        return this.workList.removeFirst();
-    }
-
-    boolean hasNext() {
-        return (this.workList.size() > 0);
+    int getPosition() {
+        return this.position;
     }
 }

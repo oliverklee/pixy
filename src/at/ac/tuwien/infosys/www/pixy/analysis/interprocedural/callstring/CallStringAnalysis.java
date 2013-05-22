@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CSAnalysis extends AnalysisType {
+public class CallStringAnalysis extends AnalysisType {
     // INPUT ***********************************************************************
 
     // results from preceding connector computation (for interprocedural
@@ -26,7 +26,7 @@ public class CSAnalysis extends AnalysisType {
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public CSAnalysis(ConnectorComputation connectorComp) {
+    public CallStringAnalysis(ConnectorComputation connectorComp) {
         super();
         this.connectorComp = connectorComp;
     }
@@ -39,7 +39,7 @@ public class CSAnalysis extends AnalysisType {
 
     public Context getPropagationContext(Call callNode, Context contextX) {
 
-        CSContext context = (CSContext) contextX;
+        CallStringContext context = (CallStringContext) contextX;
         return this.connectorComp.getTargetContext(callNode, context.getPosition());
     }
 
@@ -47,7 +47,7 @@ public class CSAnalysis extends AnalysisType {
 
     public List<ReverseTarget> getReverseTargets(TacFunction exitedFunction, Context contextX) {
 
-        CSContext context = (CSContext) contextX;
+        CallStringContext context = (CallStringContext) contextX;
         return this.connectorComp.getReverseTargets(exitedFunction, context.getPosition());
     }
 
@@ -66,10 +66,10 @@ public class CSAnalysis extends AnalysisType {
     }
 
     public InterproceduralAnalysisNode makeAnalysisNode(AbstractCfgNode cfgNode, TransferFunction tf) {
-        return new CSAnalysisNode(cfgNode, tf);
+        return new CallStringAnalysisNode(cfgNode, tf);
     }
 
     public Context initContext(InterproceduralAnalysis analysis) {
-        return new CSContext(0);
+        return new CallStringContext(0);
     }
 }

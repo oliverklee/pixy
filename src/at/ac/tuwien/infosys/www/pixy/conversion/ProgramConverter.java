@@ -9,7 +9,7 @@ import at.ac.tuwien.infosys.www.pixy.Utils;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.DummyAliasAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.*;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.CSAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.CallStringAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.TypeAnalysis;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Include;
@@ -258,7 +258,7 @@ public class ProgramConverter {
             AliasAnalysis aliasAnalysis = new DummyAliasAnalysis();
 
             literalAnalysis = new LiteralAnalysis(
-                baseTac, aliasAnalysis, new CSAnalysis(connectorComp), workList);
+                baseTac, aliasAnalysis, new CallStringAnalysis(connectorComp), workList);
             literalAnalysis.analyze();
 
             processUs = literalAnalysis.getIncludeNodes();
@@ -367,7 +367,7 @@ public class ProgramConverter {
             connectorComp.compute();
             InterproceduralWorklist workList = new InterproceduralWorklistBetter(new InterproceduralWorklistOrder(baseTac, connectorComp));
             this.typeAnalysis = new TypeAnalysis(
-                this.baseTac, new CSAnalysis(connectorComp), workList);
+                this.baseTac, new CallStringAnalysis(connectorComp), workList);
             typeAnalysis.analyze();
 
             // final, verbose backpatching

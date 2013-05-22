@@ -5,10 +5,10 @@ import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.Context;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CSContext extends Context {
+public class CallStringContext extends Context {
     private int position;
 
-    public CSContext(int position) {
+    public CallStringContext(int position) {
         this.position = position;
     }
 
@@ -24,10 +24,10 @@ public class CSContext extends Context {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof CSContext)) {
+        if (!(obj instanceof CallStringContext)) {
             return false;
         }
-        CSContext comp = (CSContext) obj;
+        CallStringContext comp = (CallStringContext) obj;
         return this.position == comp.getPosition();
     }
 

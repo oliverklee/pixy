@@ -1,9 +1,9 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.interprocedural;
 
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.CSContext;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.CallStringContext;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.CallString;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.ECS;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.EncodedCallStrings;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Call;
 
@@ -13,7 +13,7 @@ import java.util.*;
  * Based on Florian Martin's PhD thesis.
  *
  * Output:
- * - for every function, the set ECS
+ * - for every function, the set EncodedCallStrings
  * - for every call node, a connector function
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
@@ -22,15 +22,15 @@ public class ConnectorComputation {
     // worklist
     ConnectorWorkList workList;
 
-    // TacFunction -> ECS;
+    // TacFunction -> EncodedCallStrings;
     // ECS stands for "encoded call strings"; ECS(p), where p is a procedure,
     // is the set of all call strings that reach a procedure (i.e., these
     // are all call-strings that are used in the header of this procedure's
     // phi table);
-    // if a function has an empty ECS, it means that it is not called
+    // if a function has an empty EncodedCallStrings, it means that it is not called
     // from anywhere (or that we are working with kSize == 0);
     // the main procedure has only the empty call string
-    Map<TacFunction, ECS> function2ECS;
+    Map<TacFunction, EncodedCallStrings> function2ECS;
 
     // Call -> ConnectorFunction;
     // a connector function maps the context of the caller to the target
@@ -53,7 +53,7 @@ public class ConnectorComputation {
         this.kSize = kSize;
         this.mainFunction = mainFunction;
 
-        // start with empty ECS for each function;
+        // start with empty EncodedCallStrings for each function;
         // by the way, build list with call nodes
         // and the call graph
 
@@ -62,7 +62,7 @@ public class ConnectorComputation {
         this.containedCalls = new HashMap<>();
 
         for (TacFunction function : functions) {
-            this.function2ECS.put(function, new ECS());
+            this.function2ECS.put(function, new EncodedCallStrings());
 
             List<Call> calls = function.getContainedCalls();
             callNodes.addAll(calls);
@@ -70,9 +70,9 @@ public class ConnectorComputation {
             this.containedCalls.put(function, calls);
         }
 
-        // initialize ECS for main function with empty call string
+        // initialize EncodedCallStrings for main function with empty call string
         CallString emptyCallString = new CallString();
-        this.function2ECS.put(mainFunction, new ECS(emptyCallString));
+        this.function2ECS.put(mainFunction, new EncodedCallStrings(emptyCallString));
 
         // initialize worklist
         this.workList = new ConnectorWorkList();
@@ -132,8 +132,8 @@ public class ConnectorComputation {
             CallString gamma = element.getCallString();
 
             // get position of the current call string  in the current procedure
-            ECS ecs_p = this.function2ECS.get(p);
-            int pos = ecs_p.getPosition(gamma);
+            EncodedCallStrings encodedCallStrings_p = this.function2ECS.get(p);
+            int pos = encodedCallStrings_p.getPosition(gamma);
             if (pos == -1) {
                 throw new RuntimeException("SNH");
             }
@@ -146,12 +146,12 @@ public class ConnectorComputation {
                     continue;
                 }
                 CallString gamma_2 = gamma.append(callNode, this.kSize);
-                ECS ecs_q = this.function2ECS.get(q);
-                int pos_2 = ecs_q.getPosition(gamma_2);
+                EncodedCallStrings encodedCallStrings_q = this.function2ECS.get(q);
+                int pos_2 = encodedCallStrings_q.getPosition(gamma_2);
                 if (pos_2 == -1) {
 
                     // create new "column"
-                    pos_2 = ecs_q.append(gamma_2);
+                    pos_2 = encodedCallStrings_q.append(gamma_2);
 
                     // expand worklist
                     this.workList.add(new ConnectorWorkListElement(q, gamma_2));
@@ -167,7 +167,7 @@ public class ConnectorComputation {
         this.makeCallGraph();
     }
 
-    public CSContext getTargetContext(Call callNode, int sourcePosition) {
+    public CallStringContext getTargetContext(Call callNode, int sourcePosition) {
 
         // retrieve connector function for the given call node
         ConnectorFunction conFunc = this.getConFunc(callNode);
@@ -197,11 +197,11 @@ public class ConnectorComputation {
             // and have to return to all calls to this function;
             // note that context call strings are always the empty call string
             // here, so there is only one position for each function;
-            // i.e., |ECS| = 1 for each function
+            // i.e., |EncodedCallStrings| = 1 for each function
 
             // prepare one-element context set
             Set<Context> contextSet = new HashSet<>();
-            contextSet.add(new CSContext(0));
+            contextSet.add(new CallStringContext(0));
 
             // for each call to this function...
             Set<Call> callNodes = this.callGraph.getCallsTo(exitedFunction);
@@ -212,11 +212,11 @@ public class ConnectorComputation {
 
             // get the call node at the end of the call string (given by
             // exit node and source position)
-            ECS exitedECS = this.function2ECS.get(exitedFunction);
-            CallString exitedCallString = exitedECS.getCallString(sourcePosition);
+            EncodedCallStrings exitedEncodedCallStrings = this.function2ECS.get(exitedFunction);
+            CallString exitedCallString = exitedEncodedCallStrings.getCallString(sourcePosition);
             Call returnToMe = exitedCallString.getLast();
             ConnectorFunction returnToMeCF = this.getConFunc(returnToMe);
-            Set<CSContext> returnToMePositions = returnToMeCF.reverseApply(sourcePosition);
+            Set<CallStringContext> returnToMePositions = returnToMeCF.reverseApply(sourcePosition);
 
             reverseTargets.add(new ReverseTarget(returnToMe, returnToMePositions));
         }
@@ -228,7 +228,7 @@ public class ConnectorComputation {
         return this.call2ConnectorFunction.get(callNode);
     }
 
-    public Map<TacFunction, ECS> getFunction2ECS() {
+    public Map<TacFunction, EncodedCallStrings> getFunction2ECS() {
         return this.function2ECS;
     }
 
@@ -244,16 +244,16 @@ public class ConnectorComputation {
     public void stats(boolean verbose) {
         int sumPhiEntries = 0;
         int sumCfgNodes = 0;
-        for (Map.Entry<TacFunction, ECS> entry : this.function2ECS.entrySet()) {
+        for (Map.Entry<TacFunction, EncodedCallStrings> entry : this.function2ECS.entrySet()) {
             TacFunction function = entry.getKey();
-            ECS ecs = entry.getValue();
+            EncodedCallStrings encodedCallStrings = entry.getValue();
             int cfgNodes = function.size();
-            int phiEntries = (cfgNodes * ecs.size());
+            int phiEntries = (cfgNodes * encodedCallStrings.size());
             sumPhiEntries += phiEntries;
             sumCfgNodes += cfgNodes;
             if (verbose) {
                 System.out.println("function " + function.getName() + ": "
-                    + cfgNodes + " cfg nodes, " + ecs.size() + " contexts, => " +
+                    + cfgNodes + " cfg nodes, " + encodedCallStrings.size() + " contexts, => " +
                     phiEntries + " phi entries");
             }
         }
@@ -265,20 +265,20 @@ public class ConnectorComputation {
 
     public String dump() {
         StringBuilder b = new StringBuilder();
-        for (Map.Entry<TacFunction, ECS> entry : function2ECS.entrySet()) {
+        for (Map.Entry<TacFunction, EncodedCallStrings> entry : function2ECS.entrySet()) {
             TacFunction function = entry.getKey();
-            ECS ecs = entry.getValue();
+            EncodedCallStrings encodedCallStrings = entry.getValue();
             if (function.isMain()) {
                 // main function is not of interest
                 continue;
             }
-            if (ecs.isEmpty()) {
+            if (encodedCallStrings.isEmpty()) {
                 // functions that are not called from anywhere are not of interest
                 continue;
             }
             b.append(function.getName());
             b.append(" called by:\n");
-            b.append(ecs.dump());
+            b.append(encodedCallStrings.dump());
             b.append("\n");
         }
         return b.toString();

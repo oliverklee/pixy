@@ -6,17 +6,17 @@ import java.util.List;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class ECS {
+public class EncodedCallStrings {
     // a list of CallString objects
     List<CallString> callStrings;
 
-    // creates empty ECS
-    public ECS() {
+    // creates empty EncodedCallStrings
+    public EncodedCallStrings() {
         this.callStrings = new LinkedList<>();
     }
 
-    // creates one-element ECS
-    public ECS(CallString firstCallString) {
+    // creates one-element EncodedCallStrings
+    public EncodedCallStrings(CallString firstCallString) {
         this.callStrings = new LinkedList<>();
         this.callStrings.add(firstCallString);
     }

@@ -6,7 +6,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.Analysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.AnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.CSAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.CallStringAnalysis;
 import at.ac.tuwien.infosys.www.pixy.conversion.CfgEdge;
 import at.ac.tuwien.infosys.www.pixy.conversion.ControlFlowGraph;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFormalParameter;
@@ -292,7 +292,7 @@ public abstract class InterproceduralAnalysis extends Analysis {
 
                         // necessary for call-string analyses
                         // EFF: think about additional conditions to add here
-                        if ((this.analysisType instanceof CSAnalysis) && exitInValue != null) {
+                        if ((this.analysisType instanceof CallStringAnalysis) && exitInValue != null) {
                             this.workList.add(exitNode, propagationContext);
                         }
 

@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.interprocedural;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.CSContext;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.CallStringContext;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,12 +13,12 @@ import java.util.Set;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class ConnectorFunction {
-    // CSContext -> CSContext
-    private Map<CSContext, CSContext> pos2pos;
+    // CallStringContext -> CallStringContext
+    private Map<CallStringContext, CallStringContext> pos2pos;
 
     // reverse mapping of pos2pos:
-    // CSContext -> Set of CSContexts
-    private Map<CSContext, Set<CSContext>> reverse;
+    // CallStringContext -> Set of CSContexts
+    private Map<CallStringContext, Set<CallStringContext>> reverse;
 
     // creates an empty connector function
     public ConnectorFunction() {
@@ -29,14 +29,14 @@ public class ConnectorFunction {
     // adds the given mapping
     public void add(int from, int to) {
 
-        CSContext fromInt = new CSContext(from);
-        CSContext toInt = new CSContext(to);
+        CallStringContext fromInt = new CallStringContext(from);
+        CallStringContext toInt = new CallStringContext(to);
 
         this.pos2pos.put(fromInt, toInt);
 
         // maintain reverse mapping
 
-        Set<CSContext> reverseSet = this.reverse.get(toInt);
+        Set<CallStringContext> reverseSet = this.reverse.get(toInt);
         if (reverseSet == null) {
             // there was no such reverse mapping:
             // create it together with a new set
@@ -50,15 +50,15 @@ public class ConnectorFunction {
     }
 
     // applies this connector function to the given input value
-    public CSContext apply(int input) {
-        CSContext output = this.pos2pos.get(new CSContext(input));
+    public CallStringContext apply(int input) {
+        CallStringContext output = this.pos2pos.get(new CallStringContext(input));
         return output;
     }
 
-    // reverse application: returns a set of inputs (CSContext's) for the given output
+    // reverse application: returns a set of inputs (CallStringContext's) for the given output
     // (might be null if there is no such output)
-    public Set<CSContext> reverseApply(int output) {
-        return this.reverse.get(new CSContext(output));
+    public Set<CallStringContext> reverseApply(int output) {
+        return this.reverse.get(new CallStringContext(output));
     }
 
     public String toString() {
@@ -66,9 +66,9 @@ public class ConnectorFunction {
             return "<empty>";
         }
         StringBuilder myString = new StringBuilder();
-        for (Map.Entry<CSContext, CSContext> entry : this.pos2pos.entrySet()) {
-            CSContext from = entry.getKey();
-            CSContext to = entry.getValue();
+        for (Map.Entry<CallStringContext, CallStringContext> entry : this.pos2pos.entrySet()) {
+            CallStringContext from = entry.getKey();
+            CallStringContext to = entry.getValue();
             myString.append(from);
             myString.append(" -> ");
             myString.append(to);

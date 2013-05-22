@@ -15,7 +15,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.Isset;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.Tester;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.Unset;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.*;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.CSAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.CallStringAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.globalsmodification.GlobalsModificationAnalysis;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
@@ -529,14 +529,14 @@ public class DependencyAnalysis extends InterproceduralAnalysis {
     // been associated with analysis information)
     public void checkReachability() {
 
-        if (!(this.analysisType instanceof CSAnalysis)) {
+        if (!(this.analysisType instanceof CallStringAnalysis)) {
             // in this case, we do not have a callgraph, and can't check for
             // unreachable code
             System.out.println("Warning: Can't check for unreachable code");
             return;
         }
 
-        ConnectorComputation cc = ((CSAnalysis) this.analysisType).getConnectorComputation();
+        ConnectorComputation cc = ((CallStringAnalysis) this.analysisType).getConnectorComputation();
         CallGraph callGraph = cc.getCallGraph();
 
         // for each function in the call graph...

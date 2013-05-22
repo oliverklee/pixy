@@ -7,8 +7,8 @@ import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CSAnalysisNode extends InterproceduralAnalysisNode {
-    public CSAnalysisNode(AbstractCfgNode node, TransferFunction tf) {
+public class CallStringAnalysisNode extends InterproceduralAnalysisNode {
+    public CallStringAnalysisNode(AbstractCfgNode node, TransferFunction tf) {
         super(tf);
     }
 }
