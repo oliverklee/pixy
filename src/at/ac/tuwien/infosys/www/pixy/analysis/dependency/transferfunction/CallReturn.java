@@ -3,8 +3,8 @@ package at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepSet;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencySet;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.Context;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterAnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
@@ -72,15 +72,15 @@ public class CallReturn extends TransferFunction {
 
         // lattice element entering the call prep node under the current
         // context
-        DepLatticeElement origInfo =
-            (DepLatticeElement) this.analysisNodeAtCallPrep.getPhiValue(context);
+        DependencyLatticeElement origInfo =
+            (DependencyLatticeElement) this.analysisNodeAtCallPrep.getPhiValue(context);
 
         // lattice element coming in from the callee (= base for interprocedural info);
         // still contains the callee's locals
-        DepLatticeElement calleeIn = (DepLatticeElement) inX;
+        DependencyLatticeElement calleeIn = (DependencyLatticeElement) inX;
 
         // start only with default mappings
-        DepLatticeElement outInfo = new DepLatticeElement();
+        DependencyLatticeElement outInfo = new DependencyLatticeElement();
 
         // contains variables that have been tagged as visited
         Set<Variable> visitedVars = new HashSet<>();
@@ -182,8 +182,8 @@ public class CallReturn extends TransferFunction {
             }
 
             // initialize this variable's taint/arrayLabel with its original taint/arrayLabel
-            DepSet computedTaint = origInfo.getDep(localCallerVar);
-            DepSet computedArrayLabel = origInfo.getArrayLabel(localCallerVar);
+            DependencySet computedTaint = origInfo.getDep(localCallerVar);
+            DependencySet computedArrayLabel = origInfo.getArrayLabel(localCallerVar);
 
             // for all these global may-aliases...
             for (Variable globalMayAlias : globalMayAliases) {
@@ -191,12 +191,12 @@ public class CallReturn extends TransferFunction {
                 Variable globalMayAliasShadow = this.callee.getSymbolTable().getGShadow(globalMayAlias);
 
                 // the shadow's taint/label (from flowback-info)
-                DepSet shadowTaint = calleeIn.getDep(globalMayAliasShadow);
-                DepSet shadowArrayLabel = calleeIn.getArrayLabel(globalMayAliasShadow);
+                DependencySet shadowTaint = calleeIn.getDep(globalMayAliasShadow);
+                DependencySet shadowArrayLabel = calleeIn.getArrayLabel(globalMayAliasShadow);
 
                 // lub
-                computedTaint = DepLatticeElement.lub(computedTaint, shadowTaint);
-                computedArrayLabel = DepLatticeElement.lub(computedArrayLabel, shadowArrayLabel);
+                computedTaint = DependencyLatticeElement.lub(computedTaint, shadowTaint);
+                computedArrayLabel = DependencyLatticeElement.lub(computedArrayLabel, shadowArrayLabel);
             }
 
             // set the local's taint/label to the computed taint/label in outInfo
@@ -221,19 +221,19 @@ public class CallReturn extends TransferFunction {
                 }
 
                 // the current taint/label of the local may-alias in output-info
-                DepSet localTaint = outInfo.getDep(localMayAlias);
-                DepSet localArrayLabel = outInfo.getArrayLabel(localMayAlias);
+                DependencySet localTaint = outInfo.getDep(localMayAlias);
+                DependencySet localArrayLabel = outInfo.getArrayLabel(localMayAlias);
 
                 // the formal parameter's f-shadow
                 Variable fShadow = this.callee.getSymbolTable().getFShadow(formalVar);
 
                 // the shadow's taint/label (from flowback-info)
-                DepSet shadowTaint = calleeIn.getDep(fShadow);
-                DepSet shadowArrayLabel = calleeIn.getArrayLabel(fShadow);
+                DependencySet shadowTaint = calleeIn.getDep(fShadow);
+                DependencySet shadowArrayLabel = calleeIn.getArrayLabel(fShadow);
 
                 // lub & set
-                DepSet newTaint = DepLatticeElement.lub(localTaint, shadowTaint);
-                DepSet newArrayLabel = DepLatticeElement.lub(localArrayLabel, shadowArrayLabel);
+                DependencySet newTaint = DependencyLatticeElement.lub(localTaint, shadowTaint);
+                DependencySet newArrayLabel = DependencyLatticeElement.lub(localArrayLabel, shadowArrayLabel);
 
                 outInfo.setLocal(localMayAlias, newTaint, newArrayLabel);
             }

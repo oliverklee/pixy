@@ -30,8 +30,8 @@ public abstract class SanitationAnalysis extends DependencyClient {
     // xss, sql, ...
     protected String name;
 
-    protected SanitationAnalysis(String name, DepAnalysis depAnalysis, FSAAutomaton undesired) {
-        super(depAnalysis);
+    protected SanitationAnalysis(String name, DependencyAnalysis dependencyAnalysis, FSAAutomaton undesired) {
+        super(dependencyAnalysis);
         this.name = name;
         this.undesir = undesired;
     }

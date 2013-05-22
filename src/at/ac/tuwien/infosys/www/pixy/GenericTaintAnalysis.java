@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AnalysisType;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterWorkList;
 import at.ac.tuwien.infosys.www.pixy.analysis.mod.ModAnalysis;
@@ -20,7 +20,7 @@ import java.util.List;
 public class GenericTaintAnalysis {
     private List<DependencyClient> dependencyClients;
 
-    public DepAnalysis depAnalysis;
+    public DependencyAnalysis dependencyAnalysis;
 
 //  ********************************************************************************
 
@@ -43,16 +43,16 @@ public class GenericTaintAnalysis {
 
         GenericTaintAnalysis gta = new GenericTaintAnalysis();
 
-        gta.depAnalysis = new DepAnalysis(tac,
+        gta.dependencyAnalysis = new DependencyAnalysis(tac,
             checker.aliasAnalysis, checker.literalAnalysis, enclosingAnalysis,
             workList, modAnalysis);
 
         try {
 
-            // each of the depclients will get the depAnalysis as parameter
+            // each of the depclients will get the dependencyAnalysis as parameter
             Class<?>[] argsClass = new Class<?>[]{
-                Class.forName("at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepAnalysis")};
-            Object[] args = new Object[]{gta.depAnalysis};
+                Class.forName("at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyAnalysis")};
+            Object[] args = new Object[]{gta.dependencyAnalysis};
 
             // for each requested depclient...
             for (DependencyClientInformation dci : MyOptions.getDepClients()) {
@@ -74,10 +74,10 @@ public class GenericTaintAnalysis {
 //  ********************************************************************************
 
     void analyze() {
-        this.depAnalysis.analyze();
+        this.dependencyAnalysis.analyze();
 
         // check for unreachable code
-        this.depAnalysis.checkReachability();
+        this.dependencyAnalysis.checkReachability();
     }
 
 //  ********************************************************************************

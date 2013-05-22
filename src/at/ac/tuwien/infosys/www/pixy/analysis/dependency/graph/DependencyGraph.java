@@ -4,10 +4,10 @@ import at.ac.tuwien.infosys.www.pixy.DependencyClientInformation;
 import at.ac.tuwien.infosys.www.pixy.Dumper;
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.dependency.Dep;
-import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepSet;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyLabel;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencySet;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.Context;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterAnalysisInfo;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.ReverseTarget;
@@ -49,7 +49,7 @@ public class DependencyGraph {
     // symbol table of the main function
     private SymbolTable mainSymTab;
 
-    private DepAnalysis depAnalysis;
+    private DependencyAnalysis dependencyAnalysis;
 
     // just a helper for SCC computation
     private int n;
@@ -72,7 +72,7 @@ public class DependencyGraph {
         this.edges = new LinkedHashMap<>();
         this.analysisInfo = null;
         this.mainSymTab = null;
-        this.depAnalysis = null;
+        this.dependencyAnalysis = null;
     }
 
 //  *********************************************************************************
@@ -94,19 +94,19 @@ public class DependencyGraph {
      * @param start
      * @param analysisInfo
      * @param mainSymTab
-     * @param depAnalysis
+     * @param dependencyAnalysis
      *
      * @return
      */
     public static DependencyGraph create(TacPlace place, AbstractCfgNode start, InterAnalysisInfo analysisInfo,
-                                  SymbolTable mainSymTab, DepAnalysis depAnalysis) {
+                                  SymbolTable mainSymTab, DependencyAnalysis dependencyAnalysis) {
 
         DependencyGraph dependencyGraph = new DependencyGraph();
         dependencyGraph.nodes = new LinkedHashMap<>();
         dependencyGraph.edges = new LinkedHashMap<>();
         dependencyGraph.analysisInfo = analysisInfo;
         dependencyGraph.mainSymTab = mainSymTab;
-        dependencyGraph.depAnalysis = depAnalysis;
+        dependencyGraph.dependencyAnalysis = dependencyAnalysis;
 
         List<TacPlace> indices = new LinkedList<>();
 
@@ -146,7 +146,7 @@ public class DependencyGraph {
 
         this.analysisInfo = orig.analysisInfo;
         this.mainSymTab = orig.mainSymTab;
-        this.depAnalysis = orig.depAnalysis;
+        this.dependencyAnalysis = orig.dependencyAnalysis;
     }
 
 //  ********************************************************************************
@@ -217,26 +217,26 @@ public class DependencyGraph {
 
         // get the dependency value of the given place for the current cfg node under
         // the given contexts
-        DepSet depSet = this.getDepSet(current, place, contexts);
+        DependencySet dependencySet = this.getDepSet(current, place, contexts);
 
         // a dependency set is basically nothing but a set of cfg nodes at which
         // a variable's value has been modified; now we go and visit these cfg nodes...
         debug("start going to nodes...");
-        for (Dep dep : depSet.getDepSet()) {
-            if (dep == Dep.UNINIT) {
+        for (DependencyLabel dependencyLabel : dependencySet.getDependencyLabelSet()) {
+            if (dependencyLabel == DependencyLabel.UNINIT) {
                 // end of recursion
                 debug("uninit!");
                 UninitializedNode uninitializedNode = new UninitializedNode();
                 addNode(uninitializedNode);
                 addEdge(dgn, uninitializedNode);
             } else {
-                debug("getting used places for " + dep.getCfgNode().getOrigLineno());
+                debug("getting used places for " + dependencyLabel.getCfgNode().getOrigLineno());
 
                 // we retrieve the places that were "used" (read) at the given cfg node
                 // and recursively continue the graph construction algorithm
 
                 // the node we will have to visit next
-                AbstractCfgNode targetNode = dep.getCfgNode();
+                AbstractCfgNode targetNode = dependencyLabel.getCfgNode();
 
                 // tweak to add appropriate operation nodes
                 AbstractNode connectWith = this.checkOp(targetNode);
@@ -283,10 +283,10 @@ public class DependencyGraph {
     // the given contexts,
     // considering basic blocks and function default cfg's (in these cases,
     // the cfg node has no directly associated analysis info)
-    private DepSet getDepSet(AbstractCfgNode cfgNode, TacPlace place, Set<Context> contexts)
+    private DependencySet getDepSet(AbstractCfgNode cfgNode, TacPlace place, Set<Context> contexts)
         throws NotReachableException {
 
-        DepSet depSet = null;
+        DependencySet dependencySet = null;
         AbstractCfgNode enclosingX = cfgNode.getSpecial();
         if (enclosingX instanceof BasicBlock) {
             // the current node is enclosed by a basic block
@@ -304,11 +304,11 @@ public class DependencyGraph {
                 throw new NotReachableException();
             }
 
-            DepLatticeElement latticeElement = this.newFold(bbPhi, contexts);
+            DependencyLatticeElement latticeElement = this.newFold(bbPhi, contexts);
 
-            DepLatticeElement propagated = this.depAnalysis.applyInsideBasicBlock(
+            DependencyLatticeElement propagated = this.dependencyAnalysis.applyInsideBasicBlock(
                 (BasicBlock) enclosingX, cfgNode, latticeElement);
-            depSet = propagated.getDep(place);
+            dependencySet = propagated.getDep(place);
         } else if (enclosingX instanceof CfgEntry) {
             // the current node is inside a function's default cfg
             // (i.e., we want to retrieve the value of a default parameter)
@@ -323,7 +323,7 @@ public class DependencyGraph {
                     throw new NotReachableException();
                 }
 
-                depSet = this.newFold(phi, place, contexts);
+                dependencySet = this.newFold(phi, place, contexts);
             } else {
 
                 // this happens if the default parameter is assigned
@@ -338,11 +338,11 @@ public class DependencyGraph {
                 // (since we only have static stuff inside default cfgs, this is
                 // a valid method)
                 Map<Context, LatticeElement> bbPhi = this.analysisInfo.getAnalysisNode(enclosingX).getPhi();
-                DepLatticeElement latticeElement = this.newFold(bbPhi, contexts);
+                DependencyLatticeElement latticeElement = this.newFold(bbPhi, contexts);
 
-                DepLatticeElement propagated = this.depAnalysis.applyInsideDefaultCfg(
+                DependencyLatticeElement propagated = this.dependencyAnalysis.applyInsideDefaultCfg(
                     defaultHead, cfgNode, latticeElement);
-                depSet = propagated.getDep(place);
+                dependencySet = propagated.getDep(place);
             }
         } else {
             // none of the above applies, so the current node has
@@ -357,7 +357,7 @@ public class DependencyGraph {
             }
 
             try {
-                depSet = this.newFold(phi, place, contexts);
+                dependencySet = this.newFold(phi, place, contexts);
             } catch (NullPointerException e) {
                 // was a bug
                 System.out.println(cfgNode.getLoc());
@@ -366,7 +366,7 @@ public class DependencyGraph {
             }
         }
 
-        return depSet;
+        return dependencySet;
     }
 
 //  ********************************************************************************
@@ -399,7 +399,7 @@ public class DependencyGraph {
             debug("jumping from caller to end of callee: " + function.getName() + " -> " + targetFunction.getName());
             targetContexts = new HashSet<>();
             for (Context c : contexts) {
-                targetContexts.add(this.depAnalysis.getPropagationContext(callNode, c));
+                targetContexts.add(this.dependencyAnalysis.getPropagationContext(callNode, c));
             }
             debug("target contexts: " + targetContexts);
         }
@@ -414,7 +414,7 @@ public class DependencyGraph {
             debug("caller: " + targetFunction.getName());
             targetContexts = new HashSet<>();
             for (Context c : contexts) {
-                List<ReverseTarget> revs = this.depAnalysis.getReverseTargets(function, c);
+                List<ReverseTarget> revs = this.dependencyAnalysis.getReverseTargets(function, c);
                 for (ReverseTarget rev : revs) {
                     if (!rev.getCallNode().equals(callNode)) {
                         continue;
@@ -768,7 +768,7 @@ public class DependencyGraph {
             throw new RuntimeException("SNH");
         } else if (cfgNodeX instanceof CfgExit) {
             throw new RuntimeException("SNH");
-            // this belonged to the quick hack in DepLatticeElement.handleReturnValue
+            // this belonged to the quick hack in DependencyLatticeElement.handleReturnValue
             // retMe.add(new Literal("<null>"));
         } else if (cfgNodeX instanceof EmptyTest) {
             throw new RuntimeException("SNH");
@@ -944,45 +944,45 @@ public class DependencyGraph {
 
     // determines the "folded" dependency set of the given place by lubbing over
     // the given contexts
-    private DepSet newFold(Map<Context, LatticeElement> phi, TacPlace place, Set<Context> contexts) {
-        DepSet depSet = null;
+    private DependencySet newFold(Map<Context, LatticeElement> phi, TacPlace place, Set<Context> contexts) {
+        DependencySet dependencySet = null;
 
         for (Context context : contexts) {
-            DepLatticeElement element = (DepLatticeElement) phi.get(context);
+            DependencyLatticeElement element = (DependencyLatticeElement) phi.get(context);
             if (element == null) {
                 // there is no associated analysis information for this context
                 // (partly unreachable code)
                 continue;
             }
-            if (depSet == null) {
-                depSet = element.getDep(place);
+            if (dependencySet == null) {
+                dependencySet = element.getDep(place);
             } else {
                 // EFF: this might be a memory leak, since all intermediate
                 // results are automatically stored in the repository; maybe use
                 // weak references to fix this
-                depSet = DepSet.lub(depSet, element.getDep(place));
+                dependencySet = DependencySet.lub(dependencySet, element.getDep(place));
             }
         }
 
-        return depSet;
+        return dependencySet;
     }
 
 //  *********************************************************************************
 
     // determines the "folded" lattice element by lubbing over the given contexts
-    private DepLatticeElement newFold(Map<Context, LatticeElement> phi, Set<Context> contexts) {
-        DepLatticeElement retMe = null;
+    private DependencyLatticeElement newFold(Map<Context, LatticeElement> phi, Set<Context> contexts) {
+        DependencyLatticeElement retMe = null;
 
         for (Context context : contexts) {
-            DepLatticeElement element = (DepLatticeElement) phi.get(context);
+            DependencyLatticeElement element = (DependencyLatticeElement) phi.get(context);
             if (retMe == null) {
                 // EFF: it should also be possible to say "retMe = element"
-                retMe = new DepLatticeElement(element);
+                retMe = new DependencyLatticeElement(element);
             } else {
                 // EFF: this might be a memory leak, since all intermediate
                 // results are automatically stored in the repository; maybe use
                 // weak references to fix this
-                retMe = (DepLatticeElement) this.depAnalysis.getLattice().lub(element, retMe);
+                retMe = (DependencyLatticeElement) this.dependencyAnalysis.getLattice().lub(element, retMe);
             }
         }
 

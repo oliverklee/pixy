@@ -2,8 +2,8 @@ package at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
-import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepSet;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencySet;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFormalParameter;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
@@ -57,21 +57,21 @@ public class Tester extends TransferFunction {
 
     public LatticeElement transfer(LatticeElement inX) {
 
-        DepLatticeElement in = (DepLatticeElement) inX;
-        DepLatticeElement out = new DepLatticeElement(in);
+        DependencyLatticeElement in = (DependencyLatticeElement) inX;
+        DependencyLatticeElement out = new DependencyLatticeElement(in);
 
         if (whatToTest == at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Tester.TEST_TAINT) {
 
             // test taint
 
             // compute the least upper bound of the variables to be tested
-            DepSet useMe = null;
+            DependencySet useMe = null;
             for (Variable testMe : this.testUs) {
-                DepSet testMeTaint = in.getDep(testMe);
+                DependencySet testMeTaint = in.getDep(testMe);
                 if (useMe == null) {
                     useMe = testMeTaint;
                 } else {
-                    useMe = DepSet.lub(useMe, testMeTaint);
+                    useMe = DependencySet.lub(useMe, testMeTaint);
                 }
             }
 

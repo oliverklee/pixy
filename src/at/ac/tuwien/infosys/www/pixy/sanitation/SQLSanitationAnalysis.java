@@ -4,7 +4,7 @@ import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.SQLAnalysis;
 import at.ac.tuwien.infosys.www.pixy.Utils;
 import at.ac.tuwien.infosys.www.pixy.VulnerabilityInformation;
-import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.Sink;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParameter;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
@@ -20,12 +20,12 @@ import java.util.List;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class SQLSanitationAnalysis extends SanitationAnalysis {
-    public SQLSanitationAnalysis(DepAnalysis depAnalysis) {
-        this(depAnalysis, true);
+    public SQLSanitationAnalysis(DependencyAnalysis dependencyAnalysis) {
+        this(dependencyAnalysis, true);
     }
 
-    public SQLSanitationAnalysis(DepAnalysis depAnalysis, boolean getIsTainted) {
-        super("sql", depAnalysis, FSAAutomaton.getUndesiredSQLTest());
+    public SQLSanitationAnalysis(DependencyAnalysis dependencyAnalysis, boolean getIsTainted) {
+        super("sql", dependencyAnalysis, FSAAutomaton.getUndesiredSQLTest());
         this.getIsTainted = getIsTainted;
         if (MyOptions.fsa_home == null) {
             Utils.bail("SQL Sanitization analysis requires FSA Utilities.\n" +
@@ -36,7 +36,7 @@ public class SQLSanitationAnalysis extends SanitationAnalysis {
 //  ********************************************************************************
 
     public List<Integer> detectVulns() {
-        return detectVulns(new SQLAnalysis(this.depAnalysis));
+        return detectVulns(new SQLAnalysis(this.dependencyAnalysis));
     }
 
     public VulnerabilityInformation detectAlternative() {

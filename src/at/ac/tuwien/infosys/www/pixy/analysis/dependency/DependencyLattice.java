@@ -11,12 +11,12 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-class DepLattice extends Lattice {
-    DepLattice(
+class DependencyLattice extends Lattice {
+    DependencyLattice(
         List<TacPlace> places, ConstantsTable constantsTable, List<TacFunction> functions, SymbolTable superSymbolTable,
         Variable memberPlace
     ) {
-        DepLatticeElement.initDefault(places, constantsTable, functions, superSymbolTable, memberPlace);
+        DependencyLatticeElement.initDefault(places, constantsTable, functions, superSymbolTable, memberPlace);
     }
 
 // *********************************************************************************
@@ -48,8 +48,8 @@ class DepLattice extends Lattice {
         // not necessary here: we will never encounter the top element
 
         // class cast
-        DepLatticeElement incomingElement = (DepLatticeElement) incomingElementX;
-        DepLatticeElement targetElement = (DepLatticeElement) targetElementX;
+        DependencyLatticeElement incomingElement = (DependencyLatticeElement) incomingElementX;
+        DependencyLatticeElement targetElement = (DependencyLatticeElement) targetElementX;
 
         // initialize the resulting lattice element as clone of the target
         // lattice element (we don't want to modify the target lattice element
@@ -59,7 +59,7 @@ class DepLattice extends Lattice {
         // could be reused, the ID transfer function simply passes on the
         // reference; if you reuse here, the ID transfer function must return
         // a new element (not clear which method is more efficient)
-        DepLatticeElement resultElement = new DepLatticeElement(targetElement);
+        DependencyLatticeElement resultElement = new DependencyLatticeElement(targetElement);
 
         // lub the incoming element over the clone of the target element
         resultElement.lub(incomingElement);

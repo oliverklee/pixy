@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy;
 
-import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph.DependencyGraph;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.Sink;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
@@ -21,7 +21,7 @@ public class IncludeTestCase extends TestCase {
     private String path;    // complete path to the testfile directory (with trailing slash)
 
     // these are recomputed for every single test
-    private DepAnalysis depAnalysis;
+    private DependencyAnalysis dependencyAnalysis;
     private XSSAnalysis xssAnalysis;
     List<Sink> sinks;
 
@@ -47,7 +47,7 @@ public class IncludeTestCase extends TestCase {
         // initialize & analyze
         TacConverter tac = checker.initialize().getTac();
         checker.analyzeTaint(tac, functional);
-        this.depAnalysis = checker.gta.depAnalysis;
+        this.dependencyAnalysis = checker.gta.dependencyAnalysis;
         this.xssAnalysis = (XSSAnalysis) checker.gta.getDependencyClients().get(0);
 
         // collect sinks
@@ -92,7 +92,7 @@ public class IncludeTestCase extends TestCase {
         // collect dependencyGraphs
         List<DependencyGraph> dependencyGraphs = new LinkedList<>();
         for (Sink sink : sinks) {
-            dependencyGraphs.addAll(depAnalysis.getDepGraph(sink));
+            dependencyGraphs.addAll(dependencyAnalysis.getDepGraph(sink));
         }
 
         Assert.assertTrue("Graphs real: " + dependencyGraphs.size() + ", expected: "

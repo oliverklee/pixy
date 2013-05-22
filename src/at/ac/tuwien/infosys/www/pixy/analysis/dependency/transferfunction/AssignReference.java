@@ -3,7 +3,7 @@ package at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
@@ -50,8 +50,8 @@ public class AssignReference extends TransferFunction {
             return inX;
         }
 
-        DepLatticeElement in = (DepLatticeElement) inX;
-        DepLatticeElement out = new DepLatticeElement(in);
+        DependencyLatticeElement in = (DependencyLatticeElement) inX;
+        DependencyLatticeElement out = new DependencyLatticeElement(in);
 
         // "left =& right" means that left is redirected to right;
         // for the taint mapping, this means that nothing changes

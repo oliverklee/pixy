@@ -11,18 +11,18 @@ import java.util.Set;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepSet implements Recyclable {
-    public static GenericRepository<DepSet> repos = new GenericRepository<>();
+public class DependencySet implements Recyclable {
+    public static GenericRepository<DependencySet> repos = new GenericRepository<>();
 
     // no special treatment necessary for the following:
-    static public final DepSet UNINIT = new DepSet(Dep.UNINIT);
+    static public final DependencySet UNINIT = new DependencySet(DependencyLabel.UNINIT);
 
     static {
         repos.recycle(UNINIT);
     }
 
     // the contained dependency labels
-    private Set<Dep> depSet;
+    private Set<DependencyLabel> dependencyLabelSet;
 
 //  ********************************************************************************
 //  CONSTRUCTORS *******************************************************************
@@ -30,35 +30,35 @@ public class DepSet implements Recyclable {
 
 //  ********************************************************************************
 
-    private DepSet() {
-        this.depSet = new HashSet<>();
+    private DependencySet() {
+        this.dependencyLabelSet = new HashSet<>();
     }
 
 //  ********************************************************************************
 
-    private DepSet(Dep dep) {
-        this.depSet = new HashSet<>();
-        this.depSet.add(dep);
+    private DependencySet(DependencyLabel dependencyLabel) {
+        this.dependencyLabelSet = new HashSet<>();
+        this.dependencyLabelSet.add(dependencyLabel);
     }
 
 //  ********************************************************************************
 
-    private DepSet(Set<Dep> depSet) {
-        this.depSet = depSet;
+    private DependencySet(Set<DependencyLabel> dependencyLabelSet) {
+        this.dependencyLabelSet = dependencyLabelSet;
     }
 
 //  ********************************************************************************
 
-    public static DepSet create(Set<Dep> depSet) {
-        DepSet x = new DepSet(depSet);
+    public static DependencySet create(Set<DependencyLabel> dependencyLabelSet) {
+        DependencySet x = new DependencySet(dependencyLabelSet);
         return repos.recycle(x);
     }
 
 //  ********************************************************************************
 
-    public static DepSet create(Dep dep) {
-        Set<Dep> taintSet = new HashSet<>();
-        taintSet.add(dep);
+    public static DependencySet create(DependencyLabel dependencyLabel) {
+        Set<DependencyLabel> taintSet = new HashSet<>();
+        taintSet.add(dependencyLabel);
         return create(taintSet);
     }
 
@@ -69,19 +69,19 @@ public class DepSet implements Recyclable {
 //  ********************************************************************************
 
     // compute the least upper bound (here: union) of the two taint sets
-    public static DepSet lub(DepSet a, DepSet b) {
+    public static DependencySet lub(DependencySet a, DependencySet b) {
         // union!
-        Set<Dep> resultSet = new HashSet<>();
-        resultSet.addAll(a.depSet);
-        resultSet.addAll(b.depSet);
-        return DepSet.create(resultSet);
+        Set<DependencyLabel> resultSet = new HashSet<>();
+        resultSet.addAll(a.dependencyLabelSet);
+        resultSet.addAll(b.dependencyLabelSet);
+        return DependencySet.create(resultSet);
     }
 
 //  ********************************************************************************
 
     public String toString() {
         StringBuilder buf = new StringBuilder();
-        for (Dep element : this.depSet) {
+        for (DependencyLabel element : this.dependencyLabelSet) {
             buf.append(element.toString());
         }
         return buf.toString();
@@ -92,8 +92,8 @@ public class DepSet implements Recyclable {
     // returns a copy of the contained taint set
     // (a copy: such that a caller can't modify my state)
     // (shallow copy is sufficient, since the elements of the set are immutable, too)
-    public Set<Dep> getDepSet() {
-        return new HashSet<>(this.depSet);
+    public Set<DependencyLabel> getDependencyLabelSet() {
+        return new HashSet<>(this.dependencyLabelSet);
     }
 
 //  ********************************************************************************
@@ -103,20 +103,20 @@ public class DepSet implements Recyclable {
         if (compX == this) {
             return true;
         }
-        if (!(compX instanceof DepSet)) {
+        if (!(compX instanceof DependencySet)) {
             return false;
         }
-        DepSet comp = (DepSet) compX;
+        DependencySet comp = (DependencySet) compX;
 
         // the enclosed sets have to be equal
-        return this.depSet.equals(comp.depSet);
+        return this.dependencyLabelSet.equals(comp.dependencyLabelSet);
     }
 
 //  ********************************************************************************
 
     public int structureHashCode() {
         int hashCode = 17;
-        hashCode = 37 * hashCode + this.depSet.hashCode();
+        hashCode = 37 * hashCode + this.dependencyLabelSet.hashCode();
         return hashCode;
     }
 }

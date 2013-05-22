@@ -18,8 +18,8 @@ import java.util.*;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class XSSAnalysis extends DependencyClient {
-    public XSSAnalysis(DepAnalysis depAnalysis) {
-        super(depAnalysis);
+    public XSSAnalysis(DependencyAnalysis dependencyAnalysis) {
+        super(dependencyAnalysis);
     }
 
 //  ********************************************************************************
@@ -61,7 +61,7 @@ public class XSSAnalysis extends DependencyClient {
         int vulncount = 0;
         for (Sink sink : sinks) {
 
-            Collection<DependencyGraph> dependencyGraphs = depAnalysis.getDepGraph(sink);
+            Collection<DependencyGraph> dependencyGraphs = dependencyAnalysis.getDepGraph(sink);
 
             for (DependencyGraph dependencyGraph : dependencyGraphs) {
 
@@ -180,7 +180,7 @@ public class XSSAnalysis extends DependencyClient {
         int customSanitThrownAwayCount = 0;
         for (Sink sink : sinks) {
 
-            Collection<DependencyGraph> dependencyGraphs = depAnalysis.getDepGraph(sink);
+            Collection<DependencyGraph> dependencyGraphs = dependencyAnalysis.getDepGraph(sink);
 
             for (DependencyGraph dependencyGraph : dependencyGraphs) {
 

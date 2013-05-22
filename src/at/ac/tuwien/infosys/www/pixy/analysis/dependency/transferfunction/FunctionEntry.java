@@ -2,7 +2,7 @@ package at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
-import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
@@ -30,8 +30,8 @@ public class FunctionEntry extends TransferFunction {
 
     public LatticeElement transfer(LatticeElement inX) {
 
-        DepLatticeElement in = (DepLatticeElement) inX;
-        DepLatticeElement out = new DepLatticeElement(in);
+        DependencyLatticeElement in = (DependencyLatticeElement) inX;
+        DependencyLatticeElement out = new DependencyLatticeElement(in);
 
         // initialize g-shadows
         for (Map.Entry<Variable, Variable> entry : this.function.getSymbolTable().getGlobals2GShadows().entrySet()) {

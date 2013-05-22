@@ -2,7 +2,7 @@ package at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
-import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
@@ -38,8 +38,8 @@ public class Isset extends TransferFunction {
     public LatticeElement transfer(LatticeElement inX) {
 
         // System.out.println("transfer method: " + setMe + " = " + setTo);
-        DepLatticeElement in = (DepLatticeElement) inX;
-        DepLatticeElement out = new DepLatticeElement(in);
+        DependencyLatticeElement in = (DependencyLatticeElement) inX;
+        DependencyLatticeElement out = new DependencyLatticeElement(in);
 
         if (!setMe.isTemp()) {
             throw new RuntimeException("SNH");

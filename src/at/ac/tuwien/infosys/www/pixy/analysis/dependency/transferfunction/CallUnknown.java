@@ -2,9 +2,9 @@ package at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
-import at.ac.tuwien.infosys.www.pixy.analysis.dependency.Dep;
-import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepSet;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyLabel;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencySet;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallUnknownFunction;
 
 import java.util.HashSet;
@@ -30,18 +30,18 @@ public class CallUnknown extends TransferFunction {
 
     public LatticeElement transfer(LatticeElement inX) {
 
-        DepLatticeElement in = (DepLatticeElement) inX;
-        DepLatticeElement out = new DepLatticeElement(in);
+        DependencyLatticeElement in = (DependencyLatticeElement) inX;
+        DependencyLatticeElement out = new DependencyLatticeElement(in);
 
         // create an appropariate taint value (holding the function's name);
         // the array label is identic to the taint value
-        Set<Dep> ets = new HashSet<>();
-        ets.add(Dep.create(this.cfgNode));
-        DepSet retDepSet = DepSet.create(ets);
-        DepSet retArrayLabel = retDepSet;
+        Set<DependencyLabel> ets = new HashSet<>();
+        ets.add(DependencyLabel.create(this.cfgNode));
+        DependencySet retDependencySet = DependencySet.create(ets);
+        DependencySet retArrayLabel = retDependencySet;
 
         // assign this taint/label to the node's temporary
-        out.handleReturnValueBuiltin(this.cfgNode.getTempVar(), retDepSet, retArrayLabel);
+        out.handleReturnValueBuiltin(this.cfgNode.getTempVar(), retDependencySet, retArrayLabel);
 
         return out;
     }

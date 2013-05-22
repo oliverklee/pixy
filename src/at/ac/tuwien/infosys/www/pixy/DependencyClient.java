@@ -17,7 +17,7 @@ import java.util.*;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public abstract class DependencyClient {
-    protected DepAnalysis depAnalysis;
+    protected DependencyAnalysis dependencyAnalysis;
     protected DependencyClientInformation dci;
 
     // flags returned by initiallyTainted():
@@ -33,8 +33,8 @@ public abstract class DependencyClient {
 
 //  ********************************************************************************
 
-    protected DependencyClient(DepAnalysis depAnalysis) {
-        this.depAnalysis = depAnalysis;
+    protected DependencyClient(DependencyAnalysis dependencyAnalysis) {
+        this.dependencyAnalysis = dependencyAnalysis;
         this.dci = MyOptions.getDepClientInfo(this.getClass().getName());
     }
 
@@ -57,7 +57,7 @@ public abstract class DependencyClient {
     // returns a list of sinks for this analysis
     public List<Sink> collectSinks() {
         List<Sink> sinks = new LinkedList<>();
-        for (TacFunction function : this.depAnalysis.getFunctions()) {
+        for (TacFunction function : this.dependencyAnalysis.getFunctions()) {
             for (AbstractCfgNode cfgNodeX : function.getControlFlowGraph().dfPreOrder()) {
                 checkForSink(cfgNodeX, function, sinks);
             }

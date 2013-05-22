@@ -2,7 +2,7 @@ package at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
-import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
@@ -42,8 +42,8 @@ public class AssignArray extends TransferFunction {
             return inX;
         }
 
-        DepLatticeElement in = (DepLatticeElement) inX;
-        DepLatticeElement out = new DepLatticeElement(in);
+        DependencyLatticeElement in = (DependencyLatticeElement) inX;
+        DependencyLatticeElement out = new DependencyLatticeElement(in);
 
         // let the lattice element handle the details (set the whole subtree
         // and left's caFlag to HARMLESS (if it is an array));

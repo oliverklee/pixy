@@ -30,7 +30,7 @@ import java.util.*;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepAnalysis extends InterAnalysis {
+public class DependencyAnalysis extends InterAnalysis {
     private TacConverter tac;
     private List<TacPlace> places;
     private ConstantsTable constantsTable;
@@ -51,12 +51,12 @@ public class DepAnalysis extends InterAnalysis {
 
 //  ExTaintAnalysis ****************************************************************
 
-    public DepAnalysis(TacConverter tac,
-                       AliasAnalysis aliasAnalysis,
-                       LiteralAnalysis literalAnalysis,
-                       AnalysisType analysisType,
-                       InterWorkList workList,
-                       ModAnalysis modAnalysis) {
+    public DependencyAnalysis(TacConverter tac,
+                              AliasAnalysis aliasAnalysis,
+                              LiteralAnalysis literalAnalysis,
+                              AnalysisType analysisType,
+                              InterWorkList workList,
+                              ModAnalysis modAnalysis) {
 
         this.tac = tac;
         this.places = tac.getPlacesList();
@@ -80,13 +80,13 @@ public class DepAnalysis extends InterAnalysis {
     protected void initLattice() {
 
         // initialize lattice
-        this.lattice = new DepLattice(
+        this.lattice = new DependencyLattice(
             this.places, this.constantsTable, this.functions,
             this.superSymbolTable, this.memberPlace);
 
         // initialize start value: a lattice element that adds no information to
         // the default lattice element
-        this.startValue = new DepLatticeElement();
+        this.startValue = new DependencyLatticeElement();
 
         // initialize initial value
         this.initialValue = this.lattice.getBottom();
@@ -98,10 +98,10 @@ public class DepAnalysis extends InterAnalysis {
     // basic block until the beginning of "untilHere" (i.e., the transfer function
     // of this node is NOT applied);
     // only required by DependencyGraph
-    public DepLatticeElement applyInsideBasicBlock(
-        BasicBlock basicBlock, AbstractCfgNode untilHere, DepLatticeElement invalue) {
+    public DependencyLatticeElement applyInsideBasicBlock(
+        BasicBlock basicBlock, AbstractCfgNode untilHere, DependencyLatticeElement invalue) {
 
-        DepLatticeElement outValue = new DepLatticeElement(invalue);
+        DependencyLatticeElement outValue = new DependencyLatticeElement(invalue);
         List<AbstractCfgNode> containedNodes = basicBlock.getContainedNodes();
         CompositeTransferFunction ctf = (CompositeTransferFunction) this.getTransferFunction(basicBlock);
 
@@ -114,7 +114,7 @@ public class DepAnalysis extends InterAnalysis {
             if (node == untilHere) {
                 break;
             }
-            outValue = (DepLatticeElement) tf.transfer(outValue);
+            outValue = (DependencyLatticeElement) tf.transfer(outValue);
         }
 
         return outValue;
@@ -126,13 +126,13 @@ public class DepAnalysis extends InterAnalysis {
     // default cfg (given by "defaultNode") until the beginning of "untilHere"
     // (i.e., the transfer function of this node is NOT applied);
     // only required by DependencyGraph
-    public DepLatticeElement applyInsideDefaultCfg(AbstractCfgNode defaultNode,
-                                                   AbstractCfgNode untilHere, DepLatticeElement invalue) {
-        DepLatticeElement out = new DepLatticeElement(invalue);
+    public DependencyLatticeElement applyInsideDefaultCfg(AbstractCfgNode defaultNode,
+                                                   AbstractCfgNode untilHere, DependencyLatticeElement invalue) {
+        DependencyLatticeElement out = new DependencyLatticeElement(invalue);
 
         while (defaultNode != untilHere) {
             TransferFunction tf = this.getTransferFunction(defaultNode);
-            out = (DepLatticeElement) tf.transfer(out);
+            out = (DependencyLatticeElement) tf.transfer(out);
             defaultNode = defaultNode.getSuccessor(0);
         }
 

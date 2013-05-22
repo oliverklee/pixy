@@ -31,8 +31,8 @@ public class SQLAnalysis extends DependencyClient {
 
 //  ********************************************************************************
 
-    public SQLAnalysis(DepAnalysis depAnalysis) {
-        super(depAnalysis);
+    public SQLAnalysis(DependencyAnalysis dependencyAnalysis) {
+        super(dependencyAnalysis);
         this.getIsTainted = !MyOptions.optionI;
     }
 
@@ -65,7 +65,7 @@ public class SQLAnalysis extends DependencyClient {
         int vulncount = 0;
         for (Sink sink : sinks) {
 
-            Collection<DependencyGraph> dependencyGraphs = depAnalysis.getDepGraph(sink);
+            Collection<DependencyGraph> dependencyGraphs = dependencyAnalysis.getDepGraph(sink);
 
             for (DependencyGraph dependencyGraph : dependencyGraphs) {
 
@@ -164,7 +164,7 @@ public class SQLAnalysis extends DependencyClient {
         int customSanitThrownAwayCount = 0;
         for (Sink sink : sinks) {
 
-            Collection<DependencyGraph> dependencyGraphs = depAnalysis.getDepGraph(sink);
+            Collection<DependencyGraph> dependencyGraphs = dependencyAnalysis.getDepGraph(sink);
 
             for (DependencyGraph dependencyGraph : dependencyGraphs) {
 

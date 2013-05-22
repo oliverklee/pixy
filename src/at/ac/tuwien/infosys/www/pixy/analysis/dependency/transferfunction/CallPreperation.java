@@ -2,8 +2,8 @@ package at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
-import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
@@ -19,7 +19,7 @@ public class CallPreperation extends TransferFunction {
     private List<TacFormalParameter> formalParams;
     private TacFunction caller;
     private TacFunction callee;
-    private DepAnalysis depAnalysis;
+    private DependencyAnalysis dependencyAnalysis;
     private AbstractCfgNode cfgNode;
 
 //  *********************************************************************************
@@ -28,13 +28,13 @@ public class CallPreperation extends TransferFunction {
 
     public CallPreperation(
         List<TacActualParameter> actualParams, List<TacFormalParameter> formalParams, TacFunction caller, TacFunction callee,
-        DepAnalysis depAnalysis, AbstractCfgNode cfgNode
+        DependencyAnalysis dependencyAnalysis, AbstractCfgNode cfgNode
     ) {
         this.actualParams = actualParams;
         this.formalParams = formalParams;
         this.caller = caller;
         this.callee = callee;
-        this.depAnalysis = depAnalysis;
+        this.dependencyAnalysis = dependencyAnalysis;
         this.cfgNode = cfgNode;
     }
 
@@ -43,8 +43,8 @@ public class CallPreperation extends TransferFunction {
 //  *********************************************************************************
 
     public LatticeElement transfer(LatticeElement inX) {
-        DepLatticeElement in = (DepLatticeElement) inX;
-        DepLatticeElement out = new DepLatticeElement(in);
+        DependencyLatticeElement in = (DependencyLatticeElement) inX;
+        DependencyLatticeElement out = new DependencyLatticeElement(in);
 
         // set formal params...
 
@@ -79,8 +79,8 @@ public class CallPreperation extends TransferFunction {
                         // start at the CFG's head and apply all transfer functions
                         AbstractCfgNode defaultNode = defaultControlFlowGraph.getHead();
                         while (defaultNode != null) {
-                            TransferFunction tf = this.depAnalysis.getTransferFunction(defaultNode);
-                            out = (DepLatticeElement) tf.transfer(out);
+                            TransferFunction tf = this.dependencyAnalysis.getTransferFunction(defaultNode);
+                            out = (DependencyLatticeElement) tf.transfer(out);
                             defaultNode = defaultNode.getSuccessor(0);
                         }
                     } else {

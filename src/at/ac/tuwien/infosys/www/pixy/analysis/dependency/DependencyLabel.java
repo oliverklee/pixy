@@ -10,13 +10,13 @@ import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class Dep implements Recyclable {
-    public static GenericRepository<Dep> repos =
+public class DependencyLabel implements Recyclable {
+    public static GenericRepository<DependencyLabel> repos =
         new GenericRepository<>();
 
     // special, parameterized label
-    public static final Dep UNINIT =
-        new Dep(null);
+    public static final DependencyLabel UNINIT =
+        new DependencyLabel(null);
 
     private AbstractCfgNode cfgNode;
 
@@ -26,14 +26,14 @@ public class Dep implements Recyclable {
 
 //  ********************************************************************************
 
-    private Dep(AbstractCfgNode cfgNode) {
+    private DependencyLabel(AbstractCfgNode cfgNode) {
         this.cfgNode = cfgNode;
     }
 
 //  ********************************************************************************
 
-    public static Dep create(AbstractCfgNode cfgNode) {
-        Dep ret = new Dep(cfgNode);
+    public static DependencyLabel create(AbstractCfgNode cfgNode) {
+        DependencyLabel ret = new DependencyLabel(cfgNode);
         ret = repos.recycle(ret);
         return ret;
     }
@@ -80,10 +80,10 @@ public class Dep implements Recyclable {
         if (compX == this) {
             return true;
         }
-        if (!(compX instanceof Dep)) {
+        if (!(compX instanceof DependencyLabel)) {
             return false;
         }
-        Dep comp = (Dep) compX;
+        DependencyLabel comp = (DependencyLabel) compX;
         if (this.cfgNode == null) {
             return this == comp;
         }

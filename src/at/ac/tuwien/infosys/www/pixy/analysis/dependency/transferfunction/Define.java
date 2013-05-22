@@ -2,7 +2,7 @@ package at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
-import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralAnalysis;
 import at.ac.tuwien.infosys.www.pixy.conversion.Constant;
 import at.ac.tuwien.infosys.www.pixy.conversion.ConstantsTable;
@@ -43,8 +43,8 @@ public class Define extends TransferFunction {
 
     public LatticeElement transfer(LatticeElement inX) {
 
-        DepLatticeElement in = (DepLatticeElement) inX;
-        DepLatticeElement out = new DepLatticeElement(in);
+        DependencyLatticeElement in = (DependencyLatticeElement) inX;
+        DependencyLatticeElement out = new DependencyLatticeElement(in);
 
         // retrieve the literal of the constant to be set
         Literal constantLit;

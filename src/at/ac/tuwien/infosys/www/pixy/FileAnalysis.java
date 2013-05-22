@@ -23,8 +23,8 @@ import java.util.*;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class FileAnalysis extends DependencyClient {
-    public FileAnalysis(DepAnalysis depAnalysis) {
-        super(depAnalysis);
+    public FileAnalysis(DependencyAnalysis dependencyAnalysis) {
+        super(dependencyAnalysis);
     }
 
     public List<Integer> detectVulns() {
@@ -42,7 +42,7 @@ public class FileAnalysis extends DependencyClient {
 
         System.out.println("Creating DepGraphs for " + sinks.size() + " sinks...");
         System.out.println();
-        Collection<DependencyGraph> dependencyGraphs = depAnalysis.getDepGraphs(sinks);
+        Collection<DependencyGraph> dependencyGraphs = dependencyAnalysis.getDepGraphs(sinks);
 
         System.out.println("File Capab Analysis Output");
         System.out.println("----------------------------");

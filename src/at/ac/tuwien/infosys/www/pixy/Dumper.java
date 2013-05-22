@@ -6,8 +6,8 @@ import at.ac.tuwien.infosys.www.pixy.analysis.AnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElementBottom;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.*;
-import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepSet;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencySet;
 import at.ac.tuwien.infosys.www.pixy.analysis.incdom.IncDomAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.incdom.IncDomLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterAnalysis;
@@ -712,8 +712,8 @@ public final class Dumper {
                 Literal lit = entry.getValue();
                 writer.write(place + ":      " + lit + linesep);
             }
-        } else if (elementX instanceof DepLatticeElement) {
-            dumpComplete((DepLatticeElement) elementX, writer);
+        } else if (elementX instanceof DependencyLatticeElement) {
+            dumpComplete((DependencyLatticeElement) elementX, writer);
         } else if (elementX instanceof IncDomLatticeElement) {
             IncDomLatticeElement element = (IncDomLatticeElement) elementX;
             List<AbstractCfgNode> dominators = element.getDominators();
@@ -751,27 +751,27 @@ public final class Dumper {
 
 //  ********************************************************************************
 
-    static public void dumpComplete(DepLatticeElement element, Writer writer)
+    static public void dumpComplete(DependencyLatticeElement element, Writer writer)
         throws IOException {
 
         // dump non-default dependency mappings
         writer.write(linesep + "DEP MAPPINGS" + linesep + linesep);
-        for (Map.Entry<TacPlace, DepSet> entry : element.getPlaceToDep().entrySet()) {
+        for (Map.Entry<TacPlace, DependencySet> entry : element.getPlaceToDep().entrySet()) {
             TacPlace place = entry.getKey();
-            DepSet depSet = entry.getValue();
-            writer.write(place + ":      " + depSet + linesep);
+            DependencySet dependencySet = entry.getValue();
+            writer.write(place + ":      " + dependencySet + linesep);
         }
 
         // dump non-default array labels
         writer.write(linesep + "ARRAY LABELS" + linesep + linesep);
-        for (Map.Entry<Variable, DepSet> entry : element.getArrayLabels().entrySet()) {
+        for (Map.Entry<Variable, DependencySet> entry : element.getArrayLabels().entrySet()) {
             Variable var = entry.getKey();
-            DepSet arrayLabel = entry.getValue();
+            DependencySet arrayLabel = entry.getValue();
             writer.write(var + ":      " + arrayLabel + linesep);
         }
     }
 
-    static public void dump(DepLatticeElement element) {
+    static public void dump(DependencyLatticeElement element) {
         try {
             Writer writer = new OutputStreamWriter(System.out);
             dump(element, writer);
@@ -785,10 +785,10 @@ public final class Dumper {
     // - non-temporaries
     // - non-shadows
     // - variables of non-builtin functions
-    static public void dump(DepLatticeElement element, Writer writer) throws IOException {
+    static public void dump(DependencyLatticeElement element, Writer writer) throws IOException {
         // dump non-default taint mappings
         writer.write(linesep + "TAINT MAPPINGS" + linesep + linesep);
-        for (Map.Entry<TacPlace, DepSet> entry : element.getPlaceToDep().entrySet()) {
+        for (Map.Entry<TacPlace, DependencySet> entry : element.getPlaceToDep().entrySet()) {
             TacPlace place = entry.getKey();
             if (place.isVariable()) {
                 Variable var = place.getVariable();
@@ -801,7 +801,7 @@ public final class Dumper {
 
         // dump non-default array labels
         writer.write(linesep + "ARRAY LABELS" + linesep + linesep);
-        for (Map.Entry<Variable, DepSet> entry : element.getArrayLabels().entrySet()) {
+        for (Map.Entry<Variable, DependencySet> entry : element.getArrayLabels().entrySet()) {
             Variable variable = entry.getKey();
             if (doNotDump(variable)) {
                 continue;

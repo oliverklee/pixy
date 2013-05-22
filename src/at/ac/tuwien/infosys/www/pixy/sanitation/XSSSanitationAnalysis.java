@@ -2,7 +2,7 @@ package at.ac.tuwien.infosys.www.pixy.sanitation;
 
 import at.ac.tuwien.infosys.www.pixy.VulnerabilityInformation;
 import at.ac.tuwien.infosys.www.pixy.XSSAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.Sink;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParameter;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
@@ -22,14 +22,14 @@ import java.util.Set;
 public class XSSSanitationAnalysis extends SanitationAnalysis {
 //  ********************************************************************************
 
-    public XSSSanitationAnalysis(DepAnalysis depAnalysis) {
-        super("xss", depAnalysis, FSAAutomaton.getUndesiredXSSTest());
+    public XSSSanitationAnalysis(DependencyAnalysis dependencyAnalysis) {
+        super("xss", dependencyAnalysis, FSAAutomaton.getUndesiredXSSTest());
     }
 
 //  ********************************************************************************
 
     public List<Integer> detectVulns() {
-        return detectVulns(new XSSAnalysis(this.depAnalysis));
+        return detectVulns(new XSSAnalysis(this.dependencyAnalysis));
     }
 
     public VulnerabilityInformation detectAlternative() {
