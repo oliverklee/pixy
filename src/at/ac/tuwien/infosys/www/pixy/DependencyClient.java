@@ -3,7 +3,7 @@ package at.ac.tuwien.infosys.www.pixy;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallOfUnknownFunction;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallUnknownFunction;
 
 import java.util.*;
 
@@ -238,8 +238,8 @@ public abstract class DependencyClient {
                 // could be found
 
                 AbstractCfgNode cfgNodeX = opNode.getCfgNode();
-                if (cfgNodeX instanceof CallOfUnknownFunction) {
-                    CallOfUnknownFunction callUnknown = (CallOfUnknownFunction) cfgNodeX;
+                if (cfgNodeX instanceof CallUnknownFunction) {
+                    CallUnknownFunction callUnknown = (CallUnknownFunction) cfgNodeX;
                     if (callUnknown.isMethod()) {
                         DepGraphNode sanitNode = new DepGraphNormalNode(
                             new Literal("<method-call>"), opNode.getCfgNode());

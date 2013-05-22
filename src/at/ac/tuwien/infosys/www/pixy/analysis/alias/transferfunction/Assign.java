@@ -13,7 +13,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class Assignment extends TransferFunction {
+public class Assign extends TransferFunction {
     private Variable left;
     private Variable right;
 
@@ -24,7 +24,7 @@ public class Assignment extends TransferFunction {
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public Assignment(TacPlace left, TacPlace right, AliasAnalysis aliasAnalysis, AbstractCfgNode cfgNode) {
+    public Assign(TacPlace left, TacPlace right, AliasAnalysis aliasAnalysis, AbstractCfgNode cfgNode) {
 
         // both arguments are variables if the PHP input is correct
         this.left = (Variable) left;

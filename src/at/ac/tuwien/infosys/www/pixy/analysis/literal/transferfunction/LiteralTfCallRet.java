@@ -10,7 +10,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Literal;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreperation;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.ReturnFromCall;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallReturn;
 
 import java.util.*;
 
@@ -22,7 +22,7 @@ public class LiteralTfCallRet extends TransferFunction {
     private TacFunction caller;
     private TacFunction callee;
     private CallPreperation prepNode;
-    private ReturnFromCall retNode;
+    private CallReturn retNode;
     private AliasAnalysis aliasAnalysis;
 
     // call-by-reference parameter pairs
@@ -40,7 +40,7 @@ public class LiteralTfCallRet extends TransferFunction {
         TacFunction caller,
         TacFunction callee,
         CallPreperation prepNode,
-        ReturnFromCall retNode,
+        CallReturn retNode,
         AliasAnalysis aliasAnalysis,
         LatticeElement bottom) {
 

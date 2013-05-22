@@ -2,18 +2,24 @@ package at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
+import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
- * Transfer function for array assignment nodes ("left = array()").
+ * Transfer function for reference assignment nodes.
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepTfAssignArray extends TransferFunction {
+public class AssignReference extends TransferFunction {
     private Variable left;
+    private Variable right;
     private boolean supported;
     private AbstractCfgNode cfgNode;
 
@@ -21,13 +27,15 @@ public class DepTfAssignArray extends TransferFunction {
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public DepTfAssignArray(TacPlace left, AbstractCfgNode cfgNode) {
+    // mustAliases, mayAliases: of setMe
+    public AssignReference(TacPlace left, TacPlace right, AbstractCfgNode cfgNode) {
 
         this.left = (Variable) left;    // must be a variable
+        this.right = (Variable) right;  // must be a variable
         this.cfgNode = cfgNode;
 
-        // note that we DO support such statements for arrays and array elements
-        this.supported = !(this.left.isVariableVariable() || this.left.isMember());
+        // check for unsupported features
+        this.supported = AliasAnalysis.isSupported(this.left, this.right, false, -1);
     }
 
 // *********************************************************************************
@@ -36,7 +44,7 @@ public class DepTfAssignArray extends TransferFunction {
 
     public LatticeElement transfer(LatticeElement inX) {
 
-        // if this statement is not supported by our alias analysis,
+        // if this reference assignment is not supported by our alias analysis,
         // we simply ignore it
         if (!supported) {
             return inX;
@@ -45,14 +53,19 @@ public class DepTfAssignArray extends TransferFunction {
         DepLatticeElement in = (DepLatticeElement) inX;
         DepLatticeElement out = new DepLatticeElement(in);
 
-        // let the lattice element handle the details (set the whole subtree
-        // and left's caFlag to HARMLESS (if it is an array));
-        // NOTE:
-        // "$x = array()" is translated to "_t0 = array(); $x = _t0", and
-        // since there are no known array elements of _t0, the elements of
-        // $x become would become TAINTED instead of UNTAINTED;
-        // this is solved by using array flags
-        out.assignArray(left, cfgNode);
+        // "left =& right" means that left is redirected to right;
+        // for the taint mapping, this means that nothing changes
+        // except that left receives the taint of right;
+        // array label mapping: the same;
+        // we achieve this through the following actions:
+
+        Set<Variable> mustAliases = new HashSet<>();
+        mustAliases.add(left);
+        Set<Variable> mayAliases = Collections.emptySet();
+
+        // let the lattice element handle the details
+        out.assign(left, mustAliases, mayAliases, cfgNode);
+
         return out;
     }
 }

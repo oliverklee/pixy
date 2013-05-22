@@ -148,8 +148,8 @@ public class TypeAnalysis extends InterAnalysis {
             // how this works:
             // - propagate with ID transfer function to Call
             // - the analysis algorithm propagates from Call
-            //   to ReturnFromCall with ID transfer function
-            // - ReturnFromCall does the rest
+            //   to CallReturn with ID transfer function
+            // - CallReturn does the rest
             //System.out.println("unknown function: " + cfgNode.getFunctionNamePlace());
             return TransferFunctionId.INSTANCE;
         }
@@ -180,7 +180,7 @@ public class TypeAnalysis extends InterAnalysis {
 
     protected TransferFunction callRet(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
 
-        ReturnFromCall cfgNodeRet = (ReturnFromCall) cfgNodeX;
+        CallReturn cfgNodeRet = (CallReturn) cfgNodeX;
         Call cfgNodeCall = cfgNodeRet.getCallNode();
         CallPreperation cfgNodePrep = cfgNodeRet.getCallPrepNode();
 
@@ -206,7 +206,7 @@ public class TypeAnalysis extends InterAnalysis {
     }
 
     protected TransferFunction callBuiltin(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
-        CallOfBuiltinFunction cfgNode = (CallOfBuiltinFunction) cfgNodeX;
+        CallBuiltinFunction cfgNode = (CallBuiltinFunction) cfgNodeX;
         return new TypeTfCallBuiltin(cfgNode);
     }
 

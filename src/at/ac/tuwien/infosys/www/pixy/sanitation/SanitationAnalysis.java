@@ -7,8 +7,8 @@ import at.ac.tuwien.infosys.www.pixy.VulnerabilityInformation;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallOfBuiltinFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallOfUnknownFunction;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallBuiltinFunction;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallUnknownFunction;
 
 import java.io.File;
 import java.util.*;
@@ -420,8 +420,8 @@ public abstract class SanitationAnalysis extends DependencyClient {
             // call to function or method for which no definition
             // could be found
             AbstractCfgNode cfgNodeX = node.getCfgNode();
-            if (cfgNodeX instanceof CallOfUnknownFunction) {
-                CallOfUnknownFunction cfgNode = (CallOfUnknownFunction) cfgNodeX;
+            if (cfgNodeX instanceof CallUnknownFunction) {
+                CallUnknownFunction cfgNode = (CallUnknownFunction) cfgNodeX;
                 if (cfgNode.isMethod()) {
                     if (trimUntainted && trimAllowed) {
                         retMe = FSAAutomaton.makeString("");
@@ -626,8 +626,8 @@ public abstract class SanitationAnalysis extends DependencyClient {
             DepGraphOpNode opNode = (DepGraphOpNode) node;
             if (opNode.isBuiltin()) {
                 AbstractCfgNode cfgNode = opNode.getCfgNode();
-                if (cfgNode instanceof CallOfBuiltinFunction) {
-                    CallOfBuiltinFunction callBuiltin = (CallOfBuiltinFunction) cfgNode;
+                if (cfgNode instanceof CallBuiltinFunction) {
+                    CallBuiltinFunction callBuiltin = (CallBuiltinFunction) cfgNode;
                     String funcName = callBuiltin.getFunctionName();
 
                     // here is the list of custom sanitization functions

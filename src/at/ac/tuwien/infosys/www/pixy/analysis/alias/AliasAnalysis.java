@@ -5,7 +5,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunctionId;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.transferfunction.*;
-import at.ac.tuwien.infosys.www.pixy.analysis.alias.transferfunction.ReturnFromCall;
+import at.ac.tuwien.infosys.www.pixy.analysis.alias.transferfunction.CallReturn;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.transferfunction.Unset;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AnalysisType;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterAnalysis;
@@ -64,7 +64,7 @@ public class AliasAnalysis extends InterAnalysis {
 
     protected TransferFunction assignRef(AbstractCfgNode cfgNodeX) {
         AssignReference cfgNode = (AssignReference) cfgNodeX;
-        return new Assignment(
+        return new Assign(
             cfgNode.getLeft(),
             cfgNode.getRight(),
             this,
@@ -93,7 +93,7 @@ public class AliasAnalysis extends InterAnalysis {
             // LATER: ignore this case for now
             return TransferFunctionId.INSTANCE;
         } else {
-            return new Assignment(
+            return new Assign(
                 globalOp,
                 realGlobal,
                 this,
@@ -131,8 +131,8 @@ public class AliasAnalysis extends InterAnalysis {
             // how this works:
             // - propagate with ID transfer function to Call
             // - the analysis algorithm propagates from Call
-            //   to ReturnFromCall with ID transfer function
-            // - we propagate from ReturnFromCall to the following node
+            //   to CallReturn with ID transfer function
+            // - we propagate from CallReturn to the following node
             //   with ID
             //return TransferFunctionId.INSTANCE;
         }
@@ -154,7 +154,7 @@ public class AliasAnalysis extends InterAnalysis {
                 "More actual than formal params for function " +
                     cfgNode.getFunctionNamePlace().toString() + " on line " + cfgNode.getOrigLineno());
         } else {
-            tf = new PrepareCall(callingFunction, this, cfgNode);
+            tf = new CallPreparation(callingFunction, this, cfgNode);
         }
 
         return tf;
@@ -166,7 +166,7 @@ public class AliasAnalysis extends InterAnalysis {
 
     protected TransferFunction callRet(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
 
-        at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.ReturnFromCall cfgNode = (at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.ReturnFromCall) cfgNodeX;
+        at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallReturn cfgNode = (at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallReturn) cfgNodeX;
         CallPreperation cfgNodePrep = cfgNode.getCallPrepNode();
         TacFunction calledFunction = cfgNodePrep.getCallee();
 
@@ -178,7 +178,7 @@ public class AliasAnalysis extends InterAnalysis {
         }
 
         // quite powerful transfer function, does many things
-        TransferFunction tf = new ReturnFromCall(
+        TransferFunction tf = new CallReturn(
             this.interAnalysisInfo.getAnalysisNode(cfgNodePrep),
             calledFunction,
             this,

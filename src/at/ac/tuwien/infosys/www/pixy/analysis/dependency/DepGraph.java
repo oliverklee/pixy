@@ -386,11 +386,11 @@ public class DepGraph {
         // jumping from the function call to the end of the callee);
         // adjust targetFunction and targetContexts accordingly
 
-        if (current instanceof ReturnFromCall) {
+        if (current instanceof CallReturn) {
 
             // determine callee and context inside the callee;
 
-            ReturnFromCall callRet = (ReturnFromCall) current;
+            CallReturn callRet = (CallReturn) current;
             Call callNode = callRet.getCallNode();
             targetFunction = callNode.getCallee();
             debug("jumping from caller to end of callee: " + function.getName() + " -> " + targetFunction.getName());
@@ -470,9 +470,9 @@ public class DepGraph {
         } else if (targetNode instanceof AssignUnary) {
             AssignUnary inspectMe = (AssignUnary) targetNode;
             return new DepGraphOpNode(targetNode, TacOperators.opToName(inspectMe.getOperator()), true);
-        } else if (targetNode instanceof ReturnFromCall) {
+        } else if (targetNode instanceof CallReturn) {
 
-            ReturnFromCall inspectMe = (ReturnFromCall) targetNode;
+            CallReturn inspectMe = (CallReturn) targetNode;
             CallPreperation prepNode = inspectMe.getCallPrepNode();
 
             if (prepNode.getCallee() == null) {
@@ -482,14 +482,14 @@ public class DepGraph {
                 // the depgraph with nodes for these calls
                 return null;
             }
-        } else if (targetNode instanceof CallOfBuiltinFunction) {
+        } else if (targetNode instanceof CallBuiltinFunction) {
             // a builtin function
-            CallOfBuiltinFunction cfgNode = (CallOfBuiltinFunction) targetNode;
+            CallBuiltinFunction cfgNode = (CallBuiltinFunction) targetNode;
             String functionName = cfgNode.getFunctionName();
             return new DepGraphOpNode(targetNode, functionName, true);
-        } else if (targetNode instanceof CallOfUnknownFunction) {
+        } else if (targetNode instanceof CallUnknownFunction) {
             // a function / method for which no definition could be found
-            CallOfUnknownFunction callNode = (CallOfUnknownFunction) targetNode;
+            CallUnknownFunction callNode = (CallUnknownFunction) targetNode;
             String functionName = callNode.getFunctionName();
             boolean builtin = false;
             return new DepGraphOpNode(targetNode, functionName, builtin);
@@ -743,16 +743,16 @@ public class DepGraph {
                 System.out.println("victim: " + victim);
                 throw new RuntimeException("SNH");
             }
-        } else if (cfgNodeX instanceof ReturnFromCall) {
+        } else if (cfgNodeX instanceof CallReturn) {
 
             // either a call to a user-defined function
-            return this.getUsedPlacesForCall((ReturnFromCall) cfgNodeX, victim, oldIndices, newIndices);
-        } else if (cfgNodeX instanceof CallOfBuiltinFunction) {
-            return this.getUsedPlacesForBuiltin((CallOfBuiltinFunction) cfgNodeX);
-        } else if (cfgNodeX instanceof CallOfUnknownFunction) {
+            return this.getUsedPlacesForCall((CallReturn) cfgNodeX, victim, oldIndices, newIndices);
+        } else if (cfgNodeX instanceof CallBuiltinFunction) {
+            return this.getUsedPlacesForBuiltin((CallBuiltinFunction) cfgNodeX);
+        } else if (cfgNodeX instanceof CallUnknownFunction) {
             // call to an unknown function;
             // simply add all parameters;
-            CallOfUnknownFunction cfgNode = (CallOfUnknownFunction) cfgNodeX;
+            CallUnknownFunction cfgNode = (CallUnknownFunction) cfgNodeX;
             for (TacActualParameter param : cfgNode.getParamList()) {
                 retMe.add(param.getPlace());
             }
@@ -887,7 +887,7 @@ public class DepGraph {
 
     // helper function for retrieving the used places for calls to
     // user-defined functions / methods
-    private List<TacPlace> getUsedPlacesForCall(ReturnFromCall retNode,
+    private List<TacPlace> getUsedPlacesForCall(CallReturn retNode,
                                                 TacPlace victim,
                                                 List<TacPlace> oldIndices, List<TacPlace> newIndices) {
 
@@ -918,7 +918,7 @@ public class DepGraph {
 //  ********************************************************************************
 
     // helper function for retrieving the used places for calls to builtin functions
-    private List<TacPlace> getUsedPlacesForBuiltin(CallOfBuiltinFunction cfgNode) {
+    private List<TacPlace> getUsedPlacesForBuiltin(CallBuiltinFunction cfgNode) {
 
         List<TacPlace> retMe = new LinkedList<>();
         String functionName = cfgNode.getFunctionName();

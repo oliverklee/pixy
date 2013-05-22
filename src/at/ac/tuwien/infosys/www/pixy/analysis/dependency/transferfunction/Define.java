@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepTfDefine extends TransferFunction {
+public class Define extends TransferFunction {
     private TacPlace setMe;
     private TacPlace caseInsensitive;
 
@@ -28,8 +28,8 @@ public class DepTfDefine extends TransferFunction {
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public DepTfDefine(ConstantsTable table, LiteralAnalysis literalAnalysis,
-                       Define cfgNode) {
+    public Define(ConstantsTable table, LiteralAnalysis literalAnalysis,
+                  at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Define cfgNode) {
 
         this.setMe = cfgNode.getSetMe();
         this.caseInsensitive = cfgNode.getCaseInsensitive();

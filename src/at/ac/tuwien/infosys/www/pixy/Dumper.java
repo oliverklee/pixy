@@ -340,11 +340,11 @@ public final class Dumper {
                 "prepare " +
                     cfgNode.getFunctionNamePlace().toString() + "(" +
                     paramListStringBuf.toString() + ")");
-        } else if (cfgNodeX instanceof ReturnFromCall) {
-            ReturnFromCall cfgNode = (ReturnFromCall) cfgNodeX;
+        } else if (cfgNodeX instanceof CallReturn) {
+            CallReturn cfgNode = (CallReturn) cfgNodeX;
             return ("call-return (" + cfgNode.getTempVar() + ")");
-        } else if (cfgNodeX instanceof CallOfBuiltinFunction) {
-            CallOfBuiltinFunction cfgNode = (CallOfBuiltinFunction) cfgNodeX;
+        } else if (cfgNodeX instanceof CallBuiltinFunction) {
+            CallBuiltinFunction cfgNode = (CallBuiltinFunction) cfgNodeX;
 
             // construct parameter list
             StringBuilder paramListStringBuf = new StringBuilder();
@@ -363,8 +363,8 @@ public final class Dumper {
                 cfgNode.getFunctionName() + "(" +
                     paramListStringBuf.toString() + ") " + "<" +
                     getPlaceString(cfgNode.getTempVar()) + ">");
-        } else if (cfgNodeX instanceof CallOfUnknownFunction) {
-            CallOfUnknownFunction cfgNode = (CallOfUnknownFunction) cfgNodeX;
+        } else if (cfgNodeX instanceof CallUnknownFunction) {
+            CallUnknownFunction cfgNode = (CallUnknownFunction) cfgNodeX;
 
             // construct parameter list
             StringBuilder paramListStringBuf = new StringBuilder();

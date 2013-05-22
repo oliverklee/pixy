@@ -2,7 +2,6 @@ package at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
-import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DepLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
@@ -13,29 +12,23 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Transfer function for reference assignment nodes.
+ * Transfer function for "isset" tests,
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepTfAssignRef extends TransferFunction {
-    private Variable left;
-    private Variable right;
-    private boolean supported;
+public class Isset extends TransferFunction {
+    private Variable setMe;
+    private TacPlace testMe;
     private AbstractCfgNode cfgNode;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    // mustAliases, mayAliases: of setMe
-    public DepTfAssignRef(TacPlace left, TacPlace right, AbstractCfgNode cfgNode) {
-
-        this.left = (Variable) left;    // must be a variable
-        this.right = (Variable) right;  // must be a variable
+    public Isset(TacPlace setMe, TacPlace testMe, AbstractCfgNode cfgNode) {
+        this.setMe = (Variable) setMe;  // must be a variable
+        this.testMe = testMe;
         this.cfgNode = cfgNode;
-
-        // check for unsupported features
-        this.supported = AliasAnalysis.isSupported(this.left, this.right, false, -1);
     }
 
 // *********************************************************************************
@@ -44,27 +37,20 @@ public class DepTfAssignRef extends TransferFunction {
 
     public LatticeElement transfer(LatticeElement inX) {
 
-        // if this reference assignment is not supported by our alias analysis,
-        // we simply ignore it
-        if (!supported) {
-            return inX;
-        }
-
+        // System.out.println("transfer method: " + setMe + " = " + setTo);
         DepLatticeElement in = (DepLatticeElement) inX;
         DepLatticeElement out = new DepLatticeElement(in);
 
-        // "left =& right" means that left is redirected to right;
-        // for the taint mapping, this means that nothing changes
-        // except that left receives the taint of right;
-        // array label mapping: the same;
-        // we achieve this through the following actions:
+        if (!setMe.isTemp()) {
+            throw new RuntimeException("SNH");
+        }
 
+        // always results in a boolean, which is always untainted/clean;
+        // not so elegant, but working: simply use Literal.FALSE
         Set<Variable> mustAliases = new HashSet<>();
-        mustAliases.add(left);
+        mustAliases.add(setMe);
         Set<Variable> mayAliases = Collections.emptySet();
-
-        // let the lattice element handle the details
-        out.assign(left, mustAliases, mayAliases, cfgNode);
+        out.assign(setMe, mustAliases, mayAliases, cfgNode);
 
         return out;
     }

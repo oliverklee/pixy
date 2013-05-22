@@ -7,7 +7,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.dependency.Sink;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParameter;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallOfBuiltinFunction;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallBuiltinFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreperation;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Echo;
 
@@ -54,11 +54,11 @@ public class XSSSanitationAnalysis extends SanitationAnalysis {
 
             // add it to the list of sensitive sinks
             sinks.add(sink);
-        } else if (cfgNodeX instanceof CallOfBuiltinFunction) {
+        } else if (cfgNodeX instanceof CallBuiltinFunction) {
 
             // builtin function sinks
 
-            CallOfBuiltinFunction cfgNode = (CallOfBuiltinFunction) cfgNodeX;
+            CallBuiltinFunction cfgNode = (CallBuiltinFunction) cfgNodeX;
             String functionName = cfgNode.getFunctionName();
 
             checkForSinkHelper(functionName, cfgNode, cfgNode.getParamList(), traversedFunction, sinks);

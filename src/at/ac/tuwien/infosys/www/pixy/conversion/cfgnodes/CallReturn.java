@@ -13,10 +13,10 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class ReturnFromCall extends AbstractCfgNode {
+public class CallReturn extends AbstractCfgNode {
 // CONSTRUCTORS ********************************************************************
 
-    public ReturnFromCall(ParseNode parseNode) {
+    public CallReturn(ParseNode parseNode) {
         super(parseNode);
     }
 

@@ -7,7 +7,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.Literal;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParameter;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallOfBuiltinFunction;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallBuiltinFunction;
 
 import java.io.*;
 import java.util.List;
@@ -16,13 +16,13 @@ import java.util.List;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class LiteralTfCallBuiltin extends TransferFunction {
-    private CallOfBuiltinFunction cfgNode;
+    private CallBuiltinFunction cfgNode;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public LiteralTfCallBuiltin(CallOfBuiltinFunction cfgNode) {
+    public LiteralTfCallBuiltin(CallBuiltinFunction cfgNode) {
         this.cfgNode = cfgNode;
     }
 

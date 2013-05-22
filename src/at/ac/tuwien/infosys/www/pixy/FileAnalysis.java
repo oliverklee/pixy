@@ -7,7 +7,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParameter;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallOfBuiltinFunction;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallBuiltinFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreperation;
 
 import java.io.File;
@@ -285,11 +285,11 @@ public class FileAnalysis extends DependencyClient {
     protected void checkForSink(AbstractCfgNode cfgNodeX, TacFunction traversedFunction,
                                 List<Sink> sinks) {
 
-        if (cfgNodeX instanceof CallOfBuiltinFunction) {
+        if (cfgNodeX instanceof CallBuiltinFunction) {
 
             // builtin function sinks
 
-            CallOfBuiltinFunction cfgNode = (CallOfBuiltinFunction) cfgNodeX;
+            CallBuiltinFunction cfgNode = (CallBuiltinFunction) cfgNodeX;
             String functionName = cfgNode.getFunctionName();
 
             checkForSinkHelper(functionName, cfgNode, cfgNode.getParamList(), traversedFunction, sinks);

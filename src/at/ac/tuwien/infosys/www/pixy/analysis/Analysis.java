@@ -83,13 +83,13 @@ public abstract class Analysis {
         } else if (cfgNodeX instanceof CfgEntry) {
 
             return this.entry(traversedFunction);
-        } else if (cfgNodeX instanceof ReturnFromCall) {
+        } else if (cfgNodeX instanceof CallReturn) {
 
             return this.callRet(cfgNodeX, traversedFunction);
-        } else if (cfgNodeX instanceof CallOfBuiltinFunction) {
+        } else if (cfgNodeX instanceof CallBuiltinFunction) {
 
             return this.callBuiltin(cfgNodeX, traversedFunction);
-        } else if (cfgNodeX instanceof CallOfUnknownFunction) {
+        } else if (cfgNodeX instanceof CallUnknownFunction) {
 
             return this.callUnknown(cfgNodeX, traversedFunction);
         } else if (cfgNodeX instanceof Global) {

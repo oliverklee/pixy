@@ -41,8 +41,8 @@ public class CallPreperation extends AbstractCfgNode {
         return this.getCallNode().getParamList();
     }
 
-    public ReturnFromCall getCallRetNode() {
-        return (ReturnFromCall) this.getSuccessor(0).getSuccessor(0);
+    public CallReturn getCallRetNode() {
+        return (CallReturn) this.getSuccessor(0).getSuccessor(0);
     }
 
     public Call getCallNode() {

@@ -10,14 +10,12 @@ import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 import java.util.Set;
 
 /**
- * Transfer function for unary assignment nodes.
+ * Transfer function for simple assignment nodes.
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepTfAssignUnary extends TransferFunction {
+public class AssignSimple extends TransferFunction {
     private Variable left;
-    private TacPlace right;
-    private int op;
     private Set<Variable> mustAliases;
     private Set<Variable> mayAliases;
     private AbstractCfgNode cfgNode;
@@ -26,13 +24,10 @@ public class DepTfAssignUnary extends TransferFunction {
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    // mustAliases, mayAliases: of setMe
-    public DepTfAssignUnary(
-        TacPlace left, TacPlace right, int op, Set<Variable> mustAliases, Set<Variable> mayAliases, AbstractCfgNode cfgNode
+    public AssignSimple(
+        TacPlace left, TacPlace right, Set<Variable> mustAliases, Set<Variable> mayAliases, AbstractCfgNode cfgNode
     ) {
         this.left = (Variable) left;  // must be a variable
-        this.right = right;
-        this.op = op;
         this.mustAliases = mustAliases;
         this.mayAliases = mayAliases;
         this.cfgNode = cfgNode;

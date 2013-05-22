@@ -14,7 +14,7 @@ import java.util.ListIterator;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepTfCallPrep extends TransferFunction {
+public class CallPreperation extends TransferFunction {
     private List<TacActualParameter> actualParams;
     private List<TacFormalParameter> formalParams;
     private TacFunction caller;
@@ -26,7 +26,7 @@ public class DepTfCallPrep extends TransferFunction {
 //  CONSTRUCTORS ********************************************************************
 //  *********************************************************************************
 
-    public DepTfCallPrep(
+    public CallPreperation(
         List<TacActualParameter> actualParams, List<TacFormalParameter> formalParams, TacFunction caller, TacFunction callee,
         DepAnalysis depAnalysis, AbstractCfgNode cfgNode
     ) {

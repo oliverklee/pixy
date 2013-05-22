@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepTfTester extends TransferFunction {
+public class Tester extends TransferFunction {
     // provides access to the return variable of the function enclosing
     // this ~_test_ node
     private Variable retVar;
@@ -32,7 +32,7 @@ public class DepTfTester extends TransferFunction {
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public DepTfTester(Tester cfgNode) {
+    public Tester(at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Tester cfgNode) {
 
         TacFunction function = cfgNode.getEnclosingFunction();
         this.retVar = function.getRetVar();
@@ -61,7 +61,7 @@ public class DepTfTester extends TransferFunction {
         DepLatticeElement in = (DepLatticeElement) inX;
         DepLatticeElement out = new DepLatticeElement(in);
 
-        if (whatToTest == Tester.TEST_TAINT) {
+        if (whatToTest == at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Tester.TEST_TAINT) {
 
             // test taint
 
@@ -78,7 +78,7 @@ public class DepTfTester extends TransferFunction {
 
             out.setRetVar(this.retVar, useMe, useMe);
             return out;
-        } else if (whatToTest == Tester.TEST_ARRAYLABEL) {
+        } else if (whatToTest == at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Tester.TEST_ARRAYLABEL) {
             throw new RuntimeException("not yet");
         } else {
             throw new RuntimeException("SNH");

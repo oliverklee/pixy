@@ -381,11 +381,11 @@ public class TacConverter {
         // EFF: use a field inside CfgNode* instead;
         // note: alias information must not change inside basic blocks
 
-        if (cfgNode instanceof CallOfBuiltinFunction) {
+        if (cfgNode instanceof CallBuiltinFunction) {
             // allow calls to builtin functions to appear inside basic blocks,
             // but only if these builtin functions are not used as sinks
             // in later analyses
-            CallOfBuiltinFunction cfgNodeBuiltin = (CallOfBuiltinFunction) cfgNode;
+            CallBuiltinFunction cfgNodeBuiltin = (CallBuiltinFunction) cfgNode;
             return !MyOptions.isSink(cfgNodeBuiltin.getFunctionName());
         } else if (cfgNode instanceof AssignSimple ||
             cfgNode instanceof AssignUnary ||
@@ -1802,8 +1802,8 @@ public class TacConverter {
         // if this is a call to a builtin function, we return a one-node cfg
         // containing only the special "builtin call" node
         if (BuiltinFunctions.isBuiltinFunction(calledFuncName)) {
-            CallOfBuiltinFunction builtinNode =
-                new CallOfBuiltinFunction(calledFuncName, paramList, tempPlace, parseNode);
+            CallBuiltinFunction builtinNode =
+                new CallBuiltinFunction(calledFuncName, paramList, tempPlace, parseNode);
             return new ControlFlowGraph(builtinNode, builtinNode);
         }
 
@@ -1817,7 +1817,7 @@ public class TacConverter {
         Call call = new Call(
             funcNameLit, calledFunction, parseNode, enclosingFunction,
             returnVariable, tempPlace, paramList, object);
-        ReturnFromCall callRet = new ReturnFromCall(parseNode);
+        CallReturn callRet = new CallReturn(parseNode);
 
         // connect nodes
         connect(prep, call);
@@ -2218,7 +2218,7 @@ public class TacConverter {
             for (CallPreperation prepNode : callList) {
 
                 Call callNode = prepNode.getCallNode();
-                ReturnFromCall retNode = prepNode.getCallRetNode();
+                CallReturn retNode = prepNode.getCallRetNode();
 
                 // determine reachability of this call node
                 boolean reachable = true;
@@ -2363,7 +2363,7 @@ public class TacConverter {
             for (CallPreperation prepNode : callList) {
 
                 Call callNode = prepNode.getCallNode();
-                ReturnFromCall retNode = (ReturnFromCall) callNode.getOutEdge(0).getDest();
+                CallReturn retNode = (CallReturn) callNode.getOutEdge(0).getDest();
 
                 TacPlace functionNamePlace = prepNode.getFunctionNamePlace();
 
@@ -2455,10 +2455,10 @@ public class TacConverter {
     private void replaceUnknownCall(CallPreperation prepNode,
                                     String functionName, boolean isMethod) {
 
-        ReturnFromCall callRet = prepNode.getCallRetNode();
+        CallReturn callRet = prepNode.getCallRetNode();
 
         // the replacement node
-        CallOfUnknownFunction callUnknown = new CallOfUnknownFunction(
+        CallUnknownFunction callUnknown = new CallUnknownFunction(
             functionName,
             prepNode.getParamList(),
             callRet.getTempVar(),
@@ -4931,7 +4931,7 @@ public class TacConverter {
                 //tempPlace, false, node);
 
                 // simply use a cfgnodecallunknown
-                CallOfUnknownFunction callUnknown = new CallOfUnknownFunction(
+                CallUnknownFunction callUnknown = new CallUnknownFunction(
                     attsCvar.getPlace().toString(), attsList.getActualParamList(),
                     tempVar, node, false);
                 ControlFlowGraph callControlFlowGraph = new ControlFlowGraph(callUnknown, callUnknown);
@@ -4992,7 +4992,7 @@ public class TacConverter {
             ControlFlowGraph callControlFlowGraph;
             if (methodName == null) {
                 // simply use a cfgnodecallunknown
-                CallOfUnknownFunction callUnknown = new CallOfUnknownFunction(
+                CallUnknownFunction callUnknown = new CallUnknownFunction(
                     "<unknown>", attsList.getActualParamList(), tempVar, node, true);
                 callControlFlowGraph = new ControlFlowGraph(callUnknown, callUnknown);
             } else {

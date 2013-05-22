@@ -152,8 +152,8 @@ public class LiteralAnalysis extends InterAnalysis {
             // how this works:
             // - propagate with ID transfer function to Call
             // - the analysis algorithm propagates from Call
-            //   to ReturnFromCall with ID transfer function
-            // - we propagate from ReturnFromCall to the following node
+            //   to CallReturn with ID transfer function
+            // - we propagate from CallReturn to the following node
             //   with a special transfer function that only assigns the
             //   literal of the unknown function's return variable to
             //   the temporary catching the function's return value
@@ -191,7 +191,7 @@ public class LiteralAnalysis extends InterAnalysis {
 
     protected TransferFunction callRet(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
 
-        ReturnFromCall cfgNodeRet = (ReturnFromCall) cfgNodeX;
+        CallReturn cfgNodeRet = (CallReturn) cfgNodeX;
         CallPreperation cfgNodePrep = cfgNodeRet.getCallPrepNode();
         TacFunction callingFunction = traversedFunction;
         TacFunction calledFunction = cfgNodePrep.getCallee();
@@ -220,12 +220,12 @@ public class LiteralAnalysis extends InterAnalysis {
     }
 
     protected TransferFunction callBuiltin(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
-        CallOfBuiltinFunction cfgNode = (CallOfBuiltinFunction) cfgNodeX;
+        CallBuiltinFunction cfgNode = (CallBuiltinFunction) cfgNodeX;
         return new LiteralTfCallBuiltin(cfgNode);
     }
 
     protected TransferFunction callUnknown(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
-        CallOfUnknownFunction cfgNode = (CallOfUnknownFunction) cfgNodeX;
+        CallUnknownFunction cfgNode = (CallUnknownFunction) cfgNodeX;
         return new LiteralTfCallUnknown(cfgNode);
     }
 

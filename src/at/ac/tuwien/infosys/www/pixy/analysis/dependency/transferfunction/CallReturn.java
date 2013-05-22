@@ -11,19 +11,18 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreperation;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.ReturnFromCall;
 
 import java.util.*;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepTfCallRet extends TransferFunction {
+public class CallReturn extends TransferFunction {
     private InterAnalysisNode analysisNodeAtCallPrep;
     private TacFunction caller;
     private TacFunction callee;
     private CallPreperation prepNode;
-    private ReturnFromCall retNode;
+    private at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallReturn retNode;
     private AliasAnalysis aliasAnalysis;
 
     // contains the set of global-likes that have been modified by the callee
@@ -39,12 +38,12 @@ public class DepTfCallRet extends TransferFunction {
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public DepTfCallRet(
+    public CallReturn(
         InterAnalysisNode analysisNodeAtCallPrep,
         TacFunction caller,
         TacFunction callee,
         CallPreperation prepNode,
-        ReturnFromCall retNode,
+        at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallReturn retNode,
         AliasAnalysis aliasAnalysis,
         Set<TacPlace> calleeMod) {
 

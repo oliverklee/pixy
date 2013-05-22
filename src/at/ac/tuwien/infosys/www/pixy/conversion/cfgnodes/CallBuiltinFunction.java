@@ -13,8 +13,8 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CallOfUnknownFunction extends AbstractCfgNode {
-    // name of the called unknown function
+public class CallBuiltinFunction extends AbstractCfgNode {
+    // name of the called builtin function
     private String functionName;
 
     // parameter list
@@ -23,19 +23,15 @@ public class CallOfUnknownFunction extends AbstractCfgNode {
     // temporary variable to hold the return value
     private Variable tempVar;
 
-    // is this a call to an unknown method?
-    private boolean isMethod;
-
 // CONSTRUCTORS ********************************************************************
 
-    public CallOfUnknownFunction(String functionName, List<TacActualParameter> paramList,
-                                 TacPlace tempPlace, ParseNode node, boolean isMethod) {
+    public CallBuiltinFunction(String functionName,
+                               List<TacActualParameter> paramList, TacPlace tempPlace, ParseNode node) {
 
         super(node);
         this.functionName = functionName.toLowerCase();
         this.paramList = paramList;
         this.tempVar = (Variable) tempPlace;
-        this.isMethod = isMethod;
     }
 
 // GET *****************************************************************************
@@ -63,10 +59,6 @@ public class CallOfUnknownFunction extends AbstractCfgNode {
             }
         }
         return retMe;
-    }
-
-    public boolean isMethod() {
-        return this.isMethod;
     }
 
 // SET *****************************************************************************

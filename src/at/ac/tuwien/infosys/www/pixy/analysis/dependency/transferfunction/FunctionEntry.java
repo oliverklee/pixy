@@ -13,14 +13,14 @@ import java.util.Map;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepTfEntry extends TransferFunction {
+public class FunctionEntry extends TransferFunction {
     private TacFunction function;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public DepTfEntry(TacFunction function) {
+    public FunctionEntry(TacFunction function) {
         this.function = function;
     }
 

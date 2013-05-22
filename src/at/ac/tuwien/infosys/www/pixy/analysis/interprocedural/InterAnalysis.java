@@ -232,7 +232,7 @@ public abstract class InterAnalysis extends Analysis {
 
                     // get necessary function information (= called function)
                     TacFunction function = callNode.getCallee();
-                    ReturnFromCall callRet = (ReturnFromCall) node.getOutEdge(0).getDest();
+                    CallReturn callRet = (CallReturn) node.getOutEdge(0).getDest();
 
                     if (function == null) {
                         // callee could not be determined yet;
@@ -304,7 +304,7 @@ public abstract class InterAnalysis extends Analysis {
 
                     // calls to a builtin function are simply treated by invoking
                     // the corresponding transfer function; covered by the catch-all below
-                    //} else if (node instanceof CallOfBuiltinFunction) {
+                    //} else if (node instanceof CallBuiltinFunction) {
 
                 } else if (node instanceof CfgExit) {
 
@@ -331,7 +331,7 @@ public abstract class InterAnalysis extends Analysis {
 
                         // determine successor node (unique) of the call node
                         CfgEdge[] outEdges = callNode.getOutEdges();
-                        ReturnFromCall callRetNode = (ReturnFromCall) outEdges[0].getDest();
+                        CallReturn callRetNode = (CallReturn) outEdges[0].getDest();
 
                         // determine predecessor node (unique) of the call node
                         CallPreperation callPrepNode = callRetNode.getCallPrepNode();
@@ -374,7 +374,7 @@ public abstract class InterAnalysis extends Analysis {
                         // continue analysis along false edge
                         propagate(context, outValue, outEdges[0].getDest());
                     }
-                } else if (node instanceof ReturnFromCall) {
+                } else if (node instanceof CallReturn) {
 
                     // a call return node is to be handled just as a normal node,
                     // with the exception that it also needs to know about the

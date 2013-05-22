@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class PrepareCall extends TransferFunction {
+public class CallPreparation extends TransferFunction {
     private List<List<Variable>> cbrParams;
     private TacFunction caller;
     private AliasAnalysis aliasAnalysis;
@@ -28,7 +28,7 @@ public class PrepareCall extends TransferFunction {
 //  CONSTRUCTORS ********************************************************************
 //  *********************************************************************************
 
-    public PrepareCall(TacFunction caller, AliasAnalysis aliasAnalysis, CallPreperation cfgNode) {
+    public CallPreparation(TacFunction caller, AliasAnalysis aliasAnalysis, CallPreperation cfgNode) {
 
         this.cfgNode = cfgNode;
         this.cbrParams = cfgNode.getCbrParams();

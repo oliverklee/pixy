@@ -14,7 +14,7 @@ import java.util.Set;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class DepTfAssignBinary extends TransferFunction {
+public class AssignBinary extends TransferFunction {
     private Variable left;
     private TacPlace leftOperand;
     private TacPlace rightOperand;
@@ -28,7 +28,7 @@ public class DepTfAssignBinary extends TransferFunction {
 // *********************************************************************************
 
     // mustAliases, mayAliases: of setMe
-    public DepTfAssignBinary(
+    public AssignBinary(
         TacPlace left, TacPlace leftOperand, TacPlace rightOperand, int op, Set<Variable> mustAliases,
         Set<Variable> mayAliases, AbstractCfgNode cfgNode
     ) {

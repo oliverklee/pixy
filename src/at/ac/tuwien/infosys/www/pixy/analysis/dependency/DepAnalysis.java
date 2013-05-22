@@ -3,12 +3,24 @@ package at.ac.tuwien.infosys.www.pixy.analysis.dependency;
 import at.ac.tuwien.infosys.www.pixy.analysis.*;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.*;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.AssignArray;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.AssignBinary;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.AssignReference;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.AssignSimple;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.AssignUnary;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.CallPreperation;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.Define;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.Isset;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.Tester;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.Unset;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.*;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.CSAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.mod.ModAnalysis;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.*;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallBuiltinFunction;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallReturn;
 
 import java.util.*;
 
@@ -136,12 +148,12 @@ public class DepAnalysis extends InterAnalysis {
     // - else: the basic block
     protected TransferFunction assignSimple(AbstractCfgNode cfgNodeX, AbstractCfgNode aliasInNode) {
 
-        AssignSimple cfgNode = (AssignSimple) cfgNodeX;
+        at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AssignSimple cfgNode = (at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AssignSimple) cfgNodeX;
         Variable left = cfgNode.getLeft();
         Set<Variable> mustAliases = this.aliasAnalysis.getMustAliases(left, aliasInNode);
         Set<Variable> mayAliases = this.aliasAnalysis.getMayAliases(left, aliasInNode);
 
-        return new DepTfAssignSimple(
+        return new AssignSimple(
             left,
             cfgNode.getRight(),
             mustAliases,
@@ -151,12 +163,12 @@ public class DepAnalysis extends InterAnalysis {
 
     protected TransferFunction assignUnary(AbstractCfgNode cfgNodeX, AbstractCfgNode aliasInNode) {
 
-        AssignUnary cfgNode = (AssignUnary) cfgNodeX;
+        at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AssignUnary cfgNode = (at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AssignUnary) cfgNodeX;
         Variable left = cfgNode.getLeft();
         Set<Variable> mustAliases = this.aliasAnalysis.getMustAliases(left, aliasInNode);
         Set<Variable> mayAliases = this.aliasAnalysis.getMayAliases(left, aliasInNode);
 
-        return new DepTfAssignUnary(
+        return new AssignUnary(
             left,
             cfgNode.getRight(),
             cfgNode.getOperator(),
@@ -167,12 +179,12 @@ public class DepAnalysis extends InterAnalysis {
 
     protected TransferFunction assignBinary(AbstractCfgNode cfgNodeX, AbstractCfgNode aliasInNode) {
 
-        AssignBinary cfgNode = (AssignBinary) cfgNodeX;
+        at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AssignBinary cfgNode = (at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AssignBinary) cfgNodeX;
         Variable left = cfgNode.getLeft();
         Set<Variable> mustAliases = this.aliasAnalysis.getMustAliases(left, aliasInNode);
         Set<Variable> mayAliases = this.aliasAnalysis.getMayAliases(left, aliasInNode);
 
-        return new DepTfAssignBinary(
+        return new AssignBinary(
             left,
             cfgNode.getLeftOperand(),
             cfgNode.getRightOperand(),
@@ -183,26 +195,26 @@ public class DepAnalysis extends InterAnalysis {
     }
 
     protected TransferFunction assignRef(AbstractCfgNode cfgNodeX) {
-        AssignReference cfgNode = (AssignReference) cfgNodeX;
-        return new DepTfAssignRef(
+        at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AssignReference cfgNode = (at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AssignReference) cfgNodeX;
+        return new AssignReference(
             cfgNode.getLeft(),
             cfgNode.getRight(),
             cfgNode);
     }
 
     protected TransferFunction unset(AbstractCfgNode cfgNodeX) {
-        Unset cfgNode = (Unset) cfgNodeX;
-        return new DepTfUnset(cfgNode.getOperand(), cfgNode);
+        at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Unset cfgNode = (at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Unset) cfgNodeX;
+        return new Unset(cfgNode.getOperand(), cfgNode);
     }
 
     protected TransferFunction assignArray(AbstractCfgNode cfgNodeX) {
-        AssignArray cfgNode = (AssignArray) cfgNodeX;
-        return new DepTfAssignArray(cfgNode.getLeft(), cfgNode);
+        at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AssignArray cfgNode = (at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AssignArray) cfgNodeX;
+        return new AssignArray(cfgNode.getLeft(), cfgNode);
     }
 
     protected TransferFunction callPrep(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
 
-        CallPreperation cfgNode = (CallPreperation) cfgNodeX;
+        at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreperation cfgNode = (at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreperation) cfgNodeX;
         TacFunction calledFunction = cfgNode.getCallee();
         TacFunction callingFunction = traversedFunction;
 
@@ -227,8 +239,8 @@ public class DepAnalysis extends InterAnalysis {
             // how this works:
             // - propagate with ID transfer function to Call
             // - the analysis algorithm propagates from Call
-            //   to ReturnFromCall with ID transfer function
-            // - we propagate from ReturnFromCall to the following node
+            //   to CallReturn with ID transfer function
+            // - we propagate from CallReturn to the following node
             //   with a special transfer function that only assigns the
             //   taint of the unknown function's return variable to
             //   the temporary catching the function's return value
@@ -253,7 +265,7 @@ public class DepAnalysis extends InterAnalysis {
                 "More actual than formal params for function " +
                     cfgNode.getFunctionNamePlace().toString() + " on line " + cfgNode.getOrigLineno());
         } else {
-            tf = new DepTfCallPrep(actualParams, formalParams,
+            tf = new CallPreperation(actualParams, formalParams,
                 callingFunction, calledFunction, this, cfgNode);
         }
 
@@ -261,13 +273,13 @@ public class DepAnalysis extends InterAnalysis {
     }
 
     protected TransferFunction entry(TacFunction traversedFunction) {
-        return new DepTfEntry(traversedFunction);
+        return new FunctionEntry(traversedFunction);
     }
 
     protected TransferFunction callRet(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
 
-        ReturnFromCall cfgNodeRet = (ReturnFromCall) cfgNodeX;
-        CallPreperation cfgNodePrep = cfgNodeRet.getCallPrepNode();
+        CallReturn cfgNodeRet = (CallReturn) cfgNodeX;
+        at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreperation cfgNodePrep = cfgNodeRet.getCallPrepNode();
         TacFunction callingFunction = traversedFunction;
         TacFunction calledFunction = cfgNodePrep.getCallee();
 
@@ -283,7 +295,7 @@ public class DepAnalysis extends InterAnalysis {
             }
 
             // quite powerful transfer function, does many things
-            tf = new DepTfCallRet(
+            tf = new at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.CallReturn(
                 this.interAnalysisInfo.getAnalysisNode(cfgNodePrep),
                 callingFunction,
                 calledFunction,
@@ -297,13 +309,13 @@ public class DepAnalysis extends InterAnalysis {
     }
 
     protected TransferFunction callBuiltin(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
-        CallOfBuiltinFunction cfgNode = (CallOfBuiltinFunction) cfgNodeX;
-        return new DepTfCallBuiltin(cfgNode);
+        CallBuiltinFunction cfgNode = (CallBuiltinFunction) cfgNodeX;
+        return new at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.CallBuiltinFunction(cfgNode);
     }
 
     protected TransferFunction callUnknown(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
-        CallOfUnknownFunction cfgNode = (CallOfUnknownFunction) cfgNodeX;
-        return new DepTfCallUnknown(cfgNode);
+        CallUnknownFunction cfgNode = (CallUnknownFunction) cfgNodeX;
+        return new CallUnknown(cfgNode);
     }
 
     protected TransferFunction global(AbstractCfgNode cfgNodeX) {
@@ -330,28 +342,28 @@ public class DepAnalysis extends InterAnalysis {
             return TransferFunctionId.INSTANCE;
         } else {
             // found existent global
-            return new DepTfAssignRef(globalOp, realGlobal, cfgNode);
+            return new AssignReference(globalOp, realGlobal, cfgNode);
         }
     }
 
     protected TransferFunction isset(AbstractCfgNode cfgNodeX) {
 
-        Isset cfgNode = (Isset) cfgNodeX;
-        return new DepTfIsset(
+        at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Isset cfgNode = (at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Isset) cfgNodeX;
+        return new Isset(
             cfgNode.getLeft(),
             cfgNode.getRight(),
             cfgNode);
     }
 
     protected TransferFunction define(AbstractCfgNode cfgNodeX) {
-        Define cfgNode = (Define) cfgNodeX;
-        return new DepTfDefine(this.constantsTable, this.literalAnalysis, cfgNode);
+        at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Define cfgNode = (at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Define) cfgNodeX;
+        return new Define(this.constantsTable, this.literalAnalysis, cfgNode);
     }
 
     protected TransferFunction tester(AbstractCfgNode cfgNodeX) {
         // special node that only occurs inside the builtin functions file
-        Tester cfgNode = (Tester) cfgNodeX;
-        return new DepTfTester(cfgNode);
+        at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Tester cfgNode = (at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Tester) cfgNodeX;
+        return new Tester(cfgNode);
     }
 
     protected TransferFunction echo(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
@@ -610,8 +622,8 @@ public class DepAnalysis extends InterAnalysis {
     private void warnUnreachable(AbstractCfgNode cfgNode) {
         System.out.println("Warning: Unreachable code");
         System.out.println("- " + cfgNode.getLoc());
-        if (cfgNode instanceof ReturnFromCall) {
-            ReturnFromCall callRet = (ReturnFromCall) cfgNode;
+        if (cfgNode instanceof CallReturn) {
+            CallReturn callRet = (CallReturn) cfgNode;
             System.out.println("- return from: " + callRet.getCallNode().getFunctionNamePlace());
         } else {
             System.out.println("- " + cfgNode);
