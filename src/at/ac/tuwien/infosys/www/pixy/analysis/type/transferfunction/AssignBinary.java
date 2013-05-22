@@ -3,20 +3,22 @@ package at.ac.tuwien.infosys.www.pixy.analysis.type.transferfunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.TypeLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallBuiltinFunction;
+import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 /**
+ * Transfer function for unary assignment nodes.
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class TypeTfCallBuiltin extends TransferFunction {
-    private CallBuiltinFunction cfgNode;
+public class AssignBinary extends TransferFunction {
+    private Variable left;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public TypeTfCallBuiltin(CallBuiltinFunction cfgNode) {
-        this.cfgNode = cfgNode;
+    // mustAliases, mayAliases: of setMe
+    public AssignBinary(Variable left) {
+        this.left = left;
     }
 
 // *********************************************************************************
@@ -28,7 +30,8 @@ public class TypeTfCallBuiltin extends TransferFunction {
         TypeLatticeElement in = (TypeLatticeElement) inX;
         TypeLatticeElement out = new TypeLatticeElement(in);
 
-        out.handleReturnValueBuiltin(this.cfgNode.getTempVar());
+        // let the lattice element handle the details
+        out.assignBinary(left);
 
         return out;
     }

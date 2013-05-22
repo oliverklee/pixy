@@ -3,20 +3,25 @@ package at.ac.tuwien.infosys.www.pixy.analysis.type.transferfunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.TypeLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 /**
+ * Transfer function for reference assignment nodes.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class TypeTfAssignArray extends TransferFunction {
-    private Variable operand;
+public class AssignReference extends TransferFunction {
+    private Variable left;
+    private TacPlace right;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public TypeTfAssignArray(Variable operand) {
-        this.operand = operand;
+    public AssignReference(Variable left, TacPlace right) {
+        this.left = left;
+        this.right = right;
     }
 
 // *********************************************************************************
@@ -28,7 +33,8 @@ public class TypeTfAssignArray extends TransferFunction {
         TypeLatticeElement in = (TypeLatticeElement) inX;
         TypeLatticeElement out = new TypeLatticeElement(in);
 
-        out.assignArray(operand);
+        // let the lattice element handle the details
+        out.assign(left, right);
 
         return out;
     }

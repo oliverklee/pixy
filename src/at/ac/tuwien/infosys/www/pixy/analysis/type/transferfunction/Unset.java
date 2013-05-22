@@ -8,14 +8,14 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class TypeTfUnset extends TransferFunction {
+public class Unset extends TransferFunction {
     private Variable operand;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public TypeTfUnset(Variable operand) {
+    public Unset(Variable operand) {
         this.operand = operand;
     }
 

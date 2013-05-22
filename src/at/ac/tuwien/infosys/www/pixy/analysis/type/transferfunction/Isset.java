@@ -6,20 +6,17 @@ import at.ac.tuwien.infosys.www.pixy.analysis.type.TypeLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 /**
- * Transfer function for unary assignment nodes.
- *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class TypeTfAssignUnary extends TransferFunction {
-    private Variable left;
+public class Isset extends TransferFunction {
+    private Variable setMe;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    // mustAliases, mayAliases: of setMe
-    public TypeTfAssignUnary(Variable left) {
-        this.left = left;
+    public Isset(Variable setMe) {
+        this.setMe = setMe;
     }
 
 // *********************************************************************************
@@ -31,8 +28,7 @@ public class TypeTfAssignUnary extends TransferFunction {
         TypeLatticeElement in = (TypeLatticeElement) inX;
         TypeLatticeElement out = new TypeLatticeElement(in);
 
-        // let the lattice element handle the details
-        out.assignUnary(left);
+        out.unset(setMe);
 
         return out;
     }

@@ -12,7 +12,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Call;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class TypeTfCallRet extends TransferFunction {
+public class CallReturn extends TransferFunction {
     private InterAnalysisNode analysisNodeAtCallPrep;
     private TacFunction caller;
     private TacFunction callee;
@@ -22,7 +22,7 @@ public class TypeTfCallRet extends TransferFunction {
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public TypeTfCallRet(
+    public CallReturn(
         InterAnalysisNode analysisNodeAtCallPrep,
         TacFunction caller,
         TacFunction callee,

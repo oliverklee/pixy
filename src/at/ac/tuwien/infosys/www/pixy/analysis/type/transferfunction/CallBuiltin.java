@@ -2,41 +2,34 @@ package at.ac.tuwien.infosys.www.pixy.analysis.type.transferfunction;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.Context;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.TypeLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallReturn;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallBuiltinFunction;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class TypeTfCallRetUnknown extends TransferFunction {
-    private CallReturn retNode;
+public class CallBuiltin extends TransferFunction {
+    private CallBuiltinFunction cfgNode;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public TypeTfCallRetUnknown(CallReturn retNode) {
-        this.retNode = retNode;
+    public CallBuiltin(CallBuiltinFunction cfgNode) {
+        this.cfgNode = cfgNode;
     }
 
 // *********************************************************************************
 // OTHER ***************************************************************************
 // *********************************************************************************
 
-    public LatticeElement transfer(LatticeElement inX, Context context) {
+    public LatticeElement transfer(LatticeElement inX) {
 
         TypeLatticeElement in = (TypeLatticeElement) inX;
         TypeLatticeElement out = new TypeLatticeElement(in);
 
-        out.handleReturnValueUnknown(this.retNode.getTempVar());
+        out.handleReturnValueBuiltin(this.cfgNode.getTempVar());
 
         return out;
-    }
-
-    // just a dummy method in order to make me conform to the interface;
-    // the Analysis uses the other transfer method instead
-    public LatticeElement transfer(LatticeElement inX) {
-        throw new RuntimeException("SNH");
     }
 }
