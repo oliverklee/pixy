@@ -3,32 +3,25 @@ package at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
+import at.ac.tuwien.infosys.www.pixy.conversion.Literal;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
-import java.util.Set;
-
 /**
- * Transfer function for simple assignment nodes.
+ * Transfer function for special ~_test_ node.
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class LiteralTfAssignSimple extends TransferFunction {
-    private Variable left;
-    private TacPlace right;
-    private Set<Variable> mustAliases;
-    private Set<Variable> mayAliases;
+public class Tester extends TransferFunction {
+    // provides access to the return variable of the function enclosing
+    // this ~_test_ node
+    private Variable retVar;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    // mustAliases, mayAliases: of setMe
-    public LiteralTfAssignSimple(TacPlace left, TacPlace right, Set<Variable> mustAliases, Set<Variable> mayAliases) {
-        this.left = (Variable) left;  // must be a variable
-        this.right = right;
-        this.mustAliases = mustAliases;
-        this.mayAliases = mayAliases;
+    public Tester(at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Tester cfgNode) {
+        this.retVar = cfgNode.getEnclosingFunction().getRetVar();
     }
 
 // *********************************************************************************
@@ -40,9 +33,8 @@ public class LiteralTfAssignSimple extends TransferFunction {
         LiteralLatticeElement in = (LiteralLatticeElement) inX;
         LiteralLatticeElement out = new LiteralLatticeElement(in);
 
-        // let the lattice element handle the details
-        out.assignSimple(left, right, mustAliases, mayAliases);
-
+        // this one is easy: just set the return variable to TOP
+        out.setRetVar(this.retVar, Literal.TOP);
         return out;
     }
 }

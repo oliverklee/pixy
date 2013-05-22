@@ -108,7 +108,7 @@ public abstract class InterproceduralAnalysis extends Analysis {
                 // if this param has a default value, it also has a small CFG;
                 // traverse it as well...;
                 // NOTE: default CFGs will not be associated with analysis information,
-                // see transfer functions for CallPreperation; analogous to the
+                // see transfer functions for CallPreparation; analogous to the
                 // contents of basic blocks
                 if (param.hasDefault()) {
                     ControlFlowGraph defaultControlFlowGraph = param.getDefaultControlFlowGraph();

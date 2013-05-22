@@ -2,37 +2,43 @@ package at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
-import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Transfer function for reference assignment nodes.
+ * Transfer function for binary assignment nodes.
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class LiteralTfAssignRef extends TransferFunction {
+public class AssignBinary extends TransferFunction {
     private Variable left;
-    private Variable right;
-    private boolean supported;
+    private TacPlace leftOperand;
+    private TacPlace rightOperand;
+    private int op;
+    private Set<Variable> mustAliases;
+    private Set<Variable> mayAliases;
+    private AbstractCfgNode cfgNode;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
     // mustAliases, mayAliases: of setMe
-    public LiteralTfAssignRef(TacPlace left, TacPlace right) {
-
-        this.left = (Variable) left;    // must be a variable
-        this.right = (Variable) right;  // must be a variable
-
-        // check for unsupported features
-        this.supported = AliasAnalysis.isSupported(this.left, this.right, false, -1);
+    public AssignBinary(
+        TacPlace left, TacPlace leftOperand, TacPlace rightOperand, int op, Set<Variable> mustAliases,
+        Set<Variable> mayAliases, AbstractCfgNode cfgNode
+    ) {
+        this.left = (Variable) left;  // must be a variable
+        this.leftOperand = leftOperand;
+        this.rightOperand = rightOperand;
+        this.op = op;
+        this.mustAliases = mustAliases;
+        this.mayAliases = mayAliases;
+        this.cfgNode = cfgNode;
     }
 
 // *********************************************************************************
@@ -41,26 +47,12 @@ public class LiteralTfAssignRef extends TransferFunction {
 
     public LatticeElement transfer(LatticeElement inX) {
 
-        // if this reference assignment is not supported by our alias analysis,
-        // we simply ignore it
-        if (!supported) {
-            return inX;
-        }
-
         LiteralLatticeElement in = (LiteralLatticeElement) inX;
         LiteralLatticeElement out = new LiteralLatticeElement(in);
 
-        // "left =& right" means that left is redirected to right;
-        // for the literal mapping, this means that nothing changes
-        // except that left receives the literal of right;
-        // we achieve this through the following actions:
-
-        Set<Variable> mustAliases = new HashSet<>();
-        mustAliases.add(left);
-        Set<Variable> mayAliases = Collections.emptySet();
-
         // let the lattice element handle the details
-        out.assignSimple(left, right, mustAliases, mayAliases);
+        out.assignBinary(left, leftOperand, rightOperand, op,
+            mustAliases, mayAliases, cfgNode);
 
         return out;
     }

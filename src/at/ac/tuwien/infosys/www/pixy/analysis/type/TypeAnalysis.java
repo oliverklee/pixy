@@ -197,7 +197,7 @@ public class TypeAnalysis extends InterproceduralAnalysis {
         TacFunction calledFunction = cfgNodeCall.getCallee();
 
         // call to an unknown function;
-        // for explanations see above (handling CallPreperation)
+        // for explanations see above (handling CallPreparation)
         TransferFunction tf;
         if (calledFunction == null) {
 

@@ -2,41 +2,47 @@ package at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.Context;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallReturn;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
+import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
+
+import java.util.Set;
 
 /**
+ * Transfer function for simple assignment nodes.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class LiteralTfCallRetUnknown extends TransferFunction {
-    private CallReturn retNode;
+public class AssignSimple extends TransferFunction {
+    private Variable left;
+    private TacPlace right;
+    private Set<Variable> mustAliases;
+    private Set<Variable> mayAliases;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public LiteralTfCallRetUnknown(CallReturn retNode) {
-        this.retNode = retNode;
+    // mustAliases, mayAliases: of setMe
+    public AssignSimple(TacPlace left, TacPlace right, Set<Variable> mustAliases, Set<Variable> mayAliases) {
+        this.left = (Variable) left;  // must be a variable
+        this.right = right;
+        this.mustAliases = mustAliases;
+        this.mayAliases = mayAliases;
     }
 
 // *********************************************************************************
 // OTHER ***************************************************************************
 // *********************************************************************************
 
-    public LatticeElement transfer(LatticeElement inX, Context context) {
+    public LatticeElement transfer(LatticeElement inX) {
 
         LiteralLatticeElement in = (LiteralLatticeElement) inX;
         LiteralLatticeElement out = new LiteralLatticeElement(in);
 
-        out.handleReturnValueUnknown(this.retNode.getTempVar());
+        // let the lattice element handle the details
+        out.assignSimple(left, right, mustAliases, mayAliases);
 
         return out;
-    }
-
-    // just a dummy method in order to make me conform to the interface;
-    // the Analysis uses the other transfer method instead
-    public LatticeElement transfer(LatticeElement inX) {
-        throw new RuntimeException("SNH");
     }
 }

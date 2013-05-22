@@ -171,7 +171,7 @@ public class AliasAnalysis extends InterproceduralAnalysis {
         TacFunction calledFunction = cfgNodePrep.getCallee();
 
         // call to an unknown function;
-        // for explanations see above (handling CallPreperation)
+        // for explanations see above (handling CallPreparation)
         if (calledFunction == null) {
             throw new RuntimeException("SNH");
             // return TransferFunctionId.INSTANCE;

@@ -3,42 +3,30 @@ package at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.LatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralLatticeElement;
+import at.ac.tuwien.infosys.www.pixy.conversion.Literal;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Transfer function for binary assignment nodes.
+ * Transfer function for "isset" tests.
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class LiteralTfAssignBinary extends TransferFunction {
-    private Variable left;
-    private TacPlace leftOperand;
-    private TacPlace rightOperand;
-    private int op;
-    private Set<Variable> mustAliases;
-    private Set<Variable> mayAliases;
-    private AbstractCfgNode cfgNode;
+public class Isset extends TransferFunction {
+    private Variable setMe;
+    private TacPlace testMe;
 
 // *********************************************************************************
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    // mustAliases, mayAliases: of setMe
-    public LiteralTfAssignBinary(
-        TacPlace left, TacPlace leftOperand, TacPlace rightOperand, int op, Set<Variable> mustAliases,
-        Set<Variable> mayAliases, AbstractCfgNode cfgNode
-    ) {
-        this.left = (Variable) left;  // must be a variable
-        this.leftOperand = leftOperand;
-        this.rightOperand = rightOperand;
-        this.op = op;
-        this.mustAliases = mustAliases;
-        this.mayAliases = mayAliases;
-        this.cfgNode = cfgNode;
+    public Isset(TacPlace setMe, TacPlace testMe) {
+        this.setMe = (Variable) setMe;  // must be a variable
+        this.testMe = testMe;
     }
 
 // *********************************************************************************
@@ -47,12 +35,20 @@ public class LiteralTfAssignBinary extends TransferFunction {
 
     public LatticeElement transfer(LatticeElement inX) {
 
+        // System.out.println("transfer method: " + setMe + " = " + setTo);
         LiteralLatticeElement in = (LiteralLatticeElement) inX;
         LiteralLatticeElement out = new LiteralLatticeElement(in);
 
-        // let the lattice element handle the details
-        out.assignBinary(left, leftOperand, rightOperand, op,
-            mustAliases, mayAliases, cfgNode);
+        if (!setMe.isTemp()) {
+            throw new RuntimeException("SNH");
+        }
+
+        // not so intelligent, but sound;
+        // "setMe" is a temporary variable, which has no aliases
+        Set<Variable> mustAliases = new HashSet<>();
+        mustAliases.add(setMe);
+        Set<Variable> mayAliases = Collections.emptySet();
+        out.assignSimple(setMe, Literal.TOP, mustAliases, mayAliases);
 
         return out;
     }

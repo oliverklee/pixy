@@ -285,7 +285,7 @@ public class DependencyAnalysis extends InterproceduralAnalysis {
         TacFunction calledFunction = cfgNodePrep.getCallee();
 
         // call to an unknown function;
-        // for explanations see above (handling CallPreperation)
+        // for explanations see above (handling CallPreparation)
         TransferFunction tf;
         if (calledFunction == null) {
             throw new RuntimeException("SNH");

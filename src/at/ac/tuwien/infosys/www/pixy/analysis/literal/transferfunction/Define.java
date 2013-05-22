@@ -8,14 +8,13 @@ import at.ac.tuwien.infosys.www.pixy.conversion.ConstantsTable;
 import at.ac.tuwien.infosys.www.pixy.conversion.Literal;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Define;
 
 import java.util.List;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class LiteralTfDefine extends TransferFunction {
+public class Define extends TransferFunction {
     private TacPlace setMe;
     private TacPlace setTo;
     private TacPlace caseInsensitive;
@@ -27,7 +26,7 @@ public class LiteralTfDefine extends TransferFunction {
 // CONSTRUCTORS ********************************************************************
 // *********************************************************************************
 
-    public LiteralTfDefine(ConstantsTable table, Define cfgNode) {
+    public Define(ConstantsTable table, at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Define cfgNode) {
         this.setMe = cfgNode.getSetMe();
         this.setTo = cfgNode.getSetTo();
         this.caseInsensitive = cfgNode.getCaseInsensitive();

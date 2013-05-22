@@ -545,7 +545,7 @@ public class DependencyGraph {
     /**
      * This function is quite straightforward in most cases, but the handling of arrays might be a bit confusing. For
      * this reason, here is an explanation of what is going on when the inspected cfg node is either AssignSimple or
-     * CallPreperation.
+     * CallPreparation.
      *
      * AssignSimple:
      * left = right;
@@ -578,7 +578,7 @@ public class DependencyGraph {
      * the method responsible for correctly resolving old indices is called "getCorresponding()";
      * look at its description below to get a better feeling for what is going on
      *
-     * CallPreperation:
+     * CallPreparation:
      * * "victim" is a formal param here;
      * we want to return the corresponding actual parameter
      * - for each formal parameter:
