@@ -320,8 +320,8 @@ public final class Dumper {
                 objectString = object + "->";
             }
             return (objectString + cfgNode.getFunctionNamePlace().toString() + "(...)");
-        } else if (cfgNodeX instanceof CallPreperation) {
-            CallPreperation cfgNode = (CallPreperation) cfgNodeX;
+        } else if (cfgNodeX instanceof CallPreparation) {
+            CallPreparation cfgNode = (CallPreparation) cfgNodeX;
 
             // construct parameter list
             StringBuilder paramListStringBuf = new StringBuilder();

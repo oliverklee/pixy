@@ -406,9 +406,9 @@ public class DependencyGraph {
 
         // check whether we are jumping from callee to caller
         // (i.e., from the callee's start to the call node)
-        else if (targetNode instanceof CallPreperation) {
+        else if (targetNode instanceof CallPreparation) {
             debug("jumping from start of callee to caller!");
-            CallPreperation prep = (CallPreperation) targetNode;
+            CallPreparation prep = (CallPreparation) targetNode;
             Call callNode = (Call) prep.getSuccessor(0);
             targetFunction = prep.getCaller();
             debug("caller: " + targetFunction.getName());
@@ -476,7 +476,7 @@ public class DependencyGraph {
         } else if (targetNode instanceof CallReturn) {
 
             CallReturn inspectMe = (CallReturn) targetNode;
-            CallPreperation prepNode = inspectMe.getCallPrepNode();
+            CallPreparation prepNode = inspectMe.getCallPrepNode();
 
             if (prepNode.getCallee() == null) {
                 throw new RuntimeException("SNH");
@@ -682,10 +682,10 @@ public class DependencyGraph {
             throw new RuntimeException("SNH");
         } else if (cfgNodeX instanceof Call) {
             throw new RuntimeException("SNH");
-        } else if (cfgNodeX instanceof CallPreperation) {
+        } else if (cfgNodeX instanceof CallPreparation) {
 
             // return corresponding actual param ("victim" is the formal param here)
-            CallPreperation cfgNode = (CallPreperation) cfgNodeX;
+            CallPreparation cfgNode = (CallPreparation) cfgNodeX;
             List<TacActualParameter> actualParams = cfgNode.getParamList();
             List<TacFormalParameter> formalParams = cfgNode.getCallee().getParams();
             int index = -1;
@@ -896,7 +896,7 @@ public class DependencyGraph {
 
         List<TacPlace> retMe = new LinkedList<>();
 
-        CallPreperation prepNode = retNode.getCallPrepNode();
+        CallPreparation prepNode = retNode.getCallPrepNode();
         if (prepNode.getCallee() == null) {
             throw new RuntimeException("SNH");
         }

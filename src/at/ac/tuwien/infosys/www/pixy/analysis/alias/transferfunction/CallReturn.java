@@ -10,7 +10,6 @@ import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.Context;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralAnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreperation;
 
 import java.util.HashSet;
 import java.util.List;
@@ -32,7 +31,7 @@ public class CallReturn extends TransferFunction {
     public CallReturn(
         InterproceduralAnalysisNode analysisNodeAtCallPrep,
         TacFunction callee, AliasAnalysis aliasAnalysis,
-        CallPreperation cfgNode) {
+        at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreparation cfgNode) {
 
         this.analysisNodeAtCallPrep = analysisNodeAtCallPrep;
         this.callee = callee;

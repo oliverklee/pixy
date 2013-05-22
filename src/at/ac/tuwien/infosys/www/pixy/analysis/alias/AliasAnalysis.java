@@ -13,6 +13,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralAna
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralWorklistPoor;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.*;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreparation;
 
 import java.util.HashSet;
 import java.util.List;
@@ -113,7 +114,7 @@ public class AliasAnalysis extends InterproceduralAnalysis {
 
     protected TransferFunction callPrep(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
 
-        CallPreperation cfgNode = (CallPreperation) cfgNodeX;
+        CallPreparation cfgNode = (CallPreparation) cfgNodeX;
         TacFunction calledFunction = cfgNode.getCallee();
         TacFunction callingFunction = traversedFunction;
 
@@ -154,7 +155,7 @@ public class AliasAnalysis extends InterproceduralAnalysis {
                 "More actual than formal params for function " +
                     cfgNode.getFunctionNamePlace().toString() + " on line " + cfgNode.getOrigLineno());
         } else {
-            tf = new CallPreparation(callingFunction, this, cfgNode);
+            tf = new at.ac.tuwien.infosys.www.pixy.analysis.alias.transferfunction.CallPreparation(callingFunction, this, cfgNode);
         }
 
         return tf;
@@ -167,7 +168,7 @@ public class AliasAnalysis extends InterproceduralAnalysis {
     protected TransferFunction callRet(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
 
         at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallReturn cfgNode = (at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallReturn) cfgNodeX;
-        CallPreperation cfgNodePrep = cfgNode.getCallPrepNode();
+        CallPreparation cfgNodePrep = cfgNode.getCallPrepNode();
         TacFunction calledFunction = cfgNodePrep.getCallee();
 
         // call to an unknown function;

@@ -8,7 +8,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParameter;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallBuiltinFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreperation;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreparation;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Echo;
 
 import java.util.List;
@@ -62,9 +62,9 @@ public class XSSSanitationAnalysis extends SanitationAnalysis {
             String functionName = cfgNode.getFunctionName();
 
             checkForSinkHelper(functionName, cfgNode, cfgNode.getParamList(), traversedFunction, sinks);
-        } else if (cfgNodeX instanceof CallPreperation) {
+        } else if (cfgNodeX instanceof CallPreparation) {
 
-            CallPreperation cfgNode = (CallPreperation) cfgNodeX;
+            CallPreparation cfgNode = (CallPreparation) cfgNodeX;
             String functionName = cfgNode.getFunctionNamePlace().toString();
 
             // user-defined custom sinks

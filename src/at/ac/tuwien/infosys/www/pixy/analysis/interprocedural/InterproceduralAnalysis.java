@@ -334,7 +334,7 @@ public abstract class InterproceduralAnalysis extends Analysis {
                         CallReturn callRetNode = (CallReturn) outEdges[0].getDest();
 
                         // determine predecessor node (unique) of the call node
-                        CallPreperation callPrepNode = callRetNode.getCallPrepNode();
+                        CallPreparation callPrepNode = callRetNode.getCallPrepNode();
 
                         for (Context targetContext : reverseTarget.getContexts()) {
                             // if the incoming value at the callprep node is undefined, this means

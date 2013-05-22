@@ -151,7 +151,7 @@ public class LiteralAnalysis extends InterproceduralAnalysis {
 
     protected TransferFunction callPrep(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
 
-        at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreperation cfgNode = (at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreperation) cfgNodeX;
+        at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreparation cfgNode = (at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreparation) cfgNodeX;
         TacFunction calledFunction = cfgNode.getCallee();
         TacFunction callingFunction = traversedFunction;
 
@@ -204,7 +204,7 @@ public class LiteralAnalysis extends InterproceduralAnalysis {
     protected TransferFunction callRet(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
 
         at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallReturn cfgNodeRet = (at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallReturn) cfgNodeX;
-        at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreperation cfgNodePrep = cfgNodeRet.getCallPrepNode();
+        at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreparation cfgNodePrep = cfgNodeRet.getCallPrepNode();
         TacFunction callingFunction = traversedFunction;
         TacFunction calledFunction = cfgNodePrep.getCallee();
 

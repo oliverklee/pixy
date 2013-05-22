@@ -8,7 +8,6 @@ import at.ac.tuwien.infosys.www.pixy.conversion.SymbolTable;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreperation;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -28,7 +27,7 @@ public class CallPreparation extends TransferFunction {
 //  CONSTRUCTORS ********************************************************************
 //  *********************************************************************************
 
-    public CallPreparation(TacFunction caller, AliasAnalysis aliasAnalysis, CallPreperation cfgNode) {
+    public CallPreparation(TacFunction caller, AliasAnalysis aliasAnalysis, at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreparation cfgNode) {
 
         this.cfgNode = cfgNode;
         this.cbrParams = cfgNode.getCbrParams();

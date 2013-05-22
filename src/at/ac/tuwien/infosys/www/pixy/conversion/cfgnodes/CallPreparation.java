@@ -16,10 +16,10 @@ import java.util.List;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CallPreperation extends AbstractCfgNode {
+public class CallPreparation extends AbstractCfgNode {
 // CONSTRUCTORS ********************************************************************
 
-    public CallPreperation(ParseNode node) {
+    public CallPreparation(ParseNode node) {
         super(node);
     }
 

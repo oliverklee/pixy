@@ -14,7 +14,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.type.transferfunction.AssignBinary
 import at.ac.tuwien.infosys.www.pixy.analysis.type.transferfunction.AssignReference;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.transferfunction.AssignSimple;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.transferfunction.AssignUnary;
-import at.ac.tuwien.infosys.www.pixy.analysis.type.transferfunction.CallPreperation;
+import at.ac.tuwien.infosys.www.pixy.analysis.type.transferfunction.CallPreparation;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.transferfunction.CallReturn;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.transferfunction.Isset;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.transferfunction.Unset;
@@ -144,7 +144,7 @@ public class TypeAnalysis extends InterproceduralAnalysis {
 
     protected TransferFunction callPrep(AbstractCfgNode cfgNodeX, TacFunction traversedFunction) {
 
-        at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreperation cfgNode = (at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreperation) cfgNodeX;
+        at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreparation cfgNode = (at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreparation) cfgNodeX;
         TacFunction calledFunction = cfgNode.getCallee();
         TacFunction callingFunction = traversedFunction;
 
@@ -180,7 +180,7 @@ public class TypeAnalysis extends InterproceduralAnalysis {
                 "More actual than formal params for function " +
                     cfgNode.getFunctionNamePlace().toString() + " on line " + cfgNode.getOrigLineno());
         } else {
-            tf = new CallPreperation(actualParams, formalParams,
+            tf = new CallPreparation(actualParams, formalParams,
                 callingFunction, calledFunction, this);
         }
 
@@ -191,7 +191,7 @@ public class TypeAnalysis extends InterproceduralAnalysis {
 
         at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallReturn cfgNodeRet = (at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallReturn) cfgNodeX;
         Call cfgNodeCall = cfgNodeRet.getCallNode();
-        at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreperation cfgNodePrep = cfgNodeRet.getCallPrepNode();
+        at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreparation cfgNodePrep = cfgNodeRet.getCallPrepNode();
 
         TacFunction callingFunction = traversedFunction;
         TacFunction calledFunction = cfgNodeCall.getCallee();

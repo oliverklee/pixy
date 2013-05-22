@@ -105,10 +105,10 @@ public class TacConverter {
 
     // maps functions AND methods to a list of function calls (for backpatching),
     // except for those function calls for which backpatching is known to be hopeless
-    private Map<TacFunction, List<CallPreperation>> functionCalls;
+    private Map<TacFunction, List<CallPreparation>> functionCalls;
     // maps functions AND methods to a list of method calls (for backpatching),
     // except for those method calls for which backpatching is known to be hopeless
-    private Map<TacFunction, List<CallPreperation>> methodCalls;
+    private Map<TacFunction, List<CallPreparation>> methodCalls;
 
     // switch indicating whether special node markers (~_) should be
     // considered
@@ -1813,7 +1813,7 @@ public class TacConverter {
         TacFunction enclosingFunction = this.functionStack.getLast();
 
         // create nodes
-        CallPreperation prep = new CallPreperation(parseNode);
+        CallPreparation prep = new CallPreparation(parseNode);
         Call call = new Call(
             funcNameLit, calledFunction, parseNode, enclosingFunction,
             returnVariable, tempPlace, paramList, object);
@@ -1838,8 +1838,8 @@ public class TacConverter {
 
 //  ********************************************************************************
 
-    public void addFunctionCall(TacFunction enclosingFunction, CallPreperation prepNode) {
-        List<CallPreperation> nodeList = this.functionCalls.get(enclosingFunction);
+    public void addFunctionCall(TacFunction enclosingFunction, CallPreparation prepNode) {
+        List<CallPreparation> nodeList = this.functionCalls.get(enclosingFunction);
         if (nodeList == null) {
             nodeList = new LinkedList<>();
             this.functionCalls.put(enclosingFunction, nodeList);
@@ -1847,8 +1847,8 @@ public class TacConverter {
         nodeList.add(prepNode);
     }
 
-    public void addFunctionCalls(TacFunction enclosingFunction, List<CallPreperation> prepNodes) {
-        List<CallPreperation> nodeList = this.functionCalls.get(enclosingFunction);
+    public void addFunctionCalls(TacFunction enclosingFunction, List<CallPreparation> prepNodes) {
+        List<CallPreparation> nodeList = this.functionCalls.get(enclosingFunction);
         if (nodeList == null) {
             nodeList = new LinkedList<>();
             this.functionCalls.put(enclosingFunction, nodeList);
@@ -1856,8 +1856,8 @@ public class TacConverter {
         nodeList.addAll(prepNodes);
     }
 
-    public List<CallPreperation> getFunctionCalls(TacFunction enclosingFunction) {
-        List<CallPreperation> retMe = this.functionCalls.get(enclosingFunction);
+    public List<CallPreparation> getFunctionCalls(TacFunction enclosingFunction) {
+        List<CallPreparation> retMe = this.functionCalls.get(enclosingFunction);
         if (retMe == null) {
             return Collections.emptyList();
         } else {
@@ -1867,8 +1867,8 @@ public class TacConverter {
 
 //  ********************************************************************************
 
-    public void addMethodCall(TacFunction enclosingFunction, CallPreperation prepNode) {
-        List<CallPreperation> nodeList = this.methodCalls.get(enclosingFunction);
+    public void addMethodCall(TacFunction enclosingFunction, CallPreparation prepNode) {
+        List<CallPreparation> nodeList = this.methodCalls.get(enclosingFunction);
         if (nodeList == null) {
             nodeList = new LinkedList<>();
             this.methodCalls.put(enclosingFunction, nodeList);
@@ -1876,8 +1876,8 @@ public class TacConverter {
         nodeList.add(prepNode);
     }
 
-    public void addMethodCalls(TacFunction enclosingFunction, List<CallPreperation> prepNodes) {
-        List<CallPreperation> nodeList = this.methodCalls.get(enclosingFunction);
+    public void addMethodCalls(TacFunction enclosingFunction, List<CallPreparation> prepNodes) {
+        List<CallPreparation> nodeList = this.methodCalls.get(enclosingFunction);
         if (nodeList == null) {
             nodeList = new LinkedList<>();
             this.methodCalls.put(enclosingFunction, nodeList);
@@ -1885,8 +1885,8 @@ public class TacConverter {
         nodeList.addAll(prepNodes);
     }
 
-    public List<CallPreperation> getMethodCalls(TacFunction enclosingFunction) {
-        List<CallPreperation> retMe = this.methodCalls.get(enclosingFunction);
+    public List<CallPreparation> getMethodCalls(TacFunction enclosingFunction) {
+        List<CallPreparation> retMe = this.methodCalls.get(enclosingFunction);
         if (retMe == null) {
             return Collections.emptyList();
         } else {
@@ -2214,8 +2214,8 @@ public class TacConverter {
                           TypeAnalysis typeAnalysis, CallGraph callGraph) {
 
         // method backpatching
-        for (List<CallPreperation> callList : this.methodCalls.values()) {
-            for (CallPreperation prepNode : callList) {
+        for (List<CallPreparation> callList : this.methodCalls.values()) {
+            for (CallPreparation prepNode : callList) {
 
                 Call callNode = prepNode.getCallNode();
                 CallReturn retNode = prepNode.getCallRetNode();
@@ -2359,8 +2359,8 @@ public class TacConverter {
         }
 
         // function backpatching
-        for (List<CallPreperation> callList : this.functionCalls.values()) {
-            for (CallPreperation prepNode : callList) {
+        for (List<CallPreparation> callList : this.functionCalls.values()) {
+            for (CallPreparation prepNode : callList) {
 
                 Call callNode = prepNode.getCallNode();
                 CallReturn retNode = (CallReturn) callNode.getOutEdge(0).getDest();
@@ -2452,7 +2452,7 @@ public class TacConverter {
         }
     }
 
-    private void replaceUnknownCall(CallPreperation prepNode,
+    private void replaceUnknownCall(CallPreparation prepNode,
                                     String functionName, boolean isMethod) {
 
         CallReturn callRet = prepNode.getCallRetNode();

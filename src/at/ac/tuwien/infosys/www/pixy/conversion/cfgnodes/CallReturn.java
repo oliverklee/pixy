@@ -30,8 +30,8 @@ public class CallReturn extends AbstractCfgNode {
         return this.getCallNode().getTempVar();
     }
 
-    public CallPreperation getCallPrepNode() {
-        return (CallPreperation) this.getPredecessor().getPredecessor();
+    public CallPreparation getCallPrepNode() {
+        return (CallPreparation) this.getPredecessor().getPredecessor();
     }
 
     public Call getCallNode() {

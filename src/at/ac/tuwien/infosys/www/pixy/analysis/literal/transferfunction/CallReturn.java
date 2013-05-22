@@ -9,7 +9,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.Literal;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreperation;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreparation;
 
 import java.util.*;
 
@@ -20,7 +20,7 @@ public class CallReturn extends TransferFunction {
     private InterproceduralAnalysisNode analysisNodeAtCallPrep;
     private TacFunction caller;
     private TacFunction callee;
-    private CallPreperation prepNode;
+    private CallPreparation prepNode;
     private at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallReturn retNode;
     private AliasAnalysis aliasAnalysis;
 
@@ -38,7 +38,7 @@ public class CallReturn extends TransferFunction {
         InterproceduralAnalysisNode analysisNodeAtCallPrep,
         TacFunction caller,
         TacFunction callee,
-        CallPreperation prepNode,
+        at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreparation prepNode,
         at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallReturn retNode,
         AliasAnalysis aliasAnalysis,
         LatticeElement bottom) {

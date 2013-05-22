@@ -77,7 +77,7 @@ public abstract class Analysis {
         } else if (cfgNodeX instanceof Isset) {
 
             return this.isset(cfgNodeX);
-        } else if (cfgNodeX instanceof CallPreperation) {
+        } else if (cfgNodeX instanceof CallPreparation) {
 
             return this.callPrep(cfgNodeX, traversedFunction);
         } else if (cfgNodeX instanceof CfgEntry) {

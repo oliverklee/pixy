@@ -9,7 +9,7 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallBuiltinFunction;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreperation;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreparation;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -294,11 +294,11 @@ public class FileAnalysis extends DependencyClient {
             String functionName = cfgNode.getFunctionName();
 
             checkForSinkHelper(functionName, cfgNode, cfgNode.getParamList(), traversedFunction, sinks);
-        } else if (cfgNodeX instanceof CallPreperation) {
+        } else if (cfgNodeX instanceof CallPreparation) {
 
             // user-defined custom sinks
 
-            CallPreperation cfgNode = (CallPreperation) cfgNodeX;
+            CallPreparation cfgNode = (CallPreparation) cfgNodeX;
             String functionName = cfgNode.getFunctionNamePlace().toString();
 
             checkForSinkHelper(functionName, cfgNode, cfgNode.getParamList(), traversedFunction, sinks);

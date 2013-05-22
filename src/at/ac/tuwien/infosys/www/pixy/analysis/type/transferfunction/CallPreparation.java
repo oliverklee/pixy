@@ -14,7 +14,7 @@ import java.util.ListIterator;
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class CallPreperation extends TransferFunction {
+public class CallPreparation extends TransferFunction {
     private List<TacActualParameter> actualParams;
     private List<TacFormalParameter> formalParams;
     private TacFunction caller;
@@ -25,7 +25,7 @@ public class CallPreperation extends TransferFunction {
 //  CONSTRUCTORS ********************************************************************
 //  *********************************************************************************
 
-    public CallPreperation(
+    public CallPreparation(
         List<TacActualParameter> actualParams, List<TacFormalParameter> formalParams, TacFunction caller, TacFunction callee,
         TypeAnalysis typeAnalysis
     ) {
