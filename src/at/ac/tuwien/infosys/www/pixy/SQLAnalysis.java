@@ -23,6 +23,9 @@ import java.util.*;
 /**
  * SQL Injection detection.
  *
+ * Note: This class will be instantiated via reflection in GenericTaintAnalysis.createAnalysis. It is registered in
+ * MyOptions.DependencyClientInformation.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class SQLAnalysis extends AbstractDependencyClient {

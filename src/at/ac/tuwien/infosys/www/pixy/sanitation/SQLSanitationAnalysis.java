@@ -17,6 +17,9 @@ import java.util.List;
 /**
  * SQL Injection detection (with precise sanitation detection).
  *
+ * Note: This class will be instantiated via reflection in GenericTaintAnalysis.createAnalysis. It is registered in
+ * MyOptions.DependencyClientInformation.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class SQLSanitationAnalysis extends AbstractSanitationAnalysis {

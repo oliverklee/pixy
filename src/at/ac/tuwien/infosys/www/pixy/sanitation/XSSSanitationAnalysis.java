@@ -17,6 +17,9 @@ import java.util.Set;
 /**
  * XSS detection.
  *
+ * Note: This class will be instantiated via reflection in GenericTaintAnalysis.createAnalysis. It is registered in
+ * MyOptions.DependencyClientInformation.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class XSSSanitationAnalysis extends AbstractSanitationAnalysis {

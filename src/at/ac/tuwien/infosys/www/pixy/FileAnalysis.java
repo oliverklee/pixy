@@ -20,6 +20,9 @@ import java.util.*;
 /**
  * This class extracts strings used in file access functions.
  *
+ * Note: This class will be instantiated via reflection in GenericTaintAnalysis.createAnalysis. It is registered in
+ * MyOptions.DependencyClientInformation.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class FileAnalysis extends AbstractDependencyClient {
