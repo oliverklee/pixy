@@ -29,7 +29,9 @@
 
 package at.ac.tuwien.infosys.www.pixy.automaton;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.Serializable;
 import java.util.*;
 
 /**

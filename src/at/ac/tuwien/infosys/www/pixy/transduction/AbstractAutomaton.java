@@ -1,10 +1,9 @@
 package at.ac.tuwien.infosys.www.pixy.transduction;
 
-import rationals.State;
-import rationals.Transition;
-
-import java.io.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
