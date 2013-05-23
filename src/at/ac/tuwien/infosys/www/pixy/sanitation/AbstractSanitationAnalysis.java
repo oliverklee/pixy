@@ -4,7 +4,7 @@ import at.ac.tuwien.infosys.www.pixy.AbstractDependencyClient;
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.Utils;
 import at.ac.tuwien.infosys.www.pixy.VulnerabilityInformation;
-import at.ac.tuwien.infosys.www.pixy.analysis.dependency.*;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
@@ -705,7 +705,6 @@ public abstract class AbstractSanitationAnalysis extends AbstractDependencyClien
 
     // helper class for exchanging information on whether to allow trimming
     private class TrimInfo {
-
         // these indices must be trimmed
         private List<Integer> trim;
         // these indices must not be trimmed
@@ -721,10 +720,6 @@ public abstract class AbstractSanitationAnalysis extends AbstractDependencyClien
 
         void setDefaultTrim(boolean defaultTrim) {
             this.defaultTrim = defaultTrim;
-        }
-
-        void addTrim(int i) {
-            this.trim.add(i);
         }
 
         void addNoTrim(int i) {

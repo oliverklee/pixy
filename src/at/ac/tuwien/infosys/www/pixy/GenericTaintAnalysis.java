@@ -1,9 +1,9 @@
 package at.ac.tuwien.infosys.www.pixy;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.globalsmodification.GlobalsModificationAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AbstractAnalysisType;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralWorklist;
-import at.ac.tuwien.infosys.www.pixy.analysis.globalsmodification.GlobalsModificationAnalysis;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
 
 import java.lang.reflect.Constructor;

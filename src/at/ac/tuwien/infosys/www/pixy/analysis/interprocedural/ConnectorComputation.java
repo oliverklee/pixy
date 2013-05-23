@@ -1,8 +1,8 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.interprocedural;
 
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
-import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.CallStringContext;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.CallString;
+import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.CallStringContext;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.EncodedCallStrings;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Call;
@@ -235,10 +235,6 @@ public class ConnectorComputation {
     // returns the number of contexts for the given function
     public int getNumContexts(TacFunction f) {
         return this.function2ECS.get(f).size();
-    }
-
-    public Map<Call, ConnectorFunction> getCall2ConnectorFunction() {
-        return this.call2ConnectorFunction;
     }
 
     public void stats(boolean verbose) {

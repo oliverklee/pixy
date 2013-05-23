@@ -49,10 +49,6 @@ public class TacClass {
         return this.parseNode.getFileName();
     }
 
-    public int getLine() {
-        return this.parseNode.getLinenoLeft();
-    }
-
     public String getLoc() {
         if (!MyOptions.optionB) {
             return this.parseNode.getFileName() + ":" + this.parseNode.getLinenoLeft();
@@ -64,25 +60,6 @@ public class TacClass {
     public void addMember(String name, ControlFlowGraph controlFlowGraph, AbstractTacPlace place) {
         TacMember member = new TacMember(name, controlFlowGraph, place);
         this.members.put(name, member);
-    }
-
-    public String dump() {
-        StringBuilder b = new StringBuilder();
-        b.append("Class ");
-        b.append(this.name);
-        b.append("\n");
-        b.append("Functions:\n");
-        for (String methodName : this.methods.keySet()) {
-            b.append(methodName);
-            b.append("\n");
-        }
-        b.append("Members:\n");
-        for (TacMember member : this.members.values()) {
-            b.append(member.dump());
-        }
-        b.append("\n");
-
-        return b.toString();
     }
 
 // TacMember (private class) *******************************************************
@@ -103,18 +80,6 @@ public class TacClass {
             this.name = name;
             this.controlFlowGraph = controlFlowGraph;
             this.place = place;
-        }
-
-        String getName() {
-            return this.name;
-        }
-
-        ControlFlowGraph getControlFlowGraph() {
-            return this.controlFlowGraph;
-        }
-
-        AbstractTacPlace getPlace() {
-            return this.place;
         }
 
         String dump() {

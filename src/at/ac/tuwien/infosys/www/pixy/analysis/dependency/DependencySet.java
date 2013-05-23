@@ -28,14 +28,6 @@ public class DependencySet implements Recyclable {
 //  CONSTRUCTORS *******************************************************************
 //  ********************************************************************************
 
-//  ********************************************************************************
-
-    private DependencySet() {
-        this.dependencyLabelSet = new HashSet<>();
-    }
-
-//  ********************************************************************************
-
     private DependencySet(DependencyLabel dependencyLabel) {
         this.dependencyLabelSet = new HashSet<>();
         this.dependencyLabelSet.add(dependencyLabel);

@@ -12,12 +12,6 @@ import java.util.List;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class CfgExit extends AbstractCfgNode {
-// CONSTRUCTORS ********************************************************************
-
-    public CfgExit() {
-        super();
-    }
-
     public CfgExit(ParseNode node) {
         super(node);
     }

@@ -148,13 +148,6 @@ public abstract class AbstractAnalysis {
         return this.functions;
     }
 
-//  size ***************************************************************************
-
-    // returns the number of cfgnode -> AbstractAnalysisNode mappings from AbstractAnalysisInformation
-    public int size() {
-        return this.genericAnalysisInformation.size();
-    }
-
 // getStartValue *******************************************************************
 
     public AbstractLatticeElement getStartValue() {

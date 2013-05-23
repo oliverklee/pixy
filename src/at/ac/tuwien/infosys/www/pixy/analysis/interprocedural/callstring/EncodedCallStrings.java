@@ -43,10 +43,6 @@ public class EncodedCallStrings {
         return this.callStrings.get(position);
     }
 
-    public List<CallString> getCallStrings() {
-        return this.callStrings;
-    }
-
     // appends the given call string and returns its index
     public int append(CallString appendMe) {
         int newIndex = this.callStrings.size();

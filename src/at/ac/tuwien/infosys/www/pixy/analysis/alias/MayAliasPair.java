@@ -43,10 +43,6 @@ public class MayAliasPair {
         return this.pair;
     }
 
-    public int size() {
-        return this.pair.size();
-    }
-
     // if the given variable is contained in this group and the other member
     // of the group is a global variable, this global variable is returned;
     // null otherwise
@@ -142,21 +138,6 @@ public class MayAliasPair {
 //  ********************************************************************************
 //  OTHER **************************************************************************
 //  ********************************************************************************
-
-    // returns true if this pair contains one local and one global variable;
-    // false otherwise
-    public boolean containsLocalAndGlobal() {
-        Iterator<Variable> iter = this.pair.iterator();
-        Variable firstVar = iter.next();
-        Variable secondVar = iter.next();
-        if (firstVar.isLocal()) {
-            return secondVar.isGlobal();
-        } else if (firstVar.isGlobal()) {
-            return secondVar.isLocal();
-        } else {
-            throw new RuntimeException("SNH");
-        }
-    }
 
     // returns true if at least one of the contained variables is a local
     // variable, and false otherwise

@@ -683,26 +683,6 @@ public class TacConverter {
         return retMe;
     }
 
-//  getSize ************************************************************************
-
-    // returns the sum of the sizes of the contained cfg's
-    public int getSize() {
-        int size = 0;
-        for (TacFunction function : this.userFunctions.values()) {
-            size += function.getControlFlowGraph().size();
-        }
-        for (TacFunction function : this.getMethods()) {
-            size += function.getControlFlowGraph().size();
-        }
-        return size;
-    }
-
-//  ********************************************************************************
-
-    public File getFile() {
-        return this.file;
-    }
-
 // getUserFunctions ****************************************************************
 
     public Map<String, TacFunction> getUserFunctions() {
@@ -727,12 +707,6 @@ public class TacConverter {
         return this.superSymbolTable;
     }
 
-// getSpecialSymbolTable ***********************************************************
-
-    SymbolTable getSpecialSymbolTable() {
-        return this.specialSymbolTable;
-    }
-
 // getConstantsTable ***************************************************************
 
     public ConstantsTable getConstantsTable() {
@@ -755,24 +729,6 @@ public class TacConverter {
         placesList.addAll(this.superSymbolTable.getVariables().values());
         placesList.addAll(this.specialSymbolTable.getVariables().values());
         return placesList;
-    }
-
-//  getNumberOfVariables ***********************************************************
-
-    // returns the number of variables used by the programmer (i.e. those variables
-    // that are explicitly mentioned in the source code)
-    public int getNumberOfVariables() {
-
-        int varNum = 0;
-        List<Variable> varList = this.getVariablesList();
-        for (Variable var : varList) {
-            if (var.isTemp()) {
-                continue;
-            }
-            varNum++;
-        }
-
-        return varNum;
     }
 
 // stats ***************************************************************************
@@ -865,10 +821,6 @@ public class TacConverter {
         this.hotspots.put(node.getHotspotId(), node);
     }
 
-    public void addIncludeNode(Include node) {
-        this.includeNodes.add(node);
-    }
-
 // getVariablesList ****************************************************************
 
     // returns a list containing all variables
@@ -905,47 +857,6 @@ public class TacConverter {
         TacFunction function = this.userFunctions.get(functionName);
         Variable retMe = function.getVariable(varName);
 
-        return retMe;
-    }
-
-//  getMethodVariable **************************************************************
-
-    // returns the variable with the given name that is local to the
-    // given method (NOT function); throws an exception if it doesn't exist;
-    // only used by testcases
-    public Variable getMethodVariable(String functionName, String varName) {
-        Map<String, TacFunction> class2Method = this.userMethods.get(functionName);
-        if (class2Method == null || class2Method.size() != 1) {
-            throw new RuntimeException("Method " +
-                functionName + " either does not exist or has duplicates");
-        }
-        TacFunction method = class2Method.values().iterator().next();
-        Variable retMe = method.getVariable(varName);
-        if (retMe == null) {
-            throw new RuntimeException("Variable " + varName + " in function " +
-                functionName + " does not exist");
-        }
-        return retMe;
-    }
-
-//  getConstant ********************************************************************
-
-    // returns the constant with the given name;
-    // throws an exception if it doesn't exist
-    public Constant getConstant(String constName) {
-        Constant retMe = this.constantsTable.getConstant(constName);
-        if (retMe == null) {
-            throw new RuntimeException("Constant " + constName + " does not exist");
-        }
-        return retMe;
-    }
-
-//  getConstantGraceful ************************************************************
-
-    // returns the constant with the given name;
-    // throws an exception if it doesn't exist
-    public Constant getConstantGraceful(String constName) {
-        Constant retMe = this.constantsTable.getConstant(constName);
         return retMe;
     }
 

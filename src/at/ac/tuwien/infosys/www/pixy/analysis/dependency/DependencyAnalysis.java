@@ -14,10 +14,10 @@ import at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.Define
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.Isset;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.Tester;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.Unset;
+import at.ac.tuwien.infosys.www.pixy.analysis.globalsmodification.GlobalsModificationAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.*;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.CallStringAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.globalsmodification.GlobalsModificationAnalysis;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallBuiltinFunction;
@@ -417,12 +417,6 @@ public class DependencyAnalysis extends AbstractInterproceduralAnalysis {
         return retMe;
     }
 
-//  *********************************************************************************
-
-    public TacConverter getTac() {
-        return this.tac;
-    }
-
 // getDependencyGraphs ********************************************************************
 
     // returns the dependency graphs for all given sinks;
@@ -490,37 +484,10 @@ public class DependencyAnalysis extends AbstractInterproceduralAnalysis {
         return retMe;
     }
 
-//  detectVulns *********************************************************************
-
-    // call this method when the analysis is finished to detect vulnerabilities
-    public void detectVulns() {
-        throw new RuntimeException("dummy method");
-    }
-
 //  recycle ************************************************************************
 
     public AbstractLatticeElement recycle(AbstractLatticeElement recycleMe) {
         return this.repos.recycle(recycleMe);
-    }
-
-//  getMainFunction ****************************************************************
-
-    public TacFunction getMainFunction() {
-        return this.tac.getMainFunction();
-    }
-
-//  clean **************************************************************************
-
-    // performs post-analysis cleanup operations to save memory
-    public void clean() {
-        // although we don't perform recycling during the analysis, we
-        // do perform recycling for folding & cleaning; otherwise, cleaning
-        // could result in bigger memory consumption than before
-        if (this.finishedDetection) {
-            this.interproceduralAnalysisInformation.foldRecycledAndClean(this);
-        } else {
-            throw new RuntimeException("Refusing to clean extaint analysis: no detection yet");
-        }
     }
 
 //  ********************************************************************************

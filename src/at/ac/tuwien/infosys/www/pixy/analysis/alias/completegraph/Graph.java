@@ -40,10 +40,6 @@ public class Graph {
         return newNode;
     }
 
-    public Node getNode(Variable label) {
-        return this.label2nodes.get(label);
-    }
-
     public void drawFirstScc(Set<Variable> varSet) {
         Set<Variable> fromVarSet = varSet;
         Set<Variable> toVarSet = new HashSet<>(fromVarSet);

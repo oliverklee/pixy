@@ -147,11 +147,6 @@ public class TacFunction {
         return this.parseNode.getLoc();
     }
 
-    // returns the line number of the contained controlFlowGraph's head
-    public int getLine() {
-        return this.controlFlowGraph.getHead().getOrigLineno();
-    }
-
     public String getClassName() {
         return this.className;
     }

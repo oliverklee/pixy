@@ -30,7 +30,7 @@
 package at.ac.tuwien.infosys.www.pixy.automaton;
 
 /**
- * Automaton provider for <code>RegExp.</code>{@link RegExp#toAutomaton(AutomatonProvider)}
+ * Automaton provider.
  *
  * @author Anders M&oslash;ller &lt;<a href="mailto:amoeller@brics.dk">amoeller@brics.dk</a>&gt;
  */

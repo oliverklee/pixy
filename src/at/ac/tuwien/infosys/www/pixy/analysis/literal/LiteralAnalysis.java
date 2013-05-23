@@ -8,7 +8,6 @@ import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AbstractAnalysisType;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AbstractInterproceduralAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralWorklist;
-import at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction.*;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction.AssignArray;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction.AssignBinary;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction.AssignReference;
@@ -17,6 +16,7 @@ import at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction.AssignUna
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction.CallBuiltinFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction.CallPreparation;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction.CallReturn;
+import at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction.*;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction.Define;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction.Isset;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction.Tester;

@@ -1026,49 +1026,6 @@ public class DependencyLatticeElement extends AbstractLatticeElement {
         }
     }
 
-//  copyMainVariables **************************************************************
-
-    // copies the dependency/label mappings for all variables of the main function
-    public void copyMainVariables(DependencyLatticeElement origElement) {
-
-        // dependency mappings
-        for (Map.Entry<AbstractTacPlace, DependencySet> entry : origElement.getPlaceToDep().entrySet()) {
-            AbstractTacPlace origPlace = entry.getKey();
-            DependencySet origDep = entry.getValue();
-
-            // nothing to do for non-variables and non-main's
-            if (!(origPlace instanceof Variable)) {
-                continue;
-            }
-            Variable origVar = (Variable) origPlace;
-            SymbolTable symTab = origVar.getSymbolTable();
-            if (!symTab.isMain()) {
-                continue;
-            }
-
-            //System.out.println("setting dependency for " + origVar);
-            this.setDep(origVar, origDep);
-        }
-
-        // array label mappings
-        for (Map.Entry<Variable, DependencySet> entry : origElement.getArrayLabels().entrySet()) {
-            AbstractTacPlace origPlace = entry.getKey();
-            DependencySet origArrayLabel = entry.getValue();
-
-            // nothing to do for non-variables and non-main's
-            if (!(origPlace != null)) {
-                continue;
-            }
-            Variable origVar = (Variable) origPlace;
-            SymbolTable symTab = origVar.getSymbolTable();
-            if (!symTab.isMain()) {
-                continue;
-            }
-
-            this.setArrayLabel(origVar, origArrayLabel);
-        }
-    }
-
 //  copyLocals ********************************************************************
 
     // copies the non-default dependency/label mappings for local variables from origElement
@@ -1128,19 +1085,6 @@ public class DependencyLatticeElement extends AbstractLatticeElement {
         DependencySet dependencySet = DependencySet.create(dependencyLabel);
         this.setWholeTree(tempVar, dependencySet);
         this.setArrayLabel(tempVar, dependencySet);
-    }
-
-//  handleReturnValueUnknown *******************************************************
-
-    public void handleReturnValueUnknown(Variable tempVar, DependencySet dep,
-                                         DependencySet arrayLabel, Variable retVar) {
-
-        //System.out.println("callretunknown: " + tempVar + " -> " + dependency);
-
-        this.setWholeTree(tempVar, dep);
-        this.setArrayLabel(tempVar, arrayLabel);
-        this.placeToDep.remove(retVar);
-        this.arrayLabels.remove(retVar);
     }
 
 //  handleReturnValueBuiltin *******************************************************

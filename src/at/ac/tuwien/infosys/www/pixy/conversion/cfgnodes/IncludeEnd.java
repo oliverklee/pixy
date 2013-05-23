@@ -29,16 +29,8 @@ public class IncludeEnd extends AbstractCfgNode {
 
 //  GET ****************************************************************************
 
-    public File getFile() {
-        return this.file;
-    }
-
     public List<Variable> getVariables() {
         return Collections.emptyList();
-    }
-
-    public IncludeStart getPeer() {
-        return this.peer;
     }
 
     public boolean isPeer(AbstractCfgNode node) {
@@ -48,9 +40,5 @@ public class IncludeEnd extends AbstractCfgNode {
 //  SET ****************************************************************************
 
     public void replaceVariable(int index, Variable replacement) {
-    }
-
-    public void setPeer(IncludeStart peer) {
-        this.peer = peer;
     }
 }

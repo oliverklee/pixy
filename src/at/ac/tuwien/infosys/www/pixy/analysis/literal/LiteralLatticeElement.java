@@ -2,7 +2,6 @@ package at.ac.tuwien.infosys.www.pixy.analysis.literal;
 
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.Recyclable;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
@@ -1023,7 +1022,6 @@ public class LiteralLatticeElement extends AbstractLatticeElement {
 //  equals *************************************************************************
 
     public boolean structureEquals(Object obj) {
-
         if (obj == this) {
             return true;
         }
@@ -1039,7 +1037,6 @@ public class LiteralLatticeElement extends AbstractLatticeElement {
 //  equals *************************************************************************
 
     public boolean equals(Object obj) {
-
         if (obj == this) {
             return true;
         }
@@ -1052,16 +1049,9 @@ public class LiteralLatticeElement extends AbstractLatticeElement {
         return this.placeToLit.equals(comp.getPlaceToLit());
     }
 
-//  hashCode ***********************************************************************
-
     public int hashCode() {
         // EFF: perform hashCode caching
         return this.placeToLit.hashCode();
-    }
-
-    public boolean structureEquals(Recyclable compX) {
-        LiteralLatticeElement comp = (LiteralLatticeElement) compX;
-        return this.placeToLit.equals(comp.placeToLit);
     }
 
     public int structureHashCode() {

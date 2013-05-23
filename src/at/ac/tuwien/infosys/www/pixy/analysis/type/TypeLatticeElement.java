@@ -1,7 +1,10 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.type;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.conversion.*;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
+import at.ac.tuwien.infosys.www.pixy.conversion.SymbolTable;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
+import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Call;
 
 import java.util.*;
@@ -98,12 +101,6 @@ public class TypeLatticeElement extends AbstractLatticeElement {
 
     public void handleReturnValueBuiltin(Variable tempVar) {
         this.setType(tempVar, null);
-    }
-
-    // sets the dependency and array label of the given formal
-    public void setFormal(TacFormalParameter formalParam, AbstractTacPlace setTo) {
-        Variable formalVar = formalParam.getVariable();
-        this.assign(formalVar, setTo);
     }
 
     // resets all variables that belong to the given symbol table

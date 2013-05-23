@@ -1,6 +1,5 @@
 package at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes;
 
-import at.ac.tuwien.infosys.www.phpparser.ParseNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 import java.util.Collections;
@@ -17,10 +16,6 @@ public class Empty extends AbstractCfgNode {
         // empty CFG nodes will be deleted from the CFG, so their ID's can be
         // recycled; TOO DANGEROUS TO DO IT HERE! better: additional pass over
         // all CFGs
-    }
-
-    public Empty(ParseNode parseNode) {
-        super(parseNode);
     }
 
 //  GET ****************************************************************************

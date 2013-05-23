@@ -15,27 +15,6 @@ import java.util.Set;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class MyTransducer extends AbstractAutomaton {
-    // constructs a transducer from the given automaton by duplicating
-    // the input labels into output labels.
-    public MyTransducer(MyAcceptor orig) {
-
-        // start by cloning
-        super(orig);
-
-        // transform transition labels
-        Set<MyTransition> origDelta = this.getDelta();
-        this.clearTransitions();
-        for (MyTransition t : origDelta) {
-            MyTransducerRelation tr = new MyTransducerRelation(t.getLabel(), t.getLabel());
-            this.addTransition(new MyTransition(t.getStart(), tr, t.getEnd()));
-        }
-    }
-
-    // clones the given transducer
-    public MyTransducer(MyTransducer orig) {
-        super(orig);
-    }
-
     public MyTransducer(rationals.transductions.TransducerNivat a) {
         super();
 
@@ -57,61 +36,6 @@ public class MyTransducer extends AbstractAutomaton {
                 new MyTransducerRelation(origtr.getIn(), origtr.getOut()),
                 map.get(t.end())));
         }
-    }
-
-    // label2Int: input/output label -> Integer
-    public void toFsmFile(String filename, Map<Object, Integer> label2Int)
-        throws IOException {
-
-        Writer writer = new FileWriter(filename + ".txt");
-
-        int i = 1 + label2Int.size();
-        Set<MyTransition> delta = this.getDelta();
-        for (MyTransition t : delta) {
-            MyTransducerRelation rel = (MyTransducerRelation) t.getLabel();
-            Object inLabel = rel.getIn();
-            Object outLabel = rel.getOut();
-            if (inLabel != null) {
-                if (label2Int.get(inLabel) == null) {
-                    label2Int.put(inLabel, i++);
-                }
-            }
-            if (outLabel != null) {
-                if (label2Int.get(outLabel) == null) {
-                    label2Int.put(outLabel, i++);
-                }
-            }
-        }
-
-        String eps = "EPS";
-
-        // print symbols file
-        Writer symWriter = new FileWriter(filename + ".sym");
-        symWriter.write(eps + " 0\n");
-        for (Map.Entry<Object, Integer> entry : label2Int.entrySet()) {
-            symWriter.write(entry.getKey() + " " + entry.getValue() + "\n");
-        }
-        symWriter.close();
-
-        // print transitions starting from the initial state
-        for (MyTransition t : this.getOutgoingTransitions(this.getInitial())) {
-            writeTransition(t, writer, eps);
-        }
-
-        // print remaining transitions
-        for (MyTransition t : delta) {
-            if (t.getStart().isInitial()) {
-                continue;
-            }
-            writeTransition(t, writer, eps);
-        }
-
-        // print final states
-        for (MyState state : this.getTerminals()) {
-            writer.write(state + "\n");
-        }
-
-        writer.close();
     }
 
     // you can use this if you already have the symbols

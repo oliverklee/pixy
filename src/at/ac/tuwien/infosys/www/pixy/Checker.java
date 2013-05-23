@@ -3,13 +3,13 @@ package at.ac.tuwien.infosys.www.pixy;
 import at.ac.tuwien.infosys.www.phpparser.ParseTree;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.DummyAliasAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.globalsmodification.GlobalsModificationAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.inclusiondominator.InclusionDominatorAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.*;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.CallStringAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.functional.FunctionalAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.DummyLiteralAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.globalsmodification.GlobalsModificationAnalysis;
 import at.ac.tuwien.infosys.www.pixy.conversion.InternalStrings;
 import at.ac.tuwien.infosys.www.pixy.conversion.ProgramConverter;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
@@ -221,15 +221,6 @@ public final class Checker {
         } catch (IOException e) {
             Utils.bail("File not found: " + fileName);
         }
-    }
-
-//  ********************************************************************************
-//  SET ****************************************************************************
-//  ********************************************************************************
-
-    // adjust the kSize for call-string analyses
-    public void setKSize(int kSize) {
-        this.kSize = kSize;
     }
 
 //  ********************************************************************************
@@ -516,37 +507,5 @@ public final class Checker {
         gta.analyze();
 
         System.out.println("\nFinished.");
-    }
-
-//  analyzeIncDom ******************************************************************
-
-    InclusionDominatorAnalysis analyzeIncDom(TacFunction function) {
-
-        // ***********************************
-        // PERFORM INCLUDE DOMINATOR ANALYSIS
-        // ***********************************
-
-        System.out.println("\n*** initializing inclusiondominator analysis ***\n");
-        this.inclusionDominatorAnalysis = new InclusionDominatorAnalysis(function);
-        System.out.println("\n*** performing inclusiondominator analysis ***\n");
-        this.inclusionDominatorAnalysis.analyze();
-
-        return this.inclusionDominatorAnalysis;
-    }
-
-//  report *************************************************************************
-
-    public static void report() {
-
-        System.gc();
-        System.gc();
-        System.gc();
-
-        Runtime rt = Runtime.getRuntime();
-        long totalMem = rt.totalMemory();
-        long freeMem = rt.freeMemory();
-        long usedMem = totalMem - freeMem;
-
-        System.out.println("Memory used: " + usedMem);
     }
 }

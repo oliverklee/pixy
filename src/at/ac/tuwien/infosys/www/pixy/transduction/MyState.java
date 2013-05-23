@@ -16,12 +16,6 @@ public class MyState {
         this.terminal = terminal;
     }
 
-    MyState(MyState orig) {
-        this.i = orig.i;
-        this.initial = orig.initial;
-        this.terminal = orig.terminal;
-    }
-
     public void setInitial(boolean initial) {
         this.initial = initial;
     }

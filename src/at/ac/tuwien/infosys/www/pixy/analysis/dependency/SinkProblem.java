@@ -29,8 +29,4 @@ public class SinkProblem {
     public AbstractTacPlace getPlace() {
         return this.place;
     }
-
-    public List<AbstractCfgNode> getCallNodes() {
-        return this.callNodes;
-    }
 }

@@ -57,24 +57,6 @@ public class StatePair {
     }
 
     /**
-     * Returns first component of this pair.
-     *
-     * @return first state
-     */
-    public State getFirstState() {
-        return s1;
-    }
-
-    /**
-     * Returns second component of this pair.
-     *
-     * @return second state
-     */
-    public State getSecondState() {
-        return s2;
-    }
-
-    /**
      * Checks for equality.
      *
      * @param obj object to compare with

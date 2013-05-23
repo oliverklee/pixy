@@ -69,13 +69,6 @@ public class DependencyLabel implements Recyclable {
 
 //  ********************************************************************************
 
-    // only needed by JUnit tests
-    public boolean contains(int line) {
-        return this.cfgNode != null && (this.cfgNode.getOrigLineno() == line);
-    }
-
-//  ********************************************************************************
-
     public boolean structureEquals(Object compX) {
         if (compX == this) {
             return true;

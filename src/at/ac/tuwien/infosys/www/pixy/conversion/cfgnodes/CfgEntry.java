@@ -10,14 +10,6 @@ import java.util.List;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class CfgEntry extends AbstractCfgNode {
-// CONSTRUCTORS ********************************************************************
-
-    // necessary constructor for special functions (have no associated
-    // parse node)
-    public CfgEntry() {
-        super();
-    }
-
     public CfgEntry(ParseNode node) {
         super(node);
     }

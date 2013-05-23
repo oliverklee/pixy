@@ -1,7 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes;
 
 import at.ac.tuwien.infosys.www.phpparser.ParseNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParameter;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
 import java.util.Collections;
@@ -36,10 +35,6 @@ public class CallReturn extends AbstractCfgNode {
 
     public Call getCallNode() {
         return (Call) this.getPredecessor();
-    }
-
-    List<TacActualParameter> getParamsList() {
-        return this.getCallPrepNode().getParamList();
     }
 
     // not relevant for globals replacement

@@ -9,17 +9,11 @@ import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AbstractInterproce
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AbstractInterproceduralAnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralWorklist;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.transferfunction.*;
-import at.ac.tuwien.infosys.www.pixy.analysis.type.transferfunction.AssignArray;
-import at.ac.tuwien.infosys.www.pixy.analysis.type.transferfunction.AssignBinary;
-import at.ac.tuwien.infosys.www.pixy.analysis.type.transferfunction.AssignReference;
-import at.ac.tuwien.infosys.www.pixy.analysis.type.transferfunction.AssignSimple;
-import at.ac.tuwien.infosys.www.pixy.analysis.type.transferfunction.AssignUnary;
-import at.ac.tuwien.infosys.www.pixy.analysis.type.transferfunction.CallPreparation;
-import at.ac.tuwien.infosys.www.pixy.analysis.type.transferfunction.CallReturn;
-import at.ac.tuwien.infosys.www.pixy.analysis.type.transferfunction.Isset;
-import at.ac.tuwien.infosys.www.pixy.analysis.type.transferfunction.Unset;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.*;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Call;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallBuiltinFunction;
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.If;
 
 import java.util.Collection;
 import java.util.List;

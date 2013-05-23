@@ -332,20 +332,6 @@ public abstract class AbstractAutomaton {
 
 //  ********************************************************************************
 
-    // removes the given transition
-    public void removeTransition(MyTransition t) {
-
-        // remove the transition from the out-map
-        Set<MyTransition> fromSet = this.state2trans.get(t.getStart());
-        fromSet.remove(t);
-
-        // remove the transition from the in-map
-        Set<MyTransition> toSet = this.reverseState2trans.get(t.getEnd());
-        toSet.remove(t);
-    }
-
-//  ********************************************************************************
-
     // removes the given state, together with all touching transitions;
     // not allowed for the initial state
     public void removeState(MyState state) {
@@ -440,22 +426,6 @@ public abstract class AbstractAutomaton {
     public void clearTransitions() {
         this.state2trans.clear();
         this.reverseState2trans.clear();
-    }
-
-//  ********************************************************************************
-
-    // makes the given state terminal;
-    // LATER: find a way how to disallow others to call setTerminal on the
-    // state directly; maybe: remove these booleans from State, such that
-    // everyone has to query the automaton in order to find out whether a
-    // state is final or not
-    public void setTerminal(MyState state, boolean terminal) {
-        state.setTerminal(terminal);
-        if (terminal) {
-            this.terminals.add(state);
-        } else {
-            this.terminals.remove(state);
-        }
     }
 
 //  ********************************************************************************

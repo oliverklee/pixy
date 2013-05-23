@@ -4,8 +4,9 @@ import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.GenericRepository;
 import at.ac.tuwien.infosys.www.pixy.analysis.TransferFunctionId;
-import at.ac.tuwien.infosys.www.pixy.analysis.alias.transferfunction.*;
+import at.ac.tuwien.infosys.www.pixy.analysis.alias.transferfunction.Assign;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.transferfunction.CallReturn;
+import at.ac.tuwien.infosys.www.pixy.analysis.alias.transferfunction.FunctionEntry;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.transferfunction.Unset;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AbstractAnalysisType;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AbstractInterproceduralAnalysis;
@@ -13,7 +14,6 @@ import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AbstractInterproce
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralWorklistPoor;
 import at.ac.tuwien.infosys.www.pixy.conversion.*;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.*;
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreparation;
 
 import java.util.HashSet;
 import java.util.List;

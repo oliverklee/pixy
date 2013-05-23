@@ -40,10 +40,6 @@ public class FSAAutomaton {
         return new FSAAutomaton(this.str);
     }
 
-    public String getString() {
-        return this.str;
-    }
-
     // creates an automaton that accepts exactly the given string
     public static FSAAutomaton makeString(String s) {
 

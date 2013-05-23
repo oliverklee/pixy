@@ -23,13 +23,6 @@ public class EncapsList {
         this.encapsList = new LinkedList<>();
     }
 
-    void dump() {
-        System.out.println("here comes an encaps list:");
-        for (Object o : this.encapsList) {
-            System.out.println(o);
-        }
-    }
-
     void add(AbstractTacPlace place, ControlFlowGraph controlFlowGraph) {
         this.encapsList.add(place);
         this.encapsList.add(controlFlowGraph);

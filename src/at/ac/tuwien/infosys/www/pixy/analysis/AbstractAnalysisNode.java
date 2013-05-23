@@ -19,8 +19,4 @@ public abstract class AbstractAnalysisNode {
     public AbstractLatticeElement transfer(AbstractLatticeElement value) {
         return tf.transfer(value);
     }
-
-    public void setTransferFunction(AbstractTransferFunction tf) {
-        this.tf = tf;
-    }
 }

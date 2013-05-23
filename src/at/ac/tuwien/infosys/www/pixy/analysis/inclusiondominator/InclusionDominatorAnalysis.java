@@ -99,15 +99,6 @@ public class InclusionDominatorAnalysis extends AbstractIntraproceduralAnalysis 
 //  OTHER **************************************************************************
 //  ********************************************************************************
 
-//  computeChain *******************************************************************
-
-    // shortcut function
-    public static LinkedList<AbstractCfgNode> computeChain(TacFunction function, AbstractCfgNode cfgNode) {
-        InclusionDominatorAnalysis inclusionDominatorAnalysis = new InclusionDominatorAnalysis(function);
-        inclusionDominatorAnalysis.analyze();
-        return inclusionDominatorAnalysis.getIncludeChain(cfgNode);
-    }
-
 //  recycle ************************************************************************
 
     public AbstractLatticeElement recycle(AbstractLatticeElement recycleMe) {

@@ -48,14 +48,6 @@ public class Sink implements Comparable<Sink> {
         return this.lineNo;
     }
 
-    String getFileName() {
-        return this.cfgNode.getFileName();
-    }
-
-    TacFunction getFunction() {
-        return this.function;
-    }
-
 //  ********************************************************************************
 //  OTHER **************************************************************************
 //  ********************************************************************************

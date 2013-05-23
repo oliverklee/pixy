@@ -25,8 +25,4 @@ public class CompleteGraphNode extends AbstractNode {
     public String dotNameVerbose(boolean isModelled) {
         return dotName();
     }
-
-    public int getLine() {
-        return -1;
-    }
 }

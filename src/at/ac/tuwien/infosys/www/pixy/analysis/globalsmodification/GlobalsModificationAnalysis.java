@@ -171,21 +171,4 @@ public class GlobalsModificationAnalysis {
             modSet.add(modVar.getTopEnclosingArray());
         }
     }
-
-//  ********************************************************************************
-
-    public String dump() {
-        StringBuilder b = new StringBuilder();
-        for (Map.Entry<TacFunction, Set<AbstractTacPlace>> entry : this.func2Mod.entrySet()) {
-            b.append("** ");
-            b.append(entry.getKey().getName());
-            b.append("\n");
-            for (AbstractTacPlace mod : entry.getValue()) {
-                b.append(mod);
-                b.append(" ");
-            }
-            b.append("\n");
-        }
-        return b.toString();
-    }
 }

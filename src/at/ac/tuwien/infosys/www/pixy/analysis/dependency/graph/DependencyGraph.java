@@ -4,8 +4,8 @@ import at.ac.tuwien.infosys.www.pixy.DependencyClientInformation;
 import at.ac.tuwien.infosys.www.pixy.Dumper;
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyLabel;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyAnalysis;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyLabel;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencySet;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AbstractContext;
@@ -991,21 +991,6 @@ public class DependencyGraph {
 
 //  ********************************************************************************
 
-    // checks whether this graph is a tree or not
-    public boolean isTree() {
-        int edgeCount = 0;
-        for (Map.Entry<AbstractNode, List<AbstractNode>> entry : this.edges.entrySet()) {
-            edgeCount += entry.getValue().size();
-        }
-
-        System.out.println("nodes size: " + this.nodes.size());
-        System.out.println("edges size: " + edgeCount);
-
-        return this.nodes.size() == edgeCount + 1;
-    }
-
-//  ********************************************************************************
-
     // cycle detection
     public boolean hasCycles() {
 
@@ -1051,47 +1036,6 @@ public class DependencyGraph {
         colorMap.put(node, 2);
 
         return false;
-    }
-
-//  ********************************************************************************
-
-    // returns a map that gives the number of occurrences for each type of
-    // operation node
-    public Map<String, Integer> getOpMap() {
-        Map<String, Integer> retMe = new HashMap<>();
-        for (AbstractNode node : this.nodes.keySet()) {
-            if (!(node instanceof BuiltinFunctionNode)) {
-                continue;
-            }
-            BuiltinFunctionNode builtinFunctionNode = (BuiltinFunctionNode) node;
-            String opName = builtinFunctionNode.getName();
-            Integer opCount = retMe.get(opName);
-            if (opCount == null) {
-                opCount = 1;
-            } else {
-                opCount = opCount + 1;
-            }
-            retMe.put(opName, opCount);
-        }
-
-        return retMe;
-    }
-
-//  ********************************************************************************
-
-    // returns true if all leafs contain literal (string) places,
-    // and false otherwise
-    public boolean leafsAreStrings() {
-        for (AbstractNode node : this.getLeafNodes()) {
-            // if one of the leafs is not a string, we're done
-            if (!(node instanceof NormalNode)) {
-                return false;
-            }
-            if (!((NormalNode) node).isString()) {
-                return false;
-            }
-        }
-        return true;
     }
 
 //  ********************************************************************************
@@ -1589,12 +1533,6 @@ public class DependencyGraph {
         if (queue.size() > 0) {
             bfIteratorHelper(list, queue, visited, comp);
         }
-    }
-
-//  ********************************************************************************
-
-    public boolean isRoot(AbstractNode node) {
-        return node.equals(this.root);
     }
 
 //  ********************************************************************************

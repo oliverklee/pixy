@@ -19,10 +19,6 @@ class IncludeNode {
         }
     }
 
-    File getFile() {
-        return this.file;
-    }
-
     String getCanonicalPath() {
         return this.canonicalPath;
     }

@@ -190,11 +190,6 @@ public abstract class AbstractInterproceduralAnalysis extends AbstractAnalysis {
         return this.analysisType.useSummaries();
     }
 
-//  ********************************************************************************
-
-    private static void debug(String s) {
-    }
-
 //  analyze ************************************************************************
 
     // this method applies the worklist algorithm

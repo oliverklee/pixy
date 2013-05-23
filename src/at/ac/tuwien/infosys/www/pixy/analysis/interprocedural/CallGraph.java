@@ -102,19 +102,4 @@ public class CallGraph {
     public boolean reachable(TacFunction f) {
         return this.nodes.containsKey(f);
     }
-
-    public String dump() {
-        StringBuilder b = new StringBuilder();
-        for (CallGraphNode n : this.nodes.values()) {
-            b.append(n.getFunction().getName());
-            b.append("\n");
-            for (CallGraphNode callee : n.getSuccessors()) {
-                b.append("- ");
-                b.append(callee.getFunction().getName());
-                b.append("\n");
-            }
-        }
-
-        return b.toString();
-    }
 }

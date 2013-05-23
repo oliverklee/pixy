@@ -26,26 +26,6 @@ public class Utils {
         }
     }
 
-    // appends the given string to a file with the given name
-    // (provide full path)
-    public static void appendToFile(String s, String fileName) {
-        try {
-            Writer outWriter = new FileWriter(fileName, true);
-            outWriter.write("\n---------------------\n");
-            outWriter.write(s);
-            outWriter.close();
-        } catch (IOException e) {
-            System.out.println("Warning: Could not write to file " + fileName);
-            System.out.println(e.getMessage());
-        }
-    }
-
-    // reads the given file into a string and returns it
-    // (provide full path)
-    public static String readFile(String fileName) {
-        return readFile(new File(fileName));
-    }
-
     // reads the given file into a string and returns it
     public static String readFile(File file) {
 
@@ -118,28 +98,9 @@ public class Utils {
         System.exit(1);
     }
 
-    // converts an input stream to string;
-    // might lead to slight changes in linebreaks
-    public static String inputStreamToString(InputStream instream) {
-        StringBuilder retMe = new StringBuilder();
-        try {
-            BufferedReader inreader = new BufferedReader(new InputStreamReader(instream));
-            String line;
-            while ((line = inreader.readLine()) != null) {
-                retMe.append(line);
-                retMe.append("\n");
-            }
-            inreader.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return retMe.toString();
-    }
-
     // executes the given command and returns the output;
     // error output is written to a logfile
     public static String exec(String command) {
-
         String execErrorLog = MyOptions.graphPath + "/exec-errors.txt";
 
         StringBuilder retMe = new StringBuilder();
@@ -189,59 +150,5 @@ public class Utils {
         }
 
         return retMe.toString();
-    }
-
-    // saves typing during debugging
-    public static void e() {
-        throw new RuntimeException();
-    }
-
-    // feeds the given string into dotty
-    public static void quickDot(String s) {
-
-        try {
-            Process p = Runtime.getRuntime().exec("dotty -");
-
-            OutputStream outstream = p.getOutputStream();    // standard input of prog
-
-            Writer outwriter = new OutputStreamWriter(outstream);
-            outwriter.write(s);
-            outwriter.flush();
-            outwriter.close();
-            p.waitFor();
-
-            p.waitFor();
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-            throw new RuntimeException();
-        }
-    }
-
-    public static void copyFile(String src, String dst) {
-        // from "GoToJava"
-        try {
-            FileInputStream in = new FileInputStream(src);
-            FileOutputStream out = new FileOutputStream(dst);
-            byte[] buf = new byte[4096];
-            int len;
-            while ((len = in.read(buf)) > 0) {
-                out.write(buf, 0, len);
-            }
-            out.close();
-            in.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // deletes a directory, even if it is non-empty
-    public static void deleteDirectory(File dir) {
-        for (File entry : dir.listFiles()) {
-            if (entry.isDirectory()) {
-                deleteDirectory(entry);
-            }
-            entry.delete();
-        }
-        dir.delete();
     }
 }

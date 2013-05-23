@@ -1,9 +1,9 @@
 package at.ac.tuwien.infosys.www.pixy;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyAnalysis;
-import at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph.UninitializedNode;
-import at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph.DependencyGraph;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.Sink;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph.DependencyGraph;
+import at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph.UninitializedNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
 import junit.framework.Assert;
 import junit.framework.TestCase;

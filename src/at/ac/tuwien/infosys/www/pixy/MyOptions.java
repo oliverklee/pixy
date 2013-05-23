@@ -233,22 +233,6 @@ public class MyOptions {
         return false;
     }
 
-    // adds a sink (given by function name and sensitive indices) to the given sink map;
-    // if indices == null, it means that ALL indices are sensitive (necessary for functions
-    // with an arbitrary number of sensitive indices, e.g.: printf)
-    public static void addSink(Map<String, Set<Integer>> sinkMap, String name, int... indices) {
-        Set<Integer> indexSet;
-        if (indices == null) {
-            indexSet = null;
-        } else {
-            indexSet = new HashSet<>();
-            for (int index : indices) {
-                indexSet.add(index);
-            }
-        }
-        sinkMap.put(name, indexSet);
-    }
-
     // reads the given sink file, fills the given map with the contained info,
     // and returns the contained "sinkType" property (can also be null)
     private static String readSinkFile(String sinkFileName,

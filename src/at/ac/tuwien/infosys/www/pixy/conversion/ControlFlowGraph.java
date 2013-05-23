@@ -27,12 +27,6 @@ public final class ControlFlowGraph {
         this.tailEdgeType = CfgEdge.NORMAL_EDGE;
     }
 
-    // dummy constructor, can be used for "getFunction"
-    public ControlFlowGraph() {
-        this.tail = null;
-        this.tailEdgeType = 0;
-    }
-
 // GET *****************************************************************************
 
     public AbstractCfgNode getHead() {

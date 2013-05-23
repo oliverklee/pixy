@@ -85,14 +85,6 @@ public class TacAttributes {
         this.formalParamList = formalParamList;
     }
 
-    void addActualParam(TacActualParameter param) {
-        this.actualParamList.add(param);
-    }
-
-    void addFormalParam(TacFormalParameter param) {
-        this.formalParamList.add(param);
-    }
-
     public void setEncapsList(EncapsList encapsList) {
         this.encapsList = encapsList;
     }

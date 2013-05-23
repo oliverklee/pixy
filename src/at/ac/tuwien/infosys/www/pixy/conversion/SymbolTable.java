@@ -51,10 +51,6 @@ public class SymbolTable {
 // GET *****************************************************************************
 // *********************************************************************************
 
-    Variable getVariable(Variable variable) {
-        return this.variables.get(variable);
-    }
-
     public Variable getVariable(String varName) {
         return this.variables.get(new Variable(varName, this));
     }
@@ -69,10 +65,6 @@ public class SymbolTable {
 
     public String getName() {
         return this.name;
-    }
-
-    boolean isSuperSymTab() {
-        return this.isSuperSymTab;
     }
 
     int size() {

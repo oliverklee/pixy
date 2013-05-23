@@ -72,18 +72,6 @@ public class NormalNode extends AbstractNode {
 
 //  ********************************************************************************
 
-    public void setTainted(boolean isTainted) {
-        this.isTainted = isTainted;
-    }
-
-//  ********************************************************************************
-
-    public boolean isTainted() {
-        return this.isTainted;
-    }
-
-//  ********************************************************************************
-
     public boolean isString() {
         return this.place.isLiteral();
     }

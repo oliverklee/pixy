@@ -34,10 +34,6 @@ public class IncludeStart extends AbstractCfgNode {
         return Collections.emptyList();
     }
 
-    public IncludeEnd getPeer() {
-        return this.peer;
-    }
-
 //  SET ****************************************************************************
 
     public void replaceVariable(int index, Variable replacement) {

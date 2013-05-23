@@ -31,10 +31,6 @@ public class ConstantsTable {
         return this.constants.get(label);
     }
 
-    List<Constant> getInsensitiveGroup(String label) {
-        return this.insensitiveGroups.get(label.toLowerCase());
-    }
-
     public Map<String, Constant> getConstants() {
         return this.constants;
     }

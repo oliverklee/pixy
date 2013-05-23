@@ -51,12 +51,6 @@ public class BuiltinFunctionNode extends AbstractNode {
 
 //  ********************************************************************************
 
-    public String dotNameShortest() {
-        return "OP: " + Dumper.escapeDot(this.name, 0) + " (" + this.cfgNode.getOrigLineno() + ")";
-    }
-
-//  ********************************************************************************
-
     public String dotNameVerbose(boolean isModelled) {
 
         String retme = "";

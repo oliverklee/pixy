@@ -118,12 +118,6 @@ public class ProgramConverter {
         return this.baseTac;
     }
 
-//  getAllFiles ********************************************************************
-
-    public Set<File> getAllFiles() {
-        return this.allFiles;
-    }
-
 // getSuperSymbolTable *************************************************************
 
     public SymbolTable getSuperSymbolTable() {

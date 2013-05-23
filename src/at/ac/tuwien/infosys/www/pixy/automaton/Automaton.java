@@ -30,7 +30,6 @@
 package at.ac.tuwien.infosys.www.pixy.automaton;
 
 import java.io.*;
-import java.net.URL;
 import java.util.*;
 
 /**
@@ -277,174 +276,6 @@ public class Automaton
         return reverse;
     }
 
-    // converts this automaton to a regular expression (without touching the automaton)
-    // problems:
-    // generated regular expression is sometimes less readable than the underlying
-    // automaton; if the automaton is minimized, things get even worse
-    public RegExp toRegExp() {
-
-        // automaton to work on
-        Automaton work = this.clone();
-
-        // create an auxiliary map for incoming transitions: to -> fromSet
-        Set<State> states = work.getStates();
-        Map<State, Set<State>> reverse = this.getReverseTransitions(states);
-
-        // maps each state to a set of outgoing regex transitions;
-        // will be a replacement for "State.getTransitions"
-        Map<State, Set<TransitionRegExp>> state2Tre = new HashMap<>();
-        for (State r : states) {
-            state2Tre.put(r, new HashSet<TransitionRegExp>());
-        }
-        for (State r : states) {
-            for (Transition t : r.getTransitions()) {
-                state2Tre.get(r).add(new TransitionRegExp(t));
-            }
-        }
-
-        // we don't want an initial state that is also an accepting state
-        State initialState = work.initial;
-        if (work.initial.isAccept()) {
-            initialState = new State();
-            reverse.get(work.initial).add(initialState);
-            Set<TransitionRegExp> tres = new HashSet<>();
-            tres.add(new TransitionRegExp(new RegExp("()"), work.initial));
-            state2Tre.put(initialState, tres);
-        }
-
-        // add unique accepting state
-        State newAccept = new State();
-        newAccept.accept = true;
-        Set<State> oldAccepts = work.getAcceptStates();
-        reverse.put(newAccept, oldAccepts);
-        for (State oldAccept : oldAccepts) {
-            state2Tre.get(oldAccept).add(new TransitionRegExp(new RegExp("()"), newAccept));
-            oldAccept.accept = false;
-        }
-
-        // for each state...
-        for (State state_s : work.getStates()) {
-
-            // do not eliminate the accept or initial state
-            if (state_s.isAccept()) {
-                continue;
-            }
-            if (state_s.equals(initialState)) {
-                continue;
-            }
-
-            // determine loop regex
-            RegExp regexp_s = RegExp.makeEmpty();
-            for (TransitionRegExp t : state2Tre.get(state_s)) {
-                if (t.to.equals(state_s)) {
-                    regexp_s = RegExp.makeUnion(regexp_s, t.regExp);
-                }
-            }
-
-            // for all predecessor states (except loops) of s
-            for (State state_qi : reverse.get(state_s)) {
-
-                if (state_qi.equals(state_s)) {
-                    continue;
-                }
-
-                if (state2Tre.get(state_qi) == null) {
-                    System.out.println(state_qi);
-                    throw new RuntimeException("SNH");
-                }
-
-                RegExp regexp_qi = RegExp.makeEmpty();
-                for (TransitionRegExp t : state2Tre.get(state_qi)) {
-                    if (t.to.equals(state_s)) {
-                        regexp_qi = RegExp.makeUnion(regexp_qi, t.regExp);
-                    }
-                }
-
-                // for all successor states (except loops) of s
-                for (TransitionRegExp trans_pj : state2Tre.get(state_s)) {
-                    State state_pj = trans_pj.to;
-
-                    RegExp regexp_rij = RegExp.makeEmpty();
-                    for (TransitionRegExp t : state2Tre.get(state_qi)) {
-                        if (t.to.equals(state_pj)) {
-                            regexp_rij = RegExp.makeUnion(regexp_rij, t.regExp);
-                        }
-                    }
-
-                    RegExp regexp_pj = trans_pj.regExp;
-
-                    RegExp regexp_total = RegExp.makeRepeat(regexp_s);
-                    regexp_total = RegExp.makeConcatenation(regexp_qi, regexp_total);
-                    regexp_total = RegExp.makeConcatenation(regexp_total, regexp_pj);
-                    regexp_total = RegExp.makeUnion(regexp_rij, regexp_total);
-                    TransitionRegExp trans_total = new TransitionRegExp(regexp_total, state_pj);
-
-                    // add this regexp transition from qi to pj
-
-                    if (reverse.get(state_pj) == null) {
-                        System.out.println("not there: " + state_pj.toString());
-                        throw new RuntimeException("SNH");
-                    }
-
-                    state2Tre.get(state_qi).add(trans_total);
-                    reverse.get(state_pj).add(state_qi);
-                }
-            } // end "for each predecessor"
-
-            // we have now processed all incoming and outgoing edges,
-            // so we can remove the current state
-
-            Set<TransitionRegExp> outTranss = state2Tre.get(state_s);
-            for (TransitionRegExp outTrans : outTranss) {
-                State succ = outTrans.to;
-                reverse.get(succ).remove(state_s);
-            }
-
-            Set<State> preStates = reverse.get(state_s);
-            for (State preState : preStates) {
-                Set<TransitionRegExp> preTranss = state2Tre.get(preState);
-                for (Iterator<TransitionRegExp> iter = preTranss.iterator(); iter.hasNext(); ) {
-                    TransitionRegExp preTrans = iter.next();
-                    if (preTrans.to.equals(state_s)) {
-                        iter.remove();
-                    }
-                }
-            }
-
-            state2Tre.remove(state_s);
-            reverse.remove(state_s);
-        } // end "for each state"
-
-        Set<TransitionRegExp> initialTrans = state2Tre.get(initialState);
-        RegExp retMe = RegExp.makeEmpty();
-        for (TransitionRegExp t : initialTrans) {
-            retMe = RegExp.makeUnion(retMe, t.regExp);
-        }
-        retMe.simplify();
-        return retMe;
-    }
-
-    /**
-     * Selects minimization algorithm (default: <code>MINIMIZE_HOPCROFT</code>).
-     *
-     * @param algorithm minimization algorithm
-     */
-    static public void setMinimization(int algorithm) {
-        minimization = algorithm;
-    }
-
-    /**
-     * Sets or resets minimize always flag.
-     * If this flag is set, then {@link #minimize()} will automatically
-     * be invoked after all operations that otherwise may produce non-minimal automata.
-     * By default, the flag is not set.
-     *
-     * @param flag if true, the flag is set
-     */
-    static public void setMinimizeAlways(boolean flag) {
-        minimize_always = flag;
-    }
-
     void checkMinimizeAlways() {
         if (minimize_always)
             minimize();
@@ -455,27 +286,6 @@ public class Automaton
     }
 
     /**
-     * Returns the singleton string for this automaton.
-     * An automaton that accepts exactly one string <i>may</i> be represented
-     * in singleton mode. In that case, this method may be used to obtain the string.
-     *
-     * @return string, null if this automaton is not in singleton mode.
-     */
-    public String getSingleton() {
-        return singleton;
-    }
-
-    /**
-     * Sets initial state.
-     *
-     * @param s state
-     */
-    public void setInitialState(State s) {
-        initial = s;
-        singleton = null;
-    }
-
-    /**
      * Gets initial state.
      *
      * @return state
@@ -483,47 +293,6 @@ public class Automaton
     public State getInitialState() {
         expandSingleton();
         return initial;
-    }
-
-    /**
-     * Returns deterministic flag for this automaton.
-     *
-     * @return true if the automaton is definitely deterministic, false if the automaton
-     *         may be nondeterministic
-     */
-    public boolean isDeterministic() {
-        return deterministic;
-    }
-
-    /**
-     * Sets deterministic flag for this automaton.
-     * This method should (only) be used if automata are constructed manually.
-     *
-     * @param deterministic true if the automaton is definitely deterministic, false if the automaton
-     *                      may be nondeterministic
-     */
-    public void setDeterministic(boolean deterministic) {
-        this.deterministic = deterministic;
-    }
-
-    /**
-     * Associates extra information with this automaton.
-     *
-     * @param info extra information
-     */
-    public void setInfo(Object info) {
-        this.info = info;
-    }
-
-    /**
-     * Returns extra information associated with this automaton.
-     *
-     * @return extra information
-     *
-     * @see #setInfo(Object)
-     */
-    public Object getInfo() {
-        return info;
     }
 
     /**
@@ -731,18 +500,6 @@ public class Automaton
     }
 
     /**
-     * Restores representation invariant.
-     * This method must be invoked before any built-in automata operation is performed
-     * if automaton states or transitions are manipulated manually.
-     *
-     * @see #setDeterministic(boolean)
-     */
-    public void restoreInvariant() {
-        removeDeadTransitions();
-        hash_code = 0;
-    }
-
-    /**
      * Reduces this automaton.
      * An automaton is "reduced" by combining overlapping and adjacent edge intervals with same destination.
      */
@@ -799,16 +556,6 @@ public class Automaton
             points[n++] = m;
         Arrays.sort(points);
         return points;
-    }
-
-    /**
-     * Returns set of live states. A state is "live" if an accept state is reachable from it.
-     *
-     * @return set of {@link State} objects
-     */
-    public Set<State> getLiveStates() {
-        expandSingleton();
-        return getLiveStates(getStates());
     }
 
     Set<State> getLiveStates(Set<State> states) {
@@ -937,24 +684,6 @@ public class Automaton
         if (min <= max)
             s1.transitions.add(new Transition(min, max, s2));
         a.deterministic = true;
-        return a;
-    }
-
-    /**
-     * Returns new (deterministic) automaton that accepts a single character in the given set.
-     */
-    public static Automaton makeCharSet(String set) {
-        if (set.length() == 1)
-            return makeChar(set.charAt(0));
-        Automaton a = new Automaton();
-        State s1 = new State();
-        State s2 = new State();
-        a.initial = s1;
-        s2.accept = true;
-        for (int i = 0; i < set.length(); i++)
-            s1.transitions.add(new Transition(set.charAt(i), s2));
-        a.deterministic = true;
-        a.reduce();
         return a;
     }
 
@@ -1386,167 +1115,7 @@ public class Automaton
         return c;
     }
 
-    /**
-     * Returns a string that is an interleaving of strings that are accepted by
-     * <code>ca</code> but not by <code>a</code>. If no such string
-     * exists, null is returned. As a side-effect, <code>a</code> is determinized,
-     * if not already deterministic. Only interleavings that respect
-     * the suspend/resume markers (two BMP private code points) are considered if the markers are non-null.
-     * Also, interleavings never split surrogate pairs.
-     * <p/>
-     * Complexity: proportional to the product of the numbers of states (if <code>a</code>
-     * is already deterministic).
-     */
-    public static String shuffleSubsetOf(Collection<Automaton> ca, Automaton a, Character suspend_shuffle, Character resume_shuffle) {
-        if (ca.size() == 0)
-            return null;
-        if (ca.size() == 1) {
-            Automaton a1 = ca.iterator().next();
-            if (a1.isSingleton()) {
-                if (a.run(a1.singleton))
-                    return null;
-                else
-                    return a1.singleton;
-            }
-            if (a1 == a)
-                return null;
-        }
-        a.determinize();
-        Transition[][][] ca_transitions = new Transition[ca.size()][][];
-        int i = 0;
-        for (Automaton a1 : ca)
-            ca_transitions[i++] = getSortedTransitions(a1.getStates());
-        Transition[][] a_transitions = getSortedTransitions(a.getStates());
-        TransitionComparator tc = new TransitionComparator(false);
-        ShuffleConfiguration init = new ShuffleConfiguration(ca, a);
-        LinkedList<ShuffleConfiguration> pending = new LinkedList<>();
-        Set<ShuffleConfiguration> visited = new HashSet<>();
-        pending.add(init);
-        visited.add(init);
-        while (!pending.isEmpty()) {
-            ShuffleConfiguration c = pending.removeFirst();
-            boolean good = true;
-            for (int i1 = 0; i1 < ca.size(); i1++)
-                if (!c.ca_states[i1].accept) {
-                    good = false;
-                    break;
-                }
-            if (c.a_state.accept)
-                good = false;
-            if (good) {
-                StringBuilder sb = new StringBuilder();
-                while (c.prev != null) {
-                    sb.append(c.min);
-                    c = c.prev;
-                }
-                StringBuilder sb2 = new StringBuilder();
-                for (int j = sb.length() - 1; j >= 0; j--)
-                    sb2.append(sb.charAt(j));
-                return sb2.toString();
-            }
-            Transition[] ta2 = a_transitions[c.a_state.number];
-            for (int i1 = 0; i1 < ca.size(); i1++) {
-                if (c.shuffle_suspended)
-                    i1 = c.suspended1;
-                loop:
-                for (Transition t1 : ca_transitions[i1][c.ca_states[i1].number]) {
-                    List<Transition> lt = new ArrayList<>();
-                    int j = Arrays.binarySearch(ta2, t1, tc);
-                    if (j < 0)
-                        j = -j - 1;
-                    if (j > 0 && ta2[j - 1].max >= t1.min)
-                        j--;
-                    while (j < ta2.length) {
-                        Transition t2 = ta2[j++];
-                        char min = t1.min;
-                        char max = t1.max;
-                        if (t2.min > min)
-                            min = t2.min;
-                        if (t2.max < max)
-                            max = t2.max;
-                        if (min <= max) {
-                            add(suspend_shuffle, resume_shuffle, pending, visited, c, i1, t1, t2, min, max);
-                            lt.add(new Transition(min, max, null));
-                        } else
-                            break;
-                    }
-                    Transition[] at = lt.toArray(new Transition[lt.size()]);
-                    Arrays.sort(at, new TransitionComparator(false));
-                    char min = t1.min;
-                    for (Transition anAt : at) {
-                        if (anAt.min > min)
-                            break;
-                        if (anAt.max >= t1.max)
-                            continue loop;
-                        min = (char) (anAt.max + 1);
-                    }
-                    ShuffleConfiguration nc = new ShuffleConfiguration(c, i1, t1.to, min);
-                    StringBuilder sb = new StringBuilder();
-                    ShuffleConfiguration b = nc;
-                    while (b.prev != null) {
-                        sb.append(b.min);
-                        b = b.prev;
-                    }
-                    StringBuilder sb2 = new StringBuilder();
-                    for (int m = sb.length() - 1; m >= 0; m--)
-                        sb2.append(sb.charAt(m));
-                    if (c.shuffle_suspended)
-                        sb2.append(getShortestExample(nc.ca_states[c.suspended1], true, new HashMap<State, String>()));
-                    for (i1 = 0; i1 < ca.size(); i1++)
-                        if (!c.shuffle_suspended || i1 != c.suspended1)
-                            sb2.append(getShortestExample(nc.ca_states[i1], true, new HashMap<State, String>()));
-                    return sb2.toString();
-                }
-                if (c.shuffle_suspended)
-                    break;
-            }
-        }
-        return null;
-    }
-
-    private static void add(Character suspend_shuffle, Character resume_shuffle,
-                            LinkedList<ShuffleConfiguration> pending, Set<ShuffleConfiguration> visited,
-                            ShuffleConfiguration c, int i1, Transition t1, Transition t2, char min, char max) {
-        final char HIGH_SURROGATE_BEGIN = '\uD800';
-        final char HIGH_SURROGATE_END = '\uDBFF';
-        if (suspend_shuffle != null && min <= suspend_shuffle && suspend_shuffle <= max && min != max) {
-            if (min < suspend_shuffle)
-                add(suspend_shuffle, resume_shuffle, pending, visited, c, i1, t1, t2, min, (char) (suspend_shuffle - 1));
-            add(suspend_shuffle, resume_shuffle, pending, visited, c, i1, t1, t2, suspend_shuffle, suspend_shuffle);
-            if (suspend_shuffle < max)
-                add(suspend_shuffle, resume_shuffle, pending, visited, c, i1, t1, t2, (char) (suspend_shuffle + 1), max);
-        } else if (resume_shuffle != null && min <= resume_shuffle && resume_shuffle <= max && min != max) {
-            if (min < resume_shuffle)
-                add(suspend_shuffle, resume_shuffle, pending, visited, c, i1, t1, t2, min, (char) (resume_shuffle - 1));
-            add(suspend_shuffle, resume_shuffle, pending, visited, c, i1, t1, t2, resume_shuffle, resume_shuffle);
-            if (resume_shuffle < max)
-                add(suspend_shuffle, resume_shuffle, pending, visited, c, i1, t1, t2, (char) (resume_shuffle + 1), max);
-        } else if (min < HIGH_SURROGATE_BEGIN && max >= HIGH_SURROGATE_BEGIN) {
-            add(suspend_shuffle, resume_shuffle, pending, visited, c, i1, t1, t2, min, (char) (HIGH_SURROGATE_BEGIN - 1));
-            add(suspend_shuffle, resume_shuffle, pending, visited, c, i1, t1, t2, HIGH_SURROGATE_BEGIN, max);
-        } else if (min <= HIGH_SURROGATE_END && max > HIGH_SURROGATE_END) {
-            add(suspend_shuffle, resume_shuffle, pending, visited, c, i1, t1, t2, min, HIGH_SURROGATE_END);
-            add(suspend_shuffle, resume_shuffle, pending, visited, c, i1, t1, t2, (char) (HIGH_SURROGATE_END + 1), max);
-        } else {
-            ShuffleConfiguration nc = new ShuffleConfiguration(c, i1, t1.to, t2.to, min);
-            if (suspend_shuffle != null && min == suspend_shuffle) {
-                nc.shuffle_suspended = true;
-                nc.suspended1 = i1;
-            } else if (resume_shuffle != null && min == resume_shuffle)
-                nc.shuffle_suspended = false;
-            if (min >= HIGH_SURROGATE_BEGIN && min <= HIGH_SURROGATE_BEGIN) {
-                nc.shuffle_suspended = true;
-                nc.suspended1 = i1;
-                nc.surrogate = true;
-            }
-            if (!visited.contains(nc)) {
-                pending.add(nc);
-                visited.add(nc);
-            }
-        }
-    }
-
-    /**
+   /**
      * Returns new automaton that accepts the union of the languages of this and
      * the given automaton.
      * <p/>
@@ -2017,367 +1586,6 @@ public class Automaton
     }
 
     /**
-     * Returns automaton that accepts the strings in more than one way can be split into
-     * a left part being accepted by this automaton and a right part being accepted by
-     * the given automaton.
-     */
-    public Automaton overlap(Automaton a) {
-        Automaton a1 = cloneExpanded();
-        a1.acceptToAccept();
-        Automaton a2 = a.cloneExpanded();
-        a2.reverse();
-        a2.determinize();
-        a2.acceptToAccept();
-        a2.reverse();
-        a2.determinize();
-        Automaton y = a1.intersection(a2).minus(makeEmptyString()); // represents the overlap
-        Automaton b1 = this.concatenate(y).intersection(this).concatenate(makeAnyString());
-        Automaton b2 = makeAnyString().concatenate(y.concatenate(a).intersection(a));
-        Automaton c = this.concatenate(y.concatenate(a));
-        return b1.intersection(b2).intersection(c);
-    }
-
-    private void acceptToAccept() {
-        State s = new State();
-        for (State r : getAcceptStates())
-            s.addEpsilon(r);
-        initial = s;
-        deterministic = false;
-    }
-
-    /**
-     * Returns new automaton that accepts the single chars that occur
-     * in strings that are accepted by this automaton.
-     */
-    public Automaton singleChars() {
-        Automaton a = new Automaton();
-        State s = new State();
-        a.initial = s;
-        State q = new State();
-        q.accept = true;
-        if (isSingleton()) {
-            for (int i = 0; i < singleton.length(); i++)
-                s.transitions.add(new Transition(singleton.charAt(i), q));
-        } else {
-            for (State p : getStates())
-                for (Transition t : p.transitions)
-                    s.transitions.add(new Transition(t.min, t.max, q));
-        }
-        a.deterministic = true;
-        a.removeDeadTransitions();
-        return a;
-    }
-
-    private void addSetTransitions(State s, String set, State p) {
-        for (int n = 0; n < set.length(); n++)
-            s.transitions.add(new Transition(set.charAt(n), p));
-    }
-
-    /**
-     * Returns a new automaton that accepts the trimmed language of this
-     * automaton. The resulting automaton is constructed as follows: 1) Whenever
-     * a <code>c</code> character is allowed in the original automaton, one or
-     * more <code>set</code> characters are allowed in the new automaton. 2)
-     * The automaton is prefixed and postfixed with any number of
-     * <code>set</code> characters.
-     *
-     * @param set set of characters to be trimmed
-     * @param c   canonical trim character (assumed to be in <code>set</code>)
-     */
-    public Automaton trim(String set, char c) {
-        Automaton a = cloneExpanded();
-        State f = new State();
-        addSetTransitions(f, set, f);
-        f.accept = true;
-        for (State s : a.getStates()) {
-            State r = s.step(c);
-            if (r != null) {
-                // add inner
-                State q = new State();
-                addSetTransitions(q, set, q);
-                addSetTransitions(s, set, q);
-                q.addEpsilon(r);
-            }
-            // add postfix
-            if (s.accept)
-                s.addEpsilon(f);
-        }
-        // add prefix
-        State p = new State();
-        addSetTransitions(p, set, p);
-        p.addEpsilon(a.initial);
-        a.initial = p;
-        a.deterministic = false;
-        a.removeDeadTransitions();
-        a.checkMinimizeAlways();
-        return a;
-    }
-
-    /**
-     * Returns a new automaton that accepts the compressed language of this
-     * automaton. Whenever a <code>c</code> character is allowed in the
-     * original automaton, one or more <code>set</code> characters are allowed
-     * in the new automaton.
-     *
-     * @param set set of characters to be compressed
-     * @param c   canonical compress character (assumed to be in <code>set</code>)
-     */
-    public Automaton compress(String set, char c) {
-        Automaton a = cloneExpanded();
-        for (State s : a.getStates()) {
-            State r = s.step(c);
-            if (r != null) {
-                // add inner
-                State q = new State();
-                addSetTransitions(q, set, q);
-                addSetTransitions(s, set, q);
-                q.addEpsilon(r);
-            }
-        }
-        // add prefix
-        a.deterministic = false;
-        a.removeDeadTransitions();
-        a.checkMinimizeAlways();
-        return a;
-    }
-
-    /**
-     * Finds the largest entry whose value is less than or equal to c,
-     * or 0 if there is no such entry.
-     */
-    static int findIndex(char c, char[] points) {
-        int a = 0;
-        int b = points.length;
-        while (b - a > 1) {
-            int d = (a + b) / 2;
-            if (points[d] > c)
-                b = d;
-            else if (points[d] < c)
-                a = d;
-            else
-                return d;
-        }
-        return a;
-    }
-
-    /**
-     * Returns new automaton where all transition labels have been substituted.
-     * <p/>
-     * Each transition labeled <code>c</code> is changed to a set of
-     * transitions, one for each character in <code>map(c)</code>. If
-     * <code>map(c)</code> is null, then the transition is unchanged.
-     *
-     * @param map map from characters to sets of characters (where characters
-     *            are <code>Character</code> objects)
-     */
-    public Automaton subst(Map<Character, Set<Character>> map) {
-        if (map.isEmpty())
-            return clone();
-        Set<Character> ckeys = new TreeSet<>(map.keySet());
-        char[] keys = new char[ckeys.size()];
-        int j = 0;
-        for (Character c : ckeys)
-            keys[j++] = c;
-        Automaton a = cloneExpanded();
-        for (State s : a.getStates()) {
-            Set<Transition> st = s.transitions;
-            s.resetTransitions();
-            for (Transition t : st) {
-                int index = findIndex(t.min, keys);
-                while (t.min <= t.max) {
-                    if (keys[index] > t.min) {
-                        char m = (char) (keys[index] - 1);
-                        if (t.max < m)
-                            m = t.max;
-                        s.transitions.add(new Transition(t.min, m, t.to));
-                        if (m + 1 > Character.MAX_VALUE)
-                            break;
-                        t.min = (char) (m + 1);
-                    } else if (keys[index] < t.min) {
-                        char m;
-                        if (index + 1 < keys.length)
-                            m = (char) (keys[++index] - 1);
-                        else
-                            m = Character.MAX_VALUE;
-                        if (t.max < m)
-                            m = t.max;
-                        s.transitions.add(new Transition(t.min, m, t.to));
-                        if (m + 1 > Character.MAX_VALUE)
-                            break;
-                        t.min = (char) (m + 1);
-                    } else { // found t.min in substitution map
-                        for (Character c : map.get(t.min))
-                            s.transitions.add(new Transition(c, t.to));
-                        if (t.min + 1 > Character.MAX_VALUE)
-                            break;
-                        t.min++;
-                        if (index + 1 < keys.length && keys[index + 1] == t.min)
-                            index++;
-                    }
-                }
-            }
-        }
-        a.deterministic = false;
-        a.removeDeadTransitions();
-        a.checkMinimizeAlways();
-        return a;
-    }
-
-    /**
-     * Returns new automaton where all transitions of the given char are replaced by a string.
-     *
-     * @param c char
-     * @param s string
-     *
-     * @return new automaton
-     */
-    public Automaton subst(char c, String s) {
-        Automaton a = cloneExpanded();
-        Set<StatePair> epsilons = new HashSet<>();
-        for (State p : a.getStates()) {
-            Set<Transition> st = p.transitions;
-            p.resetTransitions();
-            for (Transition t : st)
-                if (t.max < c || t.min > c)
-                    p.transitions.add(t);
-                else {
-                    if (t.min < c)
-                        p.transitions.add(new Transition(t.min, (char) (c - 1), t.to));
-                    if (t.max > c)
-                        p.transitions.add(new Transition((char) (c + 1), t.max, t.to));
-                    if (s.length() == 0)
-                        epsilons.add(new StatePair(p, t.to));
-                    else {
-                        State q = p;
-                        for (int i = 0; i < s.length(); i++) {
-                            State r;
-                            if (i + 1 == s.length())
-                                r = t.to;
-                            else
-                                r = new State();
-                            q.transitions.add(new Transition(s.charAt(i), r));
-                            q = r;
-                        }
-                    }
-                }
-        }
-        a.addEpsilons(epsilons);
-        a.deterministic = false;
-        a.removeDeadTransitions();
-        a.checkMinimizeAlways();
-        return a;
-    }
-
-    /**
-     * Returns new automaton accepting the homomorphic image of this automaton
-     * using the given function.
-     * <p/>
-     * This method maps each transition label to a new value.
-     * <code>source</code> and <code>dest</code> are assumed to be arrays of
-     * same length, and <code>source</code> must be sorted in increasing order
-     * and contain no duplicates. <code>source</code> defines the starting
-     * points of char intervals, and the corresponding entries in
-     * <code>dest</code> define the starting points of corresponding new
-     * intervals.
-     */
-    public Automaton homomorph(char[] source, char[] dest) {
-        Automaton a = cloneExpanded();
-        for (State s : a.getStates()) {
-            Set<Transition> st = s.transitions;
-            s.resetTransitions();
-            for (Transition t : st) {
-                int min = t.min;
-                while (min <= t.max) {
-                    int n = findIndex((char) min, source);
-                    char nmin = (char) (dest[n] + min - source[n]);
-                    int end = (n + 1 == source.length) ? Character.MAX_VALUE : source[n + 1] - 1;
-                    int length;
-                    if (end < t.max)
-                        length = end + 1 - min;
-                    else
-                        length = t.max + 1 - min;
-                    s.transitions.add(new Transition(nmin, (char) (nmin + length - 1), t.to));
-                    min += length;
-                }
-            }
-        }
-        a.deterministic = false;
-        a.removeDeadTransitions();
-        a.checkMinimizeAlways();
-        return a;
-    }
-
-    /**
-     * Returns new automaton with projected alphabet. The new automaton accepts
-     * all strings that are projections of strings accepted by this automaton
-     * onto the given characters (represented by <code>Character</code>). If
-     * <code>null</code> is in the set, it abbreviates the intervals
-     * u0000-uDFFF and uF900-uFFFF (i.e., the non-private code points). It is
-     * assumed that all other characters from <code>chars</code> are in the
-     * interval uE000-uF8FF.
-     */
-    public Automaton projectChars(Set<Character> chars) {
-        Character[] c = chars.toArray(new Character[0]);
-        char[] cc = new char[c.length];
-        boolean normalchars = false;
-        for (int i = 0; i < c.length; i++)
-            if (c[i] == null)
-                normalchars = true;
-            else
-                cc[i] = c[i];
-        Arrays.sort(cc);
-        if (isSingleton()) {
-            for (int i = 0; i < singleton.length(); i++) {
-                char sc = singleton.charAt(i);
-                if (!(normalchars && (sc <= '\udfff' || sc >= '\uf900') || Arrays.binarySearch(cc, sc) >= 0))
-                    return Automaton.makeEmpty();
-            }
-            return clone();
-        } else {
-            HashSet<StatePair> epsilons = new HashSet<>();
-            Automaton a = cloneExpanded();
-            for (State s : a.getStates()) {
-                HashSet<Transition> new_transitions = new HashSet<>();
-                for (Transition t : s.transitions) {
-                    boolean addepsilon = false;
-                    if (t.min < '\uf900' && t.max > '\udfff') {
-                        int w1 = Arrays.binarySearch(cc, t.min > '\ue000' ? t.min : '\ue000');
-                        if (w1 < 0) {
-                            w1 = -w1 - 1;
-                            addepsilon = true;
-                        }
-                        int w2 = Arrays.binarySearch(cc, t.max < '\uf8ff' ? t.max : '\uf8ff');
-                        if (w2 < 0) {
-                            w2 = -w2 - 2;
-                            addepsilon = true;
-                        }
-                        for (int w = w1; w <= w2; w++) {
-                            new_transitions.add(new Transition(cc[w], t.to));
-                            if (w > w1 && cc[w - 1] + 1 != cc[w])
-                                addepsilon = true;
-                        }
-                    }
-                    if (normalchars) {
-                        if (t.min <= '\udfff')
-                            new_transitions.add(new Transition(t.min, t.max < '\udfff' ? t.max : '\udfff', t.to));
-                        if (t.max >= '\uf900')
-                            new_transitions.add(new Transition(t.min > '\uf900' ? t.min : '\uf900', t.max, t.to));
-                    } else if (t.min <= '\udfff' || t.max >= '\uf900')
-                        addepsilon = true;
-                    if (addepsilon)
-                        epsilons.add(new StatePair(s, t.to));
-                }
-                s.transitions = new_transitions;
-            }
-            a.reduce();
-            a.addEpsilons(epsilons);
-            a.removeDeadTransitions();
-            a.checkMinimizeAlways();
-            return a;
-        }
-    }
-
-    /**
      * Adds epsilon transitions to this automaton.
      * This method adds extra character interval transitions that are equivalent to the given
      * set of epsilon transitions.
@@ -2503,19 +1711,6 @@ public class Automaton
     }
 
     /**
-     * Returns true if this automaton accepts all strings.
-     */
-    public boolean isTotal() {
-        if (isSingleton())
-            return false;
-        if (initial.accept && initial.transitions.size() == 1) {
-            Transition t = initial.transitions.iterator().next();
-            return t.to == initial && t.min == Character.MIN_VALUE && t.max == Character.MAX_VALUE;
-        }
-        return false;
-    }
-
-    /**
      * Returns true if the language of this automaton is finite.
      */
     public boolean isFinite() {
@@ -2536,24 +1731,6 @@ public class Automaton
     }
 
     /**
-     * Returns set of accepted strings, assuming that at most <code>limit</code>
-     * strings are accepted. If more than <code>limit</code> strings are
-     * accepted, null is returned. If <code>limit</code>&lt;0, then this
-     * methods works like {@link #getFiniteStrings()}.
-     */
-    public Set<String> getFiniteStrings(int limit) {
-        HashSet<String> strings = new HashSet<>();
-        if (isSingleton()) {
-            if (limit > 0)
-                strings.add(singleton);
-            else
-                return null;
-        } else if (!getFiniteStrings(initial, new HashSet<State>(), strings, new StringBuilder(), limit))
-            return null;
-        return strings;
-    }
-
-    /**
      * Returns a shortest accepted/rejected string. If more than one string is
      * found, the lexicographically first is returned.
      *
@@ -2561,18 +1738,6 @@ public class Automaton
      *
      * @return the string, null if none found
      */
-    public String getShortestExample(boolean accepted) {
-        if (isSingleton()) {
-            if (accepted)
-                return singleton;
-            else if (singleton.length() > 0)
-                return "";
-            else
-                return "\u0000";
-        }
-        return getShortestExample(initial, accepted, new HashMap<State, String>());
-    }
-
     static String getShortestExample(State s, boolean accepted, Map<State, String> map) {
         if (s.accept == accepted)
             return "";
@@ -2731,64 +1896,6 @@ public class Automaton
         if (isSingleton() && a.isSingleton())
             return singleton.equals(a.singleton);
         return hashCode() == a.hashCode() && subsetOf(a) && a.subsetOf(this);
-    }
-
-    /**
-     * Returns new automaton that accepts the shuffle (interleaving) of
-     * the languages of this and the given automaton.
-     * As a side-effect, both this and the given automaton are determinized,
-     * if not already deterministic.
-     * <p/>
-     * Complexity: quadratic in number of states (if already deterministic).
-     * <p/>
-     * <dl><dt><b>Author:</b></dt><dd>Torben Ruby
-     * &lt;<a href="mailto:ruby@daimi.au.dk">ruby@daimi.au.dk</a>&gt;</dd></dl>
-     */
-    public Automaton shuffle(Automaton a) {
-        determinize();
-        a.determinize();
-        Transition[][] transitions1 = getSortedTransitions(getStates());
-        Transition[][] transitions2 = getSortedTransitions(a.getStates());
-        Automaton c = new Automaton();
-        LinkedList<StatePair> worklist = new LinkedList<>();
-        HashMap<StatePair, StatePair> newstates = new HashMap<>();
-        State s = new State();
-        c.initial = s;
-        StatePair p = new StatePair(s, initial, a.initial);
-        worklist.add(p);
-        newstates.put(p, p);
-        while (worklist.size() > 0) {
-            p = worklist.removeFirst();
-            p.s.accept = p.s1.accept && p.s2.accept;
-            Transition[] t1 = transitions1[p.s1.number];
-            for (Transition aT1 : t1) {
-                StatePair q = new StatePair(aT1.to, p.s2);
-                StatePair r = newstates.get(q);
-                if (r == null) {
-                    q.s = new State();
-                    worklist.add(q);
-                    newstates.put(q, q);
-                    r = q;
-                }
-                p.s.transitions.add(new Transition(aT1.min, aT1.max, r.s));
-            }
-            Transition[] t2 = transitions2[p.s2.number];
-            for (Transition aT2 : t2) {
-                StatePair q = new StatePair(p.s1, aT2.to);
-                StatePair r = newstates.get(q);
-                if (r == null) {
-                    q.s = new State();
-                    worklist.add(q);
-                    newstates.put(q, q);
-                    r = q;
-                }
-                p.s.transitions.add(new Transition(aT2.min, aT2.max, r.s));
-            }
-        }
-        c.deterministic = false;
-        c.removeDeadTransitions();
-        c.checkMinimizeAlways();
-        return c;
     }
 
     /**
@@ -3007,21 +2114,6 @@ public class Automaton
     }
 
     /**
-     * Retrieves a serialized <code>Automaton</code> located by a URL.
-     *
-     * @param url URL of serialized automaton
-     *
-     * @throws IOException            if input/output related exception occurs
-     * @throws OptionalDataException  if the data is not a serialized object
-     * @throws InvalidClassException  if the class serial number does not match
-     * @throws ClassCastException     if the data is not a serialized <code>Automaton</code>
-     * @throws ClassNotFoundException if the class of the serialized object cannot be found
-     */
-    public static Automaton load(URL url) throws IOException, ClassCastException, ClassNotFoundException {
-        return load(url.openStream());
-    }
-
-    /**
      * Retrieves a serialized <code>Automaton</code> from a stream.
      *
      * @param stream input stream with serialized automaton
@@ -3035,19 +2127,6 @@ public class Automaton
     public static Automaton load(InputStream stream) throws IOException, ClassCastException, ClassNotFoundException {
         ObjectInputStream s = new ObjectInputStream(stream);
         return (Automaton) s.readObject();
-    }
-
-    /**
-     * Writes this <code>Automaton</code> to the given stream.
-     *
-     * @param stream output stream for serialized automaton
-     *
-     * @throws IOException if input/output related exception occurs
-     */
-    public void store(OutputStream stream) throws IOException {
-        ObjectOutputStream s = new ObjectOutputStream(stream);
-        s.writeObject(this);
-        s.flush();
     }
 }
 
@@ -3115,9 +2194,6 @@ class ShuffleConfiguration {
     boolean shuffle_suspended;
     boolean surrogate;
     int suspended1;
-
-    private ShuffleConfiguration() {
-    }
 
     ShuffleConfiguration(Collection<Automaton> ca, Automaton a) {
         ca_states = new State[ca.size()];
