@@ -52,12 +52,12 @@ public class MustAliases {
     // returns the MustAliasGroup that contains the given
     // variable, or NULL if there is no such explicit group
     public MustAliasGroup getMustAliasGroup(Variable x) {
-        for (Iterator<MustAliasGroup> iter = this.groups.iterator(); iter.hasNext(); ) {
-            MustAliasGroup group = iter.next();
+        for (MustAliasGroup group : this.groups) {
             if (group.contains(x)) {
                 return group;
             }
         }
+
         return null;
     }
 
