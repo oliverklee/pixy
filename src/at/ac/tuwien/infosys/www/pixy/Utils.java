@@ -26,26 +26,6 @@ public class Utils {
         }
     }
 
-    // reads the given file into a string and returns it
-    public static String readFile(File file) {
-
-        StringBuilder retme = new StringBuilder();
-        try {
-            FileReader reader = new FileReader(file);
-            BufferedReader inreader = new BufferedReader(reader);
-            String line;
-            while ((line = inreader.readLine()) != null) {
-                retme.append(line);
-                retme.append("\n");
-            }
-            inreader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return retme.toString();
-    }
-
     // - input: the name of some file
     // - output: a list with all files (canonical) located in the
     //   same directory and in enclosed directories

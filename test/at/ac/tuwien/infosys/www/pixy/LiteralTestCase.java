@@ -426,29 +426,6 @@ public class LiteralTestCase extends TestCase {
         Assert.assertTrue(elements[hid].getLiteral(varX1_2_1).equals(Literal.TOP));
     }
 
-    // disabled: path pruning (dangerous)
-    public void xtest11() {
-
-        int numHotspots = 1;
-        mySetUp("test11.php", numHotspots);
-
-        // variables to be tested
-        Variable varX1 = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$x1");
-        Variable varX2 = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$x2");
-        Variable varX3 = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$x3");
-
-        // init
-        int hid;    // hotspot ID
-
-        // check literals
-
-        // 0
-        hid = 0;
-        Assert.assertTrue(elements[hid].getLiteral(varX1).equals(new Literal("1")));
-        Assert.assertTrue(elements[hid].getLiteral(varX2).equals(new Literal("2")));
-        Assert.assertTrue(elements[hid].getLiteral(varX3).equals(new Literal("3")));
-    }
-
     public void test12() {
 
         int numHotspots = 1;
@@ -644,32 +621,6 @@ public class LiteralTestCase extends TestCase {
         Assert.assertTrue(elements[hid].getLiteral(varX2).equals(new Literal("2")));
         Assert.assertTrue(elements[hid].getLiteral(varAP1).equals(new Literal("5")));
         Assert.assertTrue(elements[hid].getLiteral(varA2).equals(new Literal("4")));
-    }
-
-    // disabled: path pruning (dangerous)
-    public void xtest19() {
-
-        int numHotspots = 2;
-        mySetUp("test19.php", numHotspots);
-
-        // variables to be tested
-        Variable varX1 = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$x1");
-        Variable varX2 = this.tac.getFuncVariable(InternalStrings.mainFunctionName, "$x2");
-
-        // init
-        int hid;    // hotspot ID
-
-        // check literals
-
-        // 0
-        hid = 0;
-        Assert.assertTrue(elements[hid].getLiteral(varX1).equals(new Literal("1")));
-        Assert.assertTrue(elements[hid].getLiteral(varX2).equals(new Literal("2")));
-
-        // 1
-        hid = 1;
-        Assert.assertTrue(elements[hid].getLiteral(varX1).equals(new Literal("1")));
-        Assert.assertTrue(elements[hid].getLiteral(varX2).equals(new Literal("2")));
     }
 
     public void test20() {
@@ -1224,25 +1175,6 @@ public class LiteralTestCase extends TestCase {
         hid = 1;
         Assert.assertTrue(elements[hid].getLiteral(varA1).equals(new Literal("1")));
         Assert.assertTrue(elements[hid].getLiteral(varA2).equals(new Literal("2")));
-    }
-
-    // disabled: path pruning (dangerous)
-    public void xtest40() {
-
-        int numHotspots = 1;
-        mySetUp("test40.php", numHotspots);
-
-        // variables to be tested
-        // <none>
-
-        // init
-        int hid;    // hotspot ID
-
-        // check literals
-
-        // 0
-        hid = 0;
-        Assert.assertTrue(elements[hid] == null);   // unreachable
     }
 
     // with disabled path pruning: just terminate!

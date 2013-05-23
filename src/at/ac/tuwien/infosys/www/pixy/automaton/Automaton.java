@@ -632,16 +632,6 @@ public class Automaton
     /**
      * Returns new (deterministic) automaton that accepts all strings.
      */
-    public static Automaton makeAnyString() {
-        Automaton a = new Automaton();
-        State s = new State();
-        a.initial = s;
-        s.accept = true;
-        s.transitions.add(new Transition(Character.MIN_VALUE, Character.MAX_VALUE, s));
-        a.deterministic = true;
-        return a;
-    }
-
     public static Automaton makeAnyString(Transition.Taint taint) {
         Automaton a = new Automaton();
         State s = new State();
@@ -650,13 +640,6 @@ public class Automaton
         s.transitions.add(new Transition(Character.MIN_VALUE, Character.MAX_VALUE, s, taint));
         a.deterministic = true;
         return a;
-    }
-
-    /**
-     * Returns new (deterministic) automaton that accepts any single character.
-     */
-    public static Automaton makeAnyChar() {
-        return makeCharRange(Character.MIN_VALUE, Character.MAX_VALUE);
     }
 
     /**
@@ -763,56 +746,6 @@ public class Automaton
     }
 
     /**
-     * Returns new automaton that accepts strings representing
-     * decimal non-negative integers in the given interval.
-     *
-     * @param min    minimal value of interval
-     * @param max    maximal value of inverval (both end points are included in the interval)
-     * @param digits if >0, use fixed number of digits (strings must be prefixed
-     *               by 0's to obtain the right length) -
-     *               otherwise, the number of digits is not fixed
-     *
-     * @throws IllegalArgumentException if min>max or if numbers in the interval cannot be expressed
-     *                                  with the given fixed number of digits
-     */
-    public static Automaton makeInterval(int min, int max, int digits) throws IllegalArgumentException {
-        Automaton a = new Automaton();
-        String x = (new Integer(min)).toString();
-        String y = (new Integer(max)).toString();
-        if (min > max || (digits > 0 && y.length() > digits))
-            throw new IllegalArgumentException();
-        int d;
-        if (digits > 0)
-            d = digits;
-        else
-            d = y.length();
-        StringBuilder bx = new StringBuilder();
-        for (int i = x.length(); i < d; i++)
-            bx.append('0');
-        bx.append(x);
-        x = bx.toString();
-        StringBuilder by = new StringBuilder();
-        for (int i = y.length(); i < d; i++)
-            by.append('0');
-        by.append(y);
-        y = by.toString();
-        Collection<State> initials = new ArrayList<>();
-        a.initial = between(x, y, 0, initials, digits <= 0);
-        if (digits <= 0) {
-            ArrayList<StatePair> pairs = new ArrayList<>();
-            for (State p : initials)
-                if (a.initial != p)
-                    pairs.add(new StatePair(a.initial, p));
-            a.addEpsilons(pairs);
-            a.initial.addTransition(new Transition('0', a.initial));
-            a.deterministic = false;
-        } else
-            a.deterministic = true;
-        a.checkMinimizeAlways();
-        return a;
-    }
-
-    /**
      * Expands singleton representation to normal representation.
      */
     void expandSingleton() {
@@ -914,23 +847,6 @@ public class Automaton
     }
 
     /**
-     * Returns new automaton that accepts the union of the empty string and the
-     * language of this automaton.
-     * <p/>
-     * Complexity: linear in number of states.
-     */
-    public Automaton optional() {
-        Automaton a = cloneExpanded();
-        State s = new State();
-        s.addEpsilon(a.initial);
-        s.accept = true;
-        a.initial = s;
-        a.deterministic = false;
-        a.checkMinimizeAlways();
-        return a;
-    }
-
-    /**
      * Returns new automaton that accepts the Kleene star (zero or more
      * concatenated repetitions) of the language of this automaton.
      * <p/>
@@ -950,62 +866,6 @@ public class Automaton
     }
 
     /**
-     * Returns new automaton that accepts <code>min</code> or more
-     * concatenated repetitions of the language of this automaton.
-     * <p/>
-     * Complexity: linear in number of states and in <code>min</code>.
-     */
-    public Automaton repeat(int min) {
-        if (min == 0)
-            return repeat();
-        List<Automaton> as = new ArrayList<>();
-        while (min-- > 0)
-            as.add(this);
-        as.add(repeat());
-        return concatenate(as);
-    }
-
-    /**
-     * Returns new automaton that accepts between <code>min</code> and
-     * <code>max</code> (including both) concatenated repetitions of the
-     * language of this automaton.
-     * <p/>
-     * Complexity: linear in number of states and in <code>min</code> and
-     * <code>max</code>.
-     */
-    public Automaton repeat(int min, int max) {
-        expandSingleton();
-        if (min > max)
-            return makeEmpty();
-        max -= min;
-        Automaton a;
-        if (min == 0)
-            a = makeEmptyString();
-        else if (min == 1)
-            a = clone();
-        else {
-            List<Automaton> as = new ArrayList<>();
-            while (min-- > 0)
-                as.add(this);
-            a = concatenate(as);
-        }
-        if (max == 0)
-            return a;
-        Automaton d = clone();
-        while (--max > 0) {
-            Automaton c = clone();
-            for (State p : c.getAcceptStates())
-                p.addEpsilon(d.initial);
-            d = c;
-        }
-        for (State p : a.getAcceptStates())
-            p.addEpsilon(d.initial);
-        a.deterministic = false;
-        a.checkMinimizeAlways();
-        return a;
-    }
-
-    /**
      * Returns new (deterministic) automaton that accepts the complement of the
      * language of this automaton.
      * <p/>
@@ -1019,30 +879,6 @@ public class Automaton
             p.accept = !p.accept;
         a.removeDeadTransitions();
         return a;
-    }
-
-    /**
-     * Returns new (deterministic) automaton that accepts the intersection of
-     * the language of this automaton and the complement of the language of the
-     * given automaton. As a side-effect, this automaton may be determinized, if not
-     * already deterministic.
-     * <p/>
-     * Complexity: quadratic in number of states (if already deterministic).
-     */
-    public Automaton minus(Automaton a) {
-        if (isEmpty() || a == this)
-            return Automaton.makeEmpty();
-        if (a.isEmpty())
-            return clone();
-        if (a == this)
-            return Automaton.makeEmpty();
-        if (isSingleton()) {
-            if (a.run(singleton))
-                return makeEmpty();
-            else
-                return clone();
-        }
-        return intersection(a.complement());
     }
 
     /**
@@ -1129,27 +965,6 @@ public class Automaton
         State s = new State();
         s.addEpsilon(a.initial);
         s.addEpsilon(b.initial);
-        a.initial = s;
-        a.deterministic = false;
-        a.checkMinimizeAlways();
-        return a;
-    }
-
-    /**
-     * Returns new automaton that accepts the union of the languages of the
-     * given automata.
-     * <p/>
-     * Complexity: linear in number of states.
-     */
-    static public Automaton union(Collection<Automaton> l) {
-        State s = new State();
-        for (Automaton b : l) {
-            if (b.isEmpty())
-                continue;
-            Automaton bb = b.cloneExpanded();
-            s.addEpsilon(bb.initial);
-        }
-        Automaton a = new Automaton();
         a.initial = s;
         a.deterministic = false;
         a.checkMinimizeAlways();
@@ -1731,33 +1546,6 @@ public class Automaton
     }
 
     /**
-     * Returns a shortest accepted/rejected string. If more than one string is
-     * found, the lexicographically first is returned.
-     *
-     * @param accepted if true, look for accepted strings; otherwise, look for rejected strings
-     *
-     * @return the string, null if none found
-     */
-    static String getShortestExample(State s, boolean accepted, Map<State, String> map) {
-        if (s.accept == accepted)
-            return "";
-        if (map.containsKey(s))
-            return map.get(s);
-        map.put(s, null);
-        String best = null;
-        for (Transition t : s.transitions) {
-            String b = getShortestExample(t.to, accepted, map);
-            if (b != null) {
-                b = t.min + b;
-                if (best == null || b.length() < best.length() || (b.length() == best.length() && b.compareTo(best) < 0))
-                    best = b;
-            }
-        }
-        map.put(s, best);
-        return best;
-    }
-
-    /**
      * Returns the longest string that is a prefix of all accepted strings and
      * visits each state at most once.
      *
@@ -2111,22 +1899,6 @@ public class Automaton
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    /**
-     * Retrieves a serialized <code>Automaton</code> from a stream.
-     *
-     * @param stream input stream with serialized automaton
-     *
-     * @throws IOException            if input/output related exception occurs
-     * @throws OptionalDataException  if the data is not a serialized object
-     * @throws InvalidClassException  if the class serial number does not match
-     * @throws ClassCastException     if the data is not a serialized <code>Automaton</code>
-     * @throws ClassNotFoundException if the class of the serialized object cannot be found
-     */
-    public static Automaton load(InputStream stream) throws IOException, ClassCastException, ClassNotFoundException {
-        ObjectInputStream s = new ObjectInputStream(stream);
-        return (Automaton) s.readObject();
     }
 }
 

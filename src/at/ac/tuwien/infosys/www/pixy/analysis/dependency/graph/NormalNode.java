@@ -72,12 +72,6 @@ public class NormalNode extends AbstractNode {
 
 //  ********************************************************************************
 
-    public boolean isString() {
-        return this.place.isLiteral();
-    }
-
-//  ********************************************************************************
-
     public AbstractTacPlace getPlace() {
         return this.place;
     }

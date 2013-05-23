@@ -81,12 +81,5 @@ public class TacClass {
             this.controlFlowGraph = controlFlowGraph;
             this.place = place;
         }
-
-        String dump() {
-            StringBuilder b = new StringBuilder();
-            b.append(this.name);
-            b.append("\n");
-            return b.toString();
-        }
     }
 }
