@@ -22,17 +22,38 @@ the "test-coverage", "instrument" and "build" targets will automatically be exec
 
 ## Settings for IntelliJ IDEA
 
+### General settings
+
+* Project > Project name: pixy
 * Project > Project Language level: 7.0
+* Project > Project compiler output: build/class
 * Modules > Sources: src/ (as Source) and test/ (as Test)
-* Modules > Dependencies: lib
-* Modules > Dependencies: lib/junit.jar
-* Modules > Dependencies: transducers/jauto-classes
+* Modules > Dependencies: lib (Scope: compile)
+* Modules > Dependencies: lib/junit.jar (Scope: compile)
+* Modules > Dependencies: transducers/jauto-classes (Scope: compile)
+* Modules > Dependencies: build/class (Scope: Runtime)
+
+
+### Including the PhpParser Sources
 
 If you would like to include the PhpParser sources, you will also need the following settings (assuming that "phpparser" is the path to you PhpParser project):
 
 * Modules > Sources: phpparser/src/JFlex
 * Modules > Sources: phpparser/src/java_cup
 * Modules > Sources: phpparser/src/project
+
+
+### Run configurations
+
+In Run > Edit configurations, create a new Application configuration with the following data:
+
+* Name: Pixy
+* Configuration > Main class: Checker
+* Configuration > VM options: -Dpixy.home=$MODULE_DIR$
+* Configuration > Program arguments: -a -y xss:sql $MODULE_DIR$/getstarted.php
+* Configuration > Working directory: $MODULE_DIR$
+* Configuration > User classpath of module: pixy
+
 
 
 ## Developing Pixy in Eclipse
