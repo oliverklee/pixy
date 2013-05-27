@@ -55,6 +55,10 @@ In Run > Edit configurations, create a new Application configuration with the fo
 * Configuration > User classpath of module: pixy
 
 
+### Ant configuration
+
+In the Ant Build tool window, click on the plus icon and select the build.xml file.
+
 
 ## Developing Pixy in Eclipse
 
