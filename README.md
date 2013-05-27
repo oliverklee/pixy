@@ -52,7 +52,21 @@ In Run > Edit configurations, create a new Application configuration with the fo
 * Configuration > VM options: -Dpixy.home=$MODULE_DIR$
 * Configuration > Program arguments: -a -y xss:sql $MODULE_DIR$/getstarted.php
 * Configuration > Working directory: $MODULE_DIR$
-* Configuration > User classpath of module: pixy
+* Configuration > Use classpath of module: pixy
+* Configuration > Before launch: Ant target: Runt Ant target 'build'
+
+For running the unit tests, create a new JUnit entry with the following data:
+
+* Name: Pixy unit tests
+* Single instance only
+* Configuration > Test kind: All in directory
+* Configuration > Fork mode: class ("none" will lead to test failures)
+* Configuration > Directory: test/
+* Configuration > VM options: -ea -Dpixy.home=$MODULE_DIR$
+* Configuration > Working directory: $MODULE_DIR$
+* Configuration > Use classpath of module: pixy
+* Configuration > Before launch: Ant target: Runt Ant target 'build'
+
 
 
 ### Ant configuration
