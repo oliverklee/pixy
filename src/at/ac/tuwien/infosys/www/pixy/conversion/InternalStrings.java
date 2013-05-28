@@ -33,7 +33,7 @@ public class InternalStrings {
 
     // CONFIG.TXT ****************************
 
-    public static final String includePath = "includePath";
-    public static final String phpBin = "phpBin";
-    public static final String fsaHome = "fsaHome";
+    public static final String INCLUDE_PATH = "includePath";
+    public static final String PHP_BIN = "phpBin";
+    public static final String FSA_HOME = "fsaHome";
 }

@@ -58,57 +58,32 @@ public final class Checker {
     }
 
     public static void main(String[] args) {
-
         // **********************
         // COMMAND LINE PARSING
         // **********************
 
-        Options cliOptions = new Options();
-        cliOptions.addOption("a", "call-string", false, "call-string analysis (else: functional)");
-        cliOptions.addOption("A", "alias", false, "use alias analysis");
-        cliOptions.addOption("b", "brief", false, "be brief (for regression tests)");
-        cliOptions.addOption("c", "cfg", false, "dump the function CFGs in dot syntax");
-        cliOptions.addOption("d", "detailcfg", false, "dump the function control flow graphs and the CFGs of their paramters in dot syntax");
-        cliOptions.addOption("f", "functions", false, "print function information");
-        cliOptions.addOption("g", "registerGlobals", false, "DISABLE register_globals for analysis");
-        cliOptions.addOption("h", "help", false, "print help");
-        cliOptions.addOption("i", "getisuntaintedsql", false, "make the GET array untainted for SQL analysis");
-        cliOptions.addOption("l", "libdetect", false, "detect libraries (i.e. scripts with empty main function)");
-        cliOptions.addOption("L", "literal", false, "use literal analysis (usually not necessary)");
-        cliOptions.addOption("m", "max", false, "print maximum number of temporaries");
-        cliOptions.addOption("o", "outputdir", true, "output directory (for graphs etc.)");
-        cliOptions.addOption("p", "parsetree", false, "print the parse tree in dot syntax");
-        cliOptions.addOption("P", "prefixes", false, "print prefixes and suffixes");
-        cliOptions.addOption("q", "query", false, "enable interactive queries");
-        cliOptions.addOption("r", "notrim", false, "do NOT trim untained stuff (during sanitation analysis)");
-        cliOptions.addOption("s", "sinks", true, "provide config files for custom sinks");
-        cliOptions.addOption("t", "table", false, "print symbol tables");
-        cliOptions.addOption("w", "web", false, "web interface mode");
-        cliOptions.addOption("v", "verbose", false, "enable verbose output");
-        cliOptions.addOption("V", "verbosegraphs", false, "disable verbose depgraphs");
-        cliOptions.addOption("y", "analysistype", true,
-            "type of taint analysis (" + MyOptions.getAnalysisNames() + ")");
+        Options commandLineOptions = createCommandLineOptions();
 
-        CommandLineParser cliParser = new PosixParser();
-        CommandLine cmd = null;
+        CommandLineParser commandLineParser = new PosixParser();
+        CommandLine commandLine = null;
         try {
-            cmd = cliParser.parse(cliOptions, args);
+            commandLine = commandLineParser.parse(commandLineOptions, args);
         } catch (MissingOptionException e) {
-            help(cliOptions);
+            help(commandLineOptions);
             Utils.bail("Please specify option: " + e.getMessage());
         } catch (ParseException e) {
-            help(cliOptions);
+            help(commandLineOptions);
             Utils.bail(e.getMessage());
         }
 
-        if (cmd.hasOption("h")) {
-            help(cliOptions);
+        if (commandLine.hasOption("h")) {
+            help(commandLineOptions);
             System.exit(0);
         }
 
-        String[] restArgs = cmd.getArgs();
+        String[] restArgs = commandLine.getArgs();
         if (restArgs.length != 1) {
-            help(cliOptions);
+            help(commandLineOptions);
             Utils.bail("Please specify exactly one target file.");
         }
         String fileName = restArgs[0];
@@ -120,43 +95,42 @@ public final class Checker {
         Checker checker = new Checker(fileName);
 
         // set boolean options according to command line
-        MyOptions.optionA = cmd.hasOption("a");
-        MyOptions.option_A = cmd.hasOption("A");
-        MyOptions.optionB = cmd.hasOption("b");
-        MyOptions.optionC = cmd.hasOption("c");
-        MyOptions.optionD = cmd.hasOption("d");
-        MyOptions.optionF = cmd.hasOption("f");
-        MyOptions.optionG = !cmd.hasOption("g");
-        MyOptions.optionI = cmd.hasOption("i");
-        MyOptions.optionL = cmd.hasOption("l");
-        MyOptions.option_L = cmd.hasOption("L");
-        MyOptions.optionM = cmd.hasOption("m");
-        MyOptions.optionP = cmd.hasOption("p");
-        MyOptions.option_P = cmd.hasOption("P");
-        MyOptions.optionQ = cmd.hasOption("q");
-        MyOptions.optionR = cmd.hasOption("r");
-        MyOptions.optionS = cmd.getOptionValue("s");
-        MyOptions.optionT = cmd.hasOption("t");
-        MyOptions.optionW = cmd.hasOption("w");
-        MyOptions.optionV = cmd.hasOption("v");
-        MyOptions.option_V = !cmd.hasOption("V");
+        MyOptions.optionA = commandLine.hasOption("a");
+        MyOptions.option_A = commandLine.hasOption("A");
+        MyOptions.optionB = commandLine.hasOption("b");
+        MyOptions.optionC = commandLine.hasOption("c");
+        MyOptions.optionD = commandLine.hasOption("d");
+        MyOptions.optionF = commandLine.hasOption("f");
+        MyOptions.optionG = !commandLine.hasOption("g");
+        MyOptions.optionI = commandLine.hasOption("i");
+        MyOptions.optionL = commandLine.hasOption("l");
+        MyOptions.option_L = commandLine.hasOption("L");
+        MyOptions.optionM = commandLine.hasOption("m");
+        MyOptions.optionP = commandLine.hasOption("p");
+        MyOptions.option_P = commandLine.hasOption("P");
+        MyOptions.optionQ = commandLine.hasOption("q");
+        MyOptions.optionR = commandLine.hasOption("r");
+        MyOptions.optionS = commandLine.getOptionValue("s");
+        MyOptions.optionT = commandLine.hasOption("t");
+        MyOptions.optionW = commandLine.hasOption("w");
+        MyOptions.optionV = commandLine.hasOption("v");
+        MyOptions.option_V = !commandLine.hasOption("V");
 
         // inform MyOptions about the analyses that are to be performed
-        if (!MyOptions.setAnalyses(cmd.getOptionValue("y"))) {
+        if (!MyOptions.setAnalyses(commandLine.getOptionValue("y"))) {
             Utils.bail("Invalid 'y' argument");
         }
 
         // set output directory
-        if (cmd.hasOption("o")) {
-            MyOptions.graphPath = cmd.getOptionValue("o");
+        if (commandLine.hasOption("o")) {
+            MyOptions.graphPath = commandLine.getOptionValue("o");
             File graphPathFile = new File(MyOptions.graphPath);
             if (!graphPathFile.isDirectory()) {
                 Utils.bail("Given output directory does not exist");
             }
         } else {
             // no output directory given: use default
-
-            MyOptions.graphPath = MyOptions.pixy_home + "/graphs";
+            MyOptions.graphPath = MyOptions.pixyHome + "/graphs";
 
             // create / empty the graphs directory
             File graphPathFile = new File(MyOptions.graphPath);
@@ -207,6 +181,36 @@ public final class Checker {
         }
     }
 
+    private static Options createCommandLineOptions() {
+        Options commandLineOptions = new Options();
+
+        commandLineOptions.addOption("a", "call-string", false, "call-string analysis (else: functional)");
+        commandLineOptions.addOption("A", "alias", false, "use alias analysis");
+        commandLineOptions.addOption("b", "brief", false, "be brief (for regression tests)");
+        commandLineOptions.addOption("c", "cfg", false, "dump the function CFGs in dot syntax");
+        commandLineOptions.addOption("d", "detailcfg", false, "dump the function control flow graphs and the CFGs of their paramters in dot syntax");
+        commandLineOptions.addOption("f", "functions", false, "print function information");
+        commandLineOptions.addOption("g", "registerGlobals", false, "DISABLE register_globals for analysis");
+        commandLineOptions.addOption("h", "help", false, "print help");
+        commandLineOptions.addOption("i", "getisuntaintedsql", false, "make the GET array untainted for SQL analysis");
+        commandLineOptions.addOption("l", "libdetect", false, "detect libraries (i.e. scripts with empty main function)");
+        commandLineOptions.addOption("L", "literal", false, "use literal analysis (usually not necessary)");
+        commandLineOptions.addOption("m", "max", false, "print maximum number of temporaries");
+        commandLineOptions.addOption("o", "outputdir", true, "output directory (for graphs etc.)");
+        commandLineOptions.addOption("p", "parsetree", false, "print the parse tree in dot syntax");
+        commandLineOptions.addOption("P", "prefixes", false, "print prefixes and suffixes");
+        commandLineOptions.addOption("q", "query", false, "enable interactive queries");
+        commandLineOptions.addOption("r", "notrim", false, "do NOT trim untained stuff (during sanitation analysis)");
+        commandLineOptions.addOption("s", "sinks", true, "provide config files for custom sinks");
+        commandLineOptions.addOption("t", "table", false, "print symbol tables");
+        commandLineOptions.addOption("w", "web", false, "web interface mode");
+        commandLineOptions.addOption("v", "verbose", false, "enable verbose output");
+        commandLineOptions.addOption("V", "verbosegraphs", false, "disable verbose depgraphs");
+        commandLineOptions.addOption("y", "analysistype", true, "type of taint analysis (" + MyOptions.getAnalysisNames() + ")");
+
+        return commandLineOptions;
+    }
+
 //  ********************************************************************************
 //  CONSTRUCTOR ********************************************************************
 //  ********************************************************************************
@@ -214,7 +218,6 @@ public final class Checker {
     // after calling this constructor and before initializing / analyzing,
     // you can set options by modifying the appropriate member variables
     public Checker(String fileName) {
-
         // get entry file
         try {
             MyOptions.entryFile = (new File(fileName)).getCanonicalFile();
@@ -227,28 +230,37 @@ public final class Checker {
 //  OTHERS *************************************************************************
 //  ********************************************************************************
 
-    private void readConfig() {
+    private void readConfiguration() {
+        Properties properties = readConfigurationFileIntoProperties();
 
-        // read config file into props
-        String configPath = MyOptions.pixy_home + "/" + MyOptions.configDir + "/config.txt";
+        readPhpIncludePathFromConfigurationFile(properties);
+        findPhpBinary(properties);
+        findFsaUtilities(properties);
+        readHarmlessServerVariables();
+    }
+
+    private Properties readConfigurationFileIntoProperties() {
+        String configPath = MyOptions.pixyHome + "/" + MyOptions.configurationDirectory + "/config.txt";
         File configFile = new File(configPath);
-        Properties props = new Properties();
+        Properties properties = new Properties();
         try {
             configPath = configFile.getCanonicalPath();
             FileInputStream in = new FileInputStream(configPath);
-            props.load(in);
+            properties.load(in);
             in.close();
         } catch (FileNotFoundException e) {
             Utils.bail("Can't find configuration file: " + configPath);
         } catch (IOException e) {
-            Utils.bail("I/O exception while reading configuration file:" + configPath,
-                e.getMessage());
+            Utils.bail("I/O exception while reading configuration file:" + configPath, e.getMessage());
         }
 
-        // read PHP include path from the config file
+        return properties;
+    }
+
+    private void readPhpIncludePathFromConfigurationFile(Properties properties) {
         MyOptions.includePaths = new LinkedList<>();
         MyOptions.includePaths.add(new File("."));
-        String includePath = props.getProperty(InternalStrings.includePath);
+        String includePath = properties.getProperty(InternalStrings.INCLUDE_PATH);
         if (includePath != null) {
             StringTokenizer tokenizer = new StringTokenizer(includePath, ":");
             while (tokenizer.hasMoreTokens()) {
@@ -261,9 +273,10 @@ public final class Checker {
                 }
             }
         }
+    }
 
-        // location of php binary
-        String phpBin = props.getProperty(InternalStrings.phpBin);
+    private void findPhpBinary(Properties properties) {
+        String phpBin = properties.getProperty(InternalStrings.PHP_BIN);
         if (phpBin == null) {
             MyOptions.phpBin = null;
         } else {
@@ -274,34 +287,38 @@ public final class Checker {
                 MyOptions.phpBin = phpBin;
             }
         }
+    }
 
-        // location of FSA-Utils
-        String fsaHome = props.getProperty(InternalStrings.fsaHome);
-        if (fsaHome != null) {
-            if (!(new File(fsaHome)).exists()) {
-                fsaHome = null;
+    private void findFsaUtilities(Properties properties) {
+        String fsaUtilitiesHome = properties.getProperty(InternalStrings.FSA_HOME);
+        if (fsaUtilitiesHome != null) {
+            if (!(new File(fsaUtilitiesHome)).exists()) {
+                fsaUtilitiesHome = null;
             }
         }
-        MyOptions.fsa_home = fsaHome;
+        MyOptions.fsaHome = fsaUtilitiesHome;
+    }
 
-        // read harmless server variables
-        String hsvPath = MyOptions.pixy_home + "/" + MyOptions.configDir + "/harmless_server_vars.txt";
-        File hsvFile = new File(hsvPath);
-        Properties hsvProps = new Properties();
+    private void readHarmlessServerVariables() {
+        String harmlessServerVariablesPath = MyOptions.pixyHome + "/" + MyOptions.configurationDirectory
+            + "/harmless_server_vars.txt";
+        File harmlessServerVariablesFile = new File(harmlessServerVariablesPath);
+        Properties harmlessServerVariablesProperties = new Properties();
         try {
-            hsvPath = hsvFile.getCanonicalPath();
-            FileInputStream in = new FileInputStream(hsvPath);
-            hsvProps.load(in);
+            harmlessServerVariablesPath = harmlessServerVariablesFile.getCanonicalPath();
+            FileInputStream in = new FileInputStream(harmlessServerVariablesPath);
+            harmlessServerVariablesProperties.load(in);
             in.close();
         } catch (FileNotFoundException e) {
-            Utils.bail("Can't find configuration file: " + hsvPath);
+            Utils.bail("Can't find configuration file: " + harmlessServerVariablesPath);
         } catch (IOException e) {
-            Utils.bail("I/O exception while reading configuration file:" + hsvPath,
+            Utils.bail("I/O exception while reading configuration file:" + harmlessServerVariablesPath,
                 e.getMessage());
         }
-        Enumeration<Object> hsvKeys = hsvProps.keys();
-        while (hsvKeys.hasMoreElements()) {
-            String hsvElement = (String) hsvKeys.nextElement();
+
+        Enumeration<Object> harmlessServerVariablesKeys = harmlessServerVariablesProperties.keys();
+        while (harmlessServerVariablesKeys.hasMoreElements()) {
+            String hsvElement = (String) harmlessServerVariablesKeys.nextElement();
             hsvElement = hsvElement.trim();
             MyOptions.addHarmlessServerIndex(hsvElement);
         }
@@ -311,13 +328,12 @@ public final class Checker {
 
     // taintString: "-y" option, type of taint analysis
     ProgramConverter initialize() {
-
         // *****************
         // PREPARATIONS
         // *****************
 
         // read config file
-        readConfig();
+        readConfiguration();
 
         // *****************
         // PARSE & CONVERT

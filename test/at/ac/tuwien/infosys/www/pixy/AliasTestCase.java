@@ -29,8 +29,8 @@ public class AliasTestCase extends TestCase {
 //  ********************************************************************************
 
     protected void setUp() {
-        this.path = MyOptions.pixy_home + "/testfiles/alias/";
-        MyOptions.graphPath = MyOptions.pixy_home + "/graphs";
+        this.path = MyOptions.pixyHome + "/testfiles/alias/";
+        MyOptions.graphPath = MyOptions.pixyHome + "/graphs";
     }
 
     // call this at the beginning of each test

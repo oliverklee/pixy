@@ -45,13 +45,13 @@ public class MyOptions {
     public static File entryFile;
 
     // pixy's home directory (from environment)
-    public static File pixy_home;
+    public static File pixyHome;
 
     // home directory of FSA Utils; can be null
-    public static String fsa_home;
+    public static String fsaHome;
 
     // name of the config directory
-    public static String configDir = "config";
+    public static String configurationDirectory = "config";
 
     // List of Files specifying the include_path (given in php.ini, can be
     // checked with the PHP function "get_include_path()")
@@ -115,7 +115,7 @@ public class MyOptions {
         String evilMarker = "4";
 
         // read file into properties object
-        String modelFileName = MyOptions.pixy_home + "/" + MyOptions.configDir + "/model_" + dci.getName() + ".txt";
+        String modelFileName = MyOptions.pixyHome + "/" + MyOptions.configurationDirectory + "/model_" + dci.getName() + ".txt";
         File modelFile = new File(modelFileName);
         Properties sinkProps = new Properties();
         try {
@@ -295,7 +295,7 @@ public class MyOptions {
         for (DependencyClientInformation dci : analyses) {
             String sinkFileName = "sinks_" + dci.getName() + ".txt";
             Map<String, Set<Integer>> sinks = new HashMap<>();
-            readSinkFile(MyOptions.pixy_home + "/" + MyOptions.configDir + "/" + sinkFileName, sinks);
+            readSinkFile(MyOptions.pixyHome + "/" + MyOptions.configurationDirectory + "/" + sinkFileName, sinks);
             dci.addSinks(sinks);
         }
     }
@@ -392,9 +392,9 @@ public class MyOptions {
             Utils.bail("System property 'pixy.home' not set");
         }
         try {
-            MyOptions.pixy_home = (new File(home)).getCanonicalFile();
+            MyOptions.pixyHome = (new File(home)).getCanonicalFile();
         } catch (IOException e) {
-            Utils.bail("can't set pixy_home");
+            Utils.bail("can't set pixyHome");
         }
 
         // harmless server indices

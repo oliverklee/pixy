@@ -30,7 +30,7 @@ public class SQLSanitationAnalysis extends AbstractSanitationAnalysis {
     public SQLSanitationAnalysis(DependencyAnalysis dependencyAnalysis, boolean getIsTainted) {
         super("sql", dependencyAnalysis, FSAAutomaton.getUndesiredSQLTest());
         this.getIsTainted = getIsTainted;
-        if (MyOptions.fsa_home == null) {
+        if (MyOptions.fsaHome == null) {
             Utils.bail("SQL Sanitization analysis requires FSA Utilities.\n" +
                 "Please set a valid path in the config file.");
         }

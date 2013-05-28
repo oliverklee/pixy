@@ -33,8 +33,8 @@ public class DepGraphTestCase extends TestCase {
 
     // called automatically
     protected void setUp() {
-        this.path = MyOptions.pixy_home + "/testfiles/depgraph/";
-        MyOptions.graphPath = MyOptions.pixy_home + "/graphs";
+        this.path = MyOptions.pixyHome + "/testfiles/depgraph/";
+        MyOptions.graphPath = MyOptions.pixyHome + "/graphs";
     }
 
     // call this at the beginning of each test; optionally uses

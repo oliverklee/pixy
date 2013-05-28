@@ -32,8 +32,8 @@ public class SQLTestCase extends TestCase {
 
     // called automatically
     protected void setUp() {
-        this.path = MyOptions.pixy_home + "/testfiles/sql/";
-        MyOptions.graphPath = MyOptions.pixy_home + "/graphs";
+        this.path = MyOptions.pixyHome + "/testfiles/sql/";
+        MyOptions.graphPath = MyOptions.pixyHome + "/graphs";
     }
 
     // call this at the beginning of each test; optionally uses

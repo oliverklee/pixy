@@ -49,7 +49,7 @@ public class FSAAutomaton {
         // command
 
         // this fails if string holds white space...
-        String c = MyOptions.fsa_home + "/" + "fsa -r " + s;
+        String c = MyOptions.fsaHome + "/" + "fsa -r " + s;
 
         String autoString = Utils.exec(c);
         FSAAutomaton retMe = new FSAAutomaton(autoString);
@@ -76,7 +76,7 @@ public class FSAAutomaton {
 
     // makes a "dot star" automaton
     public static FSAAutomaton makeAnyString() {
-        String c = MyOptions.fsa_home + "/" + "fsa -r [kleene_star(?)]";
+        String c = MyOptions.fsaHome + "/" + "fsa -r [kleene_star(?)]";
         String autoString = Utils.exec(c);
         FSAAutomaton retMe = new FSAAutomaton(autoString);
 
@@ -86,7 +86,7 @@ public class FSAAutomaton {
     public FSAAutomaton concatenate(FSAAutomaton auto) {
         String arg1File = this.toFile("temp1.auto");
         String arg2File = auto.toFile("temp2.auto");
-        String c = MyOptions.fsa_home + "/" +
+        String c = MyOptions.fsaHome + "/" +
             "fsa -r concat(file('" + arg1File + "'),file('" + arg2File + "'))";
         String autoString = Utils.exec(c);
         FSAAutomaton retMe = new FSAAutomaton(autoString);
@@ -97,7 +97,7 @@ public class FSAAutomaton {
     public FSAAutomaton union(FSAAutomaton auto) {
         String arg1File = this.toFile("temp1.auto");
         String arg2File = auto.toFile("temp2.auto");
-        String c = MyOptions.fsa_home + "/" +
+        String c = MyOptions.fsaHome + "/" +
             "fsa -r union(file('" + arg1File + "'),file('" + arg2File + "'))";
         String autoString = Utils.exec(c);
         FSAAutomaton retMe = new FSAAutomaton(autoString);
@@ -108,7 +108,7 @@ public class FSAAutomaton {
     public FSAAutomaton intersect(FSAAutomaton auto) {
         String arg1File = this.toFile("temp1.auto");
         String arg2File = auto.toFile("temp2.auto");
-        String c = MyOptions.fsa_home + "/" +
+        String c = MyOptions.fsaHome + "/" +
             "fsa -r intersect(file('" + arg1File + "'),file('" + arg2File + "'))";
         String autoString = Utils.exec(c);
         FSAAutomaton retMe = new FSAAutomaton(autoString);
@@ -127,7 +127,7 @@ public class FSAAutomaton {
     public String toDot() {
         String fileName = MyOptions.graphPath + "/temp.auto";
         Utils.writeToFile(this.str, fileName);
-        String c = MyOptions.fsa_home + "/" + "fsa write=dot -r file('" + fileName + "')";
+        String c = MyOptions.fsaHome + "/" + "fsa write=dot -r file('" + fileName + "')";
         String dot = Utils.exec(c);
         return dot;
     }
@@ -139,7 +139,7 @@ public class FSAAutomaton {
 
         String fileName = MyOptions.graphPath + "/temp.auto";
         Utils.writeToFile(this.str, fileName);
-        String c = MyOptions.fsa_home + "/" + "fsa -r range(file('" + fileName + "'))";
+        String c = MyOptions.fsaHome + "/" + "fsa -r range(file('" + fileName + "'))";
         String projected = Utils.exec(c);
 
         return new FSAAutomaton(projected);
@@ -257,7 +257,7 @@ public class FSAAutomaton {
         // the complete regexp: union of the previous two
         String regexp = "[union(" + regexpNoPrefix + "," + regexpWithPrefix + ")]";
 
-        String c = MyOptions.fsa_home + "/" + "fsa -r " + regexp;
+        String c = MyOptions.fsaHome + "/" + "fsa -r " + regexp;
 
         String autoString = Utils.exec(c);
 
@@ -269,7 +269,7 @@ public class FSAAutomaton {
     // returns an automaton for the language of undesired strings for xss analysis (test);
     public static FSAAutomaton getUndesiredXSSTest() {
 
-        if (MyOptions.fsa_home == null) {
+        if (MyOptions.fsaHome == null) {
             Utils.bail("Please set fsaHome in the main configuration file.");
         }
 
@@ -287,7 +287,7 @@ public class FSAAutomaton {
 
             "]";
 
-        String c = MyOptions.fsa_home + "/" + "fsa -r " + regexp;
+        String c = MyOptions.fsaHome + "/" + "fsa -r " + regexp;
 
         String autoString = Utils.exec(c);
 
@@ -418,7 +418,7 @@ public class FSAAutomaton {
         // may throw an exception
         String prologRegex = Regex2Prolog.convertPhpRegex(phpRegexOrig, preg);
 
-        String c = MyOptions.fsa_home + "/" + "fsa -r " + prologRegex;
+        String c = MyOptions.fsaHome + "/" + "fsa -r " + prologRegex;
         String autoString = Utils.exec(c);
         retMe = new FSAAutomaton(autoString);
 

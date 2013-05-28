@@ -32,7 +32,7 @@ public class MyTransductions {
     public Automaton str_replace(String search, String replace, Automaton subject) {
 
         String subjectAutoFSM = subject.toFsmTools();
-        String tempDir = MyOptions.pixy_home + "/transducers/temp/";
+        String tempDir = MyOptions.pixyHome + "/transducers/temp/";
         new File(tempDir).mkdir();
 
         write(tempDir + "subject.txt", subjectAutoFSM);
@@ -47,7 +47,7 @@ public class MyTransductions {
         }
 
         try {
-            Process p = Runtime.getRuntime().exec(MyOptions.pixy_home + "/scripts/transduce.sh");
+            Process p = Runtime.getRuntime().exec(MyOptions.pixyHome + "/scripts/transduce.sh");
             p.waitFor();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();

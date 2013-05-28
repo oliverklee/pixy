@@ -24,8 +24,8 @@ public class XSSTestCase extends TestCase {
 
     // called automatically
     protected void setUp() {
-        this.path = MyOptions.pixy_home + "/testfiles/xss/";
-        MyOptions.graphPath = MyOptions.pixy_home + "/graphs";
+        this.path = MyOptions.pixyHome + "/testfiles/xss/";
+        MyOptions.graphPath = MyOptions.pixyHome + "/graphs";
     }
 
     // call this at the beginning of each test; optionally uses

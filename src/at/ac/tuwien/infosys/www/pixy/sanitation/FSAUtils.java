@@ -12,7 +12,7 @@ import java.util.List;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class FSAUtils {
-    private static String mohri = MyOptions.fsa_home + "/Examples/MohriSproat96/ops.pl";
+    private static String mohri = MyOptions.fsaHome + "/Examples/MohriSproat96/ops.pl";
 
     public static FSAAutomaton reg_replace(FSAAutomaton phpPatternAuto,
                                            FSAAutomaton replaceAuto, FSAAutomaton subjectAuto, boolean preg,
@@ -60,7 +60,7 @@ public class FSAUtils {
             String replaceFile = replaceAuto.toFile("temp2.auto");
             String subjectFile = subjectAuto.toFile("temp3.auto");
 
-            String c = MyOptions.fsa_home + "/" +
+            String c = MyOptions.fsaHome + "/" +
                 "fsa -aux " + mohri + " -r compose(file('" + subjectFile + "'),replace(file('" + patternFile + "'),file('" + replaceFile + "'))) ";
             String autoString = Utils.exec(c);
             retMe = new FSAAutomaton(autoString);
@@ -93,7 +93,7 @@ public class FSAUtils {
         String replaceFile = replaceAuto.toFile("temp2.auto");
         String subjectFile = subjectAuto.toFile("temp3.auto");
 
-        String c = MyOptions.fsa_home + "/" +
+        String c = MyOptions.fsaHome + "/" +
             "fsa -aux " + mohri + " -r compose(file('" + subjectFile + "'),replace(file('" + searchFile + "'),file('" + replaceFile + "'))) ";
 
         String autoString = Utils.exec(c);
