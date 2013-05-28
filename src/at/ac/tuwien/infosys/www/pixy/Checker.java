@@ -81,12 +81,12 @@ public final class Checker {
             System.exit(0);
         }
 
-        String[] restArgs = commandLine.getArgs();
-        if (restArgs.length != 1) {
+        String[] trailingArguments = commandLine.getArgs();
+        if (trailingArguments.length != 1) {
             help(commandLineOptions);
             Utils.bail("Please specify exactly one target file.");
         }
-        String fileName = restArgs[0];
+        String fileName = trailingArguments[0];
 
         // **********************
         // CHECKING
