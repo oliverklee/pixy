@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>at.ac.tuwien.infosys.www.pixy.automaton</OriginalElement>
+  <nodes>
+    <node x="0.0" y="74.0">at.ac.tuwien.infosys.www.pixy.automaton.ShuffleConfiguration</node>
+    <node x="0.0" y="148.0">at.ac.tuwien.infosys.www.pixy.automaton.Automaton</node>
+    <node x="0.0" y="0.0">at.ac.tuwien.infosys.www.pixy.automaton.TransitionComparator</node>
+    <node x="145.0" y="148.0">at.ac.tuwien.infosys.www.pixy.automaton.Transition</node>
+    <node x="120.0" y="296.0">at.ac.tuwien.infosys.www.pixy.automaton.State</node>
+    <node x="0.0" y="296.0">at.ac.tuwien.infosys.www.pixy.automaton.IntPair</node>
+    <node x="0.0" y="222.0">at.ac.tuwien.infosys.www.pixy.automaton.StatePair</node>
+    <node x="136.0" y="222.0">at.ac.tuwien.infosys.www.pixy.automaton.StateList</node>
+    <node x="202.0" y="74.0">at.ac.tuwien.infosys.www.pixy.automaton.StateListNode</node>
+  </nodes>
+  <notes />
+  <edges />
+  <settings layout="Hierarchic Group" zoom="1.0" x="161.0" y="162.5" />
+  <SelectedNodes>
+    <node>at.ac.tuwien.infosys.www.pixy.automaton.ShuffleConfiguration</node>
+  </SelectedNodes>
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

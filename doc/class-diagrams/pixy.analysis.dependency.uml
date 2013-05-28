@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>at.ac.tuwien.infosys.www.pixy.analysis.dependency</OriginalElement>
+  <nodes>
+    <node x="164.0" y="296.0">at.ac.tuwien.infosys.www.pixy.analysis.dependency.SinkProblem</node>
+    <node x="0.0" y="0.0">at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyLatticeElement</node>
+    <node x="0.0" y="222.0">at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyLabel</node>
+    <node x="182.0" y="222.0">at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencySet</node>
+    <node x="200.0" y="148.0">at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyLattice</node>
+    <node x="0.0" y="370.0">at.ac.tuwien.infosys.www.pixy.analysis.dependency.Sink</node>
+    <node x="0.0" y="296.0">at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph</node>
+    <node x="0.0" y="74.0">at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction</node>
+    <node x="0.0" y="148.0">at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyAnalysis</node>
+  </nodes>
+  <notes />
+  <edges />
+  <settings layout="Hierarchic Group" zoom="1.0" x="174.0" y="199.5" />
+  <SelectedNodes>
+    <node>at.ac.tuwien.infosys.www.pixy.analysis.dependency.SinkProblem</node>
+  </SelectedNodes>
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

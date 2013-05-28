@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>at.ac.tuwien.infosys.www.pixy.conversion</OriginalElement>
+  <nodes>
+    <node x="154.0" y="449.0">at.ac.tuwien.infosys.www.pixy.conversion.TacFunction</node>
+    <node x="0.0" y="301.0">at.ac.tuwien.infosys.www.pixy.conversion.BuiltinFunctions</node>
+    <node x="367.0" y="227.0">at.ac.tuwien.infosys.www.pixy.conversion.includes</node>
+    <node x="481.0" y="375.0">at.ac.tuwien.infosys.www.pixy.conversion.SpecialNodes</node>
+    <node x="198.0" y="79.0">at.ac.tuwien.infosys.www.pixy.conversion.Constant</node>
+    <node x="348.0" y="301.0">at.ac.tuwien.infosys.www.pixy.conversion.InternalStrings</node>
+    <node x="94.0" y="79.0">at.ac.tuwien.infosys.www.pixy.conversion.Variable</node>
+    <node x="305.0" y="449.0">at.ac.tuwien.infosys.www.pixy.conversion.EncapsList</node>
+    <node x="331.0" y="0.0">at.ac.tuwien.infosys.www.pixy.conversion.ParseNodeHeuristics</node>
+    <node x="0.0" y="153.0">at.ac.tuwien.infosys.www.pixy.conversion.TacFormalParameter</node>
+    <node x="0.0" y="375.0">at.ac.tuwien.infosys.www.pixy.conversion.TacAttributes</node>
+    <node x="163.0" y="375.0">at.ac.tuwien.infosys.www.pixy.conversion.TacOperators</node>
+    <node x="0.0" y="79.0">at.ac.tuwien.infosys.www.pixy.conversion.Literal</node>
+    <node x="0.0" y="449.0">at.ac.tuwien.infosys.www.pixy.conversion.SymbolTable</node>
+    <node x="403.0" y="153.0">at.ac.tuwien.infosys.www.pixy.conversion.ProgramConverter</node>
+    <node x="176.0" y="301.0">at.ac.tuwien.infosys.www.pixy.conversion.ConstantsTable</node>
+    <node x="184.0" y="227.0">at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes</node>
+    <node x="322.0" y="375.0">at.ac.tuwien.infosys.www.pixy.conversion.TacConverter</node>
+    <node x="66.5" y="0.0">at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace</node>
+    <node x="202.0" y="153.0">at.ac.tuwien.infosys.www.pixy.conversion.TacActualParameter</node>
+    <node x="0.0" y="523.0">at.ac.tuwien.infosys.www.pixy.conversion.CfgEdge</node>
+    <node x="447.0" y="449.0">at.ac.tuwien.infosys.www.pixy.conversion.TacClass</node>
+    <node x="0.0" y="227.0">at.ac.tuwien.infosys.www.pixy.conversion.ControlFlowGraph</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="at.ac.tuwien.infosys.www.pixy.conversion.Constant" target="at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace">
+      <point x="0.0" y="-14.5" />
+      <point x="242.0" y="54.0" />
+      <point x="182.33333333333334" y="54.0" />
+      <point x="46.33333333333334" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.conversion.Literal" target="at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace">
+      <point x="0.0" y="-14.5" />
+      <point x="37.0" y="54.0" />
+      <point x="89.66666666666666" y="54.0" />
+      <point x="-46.33333333333334" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.conversion.Variable" target="at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace">
+      <point x="0.0" y="-14.5" />
+      <point x="0.0" y="14.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="296.5" y="276.0" />
+  <SelectedNodes>
+    <node>at.ac.tuwien.infosys.www.pixy.conversion.TacFunction</node>
+  </SelectedNodes>
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

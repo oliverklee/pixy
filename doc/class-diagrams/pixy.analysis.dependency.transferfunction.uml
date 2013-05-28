@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction</OriginalElement>
+  <nodes>
+    <node x="0.0" y="148.0">at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.AssignSimple</node>
+    <node x="0.0" y="296.0">at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.AssignArray</node>
+    <node x="0.0" y="0.0">at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.CallBuiltinFunction</node>
+    <node x="0.0" y="74.0">at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.CallPreparation</node>
+    <node x="155.0" y="222.0">at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.AssignUnary</node>
+    <node x="193.0" y="0.0">at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.AssignReference</node>
+    <node x="0.0" y="222.0">at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.CallUnknown</node>
+    <node x="293.0" y="296.0">at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.Define</node>
+    <node x="118.0" y="370.0">at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.Unset</node>
+    <node x="151.0" y="296.0">at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.CallReturn</node>
+    <node x="0.0" y="370.0">at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.Tester</node>
+    <node x="172.0" y="74.0">at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.FunctionEntry</node>
+    <node x="157.0" y="148.0">at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.AssignBinary</node>
+    <node x="232.0" y="370.0">at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.Isset</node>
+  </nodes>
+  <notes />
+  <edges />
+  <settings layout="Hierarchic Group" zoom="1.0" x="183.0" y="199.5" />
+  <SelectedNodes>
+    <node>at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction.AssignSimple</node>
+  </SelectedNodes>
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

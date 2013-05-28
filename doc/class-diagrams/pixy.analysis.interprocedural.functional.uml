@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.functional</OriginalElement>
+  <nodes>
+    <node x="0.0" y="0.0">at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.functional.FunctionalAnalysisNode</node>
+    <node x="0.0" y="74.0">at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.functional.FunctionalAnalysis</node>
+    <node x="0.0" y="148.0">at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.functional.FunctionalContext</node>
+  </nodes>
+  <notes />
+  <edges />
+  <settings layout="Hierarchic Group" zoom="1.0" x="88.0" y="88.5" />
+  <SelectedNodes>
+    <node>at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.functional.FunctionalAnalysis</node>
+  </SelectedNodes>
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

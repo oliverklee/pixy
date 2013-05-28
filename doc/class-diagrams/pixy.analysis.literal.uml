@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>at.ac.tuwien.infosys.www.pixy.analysis.literal</OriginalElement>
+  <nodes>
+    <node x="0.0" y="227.0">at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralLatticeElement</node>
+    <node x="0.0" y="79.0">at.ac.tuwien.infosys.www.pixy.analysis.literal.DummyLiteralAnalysis</node>
+    <node x="0.0" y="153.0">at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction</node>
+    <node x="210.0" y="227.0">at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralLattice</node>
+    <node x="21.5" y="0.0">at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralAnalysis</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.literal.DummyLiteralAnalysis" target="at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralAnalysis">
+      <point x="0.0" y="-14.5" />
+      <point x="0.0" y="14.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="163.5" y="128.0" />
+  <SelectedNodes>
+    <node>at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralLatticeElement</node>
+  </SelectedNodes>
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

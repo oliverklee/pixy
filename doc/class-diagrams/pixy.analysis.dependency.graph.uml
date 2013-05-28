@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph</OriginalElement>
+  <nodes>
+    <node x="300.0" y="79.0">at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph.BuiltinFunctionNode</node>
+    <node x="475.0" y="79.0">at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph.UninitializedNode</node>
+    <node x="174.0" y="79.0">at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph.NormalNode</node>
+    <node x="0.0" y="153.0">at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph.DependencyGraph</node>
+    <node x="244.25" y="0.0">at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph.AbstractNode</node>
+    <node x="0.0" y="79.0">at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph.CompleteGraphNode</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph.BuiltinFunctionNode" target="at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph.AbstractNode">
+      <point x="0.0" y="-14.5" />
+      <point x="377.5" y="59.0" />
+      <point x="316.75" y="59.0" />
+      <point x="14.5" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph.CompleteGraphNode" target="at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph.AbstractNode">
+      <point x="0.0" y="-14.5" />
+      <point x="77.0" y="49.0" />
+      <point x="258.75" y="49.0" />
+      <point x="-43.5" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph.NormalNode" target="at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph.AbstractNode">
+      <point x="0.0" y="-14.5" />
+      <point x="227.0" y="59.0" />
+      <point x="287.75" y="59.0" />
+      <point x="-14.5" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph.UninitializedNode" target="at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph.AbstractNode">
+      <point x="0.0" y="-14.5" />
+      <point x="545.0" y="49.0" />
+      <point x="345.75" y="49.0" />
+      <point x="43.5" y="14.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="307.5" y="91.0" />
+  <SelectedNodes>
+    <node>at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph.AbstractNode</node>
+  </SelectedNodes>
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

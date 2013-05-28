@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>at.ac.tuwien.infosys.www.pixy</OriginalElement>
+  <nodes>
+    <node x="209.0" y="227.0">at.ac.tuwien.infosys.www.pixy.transduction</node>
+    <node x="0.0" y="301.0">at.ac.tuwien.infosys.www.pixy.automaton</node>
+    <node x="336.0" y="449.0">at.ac.tuwien.infosys.www.pixy.TypeTestCase</node>
+    <node x="179.0" y="375.0">at.ac.tuwien.infosys.www.pixy.IncludeTestCase</node>
+    <node x="389.0" y="301.0">at.ac.tuwien.infosys.www.pixy.DepGraphTestCase</node>
+    <node x="253.0" y="79.0">at.ac.tuwien.infosys.www.pixy.XSSAnalysis</node>
+    <node x="126.0" y="79.0">at.ac.tuwien.infosys.www.pixy.SQLAnalysis</node>
+    <node x="0.0" y="597.0">at.ac.tuwien.infosys.www.pixy.Dumper</node>
+    <node x="355.0" y="375.0">at.ac.tuwien.infosys.www.pixy.LiteralTestCase</node>
+    <node x="415.0" y="227.0">at.ac.tuwien.infosys.www.pixy.GenericTaintAnalysis</node>
+    <node x="0.0" y="523.0">at.ac.tuwien.infosys.www.pixy.SQLTestCase</node>
+    <node x="379.0" y="79.0">at.ac.tuwien.infosys.www.pixy.sanitation</node>
+    <node x="456.0" y="523.0">at.ac.tuwien.infosys.www.pixy.Checker</node>
+    <node x="0.0" y="153.0">at.ac.tuwien.infosys.www.pixy.DependencyClientInformation</node>
+    <node x="0.0" y="227.0">at.ac.tuwien.infosys.www.pixy.DepGraphTestCaseNA</node>
+    <node x="0.0" y="79.0">at.ac.tuwien.infosys.www.pixy.FileAnalysis</node>
+    <node x="195.0" y="301.0">at.ac.tuwien.infosys.www.pixy.conversion</node>
+    <node x="172.0" y="449.0">at.ac.tuwien.infosys.www.pixy.AliasTestCase</node>
+    <node x="0.0" y="449.0">at.ac.tuwien.infosys.www.pixy.FunctionModels</node>
+    <node x="157.0" y="523.0">at.ac.tuwien.infosys.www.pixy.XSSTestCase</node>
+    <node x="0.0" y="375.0">at.ac.tuwien.infosys.www.pixy.analysis</node>
+    <node x="124.0" y="597.0">at.ac.tuwien.infosys.www.pixy.Utils</node>
+    <node x="255.0" y="153.0">at.ac.tuwien.infosys.www.pixy.VulnerabilityInformation</node>
+    <node x="313.0" y="523.0">at.ac.tuwien.infosys.www.pixy.MyOptions</node>
+    <node x="146.25" y="0.0">at.ac.tuwien.infosys.www.pixy.AbstractDependencyClient</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="at.ac.tuwien.infosys.www.pixy.sanitation" target="at.ac.tuwien.infosys.www.pixy.AbstractDependencyClient">
+      <point x="0.0" y="-14.5" />
+      <point x="452.5" y="54.0" />
+      <point x="315.125" y="54.0" />
+      <point x="72.375" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.XSSAnalysis" target="at.ac.tuwien.infosys.www.pixy.AbstractDependencyClient">
+      <point x="0.0" y="-14.5" />
+      <point x="306.0" y="54.0" />
+      <point x="266.875" y="54.0" />
+      <point x="24.125" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.FileAnalysis" target="at.ac.tuwien.infosys.www.pixy.AbstractDependencyClient">
+      <point x="0.0" y="-14.5" />
+      <point x="53.0" y="54.0" />
+      <point x="170.375" y="54.0" />
+      <point x="-72.375" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.SQLAnalysis" target="at.ac.tuwien.infosys.www.pixy.AbstractDependencyClient">
+      <point x="0.0" y="-14.5" />
+      <point x="179.5" y="54.0" />
+      <point x="218.625" y="54.0" />
+      <point x="-24.125" y="14.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="287.5" y="313.0" />
+  <SelectedNodes />
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

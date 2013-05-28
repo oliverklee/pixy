@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>at.ac.tuwien.infosys.www.pixy.analysis</OriginalElement>
+  <nodes>
+    <node x="982.1875" y="288.0">at.ac.tuwien.infosys.www.pixy.analysis.LatticeElementBottom</node>
+    <node x="630.6955729166666" y="109.0">at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement</node>
+    <node x="922.40390625" y="109.0">at.ac.tuwien.infosys.www.pixy.analysis.intraprocedural</node>
+    <node x="764.1875" y="288.0">at.ac.tuwien.infosys.www.pixy.analysis.inclusiondominator</node>
+    <node x="578.0625" y="0.0">at.ac.tuwien.infosys.www.pixy.analysis.AbstractAnalysis</node>
+    <node x="247.0" y="515.0">at.ac.tuwien.infosys.www.pixy.analysis.GenericRepository</node>
+    <node x="621.1875" y="288.0">at.ac.tuwien.infosys.www.pixy.analysis.literal</node>
+    <node x="75.25" y="362.0">at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction</node>
+    <node x="450.6098958333333" y="109.0">at.ac.tuwien.infosys.www.pixy.analysis.AbstractLattice</node>
+    <node x="923.4375" y="0.0">at.ac.tuwien.infosys.www.pixy.analysis.AbstractAnalysisNode</node>
+    <node x="0.0" y="515.0">at.ac.tuwien.infosys.www.pixy.analysis.globalsmodification</node>
+    <node x="61.3125" y="0.0">at.ac.tuwien.infosys.www.pixy.analysis.Recyclable</node>
+    <node x="0.0" y="288.0">at.ac.tuwien.infosys.www.pixy.analysis.dependency</node>
+    <node x="178.3125" y="0.0">at.ac.tuwien.infosys.www.pixy.analysis.AbstractAnalysisInformation</node>
+    <node x="234.0" y="288.0">at.ac.tuwien.infosys.www.pixy.analysis.alias</node>
+    <node x="166.0" y="441.0">at.ac.tuwien.infosys.www.pixy.analysis.CompositeTransferFunction</node>
+    <node x="253.60989583333333" y="109.0">at.ac.tuwien.infosys.www.pixy.analysis.interprocedural</node>
+    <node x="422.83333333333337" y="288.0">at.ac.tuwien.infosys.www.pixy.analysis.type</node>
+    <node x="0.0" y="441.0">at.ac.tuwien.infosys.www.pixy.analysis.TransferFunctionId</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.literal" target="at.ac.tuwien.infosys.www.pixy.analysis.interprocedural">
+      <point x="-41.0" y="-14.5" />
+      <point x="641.6875" y="198.0" />
+      <point x="408.4848958333333" y="198.0" />
+      <point x="66.375" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.literal" target="at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement">
+      <point x="41.0" y="-14.5" />
+      <point x="723.6875" y="268.0" />
+      <point x="733.9455729166666" y="268.0" />
+      <point x="14.75" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.intraprocedural" target="at.ac.tuwien.infosys.www.pixy.analysis.AbstractAnalysis">
+      <point x="0.0" y="-14.5" />
+      <point x="1010.90390625" y="49.0" />
+      <point x="680.0625" y="49.0" />
+      <point x="34.0" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.type" target="at.ac.tuwien.infosys.www.pixy.analysis.AbstractLattice">
+      <point x="-5.6843418860808015E-14" y="-14.5" />
+      <point x="479.3333333333333" y="238.0" />
+      <point x="515.1098958333333" y="238.0" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.inclusiondominator" target="at.ac.tuwien.infosys.www.pixy.analysis.AbstractLattice">
+      <point x="-66.0" y="-14.5" />
+      <point x="797.1875" y="178.0" />
+      <point x="566.7098958333333" y="178.0" />
+      <point x="51.60000000000002" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.dependency" target="at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement">
+      <point x="58.125" y="-14.5" />
+      <point x="135.625" y="248.0" />
+      <point x="645.4455729166666" y="248.0" />
+      <point x="-73.75" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.inclusiondominator" target="at.ac.tuwien.infosys.www.pixy.analysis.intraprocedural">
+      <point x="66.0" y="-14.5" />
+      <point x="929.1875" y="268.0" />
+      <point x="1010.90390625" y="268.0" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.interprocedural" target="at.ac.tuwien.infosys.www.pixy.analysis.AbstractAnalysisNode">
+      <point x="59.0" y="-14.5" />
+      <point x="401.1098958333333" y="89.0" />
+      <point x="964.9375" y="89.0" />
+      <point x="-41.5" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.literal" target="at.ac.tuwien.infosys.www.pixy.analysis.AbstractLattice">
+      <point x="0.0" y="-14.5" />
+      <point x="682.6875" y="188.0" />
+      <point x="540.9098958333333" y="188.0" />
+      <point x="25.799999999999955" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.type" target="at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement">
+      <point x="37.66666666666657" y="-14.5" />
+      <point x="517.0" y="268.0" />
+      <point x="704.4455729166666" y="268.0" />
+      <point x="-14.75" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.dependency" target="at.ac.tuwien.infosys.www.pixy.analysis.interprocedural">
+      <point x="-19.375" y="-14.5" />
+      <point x="58.125" y="198.0" />
+      <point x="275.7348958333333" y="198.0" />
+      <point x="-66.375" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.alias" target="at.ac.tuwien.infosys.www.pixy.analysis.Recyclable">
+      <point x="-42.75" y="-14.5" />
+      <point x="248.25" y="188.0" />
+      <point x="46.00807291666672" y="188.0" />
+      <point x="46.00807291666672" y="89.0" />
+      <point x="109.8125" y="89.0" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.alias" target="at.ac.tuwien.infosys.www.pixy.analysis.AbstractLattice">
+      <point x="14.25" y="-14.5" />
+      <point x="305.25" y="228.0" />
+      <point x="489.30989583333337" y="228.0" />
+      <point x="-25.80000000000001" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.intraprocedural" target="at.ac.tuwien.infosys.www.pixy.analysis.AbstractAnalysisInformation">
+      <point x="-59.0" y="-14.5" />
+      <point x="951.90390625" y="59.0" />
+      <point x="332.0625" y="59.0" />
+      <point x="51.25" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.CompositeTransferFunction" target="at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction">
+      <point x="0.0" y="-14.5" />
+      <point x="264.5" y="416.0" />
+      <point x="215.5" y="416.0" />
+      <point x="46.75" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement" target="at.ac.tuwien.infosys.www.pixy.analysis.Recyclable">
+      <point x="0.0" y="-14.5" />
+      <point x="719.1955729166666" y="69.0" />
+      <point x="142.14583333333337" y="69.0" />
+      <point x="32.33333333333334" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.alias" target="at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement">
+      <point x="42.75" y="-14.5" />
+      <point x="333.75" y="258.0" />
+      <point x="674.9455729166666" y="258.0" />
+      <point x="-44.25" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.intraprocedural" target="at.ac.tuwien.infosys.www.pixy.analysis.AbstractAnalysisNode">
+      <point x="59.0" y="-14.5" />
+      <point x="1069.90390625" y="89.0" />
+      <point x="1047.9375" y="89.0" />
+      <point x="41.5" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.interprocedural" target="at.ac.tuwien.infosys.www.pixy.analysis.AbstractAnalysis">
+      <point x="0.0" y="-14.5" />
+      <point x="342.1098958333333" y="79.0" />
+      <point x="612.0625" y="79.0" />
+      <point x="-34.0" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.dependency" target="at.ac.tuwien.infosys.www.pixy.analysis.AbstractLattice">
+      <point x="19.375" y="-14.5" />
+      <point x="96.875" y="218.0" />
+      <point x="463.5098958333333" y="218.0" />
+      <point x="-51.60000000000002" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.alias" target="at.ac.tuwien.infosys.www.pixy.analysis.interprocedural">
+      <point x="-14.25" y="-14.5" />
+      <point x="276.75" y="208.0" />
+      <point x="319.9848958333333" y="208.0" />
+      <point x="-22.125" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.LatticeElementBottom" target="at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement">
+      <point x="0.0" y="-14.5" />
+      <point x="1066.6875" y="158.0" />
+      <point x="792.9455729166666" y="158.0" />
+      <point x="73.75" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.type" target="at.ac.tuwien.infosys.www.pixy.analysis.interprocedural">
+      <point x="-37.666666666666686" y="-14.5" />
+      <point x="441.6666666666667" y="208.0" />
+      <point x="364.2348958333333" y="208.0" />
+      <point x="22.125" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.interprocedural" target="at.ac.tuwien.infosys.www.pixy.analysis.AbstractAnalysisInformation">
+      <point x="-59.0" y="-14.5" />
+      <point x="283.1098958333333" y="89.0" />
+      <point x="229.5625" y="89.0" />
+      <point x="-51.25" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.TransferFunctionId" target="at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction">
+      <point x="0.0" y="-14.5" />
+      <point x="73.0" y="416.0" />
+      <point x="122.0" y="416.0" />
+      <point x="-46.75" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.dependency" target="at.ac.tuwien.infosys.www.pixy.analysis.Recyclable">
+      <point x="-58.125" y="-14.5" />
+      <point x="19.375" y="268.0" />
+      <point x="4.8700520833333485" y="268.0" />
+      <point x="4.8700520833333485" y="79.0" />
+      <point x="77.47916666666663" y="79.0" />
+      <point x="-32.33333333333337" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.inclusiondominator" target="at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement">
+      <point x="0.0" y="-14.5" />
+      <point x="863.1875" y="168.0" />
+      <point x="763.4455729166666" y="168.0" />
+      <point x="44.25" y="14.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="576.0" y="272.0" />
+  <SelectedNodes>
+    <node>at.ac.tuwien.infosys.www.pixy.analysis.type</node>
+  </SelectedNodes>
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

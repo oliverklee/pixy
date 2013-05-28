@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>at.ac.tuwien.infosys.www.pixy.analysis.type</OriginalElement>
+  <nodes>
+    <node x="0.0" y="148.0">at.ac.tuwien.infosys.www.pixy.analysis.type.TypeAnalysis</node>
+    <node x="0.0" y="0.0">at.ac.tuwien.infosys.www.pixy.analysis.type.transferfunction</node>
+    <node x="0.0" y="74.0">at.ac.tuwien.infosys.www.pixy.analysis.type.TypeLatticeElement</node>
+    <node x="158.0" y="148.0">at.ac.tuwien.infosys.www.pixy.analysis.type.TypeLattice</node>
+    <node x="0.0" y="222.0">at.ac.tuwien.infosys.www.pixy.analysis.type.Type</node>
+  </nodes>
+  <notes />
+  <edges />
+  <settings layout="Hierarchic Group" zoom="1.0" x="132.0" y="125.5" />
+  <SelectedNodes>
+    <node>at.ac.tuwien.infosys.www.pixy.analysis.type.TypeAnalysis</node>
+  </SelectedNodes>
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>at.ac.tuwien.infosys.www.pixy.sanitation</OriginalElement>
+  <nodes>
+    <node x="188.0" y="79.0">at.ac.tuwien.infosys.www.pixy.sanitation.SQLSanitationAnalysis</node>
+    <node x="160.0" y="301.0">at.ac.tuwien.infosys.www.pixy.sanitation.FSAUtils</node>
+    <node x="0.0" y="79.0">at.ac.tuwien.infosys.www.pixy.sanitation.XSSSanitationAnalysis</node>
+    <node x="0.0" y="301.0">at.ac.tuwien.infosys.www.pixy.sanitation.Regex2Prolog</node>
+    <node x="0.0" y="153.0">at.ac.tuwien.infosys.www.pixy.sanitation.UnsupportedRegexException</node>
+    <node x="79.25" y="0.0">at.ac.tuwien.infosys.www.pixy.sanitation.AbstractSanitationAnalysis</node>
+    <node x="0.0" y="227.0">at.ac.tuwien.infosys.www.pixy.sanitation.FSAAutomaton</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="at.ac.tuwien.infosys.www.pixy.sanitation.XSSSanitationAnalysis" target="at.ac.tuwien.infosys.www.pixy.sanitation.AbstractSanitationAnalysis">
+      <point x="0.0" y="-14.5" />
+      <point x="84.0" y="54.0" />
+      <point x="128.75" y="54.0" />
+      <point x="-49.5" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.sanitation.SQLSanitationAnalysis" target="at.ac.tuwien.infosys.www.pixy.sanitation.AbstractSanitationAnalysis">
+      <point x="0.0" y="-14.5" />
+      <point x="272.5" y="54.0" />
+      <point x="227.75" y="54.0" />
+      <point x="49.5" y="14.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="178.5" y="165.0" />
+  <SelectedNodes />
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

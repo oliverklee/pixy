@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes</OriginalElement>
+  <nodes>
+    <node x="2163.0" y="209.0">at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgEntry</node>
+    <node x="635.0000000000001" y="209.0">at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.IncludeStart</node>
+    <node x="2360.0" y="209.0">at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Tester</node>
+    <node x="2453.0" y="209.0">at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AssignReference</node>
+    <node x="1060.0" y="209.0">at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AssignUnary</node>
+    <node x="233.0" y="209.0">at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Include</node>
+    <node x="1364.7500000000002" y="0.0">at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode</node>
+    <node x="1446.0" y="209.0">at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallBuiltinFunction</node>
+    <node x="864.0000000000001" y="209.0">at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallReturn</node>
+    <node x="2961.0" y="209.0">at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AssignSimple</node>
+    <node x="537.0000000000001" y="209.0">at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgExit</node>
+    <node x="2688.0" y="209.0">at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AssignArray</node>
+    <node x="1265.0" y="209.0">at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallUnknownFunction</node>
+    <node x="63.0" y="209.0">at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Unset</node>
+    <node x="1732.0" y="209.0">at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.IncludeEnd</node>
+    <node x="446.0000000000001" y="209.0">at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Empty</node>
+    <node x="2070.0" y="209.0">at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Define</node>
+    <node x="2269.0" y="209.0">at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Global</node>
+    <node x="152.0" y="209.0">at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Echo</node>
+    <node x="2605.0" y="209.0">at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Isset</node>
+    <node x="981.0000000000001" y="209.0">at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Eval</node>
+    <node x="762.0000000000001" y="209.0">at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Hotspot</node>
+    <node x="1980.0" y="209.0">at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Static</node>
+    <node x="1849.0" y="209.0">at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AssignBinary</node>
+    <node x="329.0" y="209.0">at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.BasicBlock</node>
+    <node x="1188.0" y="209.0">at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Call</node>
+    <node x="1614.0" y="209.0">at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.EmptyTest</node>
+    <node x="2814.0" y="209.0">at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreparation</node>
+    <node x="0.0" y="209.0">at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.If</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Static" target="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode">
+      <point x="0.0" y="-14.5" />
+      <point x="2015.0" y="139.0" />
+      <point x="1454.6071428571431" y="139.0" />
+      <point x="21.85714285714289" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Global" target="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode">
+      <point x="0.0" y="-14.5" />
+      <point x="2304.5" y="109.0" />
+      <point x="1469.1785714285716" y="109.0" />
+      <point x="36.42857142857133" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgEntry" target="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode">
+      <point x="0.0" y="-14.5" />
+      <point x="2206.0" y="119.0" />
+      <point x="1464.321428571429" y="119.0" />
+      <point x="31.57142857142867" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.IncludeEnd" target="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode">
+      <point x="0.0" y="-14.5" />
+      <point x="1780.5" y="159.0" />
+      <point x="1444.8928571428573" y="159.0" />
+      <point x="12.14285714285711" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Empty" target="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode">
+      <point x="0.0" y="-14.5" />
+      <point x="481.5000000000001" y="109.0" />
+      <point x="1391.464285714286" y="109.0" />
+      <point x="-41.28571428571422" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Unset" target="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode">
+      <point x="0.0" y="-14.5" />
+      <point x="97.5" y="69.0" />
+      <point x="1372.0357142857144" y="69.0" />
+      <point x="-60.71428571428578" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CfgExit" target="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode">
+      <point x="0.0" y="-14.5" />
+      <point x="576.0000000000001" y="119.0" />
+      <point x="1396.321428571429" y="119.0" />
+      <point x="-36.42857142857133" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AssignBinary" target="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode">
+      <point x="0.0" y="-14.5" />
+      <point x="1904.5" y="149.0" />
+      <point x="1449.7500000000002" y="149.0" />
+      <point x="17.0" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreparation" target="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode">
+      <point x="0.0" y="-14.5" />
+      <point x="2877.5" y="59.0" />
+      <point x="1493.464285714286" y="59.0" />
+      <point x="60.71428571428578" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.IncludeStart" target="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode">
+      <point x="0.0" y="-14.5" />
+      <point x="688.5000000000001" y="129.0" />
+      <point x="1401.1785714285716" y="129.0" />
+      <point x="-31.57142857142867" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Echo" target="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode">
+      <point x="0.0" y="-14.5" />
+      <point x="182.5" y="79.0" />
+      <point x="1376.8928571428573" y="79.0" />
+      <point x="-55.85714285714289" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Call" target="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode">
+      <point x="0.0" y="-14.5" />
+      <point x="1216.5" y="179.0" />
+      <point x="1425.464285714286" y="179.0" />
+      <point x="-7.285714285714221" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AssignSimple" target="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode">
+      <point x="0.0" y="-14.5" />
+      <point x="3017.0" y="49.0" />
+      <point x="1498.321428571429" y="49.0" />
+      <point x="65.57142857142867" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AssignUnary" target="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode">
+      <point x="0.0" y="-14.5" />
+      <point x="1114.0" y="169.0" />
+      <point x="1420.6071428571431" y="169.0" />
+      <point x="-12.14285714285711" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Hotspot" target="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode">
+      <point x="0.0" y="-14.5" />
+      <point x="803.0000000000001" y="139.0" />
+      <point x="1406.0357142857144" y="139.0" />
+      <point x="-26.71428571428578" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Isset" target="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode">
+      <point x="0.0" y="-14.5" />
+      <point x="2636.5" y="79.0" />
+      <point x="1483.7500000000002" y="79.0" />
+      <point x="51.0" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Include" target="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode">
+      <point x="0.0" y="-14.5" />
+      <point x="271.0" y="89.0" />
+      <point x="1381.7500000000002" y="89.0" />
+      <point x="-51.0" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Define" target="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode">
+      <point x="0.0" y="-14.5" />
+      <point x="2106.5" y="129.0" />
+      <point x="1459.464285714286" y="129.0" />
+      <point x="26.71428571428578" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallReturn" target="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode">
+      <point x="0.0" y="-14.5" />
+      <point x="912.5000000000001" y="149.0" />
+      <point x="1410.8928571428573" y="149.0" />
+      <point x="-21.85714285714289" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallBuiltinFunction" target="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode">
+      <point x="0.0" y="-14.5" />
+      <point x="1520.0" y="179.0" />
+      <point x="1435.1785714285716" y="179.0" />
+      <point x="2.428571428571331" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallUnknownFunction" target="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode">
+      <point x="0.0" y="-14.5" />
+      <point x="1345.5" y="189.0" />
+      <point x="1430.3214285714287" y="189.0" />
+      <point x="-2.4285714285715585" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.BasicBlock" target="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode">
+      <point x="0.0" y="-14.5" />
+      <point x="377.5" y="99.0" />
+      <point x="1386.6071428571431" y="99.0" />
+      <point x="-46.14285714285711" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Tester" target="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode">
+      <point x="0.0" y="-14.5" />
+      <point x="2396.5" y="99.0" />
+      <point x="1474.0357142857144" y="99.0" />
+      <point x="41.28571428571422" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.EmptyTest" target="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode">
+      <point x="0.0" y="-14.5" />
+      <point x="1663.0" y="169.0" />
+      <point x="1440.0357142857144" y="169.0" />
+      <point x="7.285714285714221" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AssignReference" target="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode">
+      <point x="0.0" y="-14.5" />
+      <point x="2519.0" y="89.0" />
+      <point x="1478.8928571428573" y="89.0" />
+      <point x="46.14285714285711" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.If" target="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode">
+      <point x="0.0" y="-14.5" />
+      <point x="21.5" y="59.0" />
+      <point x="1367.1785714285716" y="59.0" />
+      <point x="-65.57142857142867" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Eval" target="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode">
+      <point x="-1.1368683772161603E-13" y="-14.5" />
+      <point x="1010.5" y="159.0" />
+      <point x="1415.7500000000002" y="159.0" />
+      <point x="-17.0" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AssignArray" target="at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode">
+      <point x="0.0" y="-14.5" />
+      <point x="2741.0" y="69.0" />
+      <point x="1488.6071428571431" y="69.0" />
+      <point x="55.85714285714289" y="14.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.3776268994503718" x="1536.5" y="119.0" />
+  <SelectedNodes>
+    <node>at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.If</node>
+  </SelectedNodes>
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

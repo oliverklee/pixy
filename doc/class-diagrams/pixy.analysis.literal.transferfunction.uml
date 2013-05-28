@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction</OriginalElement>
+  <nodes>
+    <node x="0.0" y="74.0">at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction.AssignReference</node>
+    <node x="142.0" y="296.0">at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction.Define</node>
+    <node x="0.0" y="222.0">at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction.CallUnknown</node>
+    <node x="162.0" y="148.0">at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction.AssignSimple</node>
+    <node x="195.0" y="0.0">at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction.CallBuiltinFunction</node>
+    <node x="260.0" y="296.0">at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction.Tester</node>
+    <node x="0.0" y="0.0">at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction.CallReturnUnknown</node>
+    <node x="308.0" y="222.0">at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction.AssignArray</node>
+    <node x="177.0" y="74.0">at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction.CallPreparation</node>
+    <node x="0.0" y="296.0">at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction.CallReturn</node>
+    <node x="155.0" y="222.0">at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction.AssignUnary</node>
+    <node x="0.0" y="148.0">at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction.FunctionEntry</node>
+    <node x="319.0" y="148.0">at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction.AssignBinary</node>
+    <node x="0.0" y="370.0">at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction.Unset</node>
+    <node x="114.0" y="370.0">at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction.Isset</node>
+  </nodes>
+  <notes />
+  <edges />
+  <settings layout="Hierarchic Group" zoom="1.0" x="215.0" y="199.5" />
+  <SelectedNodes>
+    <node>at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction.AssignReference</node>
+  </SelectedNodes>
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

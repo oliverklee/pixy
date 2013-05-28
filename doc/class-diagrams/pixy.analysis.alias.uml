@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>at.ac.tuwien.infosys.www.pixy.analysis.alias</OriginalElement>
+  <nodes>
+    <node x="218.0" y="153.0">at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasLatticeElement</node>
+    <node x="173.0" y="227.0">at.ac.tuwien.infosys.www.pixy.analysis.alias.MayAliasPair</node>
+    <node x="304.0" y="301.0">at.ac.tuwien.infosys.www.pixy.analysis.alias.MayAliases</node>
+    <node x="0.0" y="301.0">at.ac.tuwien.infosys.www.pixy.analysis.alias.MustAliases</node>
+    <node x="202.0" y="0.0">at.ac.tuwien.infosys.www.pixy.analysis.alias.transferfunction</node>
+    <node x="0.0" y="79.0">at.ac.tuwien.infosys.www.pixy.analysis.alias.DummyAliasAnalysis</node>
+    <node x="0.0" y="153.0">at.ac.tuwien.infosys.www.pixy.analysis.alias.completegraph</node>
+    <node x="152.0" y="301.0">at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasLattice</node>
+    <node x="0.0" y="227.0">at.ac.tuwien.infosys.www.pixy.analysis.alias.MustAliasGroup</node>
+    <node x="21.5" y="0.0">at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.alias.DummyAliasAnalysis" target="at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis">
+      <point x="0.0" y="-14.5" />
+      <point x="0.0" y="14.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="203.0" y="165.0" />
+  <SelectedNodes>
+    <node>at.ac.tuwien.infosys.www.pixy.analysis.alias.MayAliasPair</node>
+  </SelectedNodes>
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

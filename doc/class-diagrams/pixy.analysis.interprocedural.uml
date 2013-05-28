@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>at.ac.tuwien.infosys.www.pixy.analysis.interprocedural</OriginalElement>
+  <nodes>
+    <node x="234.0" y="262.0">at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralWorklistPoor</node>
+    <node x="0.0" y="410.0">at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralWorklistElement</node>
+    <node x="268.0" y="410.0">at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralWorklistOrder</node>
+    <node x="356.0" y="558.0">at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.ReverseTarget</node>
+    <node x="154.0" y="0.0">at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AbstractAnalysisType</node>
+    <node x="190.0" y="558.0">at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.CallGraphNode</node>
+    <node x="0.0" y="484.0">at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.ConnectorWorkListElement</node>
+    <node x="133.5" y="183.0">at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralWorklist</node>
+    <node x="522.0" y="558.0">at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.CallGraph</node>
+    <node x="455.0" y="484.0">at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.ConnectorWorkList</node>
+    <node x="248.79166666666669" y="109.0">at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.functional</node>
+    <node x="0.0" y="336.0">at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralAnalysisInformation</node>
+    <node x="0.0" y="0.0">at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AbstractContext</node>
+    <node x="71.11666666666667" y="109.0">at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring</node>
+    <node x="0.0" y="262.0">at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralWorklistBetter</node>
+    <node x="0.0" y="558.0">at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.ConnectorFunction</node>
+    <node x="289.0" y="336.0">at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AbstractInterproceduralAnalysis</node>
+    <node x="240.0" y="484.0">at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.ConnectorComputation</node>
+    <node x="339.0" y="0.0">at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AbstractInterproceduralAnalysisNode</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.functional" target="at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AbstractAnalysisType">
+      <point x="0.0" y="-14.5" />
+      <point x="321.7916666666667" y="49.0" />
+      <point x="277.75" y="49.0" />
+      <point x="41.25" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralWorklistBetter" target="at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralWorklist">
+      <point x="0.0" y="-14.5" />
+      <point x="107.0" y="237.0" />
+      <point x="177.25" y="237.0" />
+      <point x="-43.75" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring" target="at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AbstractContext">
+      <point x="-47.33333333333334" y="-14.5" />
+      <point x="94.78333333333333" y="89.0" />
+      <point x="33.5" y="89.0" />
+      <point x="-33.5" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.functional" target="at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AbstractInterproceduralAnalysisNode">
+      <point x="48.666666666666686" y="-14.5" />
+      <point x="370.45833333333337" y="89.0" />
+      <point x="531.75" y="89.0" />
+      <point x="64.25" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring" target="at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AbstractInterproceduralAnalysisNode">
+      <point x="47.33333333333334" y="-14.5" />
+      <point x="189.45000000000002" y="79.0" />
+      <point x="403.25" y="79.0" />
+      <point x="-64.25" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralWorklistPoor" target="at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralWorklist">
+      <point x="0.0" y="-14.5" />
+      <point x="335.0" y="237.0" />
+      <point x="264.75" y="237.0" />
+      <point x="43.75" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring" target="at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AbstractAnalysisType">
+      <point x="0.0" y="-14.5" />
+      <point x="142.11666666666667" y="69.0" />
+      <point x="195.25" y="69.0" />
+      <point x="-41.25" y="14.5" />
+    </edge>
+    <edge source="at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.functional" target="at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AbstractContext">
+      <point x="-48.666666666666686" y="-14.5" />
+      <point x="273.125" y="59.0" />
+      <point x="100.5" y="59.0" />
+      <point x="33.5" y="14.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="306.5" y="293.5" />
+  <SelectedNodes>
+    <node>at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralWorklistBetter</node>
+  </SelectedNodes>
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
