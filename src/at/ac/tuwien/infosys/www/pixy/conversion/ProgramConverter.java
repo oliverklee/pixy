@@ -45,7 +45,7 @@ public class ProgramConverter {
     private boolean useAliasAnalysis;
 
     // line counter (builtin functions file is not subtracted automatically)
-    private int lines;
+    private int numberOfLines;
     private boolean countLines = false;
 
     // File objects of all included files as well as the entry file
@@ -79,7 +79,7 @@ public class ProgramConverter {
         this.specialNodes = specialNodes;
         this.useAliasAnalysis = useAliasAnalysis;
 
-        this.lines = 0;
+        this.numberOfLines = 0;
 
         this.allFiles = new HashSet<>();
         this.allFiles.add(MyOptions.entryFile);
@@ -371,7 +371,7 @@ public class ProgramConverter {
         this.baseTac.assignFunctions();
 
         if (this.countLines) {
-            System.out.println("Lines: " + this.lines);
+            System.out.println("Lines: " + this.numberOfLines);
         }
 
         // statistics output
@@ -445,15 +445,8 @@ public class ProgramConverter {
         }
     }
 
-//  parse **************************************************************************
-
     public ParseTree parse(String fileName) {
-        // make sure that we work with a unique filename
-        try {
-            fileName = (new File(fileName)).getCanonicalPath();
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage());
-        }
+        fileName = createUniqueFileName(fileName);
 
         ParseTree parseTree = null;
         try {
@@ -473,13 +466,20 @@ public class ProgramConverter {
         }
 
         if (this.countLines) {
-            this.lines += this.countLines(fileName);
+            this.numberOfLines += this.countLines(fileName);
         }
 
         return parseTree;
     }
 
-//  makeCompleteFileName ***********************************************************
+    private String createUniqueFileName(String fileName) {
+        try {
+            fileName = (new File(fileName)).getCanonicalPath();
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+        return fileName;
+    }
 
     // turns the name of a file to be included into a File object;
     // returns null if there is no such file
