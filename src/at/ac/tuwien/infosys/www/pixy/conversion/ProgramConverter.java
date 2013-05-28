@@ -55,10 +55,7 @@ public class ProgramConverter {
 
     private SymbolTable superSymbolTable;
 
-    // inclusion status
-    private enum IncStatus {
-        NOTFOUND, INCLUDED, CYCLIC
-    }
+    private enum InclusionStatus {NOT_FOUND, INCLUDED, CYCLIC}
 
     // type analysis (for resolving ambiguous method calls)
     private TypeAnalysis typeAnalysis;
@@ -125,11 +122,7 @@ public class ProgramConverter {
 //  convert ************************************************************************
 
     public void convert() {
-        // convert entry file
-        ParseTree parseTree = this.parse(MyOptions.entryFile.getPath());
-        baseTac = new TacConverter(parseTree, this.specialNodes, this.numberOfConvertedFiles++,
-            MyOptions.entryFile, this);
-        baseTac.convert();
+        convertEntryFile();
 
         List<Include> processUs = baseTac.getIncludeNodes();
         boolean goOn = true;  // start a new iteration?
@@ -187,7 +180,7 @@ public class ProgramConverter {
                         nonLiteralIncludes = true;
                         continue;
                     }
-                    IncStatus status = this.include(includeNode.getIncludeMe().toString(), includeNode,
+                    InclusionStatus status = this.include(includeNode.getIncludeMe().toString(), includeNode,
                         includeNode.getIncludeFunction(), weComeAfterwards);
 
                     switch (status) {
@@ -195,7 +188,7 @@ public class ProgramConverter {
                             // fine!
                             resolvedLit++;
                             break;
-                        case NOTFOUND:
+                        case NOT_FOUND:
                             // a literal include that was not found;
                             // there is no need to retry
                             this.skipUs.add(includeNode);
@@ -216,7 +209,7 @@ public class ProgramConverter {
             System.out.println();
 
             // assign functions to cfg nodes
-            this.baseTac.assignFunctions();
+            this.baseTac.assignFunctionsToControlFlowGraphNodes();
 
             // resolution of non-literal includes **********************************
 
@@ -283,7 +276,7 @@ public class ProgramConverter {
                 }
 
                 // include!
-                IncStatus status = this.include(includedString, includeNode, includeNode.getIncludeFunction(),
+                InclusionStatus status = this.include(includedString, includeNode, includeNode.getIncludeFunction(),
                     weComeAfterwards);
 
                 switch (status) {
@@ -296,7 +289,7 @@ public class ProgramConverter {
                         this.skipUs.add(includeNode);
                         cyclic++;
                         break;
-                    case NOTFOUND:
+                    case NOT_FOUND:
                         // a non-literal include that was not found:
                         // perhaps we will succeed in a later iteration...
                         notFoundDynamicIncludes.put(includeNode, includedString);
@@ -309,7 +302,7 @@ public class ProgramConverter {
             System.out.println();
 
             // assign functions to cfg nodes
-            this.baseTac.assignFunctions();
+            this.baseTac.assignFunctionsToControlFlowGraphNodes();
 
             processUs = weComeAfterwards;
             processUs.addAll(topIncludes);  // maybe they will become resolvable in the next iteration
@@ -364,7 +357,7 @@ public class ProgramConverter {
         this.baseTac.createBasicBlocks();
 
         // assign functions to cfg nodes
-        this.baseTac.assignFunctions();
+        this.baseTac.assignFunctionsToControlFlowGraphNodes();
 
         if (this.countLines) {
             System.out.println("Lines: " + this.numberOfLines);
@@ -415,6 +408,17 @@ public class ProgramConverter {
         // final node order
         // EFF: only needed for functional analyses
         baseTac.assignReversePostOrder();
+    }
+
+    /**
+     * Converts the entry file and sets baseTac.
+     */
+    private void convertEntryFile() {
+        ParseTree parseTree = this.parse(MyOptions.entryFile.getPath());
+        baseTac = new TacConverter(
+            parseTree, this.specialNodes, this.numberOfConvertedFiles++, MyOptions.entryFile, this
+        );
+        baseTac.convert();
     }
 
 //  ********************************************************************************
@@ -540,12 +544,12 @@ public class ProgramConverter {
 //  include ************************************************************************
 
     // function: the one that contains the given include node;
-    public IncStatus include(String includedFileName, Include includeNode, TacFunction function,
+    public InclusionStatus include(String includedFileName, Include includeNode, TacFunction function,
                              List<Include> includeNodes) {
         File includingFile = includeNode.getFile();
         File includedFile = this.makeFile(includedFileName, includingFile);
         if (includedFile == null) {
-            return IncStatus.NOTFOUND;
+            return InclusionStatus.NOT_FOUND;
         }
         try {
             this.allFiles.add(includedFile.getCanonicalFile());
@@ -575,9 +579,9 @@ public class ProgramConverter {
             tac.convert();
             this.baseTac.include(tac, includeNode, function);
             includeNodes.addAll(tac.getIncludeNodes());
-            return IncStatus.INCLUDED;
+            return InclusionStatus.INCLUDED;
         } else {
-            return IncStatus.CYCLIC;
+            return InclusionStatus.CYCLIC;
         }
     }
 

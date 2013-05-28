@@ -204,58 +204,37 @@ public class TacConverter {
 // OTHER ***************************************************************************
 // *********************************************************************************
 
-//  ********************************************************************************
-
-    // assigns functions to cfg nodes
-    public void assignFunctions() {
-
-        // for each function
+    public void assignFunctionsToControlFlowGraphNodes() {
         for (TacFunction function : this.userFunctions.values()) {
-
-            if (function == null) {
-                throw new RuntimeException("SNH");
-            }
-
-            // handle normal function controlFlowGraph
-            ControlFlowGraph controlFlowGraph = function.getControlFlowGraph();
-            this.assignFunctionsHelper(controlFlowGraph, function);
-
-            // handle function default cfgs
-            for (TacFormalParameter param : function.getParams()) {
-                if (param.hasDefault()) {
-                    ControlFlowGraph defaultControlFlowGraph = param.getDefaultControlFlowGraph();
-                    this.assignFunctionsHelper(defaultControlFlowGraph, function);
-                }
-            }
+            assignFunctionToControlFlowGraphNode(function);
         }
 
         // for each method: repeat the same
         for (TacFunction function : this.getMethods()) {
+            assignFunctionToControlFlowGraphNode(function);
+        }
+    }
 
-            if (function == null) {
-                throw new RuntimeException("SNH");
-            }
+    private void assignFunctionToControlFlowGraphNode(TacFunction function) {
+        if (function == null) {
+            throw new RuntimeException("SNH");
+        }
 
-            // handle normal function controlFlowGraph
-            ControlFlowGraph controlFlowGraph = function.getControlFlowGraph();
-            this.assignFunctionsHelper(controlFlowGraph, function);
+        // handle normal function controlFlowGraph
+        ControlFlowGraph controlFlowGraph = function.getControlFlowGraph();
+        this.assignFunctionsHelper(controlFlowGraph, function);
 
-            // handle function default cfgs
-            for (TacFormalParameter param : function.getParams()) {
-                if (param.hasDefault()) {
-                    ControlFlowGraph defaultControlFlowGraph = param.getDefaultControlFlowGraph();
-                    this.assignFunctionsHelper(defaultControlFlowGraph, function);
-                }
+        // handle function default controlFlowGraphs
+        for (TacFormalParameter parameter : function.getParams()) {
+            if (parameter.hasDefault()) {
+                ControlFlowGraph defaultControlFlowGraph = parameter.getDefaultControlFlowGraph();
+                this.assignFunctionsHelper(defaultControlFlowGraph, function);
             }
         }
     }
 
-//  ********************************************************************************
-
     private void assignFunctionsHelper(ControlFlowGraph controlFlowGraph, TacFunction function) {
-
         for (AbstractCfgNode node : controlFlowGraph.dfPreOrder()) {
-
             node.setEnclosingFunction(function);
 
             // enter basic block
@@ -268,13 +247,10 @@ public class TacConverter {
         }
     }
 
-// createBasicBlocks ***************************************************************
-
     // note: for function default cfgs (for default parameters), no basic blocks
     // are created (because it would be useless); don't change this behavior, or
     // you will get into trouble in other places
     public void createBasicBlocks() {
-
         // which cfg nodes did we already visit?
         Set<AbstractCfgNode> visited = new HashSet<>();
 
@@ -294,12 +270,9 @@ public class TacConverter {
         }
     }
 
-//  createBasicBlocksHelper ********************************************************
-
     // LATER: non-recursive implementation (stack is getting deep);
     // receives a node that might be the beginning of a basic block
     private void createBasicBlocksHelper(AbstractCfgNode cfgNode, Set<AbstractCfgNode> visited) {
-
         if (visited.contains(cfgNode)) {
             // we've already been here: don't go any further
             return;
@@ -374,10 +347,7 @@ public class TacConverter {
         }
     }
 
-//  allowedInBasicBlock ************************************************************
-
     private boolean allowedInBasicBlock(AbstractCfgNode cfgNode) {
-
         // EFF: use a field inside CfgNode* instead;
         // note: alias information must not change inside basic blocks
 
@@ -400,12 +370,9 @@ public class TacConverter {
         return false;
     }
 
-//  include ************************************************************************
-
     // includes the given converter at the specified include node;
     // includingFunction: the one that contains the include node
     public void include(TacConverter includedTac, Include includeNode, TacFunction includingFunction) {
-
         // INLINE MAIN CFG *************************************
 
         // functions inside the included file
@@ -547,11 +514,8 @@ public class TacConverter {
         }
     }
 
-//  inlineMainCfg ******************************************************************
-
     // helper function for "include": inlines the main CFG
     private void inlineMainCfg(TacFunction includedMainFunc, Include includeNode) {
-
         ControlFlowGraph includedMainControlFlowGraph = includedMainFunc.getControlFlowGraph();
 
         // entry and exit nodes of the included file's main cfg
@@ -611,8 +575,6 @@ public class TacConverter {
         }
     }
 
-// resetId *************************************************************************
-
     // resets the global tempId to the given logId;
     // use this method because it maintains maxTempId
     private void resetId(int logId) {
@@ -622,8 +584,6 @@ public class TacConverter {
         this.tempId = logId;
     }
 
-// convert() ***********************************************************************
-
     public void convert() {
         this.start(this.phpParseTree.getRoot());
         if (this.tempId > this.maxTempId) {
@@ -631,13 +591,9 @@ public class TacConverter {
         }
     }
 
-//  ********************************************************************************
-
     public void assignReversePostOrder() {
         this.mainFunction.assignReversePostOrder();
     }
-
-// newTemp(TacFunction function) ***************************************************
 
     private Variable newTemp(TacFunction function) {
 
@@ -656,13 +612,9 @@ public class TacConverter {
         return variable;
     }
 
-// newTemp *************************************************************************
-
     private Variable newTemp() {
         return this.newTemp(this.functionStack.getLast());
     }
-
-// getAllFunctions *****************************************************************
 
     // returns all functions and methods
     public List<TacFunction> getAllFunctions() {
@@ -671,8 +623,6 @@ public class TacConverter {
         retMe.addAll(this.getMethods());
         return retMe;
     }
-
-//  ********************************************************************************
 
     // returns all user-defined methods
     private Collection<TacFunction> getMethods() {
@@ -683,43 +633,29 @@ public class TacConverter {
         return retMe;
     }
 
-// getUserFunctions ****************************************************************
-
     public Map<String, TacFunction> getUserFunctions() {
         return this.userFunctions;
     }
-
-// getUserMethods ******************************************************************
 
     public Map<String, Map<String, TacFunction>> getUserMethods() {
         return this.userMethods;
     }
 
-// hasEmptyMain ********************************************************************
-
     public boolean hasEmptyMain() {
         return this.mainFunction.isEmpty();
     }
-
-// getSuperSymbolTable *************************************************************
 
     public SymbolTable getSuperSymbolTable() {
         return this.superSymbolTable;
     }
 
-// getConstantsTable ***************************************************************
-
     public ConstantsTable getConstantsTable() {
         return this.constantsTable;
     }
 
-// getMaxTempId ********************************************************************
-
     public int getMaxTempId() {
         return this.maxTempId;
     }
-
-// getPlacesList *******************************************************************
 
     // returns a list containing all variables and constants
     public List<AbstractTacPlace> getPlacesList() {
