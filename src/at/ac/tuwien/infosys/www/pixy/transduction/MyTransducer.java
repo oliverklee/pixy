@@ -22,13 +22,13 @@ public class MyTransducer extends AbstractAutomaton {
         Map<rationals.State, MyState> map = new HashMap<>();
 
         // copy states, updating auxiliary map on the way
-        Set<State> states = a.states();
+        @SuppressWarnings("unchecked") Set<State> states = a.states();
         for (State state : states) {
             map.put(state, this.addState(state.isInitial(), state.isTerminal()));
         }
 
         // copy transitions (and transform TransducerRelations)
-        Set<rationals.Transition> delta = a.delta();
+        @SuppressWarnings("unchecked") Set<rationals.Transition> delta = a.delta();
         for (rationals.Transition t : delta) {
             TransducerRelation origtr = (TransducerRelation) t.label();
             this.addTransition(new MyTransition(

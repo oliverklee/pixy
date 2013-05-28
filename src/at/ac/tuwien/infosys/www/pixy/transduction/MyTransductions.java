@@ -170,7 +170,7 @@ public class MyTransductions {
     public static void addPrefixedRemainingTransitions(
         TransducerNivat t, MyAlphabet alphabet, List<Object> prefix, State from, State to
     ) throws Exception {
-        Set<Transition> fromTrans = t.delta(from);
+        @SuppressWarnings("unchecked") Set<Transition> fromTrans = t.delta(from);
         Set<Object> existingInLabels = new HashSet<>();
 
         // collect existing in-labels from all transitions leaving "from"
@@ -197,7 +197,7 @@ public class MyTransductions {
         TransducerNivat t, MyAlphabet alphabet, State from, State to
     ) throws Exception {
 
-        Set<Transition> fromTrans = t.delta(from);
+        @SuppressWarnings("unchecked") Set<Transition> fromTrans = t.delta(from);
         Set<Object> existingInLabels = new HashSet<>();
 
         // collect existing in-labels from all transitions leaving "from"
