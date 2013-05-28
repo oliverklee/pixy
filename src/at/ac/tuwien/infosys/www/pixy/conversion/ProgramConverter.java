@@ -68,9 +68,7 @@ public class ProgramConverter {
 //  CONSTRUCTOR ********************************************************************
 //  ********************************************************************************
 
-    public ProgramConverter(boolean specialNodes,
-                            boolean useAliasAnalysis/*, Properties props*/) {
-
+    public ProgramConverter(boolean specialNodes, boolean useAliasAnalysis) {
         this.numConvertedFiles = 0;
 
         // determine working directory (= directory of the entry file)
@@ -131,7 +129,6 @@ public class ProgramConverter {
 //  convert ************************************************************************
 
     public void convert() {
-
         // convert entry file
         ParseTree parseTree = this.parse(MyOptions.entryFile.getPath());
         baseTac = new TacConverter(parseTree, this.specialNodes, this.numConvertedFiles++,
@@ -168,7 +165,6 @@ public class ProgramConverter {
         int iteration = 0;
 
         while (goOn && !MyOptions.optionW) {
-
             iteration++;
 
             goOn = false;
@@ -182,7 +178,6 @@ public class ProgramConverter {
             System.out.println();
 
             while (!processUs.isEmpty()) {
-
                 // auxiliary list: will be filled with the include nodes
                 // contained in included files
                 weComeAfterwards = new LinkedList<>();
@@ -261,7 +256,6 @@ public class ProgramConverter {
             topIncludes = new HashSet<>();
 
             for (Include includeNode : processUs) {
-
                 if (this.skipUs.contains(includeNode)) {
                     continue;
                 }
@@ -333,14 +327,12 @@ public class ProgramConverter {
         this.literalAnalysis = null;
 
         if (this.useAliasAnalysis) {
-
             // final, verbose backpatching
             this.baseTac.backpatch(true, true, null, null);
 
             // shadow generation
             this.baseTac.generateShadows();
         } else {
-
             // approximate effects of "global" statements
             this.baseTac.replaceGlobals();
 
@@ -456,7 +448,6 @@ public class ProgramConverter {
 //  parse **************************************************************************
 
     public ParseTree parse(String fileName) {
-
         // make sure that we work with a unique filename
         try {
             fileName = (new File(fileName)).getCanonicalPath();
@@ -493,7 +484,6 @@ public class ProgramConverter {
     // turns the name of a file to be included into a File object;
     // returns null if there is no such file
     private File makeFile(String fileName, File includingFile) {
-
         // first check whether the given file name is absolute
         File findMe = new File(fileName);
         if (findMe.isAbsolute()) {
@@ -556,7 +546,6 @@ public class ProgramConverter {
     // function: the one that contains the given include node;
     public IncStatus include(String includedFileName, Include includeNode, TacFunction function,
                              List<Include> includeNodes) {
-
         File includingFile = includeNode.getFile();
         File includedFile = this.makeFile(includedFileName, includingFile);
         if (includedFile == null) {
@@ -599,7 +588,6 @@ public class ProgramConverter {
 //  countLines *********************************************************************
 
     private int countLines(String fileName) {
-
         int lines = 0;
         try {
             File countMe = new File(fileName);
@@ -616,7 +604,6 @@ public class ProgramConverter {
 // addSuperGlobal ******************************************************************
 
     private void addSuperGlobal(String varName) {
-
         // lookup variable in superglobals symbol table
         Variable var = this.superSymbolTable.getVariable(varName);
 
