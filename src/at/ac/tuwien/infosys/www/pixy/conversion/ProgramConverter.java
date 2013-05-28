@@ -32,8 +32,7 @@ public class ProgramConverter {
     // when we've finished our work
     private TacConverter baseTac;
 
-    // # of converted files
-    private int numConvertedFiles;
+    private int numberOfConvertedFiles = 0;
 
     // the analysis responsible for resolving and including includes
     private LiteralAnalysis literalAnalysis;
@@ -45,14 +44,14 @@ public class ProgramConverter {
     private boolean useAliasAnalysis;
 
     // line counter (builtin functions file is not subtracted automatically)
-    private int numberOfLines;
+    private int numberOfLines = 0;
     private boolean countLines = false;
 
     // File objects of all included files as well as the entry file
-    private Set<File> allFiles;
+    private Set<File> allFiles = new HashSet<>();
 
     // set of include nodes that should be skipped (don't try to include them)
-    private Set<Include> skipUs;
+    private Set<Include> skipUs = new HashSet<>();
 
     private SymbolTable superSymbolTable;
 
@@ -69,8 +68,6 @@ public class ProgramConverter {
 //  ********************************************************************************
 
     public ProgramConverter(boolean specialNodes, boolean useAliasAnalysis) {
-        this.numConvertedFiles = 0;
-
         // determine working directory (= directory of the entry file)
         this.workingDirectoryFile = MyOptions.entryFile.getParentFile();
 
@@ -79,15 +76,14 @@ public class ProgramConverter {
         this.specialNodes = specialNodes;
         this.useAliasAnalysis = useAliasAnalysis;
 
-        this.numberOfLines = 0;
-
-        this.allFiles = new HashSet<>();
         this.allFiles.add(MyOptions.entryFile);
 
-        this.skipUs = new HashSet<>();
+        initializeSuperglobalsSymbolTable();
+    }
 
-        // initialize superglobals symbol table with superglobal arrays
+    private void initializeSuperglobalsSymbolTable() {
         this.superSymbolTable = new SymbolTable("_superglobals", true);
+
         this.addSuperGlobal("$GLOBALS");
         this.addSuperGlobal("$_SERVER");
         this.addSuperGlobal("$HTTP_SERVER_VARS");
@@ -131,7 +127,7 @@ public class ProgramConverter {
     public void convert() {
         // convert entry file
         ParseTree parseTree = this.parse(MyOptions.entryFile.getPath());
-        baseTac = new TacConverter(parseTree, this.specialNodes, this.numConvertedFiles++,
+        baseTac = new TacConverter(parseTree, this.specialNodes, this.numberOfConvertedFiles++,
             MyOptions.entryFile, this);
         baseTac.convert();
 
@@ -446,27 +442,27 @@ public class ProgramConverter {
     }
 
     public ParseTree parse(String fileName) {
-        fileName = createUniqueFileName(fileName);
+        String canonicalFileName = createUniqueFileName(fileName);
 
         ParseTree parseTree = null;
         try {
-            PhpLexer lexer = new PhpLexer(new FileReader(fileName));
-            lexer.setFileName(fileName);
+            PhpLexer lexer = new PhpLexer(new FileReader(canonicalFileName));
+            lexer.setFileName(canonicalFileName);
             PhpParser parser = new PhpParser(lexer);
             ParseNode rootNode = (ParseNode) parser.parse().value;
             parseTree = new ParseTree(rootNode);
         } catch (FileNotFoundException e) {
-            Utils.bail("File not found: " + fileName);
+            Utils.bail("File not found: " + canonicalFileName);
         } catch (Exception e) {
             if (!MyOptions.optionW) {
-                Utils.bail("Error parsing " + fileName);
+                Utils.bail("Error parsing " + canonicalFileName);
             } else {
                 Utils.bail();
             }
         }
 
         if (this.countLines) {
-            this.numberOfLines += this.countLines(fileName);
+            this.numberOfLines += this.countLines(canonicalFileName);
         }
 
         return parseTree;
@@ -575,7 +571,7 @@ public class ProgramConverter {
             }
             ParseTree parseTree = this.parse(includedFilePath);
             TacConverter tac = new TacConverter(
-                parseTree, this.specialNodes, this.numConvertedFiles++, includedFile, this);
+                parseTree, this.specialNodes, this.numberOfConvertedFiles++, includedFile, this);
             tac.convert();
             this.baseTac.include(tac, includeNode, function);
             includeNodes.addAll(tac.getIncludeNodes());
