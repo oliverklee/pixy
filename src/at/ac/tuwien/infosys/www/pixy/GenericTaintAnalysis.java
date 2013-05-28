@@ -18,7 +18,7 @@ import java.util.List;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class GenericTaintAnalysis {
-    private List<AbstractDependencyClient> dependencyClients;
+    private List<AbstractVulnerabilityAnalysis> dependencyClients;
 
     public DependencyAnalysis dependencyAnalysis;
 
@@ -30,7 +30,7 @@ public class GenericTaintAnalysis {
 
 //  ********************************************************************************
 
-    private void addDepClient(AbstractDependencyClient dependencyClient) {
+    private void addDepClient(AbstractVulnerabilityAnalysis dependencyClient) {
         this.dependencyClients.add(dependencyClient);
     }
 
@@ -61,7 +61,7 @@ public class GenericTaintAnalysis {
                 }
                 Class<?> clientDefinition = Class.forName(dci.getClassName());
                 Constructor<?> constructor = clientDefinition.getConstructor(argsClass);
-                AbstractDependencyClient dependencyClient = (AbstractDependencyClient) constructor.newInstance(args);
+                AbstractVulnerabilityAnalysis dependencyClient = (AbstractVulnerabilityAnalysis) constructor.newInstance(args);
                 gta.addDepClient(dependencyClient);
             }
         } catch (Exception e) {
@@ -84,7 +84,7 @@ public class GenericTaintAnalysis {
 
     List<Integer> detectVulns() {
         List<Integer> retMe = new LinkedList<>();
-        for (AbstractDependencyClient dependencyClient : this.dependencyClients) {
+        for (AbstractVulnerabilityAnalysis dependencyClient : this.dependencyClients) {
             retMe.addAll(dependencyClient.detectVulns());
         }
         return retMe;
@@ -92,7 +92,7 @@ public class GenericTaintAnalysis {
 
 //  ********************************************************************************
 
-    List<AbstractDependencyClient> getDependencyClients() {
+    List<AbstractVulnerabilityAnalysis> getDependencyClients() {
         return this.dependencyClients;
     }
 }

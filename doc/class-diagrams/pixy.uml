@@ -27,29 +27,29 @@
     <node x="124.0" y="597.0">at.ac.tuwien.infosys.www.pixy.Utils</node>
     <node x="255.0" y="153.0">at.ac.tuwien.infosys.www.pixy.VulnerabilityInformation</node>
     <node x="313.0" y="523.0">at.ac.tuwien.infosys.www.pixy.MyOptions</node>
-    <node x="146.25" y="0.0">at.ac.tuwien.infosys.www.pixy.AbstractDependencyClient</node>
+    <node x="146.25" y="0.0">at.ac.tuwien.infosys.www.pixy.AbstractVulnerabilityAnalysis</node>
   </nodes>
   <notes />
   <edges>
-    <edge source="at.ac.tuwien.infosys.www.pixy.sanitation" target="at.ac.tuwien.infosys.www.pixy.AbstractDependencyClient">
+    <edge source="at.ac.tuwien.infosys.www.pixy.sanitation" target="at.ac.tuwien.infosys.www.pixy.AbstractVulnerabilityAnalysis">
       <point x="0.0" y="-14.5" />
       <point x="452.5" y="54.0" />
       <point x="315.125" y="54.0" />
       <point x="72.375" y="14.5" />
     </edge>
-    <edge source="at.ac.tuwien.infosys.www.pixy.XSSAnalysis" target="at.ac.tuwien.infosys.www.pixy.AbstractDependencyClient">
+    <edge source="at.ac.tuwien.infosys.www.pixy.XSSAnalysis" target="at.ac.tuwien.infosys.www.pixy.AbstractVulnerabilityAnalysis">
       <point x="0.0" y="-14.5" />
       <point x="306.0" y="54.0" />
       <point x="266.875" y="54.0" />
       <point x="24.125" y="14.5" />
     </edge>
-    <edge source="at.ac.tuwien.infosys.www.pixy.FileAnalysis" target="at.ac.tuwien.infosys.www.pixy.AbstractDependencyClient">
+    <edge source="at.ac.tuwien.infosys.www.pixy.FileAnalysis" target="at.ac.tuwien.infosys.www.pixy.AbstractVulnerabilityAnalysis">
       <point x="0.0" y="-14.5" />
       <point x="53.0" y="54.0" />
       <point x="170.375" y="54.0" />
       <point x="-72.375" y="14.5" />
     </edge>
-    <edge source="at.ac.tuwien.infosys.www.pixy.SQLAnalysis" target="at.ac.tuwien.infosys.www.pixy.AbstractDependencyClient">
+    <edge source="at.ac.tuwien.infosys.www.pixy.SQLAnalysis" target="at.ac.tuwien.infosys.www.pixy.AbstractVulnerabilityAnalysis">
       <point x="0.0" y="-14.5" />
       <point x="179.5" y="54.0" />
       <point x="218.625" y="54.0" />

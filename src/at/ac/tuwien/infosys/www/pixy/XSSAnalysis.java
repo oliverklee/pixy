@@ -18,7 +18,7 @@ import java.util.*;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class XSSAnalysis extends AbstractDependencyClient {
+public class XSSAnalysis extends AbstractVulnerabilityAnalysis {
     public XSSAnalysis(DependencyAnalysis dependencyAnalysis) {
         super(dependencyAnalysis);
     }
@@ -61,7 +61,6 @@ public class XSSAnalysis extends AbstractDependencyClient {
         int graphcount = 0;
         int vulncount = 0;
         for (Sink sink : sinks) {
-
             Collection<DependencyGraph> dependencyGraphs = dependencyAnalysis.getDepGraph(sink);
 
             for (DependencyGraph dependencyGraph : dependencyGraphs) {

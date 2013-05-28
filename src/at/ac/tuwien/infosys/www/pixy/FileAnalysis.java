@@ -26,7 +26,7 @@ import java.util.*;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class FileAnalysis extends AbstractDependencyClient {
+public class FileAnalysis extends AbstractVulnerabilityAnalysis {
     public FileAnalysis(DependencyAnalysis dependencyAnalysis) {
         super(dependencyAnalysis);
     }

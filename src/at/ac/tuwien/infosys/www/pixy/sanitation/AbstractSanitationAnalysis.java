@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.sanitation;
 
-import at.ac.tuwien.infosys.www.pixy.AbstractDependencyClient;
+import at.ac.tuwien.infosys.www.pixy.AbstractVulnerabilityAnalysis;
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.Utils;
 import at.ac.tuwien.infosys.www.pixy.VulnerabilityInformation;
@@ -19,7 +19,7 @@ import java.util.*;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public abstract class AbstractSanitationAnalysis extends AbstractDependencyClient {
+public abstract class AbstractSanitationAnalysis extends AbstractVulnerabilityAnalysis {
     // if this flag is active, untainted values (most notably: static strings)
     // are treated as empty strings during depgraph decoration
     private boolean trimUntainted = !MyOptions.optionR;
@@ -38,7 +38,7 @@ public abstract class AbstractSanitationAnalysis extends AbstractDependencyClien
 
 //  ********************************************************************************
 
-    public List<Integer> detectVulns(AbstractDependencyClient dependencyClient) {
+    public List<Integer> detectVulns(AbstractVulnerabilityAnalysis dependencyClient) {
 
         System.out.println();
         System.out.println("*****************");

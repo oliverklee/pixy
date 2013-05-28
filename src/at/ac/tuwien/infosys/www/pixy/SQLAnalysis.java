@@ -29,7 +29,7 @@ import java.util.*;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class SQLAnalysis extends AbstractDependencyClient {
+public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
     // flag indicating whether to use transducers or not (are still unstable)
     private boolean useTransducers = false;
 
