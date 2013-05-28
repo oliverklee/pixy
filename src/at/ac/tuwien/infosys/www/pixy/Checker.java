@@ -328,38 +328,24 @@ public final class Checker {
 
     // taintString: "-y" option, type of taint analysis
     ProgramConverter initialize() {
-        // *****************
-        // PREPARATIONS
-        // *****************
-
-        // read config file
         readConfiguration();
 
-        // *****************
-        // PARSE & CONVERT
-        // *****************
+        return parseAndConvert();
+    }
 
-        // initialize builtin sinks
-        MyOptions.initSinks();
-
-        // read user-defined custom sinks
+    private ProgramConverter parseAndConvert() {
+        MyOptions.initializeBuiltinSinks();
         MyOptions.readCustomSinkFiles();
+        MyOptions.readBuiltinFunctionModels();
 
-        // read builtin function models
-        MyOptions.readModelFiles();
+        ProgramConverter programConverter = new ProgramConverter(this.specialNodes, MyOptions.option_A);
 
-        // convert the program
-        ProgramConverter pcv = new ProgramConverter(this.specialNodes, MyOptions.option_A);
-
-        // print parse tree in dot syntax
         if (MyOptions.optionP) {
-            ParseTree parseTree = pcv.parse(MyOptions.entryFile.getPath());
-            Dumper.dumpDot(parseTree, MyOptions.graphPath, "parseTree");
-            System.exit(0);
+            printParseTreeInDotSyntax(programConverter);
         }
 
-        pcv.convert();
-        TacConverter tac = pcv.getTac();
+        programConverter.convert();
+        TacConverter tac = programConverter.getTac();
 
         if (MyOptions.optionL) {
             if (tac.hasEmptyMain()) {
@@ -370,37 +356,53 @@ public final class Checker {
             System.exit(0);
         }
 
-        // print maximum number of temporaries
         if (MyOptions.optionM) {
-            System.out.println("Maximum number of temporaries: " + tac.getMaxTempId());
+            printMaximumNumberOfTemporaries(tac);
         }
-
-        // print symbol tables
         if (MyOptions.optionT) {
-            Dumper.dump(tac.getSuperSymbolTable(), "Superglobals");
-            for (TacFunction function : tac.getUserFunctions().values()) {
-                Dumper.dump(function.getSymbolTable(), function.getName());
-            }
-            Dumper.dump(tac.getConstantsTable());
+            printSymbolTables(tac);
         }
-
-        // print function information
         if (MyOptions.optionF) {
-            for (TacFunction function : tac.getUserFunctions().values()) {
-                Dumper.dump(function);
-            }
+            printFunctionInformation(tac);
         }
-
-        // print control flow graphs
         if (MyOptions.optionC || MyOptions.optionD) {
-            for (TacFunction function : tac.getUserFunctions().values()) {
-                Dumper.dumpDot(function, MyOptions.graphPath, MyOptions.optionD);
-            }
-            System.exit(0);
+            printControlFlowGraph(tac);
         }
 
-        return pcv;
+        return programConverter;
     }
+
+    private void printParseTreeInDotSyntax(ProgramConverter programConverter) {
+        ParseTree parseTree = programConverter.parse(MyOptions.entryFile.getPath());
+        Dumper.dumpDot(parseTree, MyOptions.graphPath, "parseTree");
+        System.exit(0);
+    }
+
+    private void printMaximumNumberOfTemporaries(TacConverter tac) {
+        System.out.println("Maximum number of temporaries: " + tac.getMaxTempId());
+    }
+
+    private void printSymbolTables(TacConverter tac) {
+        Dumper.dump(tac.getSuperSymbolTable(), "Superglobals");
+        for (TacFunction function : tac.getUserFunctions().values()) {
+            Dumper.dump(function.getSymbolTable(), function.getName());
+        }
+        Dumper.dump(tac.getConstantsTable());
+    }
+
+    private void printFunctionInformation(TacConverter tac) {
+        for (TacFunction function : tac.getUserFunctions().values()) {
+            Dumper.dump(function);
+        }
+    }
+
+    private void printControlFlowGraph(TacConverter tac) {
+        for (TacFunction function : tac.getUserFunctions().values()) {
+            Dumper.dumpDot(function, MyOptions.graphPath, MyOptions.optionD);
+        }
+        System.exit(0);
+    }
+
 
 //  analyzeAliases *****************************************************************
 

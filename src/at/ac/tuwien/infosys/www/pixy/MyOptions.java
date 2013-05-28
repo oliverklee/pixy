@@ -92,7 +92,7 @@ public class MyOptions {
 
     // builtin function models ****************************************
 
-    public static void readModelFiles() {
+    public static void readBuiltinFunctionModels() {
         for (DependencyClientInformation dci : analyses) {
             FunctionModels fm = readModelFile(dci);
             dci.setFunctionModels(fm);
@@ -292,7 +292,7 @@ public class MyOptions {
     }
 
     // add builtin function sinks (represented by CallBuiltinFunction)
-    public static void initSinks() {
+    public static void initializeBuiltinSinks() {
         for (DependencyClientInformation dci : analyses) {
             String sinkFileName = "sinks_" + dci.getName() + ".txt";
             Map<String, Set<Integer>> sinks = new HashMap<>();
