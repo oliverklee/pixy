@@ -349,8 +349,7 @@ public final class Checker {
         MyOptions.readModelFiles();
 
         // convert the program
-        ProgramConverter pcv = new ProgramConverter(
-            this.specialNodes, MyOptions.option_A/*, props*/);
+        ProgramConverter pcv = new ProgramConverter(this.specialNodes, MyOptions.option_A);
 
         // print parse tree in dot syntax
         if (MyOptions.optionP) {

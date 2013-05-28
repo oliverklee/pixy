@@ -99,9 +99,14 @@ public class MyOptions {
         }
     }
 
-    // read models for builtin php functions
+    /**
+     * Reads models for builtin PHP functions.
+     *
+     * @param dci
+     *
+     * @return
+     */
     private static FunctionModels readModelFile(DependencyClientInformation dci) {
-
         Set<String> f_evil = new HashSet<>();
         Map<String, Set<Integer>> f_multi = new HashMap<>();
         Map<String, Set<Integer>> f_invMulti = new HashMap<>();
@@ -117,10 +122,10 @@ public class MyOptions {
         // read file into properties object
         String modelFileName = MyOptions.pixyHome + "/" + MyOptions.configurationDirectory + "/model_" + dci.getName() + ".txt";
         File modelFile = new File(modelFileName);
-        Properties sinkProps = new Properties();
+        Properties sinkProperties = new Properties();
         try {
             FileInputStream in = new FileInputStream(modelFile);
-            sinkProps.load(in);
+            sinkProperties.load(in);
             in.close();
         } catch (FileNotFoundException e) {
             Utils.bail("Error: Can't find configuration file: " + modelFileName);
@@ -137,40 +142,38 @@ public class MyOptions {
         }
 
         // convert properties...
-        for (Map.Entry<Object, Object> propsEntry : sinkProps.entrySet()) {
-            String funcName = ((String) propsEntry.getKey()).trim();
-            String funcList = (String) propsEntry.getValue();
+        for (Map.Entry<Object, Object> propsEntry : sinkProperties.entrySet()) {
+            String functionName = ((String) propsEntry.getKey()).trim();
+            String functionList = (String) propsEntry.getValue();
 
-            if (!BuiltinFunctions.isBuiltinFunction(funcName)) {
-                if (funcName.startsWith("op(") && funcName.endsWith(")")) {
-                    funcName = funcName.substring(3, funcName.length() - 1);
+            if (!BuiltinFunctions.isBuiltinFunction(functionName)) {
+                if (functionName.startsWith("op(") && functionName.endsWith(")")) {
+                    functionName = functionName.substring(3, functionName.length() - 1);
                     // convert the operator name to its symbol
                     try {
-                        Field field = tacOps.getDeclaredField(funcName);
-                        funcName = TacOperators.opToName(field.getInt(null));
+                        Field field = tacOps.getDeclaredField(functionName);
+                        functionName = TacOperators.opToName(field.getInt(null));
                     } catch (NoSuchFieldException e) {
-                        Utils.bail("Error: Non-builtin function in config file: " + funcName);
+                        Utils.bail("Error: Non-builtin function in config file: " + functionName);
                         continue;
                     } catch (IllegalAccessException e) {
-                        Utils.bail("Error: Non-builtin function in config file: " + funcName);
+                        Utils.bail("Error: Non-builtin function in config file: " + functionName);
                     }
                 } else {
-                    Utils.bail("Error: Non-builtin function in config file: " + funcName);
+                    Utils.bail("Error: Non-builtin function in config file: " + functionName);
                 }
             }
 
-            StringTokenizer funcTokenizer = new StringTokenizer(funcList, ":");
+            StringTokenizer funcTokenizer = new StringTokenizer(functionList, ":");
             if (!funcTokenizer.hasMoreTokens()) {
-                Utils.bail("Error: Missing type for builtin function model: " + funcName);
+                Utils.bail("Error: Missing type for builtin function model: " + functionName);
             }
 
             String type = funcTokenizer.nextToken().trim();
             if (type.equals(strongSanitMarker)) {
-
                 // strong sanitization
-                f_strongSanit.add(funcName);
+                f_strongSanit.add(functionName);
             } else if (type.equals(weakSanitMarker)) {
-
                 // weak sanitization
                 Set<Integer> params = new HashSet<>();
                 while (funcTokenizer.hasMoreTokens()) {
@@ -178,12 +181,11 @@ public class MyOptions {
                     try {
                         params.add(Integer.valueOf(param));
                     } catch (NumberFormatException e) {
-                        Utils.bail("Error: Illegal parameter for builtin function model: " + funcName);
+                        Utils.bail("Error: Illegal parameter for builtin function model: " + functionName);
                     }
                 }
-                f_weakSanit.put(funcName, params);
+                f_weakSanit.put(functionName, params);
             } else if (type.equals(multiMarker)) {
-
                 // multi-dependency
                 Set<Integer> params = new HashSet<>();
                 while (funcTokenizer.hasMoreTokens()) {
@@ -191,12 +193,11 @@ public class MyOptions {
                     try {
                         params.add(Integer.valueOf(param));
                     } catch (NumberFormatException e) {
-                        Utils.bail("Error: Illegal parameter for builtin function model: " + funcName);
+                        Utils.bail("Error: Illegal parameter for builtin function model: " + functionName);
                     }
                 }
-                f_multi.put(funcName, params);
+                f_multi.put(functionName, params);
             } else if (type.equals(invMultiMarker)) {
-
                 // inverse multi-dependency
                 Set<Integer> params = new HashSet<>();
                 while (funcTokenizer.hasMoreTokens()) {
@@ -204,15 +205,15 @@ public class MyOptions {
                     try {
                         params.add(Integer.valueOf(param));
                     } catch (NumberFormatException e) {
-                        Utils.bail("Error: Illegal parameter for builtin function model: " + funcName);
+                        Utils.bail("Error: Illegal parameter for builtin function model: " + functionName);
                     }
                 }
-                f_invMulti.put(funcName, params);
+                f_invMulti.put(functionName, params);
             } else if (type.equals(evilMarker)) {
                 // evil functions
-                f_evil.add(funcName);
+                f_evil.add(functionName);
             } else {
-                Utils.bail("Error: Unknown type for builtin function model: " + funcName);
+                Utils.bail("Error: Unknown type for builtin function model: " + functionName);
             }
         }
 
