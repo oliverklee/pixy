@@ -378,13 +378,13 @@ public class DependencyAnalysis extends AbstractInterproceduralAnalysis {
     /**
      * Returns the dependency graphs for the given sink.
      *
-     * @param sink
+     * @param sink the sink for which to return the dependency graphs.
      *
-     * @return
+     * @return the dependency graphs for the sink, might be empty
      */
     public List<DependencyGraph> getDependencyGraphsForSink(Sink sink) {
-        List<SinkProblem> problems = sink.getSinkProblems();
-        if (problems.isEmpty()) {
+        List<SinkProblem> sinkProblems = sink.getSinkProblems();
+        if (sinkProblems.isEmpty()) {
             return new LinkedList<>();
         }
 
@@ -392,9 +392,9 @@ public class DependencyAnalysis extends AbstractInterproceduralAnalysis {
         SymbolTable mainSymbolTable = this.mainFunction.getSymbolTable();
 
         // create dependency graphs for all sensitive places in this sink
-        for (SinkProblem problem : problems) {
+        for (SinkProblem sinkProblem : sinkProblems) {
             DependencyGraph dependencyGraph = DependencyGraph.create(
-                problem.getPlace(), sink.getNode(), this.interproceduralAnalysisInformation, mainSymbolTable, this
+                sinkProblem.getPlace(), sink.getNode(), this.interproceduralAnalysisInformation, mainSymbolTable, this
             );
 
             if (dependencyGraph != null) {

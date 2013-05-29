@@ -98,7 +98,7 @@ public class SqlAnalysis extends AbstractVulnerabilityAnalysis {
             String graphNameBase = "sql_" + fileName + "_" + dependencyGraphCount;
 
             DependencyGraph sqlGraph = new DependencyGraph(dependencyGraph);
-            AbstractCfgNode cfgNode = dependencyGraph.getRoot().getCfgNode();
+            AbstractCfgNode cfgNode = dependencyGraph.getRootNode().getCfgNode();
 
             dependencyGraph.dumpDot(graphNameBase + "_dep", MyOptions.graphPath, dependencyGraph.getUninitNodes(), this.vulnerabilityAnalysisInformation);
 
@@ -138,7 +138,7 @@ public class SqlAnalysis extends AbstractVulnerabilityAnalysis {
                     Set<? extends AbstractNode> fillUs;
                     if (MyOptions.option_V) {
                         relevantSubgraph.removeTemporaries();
-                        fillUs = relevantSubgraph.removeUninitNodes();
+                        fillUs = relevantSubgraph.removeUninitializedNodes();
                     } else {
                         fillUs = dangerousUninitializedNodes.keySet();
                     }
@@ -232,7 +232,7 @@ public class SqlAnalysis extends AbstractVulnerabilityAnalysis {
     // BEWARE: this also eliminates cycles!
     Automaton toAutomaton(DependencyGraph dependencyGraph, DependencyGraph origDependencyGraph) {
         dependencyGraph.eliminateCycles();
-        AbstractNode root = dependencyGraph.getRoot();
+        AbstractNode root = dependencyGraph.getRootNode();
         Map<AbstractNode, Automaton> deco = new HashMap<>();
         Set<AbstractNode> visited = new HashSet<>();
         this.decorate(root, deco, visited, dependencyGraph, origDependencyGraph);

@@ -9,7 +9,11 @@ public class CompleteGraphNode extends AbstractNode {
     CompleteGraphNode() {
     }
 
-    // returns a name that can be used in dot file representation
+    /**
+     * Returns a name that can be used in dot file representation.
+     *
+     * @return
+     */
     public String dotName() {
         return "SCC";
     }

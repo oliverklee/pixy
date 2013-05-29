@@ -9,7 +9,11 @@ public class UninitializedNode extends AbstractNode {
     public UninitializedNode() {
     }
 
-    // returns a name that can be used in dot file representation
+    /**
+     * Returns a name that can be used in dot file representation.
+     *
+     * @return
+     */
     public String dotName() {
         return "<uninit>";
     }

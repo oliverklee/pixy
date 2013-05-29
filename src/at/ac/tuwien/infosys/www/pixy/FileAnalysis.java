@@ -60,7 +60,7 @@ public class FileAnalysis extends AbstractVulnerabilityAnalysis {
             numberOfDependencyGraphs++;
 
             DependencyGraph stringGraph = new DependencyGraph(dependencyGraph);
-            NormalNode root = dependencyGraph.getRoot();
+            NormalNode root = dependencyGraph.getRootNode();
             AbstractCfgNode cfgNode = root.getCfgNode();
 
             dependencyGraph = null;    // don't touch this one
@@ -152,7 +152,7 @@ public class FileAnalysis extends AbstractVulnerabilityAnalysis {
      */
     private Automaton toAutomaton(DependencyGraph dependencyGraph) {
         dependencyGraph.eliminateCycles();
-        AbstractNode root = dependencyGraph.getRoot();
+        AbstractNode root = dependencyGraph.getRootNode();
         Map<AbstractNode, Automaton> deco = new HashMap<>();
         Set<AbstractNode> visited = new HashSet<>();
         this.decorate(root, deco, visited, dependencyGraph);

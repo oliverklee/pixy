@@ -126,13 +126,13 @@ public class XssAnalysis extends AbstractVulnerabilityAnalysis {
         Set<? extends AbstractNode> fillUs;
         if (MyOptions.option_V) {
             relevantSubgraph.removeTemporaries();
-            fillUs = relevantSubgraph.removeUninitNodes();
+            fillUs = relevantSubgraph.removeUninitializedNodes();
         } else {
             fillUs = dangerousUninitializedNodes.keySet();
         }
 
         vulnerabilityCount++;
-        NormalNode root = dependencyGraph.getRoot();
+        NormalNode root = dependencyGraph.getRootNode();
         AbstractCfgNode cfgNode = root.getCfgNode();
         lineNumbersOfVulnerabilities.add(cfgNode.getOrigLineno());
         System.out.println("Vulnerability detected!");

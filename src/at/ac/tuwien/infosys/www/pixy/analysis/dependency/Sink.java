@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class Sink implements Comparable<Sink> {
     /**
-     * a list of sensitive places (i.e., places for which we want to get dependency graphs)
+     * a list of sensitive places (i.e., places from which this sink uses data)
      */
     private List<AbstractTacPlace> sensitivePlaces;
     private AbstractCfgNode cfgNode;

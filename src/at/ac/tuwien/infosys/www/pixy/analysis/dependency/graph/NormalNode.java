@@ -16,17 +16,17 @@ public class NormalNode extends AbstractNode {
     private AbstractCfgNode cfgNode;
     private boolean isTainted;
 
-//  ********************************************************************************
-
     public NormalNode(AbstractTacPlace place, AbstractCfgNode cfgNode) {
         this.place = place;
         this.cfgNode = cfgNode;
         this.isTainted = false;
     }
 
-//  ********************************************************************************
-
-    // returns a name that can be used in dot file representation
+    /**
+     * Returns a name that can be used in dot file representation.
+     *
+     * @return
+     */
     public String dotName() {
         return Dumper.escapeDot(this.place.toString(), 0) + " (" + this.cfgNode.getOrigLineno() + ")" +
             "\\n" + this.cfgNode.getFileName();
@@ -37,7 +37,11 @@ public class NormalNode extends AbstractNode {
             "\\n" + this.cfgNode.getFileName();
     }
 
-    // no path
+    /**
+     * No path.
+     *
+     * @return
+     */
     public String dotNameShort() {
         String fileName = this.cfgNode.getFileName();
         return Dumper.escapeDot(this.place.toString(), 0) + " (" + this.cfgNode.getOrigLineno() + ")" +
@@ -45,7 +49,6 @@ public class NormalNode extends AbstractNode {
     }
 
     public String dotNameVerbose(boolean isModelled) {
-
         String retme = "";
 
         if (!MyOptions.optionW) {
@@ -70,25 +73,17 @@ public class NormalNode extends AbstractNode {
         return retme;
     }
 
-//  ********************************************************************************
-
     public AbstractTacPlace getPlace() {
         return this.place;
     }
-
-//  ********************************************************************************
 
     public AbstractCfgNode getCfgNode() {
         return this.cfgNode;
     }
 
-//  ********************************************************************************
-
     public int getLine() {
         return this.cfgNode.getOrigLineno();
     }
-
-//  ********************************************************************************
 
     public boolean equals(Object compX) {
 
@@ -103,16 +98,12 @@ public class NormalNode extends AbstractNode {
         return this.place.equals(comp.place) && this.cfgNode.equals(comp.cfgNode);
     }
 
-//  ********************************************************************************
-
     public int hashCode() {
         int hashCode = 17;
         hashCode = 37 * hashCode + this.place.hashCode();
         hashCode = 37 * hashCode + this.cfgNode.hashCode();
         return hashCode;
     }
-
-//  ********************************************************************************
 
     public String toString() {
         return this.place.toString() + " (" + this.cfgNode.getOrigLineno() + ") " +

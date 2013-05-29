@@ -127,11 +127,11 @@ public final class ControlFlowGraph {
         }
     }
 
-// bfIterator **********************************************************************
+// breadthFirstIterator **********************************************************************
 
     // breadth first iterator;
     // NOTE: when iterating over large CFGs, use should better use
-    // dfPreOrderIterator; bfIterator tends to produce stack overflows
+    // dfPreOrderIterator; breadthFirstIterator tends to produce stack overflows
     public Iterator<AbstractCfgNode> bfIterator() {
         // list for the iterator
         LinkedList<AbstractCfgNode> list = new LinkedList<>();

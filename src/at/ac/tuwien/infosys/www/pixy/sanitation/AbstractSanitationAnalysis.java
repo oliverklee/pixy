@@ -88,7 +88,7 @@ public abstract class AbstractSanitationAnalysis extends AbstractVulnerabilityAn
             dependencyGraph.dumpDot(name + "sanitation" + graphcount + "i", MyOptions.graphPath, dependencyGraph.getUninitNodes(), this.vulnerabilityAnalysisInformation);
             minGraph.dumpDot(name + "sanitation" + graphcount + "m", MyOptions.graphPath, dependencyGraph.getUninitNodes(), this.vulnerabilityAnalysisInformation);
 
-            AbstractCfgNode cfgNode = dependencyGraph.getRoot().getCfgNode();
+            AbstractCfgNode cfgNode = dependencyGraph.getRootNode().getCfgNode();
 
             // retrieve custom sanitization routines from the minGraph
             List<AbstractNode> customSanitNodes = findCustomSanit(minGraph);
@@ -125,7 +125,7 @@ public abstract class AbstractSanitationAnalysis extends AbstractVulnerabilityAn
                 sanitMinGraph.reduceToInnerNodes(customSanitNodes);
 
                 // and now reduce this graph to the ineffective sanitization routines
-                int ineffBorder = sanitMinGraph.reduceToIneffectiveSanit(deco, this);
+                int ineffBorder = sanitMinGraph.reduceToIneffectiveSanitation(deco, this);
 
                 if (ineffBorder != 0) {
 
@@ -138,7 +138,7 @@ public abstract class AbstractSanitationAnalysis extends AbstractVulnerabilityAn
                     sanitMinGraph.dumpDot(name + "sanitation" + graphcount + "mm", MyOptions.graphPath, dependencyGraph.getUninitNodes(), this.vulnerabilityAnalysisInformation);
 
                     dynInfo.append("SINK:\n");
-                    dynInfo.append(sanitMinGraph.getRoot().toString());
+                    dynInfo.append(sanitMinGraph.getRootNode().toString());
                     dynInfo.append("\n");
                     dynInfo.append("SOURCES:\n");
                     List<NormalNode> dangerousSources = this.findDangerousSources(sanitMinGraph);
@@ -217,7 +217,7 @@ public abstract class AbstractSanitationAnalysis extends AbstractVulnerabilityAn
         DependencyGraph dependencyGraph, DependencyGraph origDependencyGraph, Map<AbstractNode, FSAAutomaton> deco
     ) {
         dependencyGraph.eliminateCycles();
-        AbstractNode root = dependencyGraph.getRoot();
+        AbstractNode root = dependencyGraph.getRootNode();
         Set<AbstractNode> visited = new HashSet<>();
         this.decorateSanit(root, deco, visited, dependencyGraph, origDependencyGraph, true);
         FSAAutomaton rootDeco = deco.get(root).clone();

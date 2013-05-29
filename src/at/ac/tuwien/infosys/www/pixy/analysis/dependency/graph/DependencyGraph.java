@@ -21,78 +21,73 @@ import java.util.*;
 
 /**
  * Graph that displays the data dependencies for a variable at some point in the program.
+ *
  * Very useful for better understanding vulnerability reports.
  *
  * OVERVIEW FOR BETTER UNDERSTANDING
  *
- * If you want a dependency graph to be created, call create(),
+ * If you want a dependency graph to be created, call create().
  *
  * Passing the AbstractTacPlace and the CfgNode that will form the root of the dependency graph.
- * create() then calls makeDepGraph() with these parameters (will return the root of the created DependencyGraph).
+ * create() then calls makeDependencyGraph() with these parameters (will return the root of the created DependencyGraph).
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class DependencyGraph {
-    // map from a node to *the same* node;
-    // necessary due to the usual limitation of java.util.Set
+    /**
+     * Map from a node to *the same* node.
+     * Necessary due to the usual limitation of java.util.Set.
+     */
     private Map<AbstractNode, AbstractNode> nodes;
 
-    // the root node (is also contained in "nodes")
-    private NormalNode root;
+    /** the root node (is also contained in "nodes") */
+    private NormalNode rootNode;
 
-    // edges (from -> to)
+    /** edges (from -> to) */
     private Map<AbstractNode, List<AbstractNode>> edges;
 
-    // required for building the graph
+    /** required for building the graph */
     private InterproceduralAnalysisInformation analysisInfo;
 
-    // symbol table of the main function
-    private SymbolTable mainSymTab;
+    /** symbol table of the main function */
+    private SymbolTable mainSymbolTable;
 
     private DependencyAnalysis dependencyAnalysis;
 
-    // just a helper for SCC computation
+    /** just a helper for SCC computation */
     private int n;
 
-    // set to true if reduceWithLeaves() is called
+    /** set to true if reduceWithLeaves() is called */
     private boolean leavesReduced = false;
-
-//  *********************************************************************************
 
     private DependencyGraph() {
     }
 
-//  *********************************************************************************
-
-    // creates a single-element graph
-    public DependencyGraph(NormalNode root) {
+    /**
+     * Creates a single-element graph.
+     *
+     * @param rootNode
+     */
+    public DependencyGraph(NormalNode rootNode) {
         this.nodes = new LinkedHashMap<>();
-        this.addNode(root);
-        this.root = root;
+        this.addNode(rootNode);
+        this.rootNode = rootNode;
         this.edges = new LinkedHashMap<>();
         this.analysisInfo = null;
-        this.mainSymTab = null;
+        this.mainSymbolTable = null;
         this.dependencyAnalysis = null;
     }
-
-//  *********************************************************************************
-
-    // place: this will be the root of the dependency graph
-    // start: point in the program for which the graph shall be generated
-    //        (necessary since we are flow-sensitive, of course)
-    // analysisInfo: we need the results of data flow analysis before we can
-    //          draw a data dependency graph
-    // returns null if the start node is not reachable
 
     /**
      * Creates a dependency graph.
      *
      * Passing the AbstractTacPlace and the CfgNode that will form the root of the dependency graph.
-     * This function then calls makeDepGraph() with these parameters (will return the root of the created DependencyGraph).
+     * This function then calls makeDependencyGraph() with these parameters (will return the root of the created DependencyGraph).
      *
-     * @param place
-     * @param start
-     * @param analysisInfo
+     * @param place this will be the root of the dependency graph
+     * @param start point in the program for which the graph shall be generated
+     *              (necessary since we are flow-sensitive, of course)
+     * @param analysisInfo we need the results of data flow analysis before we can draw a data dependency graph
      * @param mainSymTab
      * @param dependencyAnalysis
      *
@@ -106,16 +101,17 @@ public class DependencyGraph {
         dependencyGraph.nodes = new LinkedHashMap<>();
         dependencyGraph.edges = new LinkedHashMap<>();
         dependencyGraph.analysisInfo = analysisInfo;
-        dependencyGraph.mainSymTab = mainSymTab;
+        dependencyGraph.mainSymbolTable = mainSymTab;
         dependencyGraph.dependencyAnalysis = dependencyAnalysis;
 
         List<AbstractTacPlace> indices = new LinkedList<>();
 
         try {
             // start with all contexts of the start node
-            Set<AbstractContext> allC = analysisInfo.getAnalysisNode(start).getContexts();
-            dependencyGraph.root = (NormalNode) dependencyGraph.makeDepGraph(
-                place, start, ControlFlowGraph.getFunction(start), indices, allC);
+            Set<AbstractContext> allContexts = analysisInfo.getAnalysisNode(start).getContexts();
+            dependencyGraph.rootNode = (NormalNode) dependencyGraph.makeDependencyGraph(
+                place, start, ControlFlowGraph.getFunction(start), indices, allContexts
+            );
         } catch (NotReachableException ex) {
             debug("not reachable!!!");
             return null;
@@ -124,42 +120,32 @@ public class DependencyGraph {
         return dependencyGraph;
     }
 
-//  *********************************************************************************
-
-    // clones the given DependencyGraph
-    // (nodes are reused)
-    public DependencyGraph(DependencyGraph orig) {
-        this.nodes = new LinkedHashMap<>(orig.nodes);
-        this.root = orig.root;
-        // this would not be real cloning due to list reuse:
-        //this.edges = new LinkedHashMap<AbstractNode, List<AbstractNode>>(orig.edges);
+    /**
+     * Clones the given DependencyGraph. Nodes are reused.
+     *
+     * @param graph the graph to clone
+     */
+    public DependencyGraph(DependencyGraph graph) {
+        this.nodes = new LinkedHashMap<>(graph.nodes);
+        this.rootNode = graph.rootNode;
         this.edges = new LinkedHashMap<>();
-        for (Map.Entry<AbstractNode, List<AbstractNode>> origEntry : orig.edges.entrySet()) {
+        for (Map.Entry<AbstractNode, List<AbstractNode>> origEntry : graph.edges.entrySet()) {
             AbstractNode origFrom = origEntry.getKey();
             List<AbstractNode> origTos = origEntry.getValue();
 
             List<AbstractNode> myTos = new LinkedList<>(origTos);
 
-            // we can reuse the nodes from the original graph, but we must
-            // not reuse its lists
+            // We can reuse the nodes from the original graph, but we must not reuse its lists.
             this.edges.put(origFrom, myTos);
         }
 
-        this.analysisInfo = orig.analysisInfo;
-        this.mainSymTab = orig.mainSymTab;
-        this.dependencyAnalysis = orig.dependencyAnalysis;
+        this.analysisInfo = graph.analysisInfo;
+        this.mainSymbolTable = graph.mainSymbolTable;
+        this.dependencyAnalysis = graph.dependencyAnalysis;
     }
-
-//  ********************************************************************************
 
     private static void debug(String s) {
     }
-
-//  *********************************************************************************
-
-    // draws a dependency graph for the given input
-    // and returns the root of the graph;
-    // - funcName: name the function that contains "current"
 
     /**
      * Creates a dependency graph node "dgn" for the given place and cfg node.
@@ -175,22 +161,25 @@ public class DependencyGraph {
      * cfg nodes at which the value of the place was modified.
      *
      * For each of these dependencies:
-     * - If it is an uninit dependency: Creates a new uninit node and connect it with dgn.
+     * - If it is an uninitialized dependency: Creates a new uninitialized node and connect it with dgn.
      * - Else: Determines the places that were USED at the cfg node represented by this dependency
      *   (see "getUsedPlaces()" below).
-     * - For each of these places: Recursively calls makeDepGraph() and connect dgn with the returned node.
+     * - For each of these places: Recursively calls makeDependencyGraph() and connect dgn with the returned node.
      *
      * @param place
      * @param current
      * @param function
      * @param indices
      * @param contexts
-     * @return
+     *
+     * @return the root node
+     *
      * @throws NotReachableException
      */
-    private AbstractNode makeDepGraph(AbstractTacPlace place, AbstractCfgNode current, TacFunction function,
-                                      List<AbstractTacPlace> indices, Set<AbstractContext> contexts) throws NotReachableException {
-
+    private AbstractNode makeDependencyGraph(
+        AbstractTacPlace place, AbstractCfgNode current, TacFunction function, List<AbstractTacPlace> indices,
+        Set<AbstractContext> contexts
+    ) throws NotReachableException {
         debug("  visiting: " + current.getClass() + ", " + current.getOrigLineno() + ", " + place);
         debug(current.toString());
         debug("in function : " + function.getName());
@@ -268,7 +257,7 @@ public class DependencyGraph {
                 for (AbstractTacPlace used : this.getUsedPlaces(targetNode, place, indices, newIndices)) {
 
                     addEdge(connectWith,
-                        makeDepGraph(used, targetNode, targetFunction,
+                        makeDependencyGraph(used, targetNode, targetFunction,
                             newIndices, targetContexts));
                 }
             }
@@ -278,15 +267,22 @@ public class DependencyGraph {
         return dgn;
     }
 
-//  ********************************************************************************
-
-    // returns the dependency set of the given place for the given cfg node under
-    // the given contexts,
-    // considering basic blocks and function default cfg's (in these cases,
-    // the cfg node has no directly associated analysis info)
-    private DependencySet getDepSet(AbstractCfgNode cfgNode, AbstractTacPlace place, Set<AbstractContext> contexts)
-        throws NotReachableException {
-
+    /**
+     * Returns the dependency set of the given place for the given cfg node under the given contexts,
+     * considering basic blocks and function default cfg's (in these cases, the cfg node has no directly associated
+     * analysis info).
+     *
+     * @param cfgNode
+     * @param place
+     * @param contexts
+     *
+     * @return
+     *
+     * @throws NotReachableException
+     */
+    private DependencySet getDepSet(
+        AbstractCfgNode cfgNode, AbstractTacPlace place, Set<AbstractContext> contexts
+    ) throws NotReachableException {
         DependencySet dependencySet = null;
         AbstractCfgNode enclosingX = cfgNode.getSpecial();
         if (enclosingX instanceof BasicBlock) {
@@ -315,7 +311,6 @@ public class DependencyGraph {
             // (i.e., we want to retrieve the value of a default parameter)
 
             if (place.isConstant()) {
-
                 // if this is a constant, we simply look up the analysis
                 // info in the function's entry node
 
@@ -326,7 +321,6 @@ public class DependencyGraph {
 
                 dependencySet = this.newFold(phi, place, contexts);
             } else {
-
                 // this happens if the default parameter is assigned
                 // some static array (e.g., $p = array('1', '2')) in the function's head;
                 // in analogy to a basic block, we have to apply the transfer
@@ -370,14 +364,21 @@ public class DependencyGraph {
         return dependencySet;
     }
 
-//  ********************************************************************************
-
-    // performs context and function switching, making the
-    // depgraph construction algorithm context-sensitive;
-    // the target function and the target contexts are returned
-    private ContextSwitch switchContexts(TacFunction function, Set<AbstractContext> contexts,
-                                         AbstractCfgNode current, AbstractCfgNode targetNode) {
-
+    /**
+     * Performs context and function switching, making the dependency graph construction algorithm context-sensitive.
+     *
+     * The target function and the target contexts are returned.
+     *
+     * @param function
+     * @param contexts
+     * @param current
+     * @param targetNode
+     *
+     * @return
+     */
+    private ContextSwitch switchContexts(
+        TacFunction function, Set<AbstractContext> contexts, AbstractCfgNode current, AbstractCfgNode targetNode
+    ) {
         ContextSwitch retMe = new ContextSwitch();
 
         // function and contexts of the target cfg node;
@@ -391,9 +392,7 @@ public class DependencyGraph {
         // adjust targetFunction and targetContexts accordingly
 
         if (current instanceof CallReturn) {
-
             // determine callee and context inside the callee;
-
             CallReturn callRet = (CallReturn) current;
             Call callNode = callRet.getCallNode();
             targetFunction = callNode.getCallee();
@@ -461,13 +460,10 @@ public class DependencyGraph {
         return retMe;
     }
 
-//  *********************************************************************************
-
     // checks if the given targetNode is an operation node;
     // if it is, it creates a corresponding node and returns it; otherwise,
     // it returns null
     private AbstractNode checkOp(AbstractCfgNode targetNode) {
-
         if (targetNode instanceof AssignBinary) {
             AssignBinary inspectMe = (AssignBinary) targetNode;
             return new BuiltinFunctionNode(targetNode, TacOperators.opToName(inspectMe.getOperator()), true);
@@ -502,8 +498,6 @@ public class DependencyGraph {
         return null;
     }
 
-//  *********************************************************************************
-
     // never add an already existing node
     public AbstractNode addNode(AbstractNode node) {
         if (this.nodes.containsKey(node)) {
@@ -513,13 +507,9 @@ public class DependencyGraph {
         return node;
     }
 
-//  *********************************************************************************
-
     public boolean containsNode(AbstractNode node) {
         return this.nodes.containsKey(node);
     }
-
-//  *********************************************************************************
 
     // you must only draw edges between already existing nodes in the graph
     public void addEdge(AbstractNode from, AbstractNode to) {
@@ -533,8 +523,6 @@ public class DependencyGraph {
         }
         toList.add(to);
     }
-
-//  *********************************************************************************
 
     // returns the places *used* in this node (e.g., those on the *right*
     // side of an assignment); if there are no such places (e.g., in the case
@@ -608,9 +596,10 @@ public class DependencyGraph {
      *
      * @return
      */
-    private List<AbstractTacPlace> getUsedPlaces(AbstractCfgNode cfgNodeX, AbstractTacPlace victim,
-                                         List<AbstractTacPlace> oldIndices, List<AbstractTacPlace> newIndices) {
-
+    private List<AbstractTacPlace> getUsedPlaces(
+        AbstractCfgNode cfgNodeX, AbstractTacPlace victim, List<AbstractTacPlace> oldIndices,
+        List<AbstractTacPlace> newIndices
+    ) {
         List<AbstractTacPlace> retMe = new LinkedList<>();
 
         // the node types for which an exception is raised are those
@@ -781,7 +770,7 @@ public class DependencyGraph {
             // "global($x)" is analogous to "$x =& main.$x";
             // hence, the used variable is main.$x, which we can
             // retrieve like this:
-            Variable realGlobal = mainSymTab.getVariable(cfgNode.getOperand().getName());
+            Variable realGlobal = mainSymbolTable.getVariable(cfgNode.getOperand().getName());
             if (realGlobal == null) {
                 throw new RuntimeException("SNH");
             }
@@ -812,8 +801,6 @@ public class DependencyGraph {
         return retMe;
     }
 
-//  ********************************************************************************
-
     // left:   some array (might also be an array element itself),
     //         on the left side of an assignment
     // victim: an element of left; additional, deeper indices might be
@@ -834,8 +821,10 @@ public class DependencyGraph {
     // element does not explicitly exist, it tries to return $b[7][3] and writes
     // the additional index [4] into newIndices; if this element also doesn't
     // exist, it returns $b[7] with additional indices [3][4]
-    private Variable getCorresponding(Variable left, Variable victim, Variable right,
-                                      List<AbstractTacPlace> oldIndices, List<AbstractTacPlace> newIndices) {
+    private Variable getCorresponding(
+        Variable left, Variable victim, Variable right, List<AbstractTacPlace> oldIndices,
+        List<AbstractTacPlace> newIndices
+    ) {
         if (!victim.isArrayElementOf(left)) {
             // can happen for "return" statements (assignments to a
             // superglobal return variable)
@@ -887,14 +876,12 @@ public class DependencyGraph {
         return retMe;
     }
 
-//  ********************************************************************************
-
     // helper function for retrieving the used places for calls to
     // user-defined functions / methods
-    private List<AbstractTacPlace> getUsedPlacesForCall(CallReturn retNode,
-                                                AbstractTacPlace victim,
-                                                List<AbstractTacPlace> oldIndices, List<AbstractTacPlace> newIndices) {
-
+    private List<AbstractTacPlace> getUsedPlacesForCall(
+        CallReturn retNode, AbstractTacPlace victim, List<AbstractTacPlace> oldIndices,
+        List<AbstractTacPlace> newIndices
+    ) {
         List<AbstractTacPlace> retMe = new LinkedList<>();
 
         CallPreparation prepNode = retNode.getCallPrepNode();
@@ -919,8 +906,6 @@ public class DependencyGraph {
         return retMe;
     }
 
-//  ********************************************************************************
-
     // helper function for retrieving the used places for calls to builtin functions
     private List<AbstractTacPlace> getUsedPlacesForBuiltin(CallBuiltinFunction cfgNode) {
 
@@ -941,11 +926,11 @@ public class DependencyGraph {
         return retMe;
     }
 
-//  *********************************************************************************
-
     // determines the "folded" dependency set of the given place by lubbing over
     // the given contexts
-    private DependencySet newFold(Map<AbstractContext, AbstractLatticeElement> phi, AbstractTacPlace place, Set<AbstractContext> contexts) {
+    private DependencySet newFold(
+        Map<AbstractContext, AbstractLatticeElement> phi, AbstractTacPlace place, Set<AbstractContext> contexts
+    ) {
         DependencySet dependencySet = null;
 
         for (AbstractContext context : contexts) {
@@ -968,10 +953,10 @@ public class DependencyGraph {
         return dependencySet;
     }
 
-//  *********************************************************************************
-
     // determines the "folded" lattice element by lubbing over the given contexts
-    private DependencyLatticeElement newFold(Map<AbstractContext, AbstractLatticeElement> phi, Set<AbstractContext> contexts) {
+    private DependencyLatticeElement newFold(
+        Map<AbstractContext, AbstractLatticeElement> phi, Set<AbstractContext> contexts
+    ) {
         DependencyLatticeElement retMe = null;
 
         for (AbstractContext context : contexts) {
@@ -990,11 +975,8 @@ public class DependencyGraph {
         return retMe;
     }
 
-//  ********************************************************************************
-
     // cycle detection
     public boolean hasCycles() {
-
         // color map (white 0, grey 1, black 2)
         HashMap<AbstractNode, Integer> colorMap = new HashMap<>();
 
@@ -1011,10 +993,7 @@ public class DependencyGraph {
         return false;
     }
 
-//  ********************************************************************************
-
     private boolean hasCyclesHelper(AbstractNode node, HashMap<AbstractNode, Integer> colorMap) {
-
         // mark as grey
         colorMap.put(node, 1);
 
@@ -1039,16 +1018,12 @@ public class DependencyGraph {
         return false;
     }
 
-//  ********************************************************************************
-
     // returns all the nodes of this graph
     public List<AbstractNode> getNodes() {
         // return a copy of our node set
         List<AbstractNode> retMe = new LinkedList<>(this.nodes.keySet());
         return retMe;
     }
-
-//  ********************************************************************************
 
     // returns the leaf nodes of this graph
     public Set<AbstractNode> getLeafNodes() {
@@ -1058,9 +1033,7 @@ public class DependencyGraph {
         return leafCandidates;
     }
 
-//  ********************************************************************************
-
-    // returns all uninit nodes
+    // returns all uninitialized nodes
     public Set<UninitializedNode> getUninitNodes() {
         Set<UninitializedNode> uninitializedNodes = new HashSet<>();
         for (AbstractNode node : this.nodes.keySet()) {
@@ -1071,13 +1044,9 @@ public class DependencyGraph {
         return uninitializedNodes;
     }
 
-//  ********************************************************************************
-
-    public NormalNode getRoot() {
-        return this.root;
+    public NormalNode getRootNode() {
+        return this.rootNode;
     }
-
-//  ********************************************************************************
 
     // returns a string representation of this depgraph (in dot syntax)
     public String makeDotUnique(String graphName) {
@@ -1126,11 +1095,9 @@ public class DependencyGraph {
         }
     }
 
-//  ********************************************************************************
-
-    public void writeDot(String graphName, Set<? extends AbstractNode> fillUs, Writer outWriter, VulnerabilityAnalysisInformation dci)
-        throws IOException {
-
+    public void writeDot(
+        String graphName, Set<? extends AbstractNode> fillUs, Writer outWriter, VulnerabilityAnalysisInformation dci
+    ) throws IOException {
         // distinguish between verbose and normal output
         if (MyOptions.option_V) {
             writeDotVerbose(graphName, fillUs, outWriter, dci);
@@ -1139,10 +1106,10 @@ public class DependencyGraph {
         }
     }
 
-    // writes a dot representation of this depgraph to the given writer
-    public void writeDotVerbose(String graphName, Set<? extends AbstractNode> fillUs, Writer outWriter, VulnerabilityAnalysisInformation dci)
-        throws IOException {
-
+    // writes a dot representation of this dependency graph to the given writer
+    public void writeDotVerbose(
+        String graphName, Set<? extends AbstractNode> fillUs, Writer outWriter, VulnerabilityAnalysisInformation dci
+    ) throws IOException {
         outWriter.write("digraph cfg {\n  label=\"");
         outWriter.write(Dumper.escapeDot(graphName, 0));
         outWriter.write("\";\n");
@@ -1161,7 +1128,7 @@ public class DependencyGraph {
 
             boolean isModelled = true;
             String shapeString = "shape=box";
-            if (tgn == this.root) {
+            if (tgn == this.rootNode) {
                 shapeString = "shape=doubleoctagon";
             } else if (tgn instanceof BuiltinFunctionNode) {
                 shapeString = "shape=ellipse";
@@ -1202,8 +1169,9 @@ public class DependencyGraph {
     }
 
     // writes a dot representation of this depgraph to the given writer
-    public void writeDotNormal(String graphName, Set<? extends AbstractNode> fillUs, Writer outWriter)
-        throws IOException {
+    public void writeDotNormal(
+        String graphName, Set<? extends AbstractNode> fillUs, Writer outWriter
+    ) throws IOException {
 
         outWriter.write("digraph cfg {\n  label=\"");
         outWriter.write(Dumper.escapeDot(graphName, 0));
@@ -1226,7 +1194,7 @@ public class DependencyGraph {
             }
 
             String shapeString = "shape=ellipse";
-            if (tgn == this.root) {
+            if (tgn == this.rootNode) {
                 shapeString = "shape=box";
             }
 
@@ -1263,9 +1231,8 @@ public class DependencyGraph {
 
     // writes a dot representation of this depgraph to the given writer;
     // use this one if you need a UNIQUE representation
-    public void writeDotUnique(String graphName, Set<? extends AbstractNode> fillUs, boolean shortName, Writer outWriter)
-        throws IOException {
-
+    public void writeDotUnique(String graphName, Set<? extends AbstractNode> fillUs, boolean shortName, Writer outWriter
+    ) throws IOException {
         outWriter.write("digraph cfg {\n  label=\"");
         outWriter.write(Dumper.escapeDot(graphName, 0));
         outWriter.write("\";\n");
@@ -1275,7 +1242,7 @@ public class DependencyGraph {
         int idCounter = 0;
         HashMap<AbstractNode, Integer> node2Int = new HashMap<>();
 
-        for (AbstractNode tgn : this.bfIterator()) {
+        for (AbstractNode tgn : this.breadthFirstIterator()) {
 
             node2Int.put(tgn, ++idCounter);
 
@@ -1289,7 +1256,7 @@ public class DependencyGraph {
             }
 
             String shapeString = "shape=ellipse";
-            if (tgn == this.root) {
+            if (tgn == this.rootNode) {
                 shapeString = "shape=box";
             }
 
@@ -1329,12 +1296,9 @@ public class DependencyGraph {
         outWriter.write("}\n");
     }
 
-//  ********************************************************************************
-
     // eliminates cycles (SCCs) from this string graph, replacing them with
     // special DepGraphSccNodes
     public void eliminateCycles() {
-
         if (!this.hasCycles()) {
             return;
         }
@@ -1397,8 +1361,6 @@ public class DependencyGraph {
         }
     }
 
-//  ********************************************************************************
-
     // returns a list of strongly connected components;
     // uses the algorithm from "The Design and Analysis of Computer Algorithms"
     // (Aho, Hopcroft, Ullman), Chapter 5.5 ("Strong Connectivity")
@@ -1409,11 +1371,9 @@ public class DependencyGraph {
         Map<AbstractNode, Integer> dfsnum = new HashMap<>();
         Map<AbstractNode, Integer> low = new HashMap<>();
         Set<AbstractNode> old = new HashSet<>();
-        sccVisit(this.root, stack, dfsnum, low, old, sccs);
+        sccVisit(this.rootNode, stack, dfsnum, low, old, sccs);
         return sccs;
     }
-
-//  ********************************************************************************
 
     // helper function for SCC computation
     private void sccVisit(AbstractNode v, List<AbstractNode> stack,
@@ -1455,8 +1415,6 @@ public class DependencyGraph {
         }
     }
 
-//  ********************************************************************************
-
     public List<AbstractNode> getSuccessors(AbstractNode node) {
         List<AbstractNode> retMe = this.edges.get(node);
         if (retMe == null) {
@@ -1464,8 +1422,6 @@ public class DependencyGraph {
         }
         return retMe;
     }
-
-//  ********************************************************************************
 
     // EFF: could be much faster
     public Set<AbstractNode> getPredecessors(AbstractNode node) {
@@ -1481,11 +1437,7 @@ public class DependencyGraph {
         return retMe;
     }
 
-// bfIterator **********************************************************************
-
-    // breadth first iterator
-    public List<AbstractNode> bfIterator() {
-
+    public List<AbstractNode> breadthFirstIterator() {
         // list for the iterator
         LinkedList<AbstractNode> list = new LinkedList<>();
 
@@ -1495,21 +1447,18 @@ public class DependencyGraph {
         // already visited
         Set<AbstractNode> visited = new HashSet<>();
 
-        queue.add(this.root);
-        visited.add(this.root);
+        queue.add(this.rootNode);
+        visited.add(this.rootNode);
 
         Comparator<AbstractNode> comp = new NodeComparator<>();
-        this.bfIteratorHelper(list, queue, visited, comp);
+        this.breadthFirstIteratorHelper(list, queue, visited, comp);
 
         return list;
     }
 
-// bfIteratorHelper ****************************************************************
-
-    private void bfIteratorHelper(List<AbstractNode> list,
-                                  LinkedList<AbstractNode> queue, Set<AbstractNode> visited,
-                                  Comparator<AbstractNode> comp) {
-
+    private void breadthFirstIteratorHelper(
+        List<AbstractNode> list, LinkedList<AbstractNode> queue, Set<AbstractNode> visited, Comparator<AbstractNode> comp
+    ) {
         AbstractNode node = queue.removeFirst();
         list.add(node);
 
@@ -1532,7 +1481,7 @@ public class DependencyGraph {
 
         // if the queue is non-empty: recurse
         if (queue.size() > 0) {
-            bfIteratorHelper(list, queue, visited, comp);
+            breadthFirstIteratorHelper(list, queue, visited, comp);
         }
     }
 
@@ -1598,7 +1547,7 @@ public class DependencyGraph {
             }
             AbstractNode tempNode = tempNodes.iterator().next();
 
-            if (tempNode == this.root) {
+            if (tempNode == this.rootNode) {
                 // leave the root alone!
                 continue;
             }
@@ -1627,9 +1576,7 @@ public class DependencyGraph {
         }
     }
 
-    private void reduceWithLeavesHelper(AbstractNode node,
-                                        Set<AbstractNode> reachable, Set<NormalNode> retVars) {
-
+    private void reduceWithLeavesHelper(AbstractNode node, Set<AbstractNode> reachable, Set<NormalNode> retVars) {
         // stop recursion if we were already there
         if (reachable.contains(node)) {
             return;
@@ -1653,11 +1600,8 @@ public class DependencyGraph {
         }
     }
 
-//  ********************************************************************************
-
-    // removes all uninit nodes and returns their predecessors
-    public Set<AbstractNode> removeUninitNodes() {
-
+    // removes all uninitialized nodes and returns their predecessors
+    public Set<AbstractNode> removeUninitializedNodes() {
         Set<AbstractNode> retme = new HashSet<>();
 
         Set<UninitializedNode> uninitializedNodes = getUninitNodes();
@@ -1689,8 +1633,6 @@ public class DependencyGraph {
 
         return retme;
     }
-
-//  ********************************************************************************
 
     // removes all nodes that represent temporary variables and that have
     // exactly 1 predecessor and 1 successor
@@ -1735,17 +1677,15 @@ public class DependencyGraph {
         return retme;
     }
 
-//  ********************************************************************************
-
-    // reduces this depgraph to the ineffective sanitization stuff;
-    // returns the number of ineffective border sanitizations
-    public int reduceToIneffectiveSanit(Map<AbstractNode, FSAAutomaton> deco,
-                                        AbstractSanitationAnalysis sanitationAnalysis) {
-
+    // reduces this dependency graph to the ineffective sanitization stuff;
+    // returns the number of ineffective border sanitations
+    public int reduceToIneffectiveSanitation(
+        Map<AbstractNode, FSAAutomaton> deco, AbstractSanitationAnalysis sanitationAnalysis
+    ) {
         // get the "custom sanitization border"
         List<AbstractNode> border = new LinkedList<>();
         Set<AbstractNode> visited = new HashSet<>();
-        this.getCustomSanitBorder(this.root, visited, border);
+        this.getCustomSanitationBorder(this.rootNode, visited, border);
 
         // identify ineffective border sanitizations
         List<AbstractNode> ineffectiveBorder = new LinkedList<>();
@@ -1761,9 +1701,7 @@ public class DependencyGraph {
         return ineffectiveBorder.size();
     }
 
-    private void getCustomSanitBorder(AbstractNode node,
-                                      Set<AbstractNode> visited, List<AbstractNode> border) {
-
+    private void getCustomSanitationBorder(AbstractNode node, Set<AbstractNode> visited, List<AbstractNode> border) {
         // stop if we were already there
         if (visited.contains(node)) {
             return;
@@ -1778,17 +1716,14 @@ public class DependencyGraph {
 
         // recurse downwards
         for (AbstractNode succ : this.getSuccessors(node)) {
-            getCustomSanitBorder(succ, visited, border);
+            getCustomSanitationBorder(succ, visited, border);
         }
     }
 
-//  ********************************************************************************
-
-    // makes the depgraph smaller in the following way:
+    // makes the dependency graph smaller in the following way:
     // - reduces it to those nodes that are on a path that contains
     //   one of the given nodes (may be inner nodes)
     public void reduceToInnerNodes(Collection<? extends AbstractNode> nodes) {
-
         // mark reachable nodes (upwards and downwards, starting from
         // the sanitization nodes)
         Set<AbstractNode> reachable = new HashSet<>();
@@ -1824,26 +1759,18 @@ public class DependencyGraph {
         }
     }
 
-//  ********************************************************************************
-
-    private void reduceToInnerHelper(AbstractNode node,
-                                     Set<AbstractNode> reachable) {
-
+    private void reduceToInnerHelper(AbstractNode node, Set<AbstractNode> reachable) {
         // recurse upwards
         for (AbstractNode pre : this.getPredecessors(node)) {
             reduceToInnerHelperUp(pre, reachable);
         }
 
         // recurse downwards
-        reduceToSanitInnerDown(node, reachable);
+        reduceToSanitationInnerDown(node, reachable);
     }
 
-//  ********************************************************************************
-
     // upwards reachability
-    private void reduceToInnerHelperUp(AbstractNode node,
-                                       Set<AbstractNode> reachable) {
-
+    private void reduceToInnerHelperUp(AbstractNode node, Set<AbstractNode> reachable) {
         // stop recursion if we were already there
         if (reachable.contains(node)) {
             return;
@@ -1858,12 +1785,8 @@ public class DependencyGraph {
         }
     }
 
-//  ********************************************************************************
-
     // downwards reachability
-    private void reduceToSanitInnerDown(AbstractNode node,
-                                        Set<AbstractNode> reachable) {
-
+    private void reduceToSanitationInnerDown(AbstractNode node, Set<AbstractNode> reachable) {
         // stop recursion if we were already there
         if (reachable.contains(node)) {
             return;
@@ -1874,11 +1797,9 @@ public class DependencyGraph {
 
         // recurse
         for (AbstractNode succ : this.getSuccessors(node)) {
-            reduceToSanitInnerDown(succ, reachable);
+            reduceToSanitationInnerDown(succ, reachable);
         }
     }
-
-//  ********************************************************************************
 
     // counts the number of paths through this dependence graph;
     public int countPaths() {
@@ -1886,21 +1807,15 @@ public class DependencyGraph {
         return (new DependencyGraph(this).countPathsDestructive());
     }
 
-//  ********************************************************************************
-
-    // BEWARE: eliminates cycles first, so this changes the depgraph
+    // BEWARE: eliminates cycles first, so this changes the dependency graph
     private int countPathsDestructive() {
         this.eliminateCycles();
         Map<AbstractNode, Integer> node2p = new HashMap<>();
-        pathCounterHelper(this.root, node2p, new HashSet<AbstractNode>());
-        return node2p.get(root);
+        pathCounterHelper(this.rootNode, node2p, new HashSet<AbstractNode>());
+        return node2p.get(rootNode);
     }
 
-//  ********************************************************************************
-
-    private void pathCounterHelper(AbstractNode node, Map<AbstractNode, Integer> node2p,
-                                   Set<AbstractNode> visited) {
-
+    private void pathCounterHelper(AbstractNode node, Map<AbstractNode, Integer> node2p, Set<AbstractNode> visited) {
         visited.add(node);
 
         List<AbstractNode> successors = this.getSuccessors(node);
@@ -1921,9 +1836,6 @@ public class DependencyGraph {
             node2p.put(node, 1);
         }
     }
-
-//  ********************************************************************************
-//  ********************************************************************************
 
     private class NotReachableException extends Exception {
         private static final long serialVersionUID = 1L;
