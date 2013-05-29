@@ -23,8 +23,8 @@ public class XssAnalysis extends AbstractVulnerabilityAnalysis {
         super(dependencyAnalysis);
     }
 
-     /**
-      * Detects vulnerabilities and returns a list with the line numbers of the detected vulnerabilities.
+    /**
+     * Detects vulnerabilities and returns a list with the line numbers of the detected vulnerabilities.
      *
      * How it works:
      *
