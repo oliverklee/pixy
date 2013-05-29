@@ -119,7 +119,7 @@ public class TypeTestCase extends TestCase {
             // check xssgraph
 
             String xssFileName = "test" + testNum + "_" + graphCount + "_xss";
-            DependencyGraph relevant = this.xssAnalysis.getRelevant(dependencyGraph);
+            DependencyGraph relevant = this.xssAnalysis.getRelevantSubgraph(dependencyGraph);
             Map<UninitializedNode, AbstractVulnerabilityAnalysis.InitialTaint> dangerousUninit = this.xssAnalysis.findDangerousUninitializedNodes(relevant);
             if (!dangerousUninit.isEmpty()) {
                 vulnCount++;

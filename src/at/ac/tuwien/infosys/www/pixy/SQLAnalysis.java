@@ -32,6 +32,9 @@ import java.util.*;
 public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
     /** flag indicating whether to use transducers (are still unstable) */
     private boolean useTransducers = false;
+    private List<Integer> lineNumbersOfVulnerabilities;
+    private int dependencyGraphCount;
+    private int vulnerabilityCount;
 
     public SQLAnalysis(DependencyAnalysis dependencyAnalysis) {
         super(dependencyAnalysis);
@@ -50,7 +53,7 @@ public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
         System.out.println("*****************");
         System.out.println();
 
-        List<Integer> lineNumbersOfVulnerabilities = new LinkedList<>();
+        lineNumbersOfVulnerabilities = new LinkedList<>();
 
         List<Sink> sinks = this.collectSinks();
         Collections.sort(sinks);
@@ -64,77 +67,18 @@ public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
 
         String fileName = MyOptions.entryFile.getName();
 
-        int numberOfDependencyGraphs = 0;
-        int numberOfVulnerabilities = 0;
+        dependencyGraphCount = 0;
+        vulnerabilityCount = 0;
         for (Sink sink : sinks) {
-            Collection<DependencyGraph> dependencyGraphs = dependencyAnalysis.getDependencyGraphsForSink(sink);
-
-            for (DependencyGraph dependencyGraph : dependencyGraphs) {
-                numberOfDependencyGraphs++;
-
-                String graphNameBase = "sql_" + fileName + "_" + numberOfDependencyGraphs;
-
-                DependencyGraph sqlGraph = new DependencyGraph(dependencyGraph);
-                AbstractCfgNode cfgNode = dependencyGraph.getRoot().getCfgNode();
-
-                dependencyGraph.dumpDot(graphNameBase + "_dep", MyOptions.graphPath, dependencyGraph.getUninitNodes(), this.vulnerabilityAnalysisInformation);
-
-                Automaton auto = this.toAutomaton(sqlGraph, dependencyGraph);
-
-                boolean tainted = false;
-                if (auto.hasDirectlyTaintedTransitions()) {
-                    System.out.println("directly tainted!");
-                    tainted = true;
-                }
-                if (auto.hasIndirectlyTaintedTransitions()) {
-                    if (auto.hasDangerousIndirectTaint()) {
-                        System.out.println("indirectly tainted and dangerous!");
-                        tainted = true;
-                    }
-                }
-                if (tainted) {
-                    numberOfVulnerabilities++;
-                    lineNumbersOfVulnerabilities.add(cfgNode.getOrigLineno());
-
-                    System.out.println("- " + cfgNode.getLoc());
-                    System.out.println("- Graphs: sql" + numberOfDependencyGraphs);
-                }
-
-                // if we have detected a vulnerability, also dump a reduced
-                // SQL dependency graph
-                if (tainted) {
-                    DependencyGraph relevant = this.getRelevant(dependencyGraph);
-                    Map<UninitializedNode, InitialTaint> dangerousUninit = this.findDangerousUninitializedNodes(relevant);
-                    if (!dangerousUninit.isEmpty()) {
-                        if (dangerousUninit.values().contains(InitialTaint.ALWAYS)) {
-                            System.out.println("- unconditional");
-                        } else {
-                            System.out.println("- conditional on register_globals=on");
-                        }
-                        relevant.reduceWithLeaves(dangerousUninit.keySet());
-                        Set<? extends AbstractNode> fillUs;
-                        if (MyOptions.option_V) {
-                            relevant.removeTemporaries();
-                            fillUs = relevant.removeUninitNodes();
-                        } else {
-                            fillUs = dangerousUninit.keySet();
-                        }
-                        relevant.dumpDot(graphNameBase + "_min", MyOptions.graphPath, fillUs, this.vulnerabilityAnalysisInformation);
-                    }
-
-                    System.out.println();
-                }
-
-                this.dumpDotAuto(auto, graphNameBase + "_auto", MyOptions.graphPath);
-            }
+            detectVulnerabilitiesForSink(fileName, sink);
         }
 
         // initial sink count and final graph count may differ (e.g., if some sinks
         // are not reachable)
         if (MyOptions.optionV) {
-            System.out.println("Total Graph Count: " + numberOfDependencyGraphs);
+            System.out.println("Total Graph Count: " + dependencyGraphCount);
         }
-        System.out.println("Total Vuln Count: " + numberOfVulnerabilities);
+        System.out.println("Total Vuln Count: " + vulnerabilityCount);
 
         System.out.println();
         System.out.println("*****************");
@@ -145,6 +89,69 @@ public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
         return lineNumbersOfVulnerabilities;
     }
 
+    private void detectVulnerabilitiesForSink(String fileName, Sink sink) {
+        Collection<DependencyGraph> dependencyGraphs = dependencyAnalysis.getDependencyGraphsForSink(sink);
+
+        for (DependencyGraph dependencyGraph : dependencyGraphs) {
+            dependencyGraphCount++;
+
+            String graphNameBase = "sql_" + fileName + "_" + dependencyGraphCount;
+
+            DependencyGraph sqlGraph = new DependencyGraph(dependencyGraph);
+            AbstractCfgNode cfgNode = dependencyGraph.getRoot().getCfgNode();
+
+            dependencyGraph.dumpDot(graphNameBase + "_dep", MyOptions.graphPath, dependencyGraph.getUninitNodes(), this.vulnerabilityAnalysisInformation);
+
+            Automaton automaton = this.toAutomaton(sqlGraph, dependencyGraph);
+
+            boolean tainted = false;
+            if (automaton.hasDirectlyTaintedTransitions()) {
+                System.out.println("directly tainted!");
+                tainted = true;
+            }
+            if (automaton.hasIndirectlyTaintedTransitions()) {
+                if (automaton.hasDangerousIndirectTaint()) {
+                    System.out.println("indirectly tainted and dangerous!");
+                    tainted = true;
+                }
+            }
+            if (tainted) {
+                vulnerabilityCount++;
+                lineNumbersOfVulnerabilities.add(cfgNode.getOrigLineno());
+
+                System.out.println("- " + cfgNode.getLoc());
+                System.out.println("- Graphs: sql" + dependencyGraphCount);
+            }
+
+            // Ff we have detected a vulnerability, also dump a reduced SQL dependency graph.
+            if (tainted) {
+                DependencyGraph relevantSubgraph = this.getRelevantSubgraph(dependencyGraph);
+                Map<UninitializedNode, InitialTaint> dangerousUninitializedNodes
+                    = this.findDangerousUninitializedNodes(relevantSubgraph);
+                if (!dangerousUninitializedNodes.isEmpty()) {
+                    if (dangerousUninitializedNodes.values().contains(InitialTaint.ALWAYS)) {
+                        System.out.println("- unconditional");
+                    } else {
+                        System.out.println("- conditional on register_globals=on");
+                    }
+                    relevantSubgraph.reduceWithLeaves(dangerousUninitializedNodes.keySet());
+                    Set<? extends AbstractNode> fillUs;
+                    if (MyOptions.option_V) {
+                        relevantSubgraph.removeTemporaries();
+                        fillUs = relevantSubgraph.removeUninitNodes();
+                    } else {
+                        fillUs = dangerousUninitializedNodes.keySet();
+                    }
+                    relevantSubgraph.dumpDot(graphNameBase + "_min", MyOptions.graphPath, fillUs, this.vulnerabilityAnalysisInformation);
+                }
+
+                System.out.println();
+            }
+
+            this.dumpDotAuto(automaton, graphNameBase + "_auto", MyOptions.graphPath);
+        }
+    }
+
     /**
      * Alternative to detectVulnerabilities.
      *
@@ -153,43 +160,42 @@ public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
      * @return
      */
     public VulnerabilityInformation detectAlternative() {
-        // will contain depgraphs for which a vulnerability was detected
-        VulnerabilityInformation retMe = new VulnerabilityInformation();
+        VulnerabilityInformation dependencyGraphsWithVulnerabilities = new VulnerabilityInformation();
 
         // collect sinks
         List<Sink> sinks = this.collectSinks();
         Collections.sort(sinks);
 
-        int graphcount = 0;
+        int graphCount = 0;
         int totalPathCount = 0;
         int basicPathCount = 0;
-        int hasCustomSanitCount = 0;
-        int customSanitThrownAwayCount = 0;
+        int hasCustomSanitationCount = 0;
+        int customSanitationThrownAwayCount = 0;
         for (Sink sink : sinks) {
             Collection<DependencyGraph> dependencyGraphs = dependencyAnalysis.getDependencyGraphsForSink(sink);
 
             for (DependencyGraph dependencyGraph : dependencyGraphs) {
-                graphcount++;
+                graphCount++;
 
                 DependencyGraph workGraph = new DependencyGraph(dependencyGraph);
-                Automaton auto = this.toAutomaton(workGraph, dependencyGraph);
+                Automaton automaton = this.toAutomaton(workGraph, dependencyGraph);
 
                 boolean tainted = false;
-                if (auto.hasDirectlyTaintedTransitions()) {
+                if (automaton.hasDirectlyTaintedTransitions()) {
                     tainted = true;
                 }
-                if (auto.hasIndirectlyTaintedTransitions()) {
-                    if (auto.hasDangerousIndirectTaint()) {
+                if (automaton.hasIndirectlyTaintedTransitions()) {
+                    if (automaton.hasDangerousIndirectTaint()) {
                         tainted = true;
                     }
                 }
                 if (tainted) {
-                    // create a smaller version of this graph
-                    DependencyGraph relevant = this.getRelevant(dependencyGraph);
-                    Map<UninitializedNode, InitialTaint> dangerousUninit = this.findDangerousUninitializedNodes(relevant);
-                    relevant.reduceWithLeaves(dangerousUninit.keySet());
+                    DependencyGraph relevantSubgraph = this.getRelevantSubgraph(dependencyGraph);
+                    Map<UninitializedNode, InitialTaint> dangerousUninitializedNodes
+                        = this.findDangerousUninitializedNodes(relevantSubgraph);
+                    relevantSubgraph.reduceWithLeaves(dangerousUninitializedNodes.keySet());
 
-                    retMe.addDepGraph(dependencyGraph, relevant);
+                    dependencyGraphsWithVulnerabilities.addDepGraph(dependencyGraph, relevantSubgraph);
                 }
 
                 if (MyOptions.countPaths) {
@@ -201,21 +207,21 @@ public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
                 }
 
                 if (!AbstractSanitationAnalysis.findCustomSanit(dependencyGraph).isEmpty()) {
-                    hasCustomSanitCount++;
+                    hasCustomSanitationCount++;
                     if (!tainted) {
-                        customSanitThrownAwayCount++;
+                        customSanitationThrownAwayCount++;
                     }
                 }
             }
         }
 
-        retMe.setInitialGraphCount(graphcount);
-        retMe.setTotalPathCount(totalPathCount);
-        retMe.setBasicPathCount(basicPathCount);
-        retMe.setCustomSanitCount(hasCustomSanitCount);
-        retMe.setCustomSanitThrownAwayCount(customSanitThrownAwayCount);
+        dependencyGraphsWithVulnerabilities.setInitialGraphCount(graphCount);
+        dependencyGraphsWithVulnerabilities.setTotalPathCount(totalPathCount);
+        dependencyGraphsWithVulnerabilities.setBasicPathCount(basicPathCount);
+        dependencyGraphsWithVulnerabilities.setCustomSanitCount(hasCustomSanitationCount);
+        dependencyGraphsWithVulnerabilities.setCustomSanitThrownAwayCount(customSanitationThrownAwayCount);
 
-        return retMe;
+        return dependencyGraphsWithVulnerabilities;
     }
 
 //  ********************************************************************************

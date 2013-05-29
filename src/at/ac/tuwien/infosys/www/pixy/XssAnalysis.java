@@ -112,7 +112,7 @@ public class XssAnalysis extends AbstractVulnerabilityAnalysis {
     private void detectVulnerabilitiesInDependencyGraphForSink(
         StringBuilder sink2Graph, StringBuilder quickReport, Sink sink, DependencyGraph dependencyGraph, String graphNameBase
     ) {
-        DependencyGraph relevantSubgraph = this.getRelevant(dependencyGraph);
+        DependencyGraph relevantSubgraph = this.getRelevantSubgraph(dependencyGraph);
 
         Map<UninitializedNode, InitialTaint> dangerousUninitializedNodes
             = this.findDangerousUninitializedNodes(relevantSubgraph);
@@ -199,7 +199,7 @@ public class XssAnalysis extends AbstractVulnerabilityAnalysis {
             for (DependencyGraph dependencyGraph : dependencyGraphs) {
                 graphCount++;
 
-                DependencyGraph relevantSubgraph = this.getRelevant(dependencyGraph);
+                DependencyGraph relevantSubgraph = this.getRelevantSubgraph(dependencyGraph);
                 Map<UninitializedNode, InitialTaint> dangerousUninitializedNodes
                     = this.findDangerousUninitializedNodes(relevantSubgraph);
 
