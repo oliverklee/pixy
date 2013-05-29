@@ -371,10 +371,6 @@ public class DependencyAnalysis extends AbstractInterproceduralAnalysis {
         return TransferFunctionId.INSTANCE;
     }
 
-//  ********************************************************************************
-//  OTHER **************************************************************************
-//  ********************************************************************************
-
     protected Boolean evalIf(If ifNode, AbstractLatticeElement inValue) {
         return this.literalAnalysis.evalIf(ifNode);
     }
@@ -387,42 +383,40 @@ public class DependencyAnalysis extends AbstractInterproceduralAnalysis {
      * @return
      */
     public List<DependencyGraph> getDependencyGraphsForSink(Sink sink) {
-        List<DependencyGraph> dependencyGraphs = new LinkedList<>();
-
-        TacFunction mainFunc = this.mainFunction;
-        SymbolTable mainSymTab = mainFunc.getSymbolTable();
-
-        // get vulnerabilities for this sink
-        List<SinkProblem> problems;
-        problems = sink.getSinkProblems();
-
-        // if this sink has no problems: done!
+        List<SinkProblem> problems = sink.getSinkProblems();
         if (problems.isEmpty()) {
-            return dependencyGraphs;
+            return new LinkedList<>();
         }
+
+        List<DependencyGraph> dependencyGraphs = new LinkedList<>();
+        SymbolTable mainSymbolTable = this.mainFunction.getSymbolTable();
 
         // create dependency graphs for all sensitive places in this sink
         for (SinkProblem problem : problems) {
-            DependencyGraph dependencyGraph = DependencyGraph.create(problem.getPlace(),
-                sink.getNode(), this.interproceduralAnalysisInformation, mainSymTab, this);
+            DependencyGraph dependencyGraph = DependencyGraph.create(
+                problem.getPlace(), sink.getNode(), this.interproceduralAnalysisInformation, mainSymbolTable, this
+            );
 
-            // a null dependencyGraph is returned if this sink is unreachable
-            if (dependencyGraph == null) {
-                continue;
+            if (dependencyGraph != null) {
+                dependencyGraphs.add(dependencyGraph);
             }
-
-            dependencyGraphs.add(dependencyGraph);
         }
 
         return dependencyGraphs;
     }
 
-    // returns the dependency graphs for all given sinks;
-    // this (older) function collects some nice statistics
-    public List<DependencyGraph> getDepGraphs(List<Sink> sinks) {
+    /**
+     * Returns the dependency graphs for all given sinks.
+     *
+     * This (older) function collects some nice statistics.
+     *
+     * @param sinks
+     *
+     * @return
+     */
+    public List<DependencyGraph> getDependencyGraphs(List<Sink> sinks) {
         List<DependencyGraph> retMe = new LinkedList<>();
 
-        // sort sinks by line
         Collections.sort(sinks);
 
         // whether to collect & print statistics

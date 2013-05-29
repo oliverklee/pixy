@@ -49,7 +49,7 @@ public class FileAnalysis extends AbstractVulnerabilityAnalysis {
 
         System.out.println("Creating DepGraphs for " + sinks.size() + " sinks...");
         System.out.println();
-        Collection<DependencyGraph> dependencyGraphs = dependencyAnalysis.getDepGraphs(sinks);
+        Collection<DependencyGraph> dependencyGraphs = dependencyAnalysis.getDependencyGraphs(sinks);
 
         System.out.println("File Capab Analysis Output");
         System.out.println("----------------------------");
