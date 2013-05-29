@@ -40,7 +40,7 @@ public class XSSTestCase extends TestCase {
         // initialize & analyze
         TacConverter tac = checker.initialize().getTac();
         checker.analyzeTaint(tac, functional);
-        this.vulnList = checker.gta.detectVulns();
+        this.vulnList = checker.gta.detectVulnerabilities();
     }
 
     private void performTest(String testNum, List<Integer> exp) {

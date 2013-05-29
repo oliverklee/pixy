@@ -42,7 +42,7 @@ public class DependencyAnalysis extends AbstractInterproceduralAnalysis {
     private LiteralAnalysis literalAnalysis;
     private GlobalsModificationAnalysis globalsModificationAnalysis;
 
-    // has detectVulns() already been called?
+    // has detectVulnerabilities() already been called?
     private boolean finishedDetection;
 
 //  ********************************************************************************

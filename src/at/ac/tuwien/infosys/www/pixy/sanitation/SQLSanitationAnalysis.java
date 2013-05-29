@@ -18,7 +18,7 @@ import java.util.List;
  * SQL Injection detection (with precise sanitation detection).
  *
  * Note: This class will be instantiated via reflection in GenericTaintAnalysis.createAnalysis. It is registered in
- * MyOptions.DependencyClientInformation.
+ * MyOptions.VulnerabilityAnalysisInformation.
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
@@ -38,8 +38,8 @@ public class SQLSanitationAnalysis extends AbstractSanitationAnalysis {
 
 //  ********************************************************************************
 
-    public List<Integer> detectVulns() {
-        return detectVulns(new SQLAnalysis(this.dependencyAnalysis));
+    public List<Integer> detectVulnerabilities() {
+        return detectVulnerabilities(new SQLAnalysis(this.dependencyAnalysis));
     }
 
     public VulnerabilityInformation detectAlternative() {
@@ -79,9 +79,9 @@ public class SQLSanitationAnalysis extends AbstractSanitationAnalysis {
     private void checkForSinkHelper(String functionName, AbstractCfgNode cfgNode,
                                     List<TacActualParameter> paramList, TacFunction traversedFunction, List<Sink> sinks) {
 
-        if (this.dci.getSinks().containsKey(functionName)) {
+        if (this.vulnerabilityAnalysisInformation.getSinks().containsKey(functionName)) {
             Sink sink = new Sink(cfgNode, traversedFunction);
-            for (Integer param : this.dci.getSinks().get(functionName)) {
+            for (Integer param : this.vulnerabilityAnalysisInformation.getSinks().get(functionName)) {
                 if (paramList.size() > param) {
                     sink.addSensitivePlace(paramList.get(param).getPlace());
                     // add this sink to the list of sensitive sinks

@@ -93,7 +93,7 @@ public class MyOptions {
     // builtin function models ****************************************
 
     public static void readBuiltinFunctionModels() {
-        for (DependencyClientInformation dci : analyses) {
+        for (VulnerabilityAnalysisInformation dci : analyses) {
             FunctionModels fm = readModelFile(dci);
             dci.setFunctionModels(fm);
         }
@@ -106,7 +106,7 @@ public class MyOptions {
      *
      * @return
      */
-    private static FunctionModels readModelFile(DependencyClientInformation dci) {
+    private static FunctionModels readModelFile(VulnerabilityAnalysisInformation dci) {
         Set<String> f_evil = new HashSet<>();
         Map<String, Set<Integer>> f_multi = new HashMap<>();
         Map<String, Set<Integer>> f_invMulti = new HashMap<>();
@@ -226,7 +226,7 @@ public class MyOptions {
     // custom, user-defined sinks *************************************
 
     public static boolean isSink(String functionName) {
-        for (DependencyClientInformation dci : analyses) {
+        for (VulnerabilityAnalysisInformation dci : analyses) {
             if (dci.getSinks().containsKey(functionName)) {
                 return true;
             }
@@ -293,7 +293,7 @@ public class MyOptions {
 
     // add builtin function sinks (represented by CallBuiltinFunction)
     public static void initializeBuiltinSinks() {
-        for (DependencyClientInformation dci : analyses) {
+        for (VulnerabilityAnalysisInformation dci : analyses) {
             String sinkFileName = "sinks_" + dci.getName() + ".txt";
             Map<String, Set<Integer>> sinks = new HashMap<>();
             readSinkFile(MyOptions.pixyHome + "/" + MyOptions.configurationDirectory + "/" + sinkFileName, sinks);
@@ -321,7 +321,7 @@ public class MyOptions {
                 if (sinkType == null) {
                     System.out.println("Missing sinkType in file " + sinkFileName);
                 } else {
-                    DependencyClientInformation dci = name2Analysis.get(sinkType);
+                    VulnerabilityAnalysisInformation dci = name2Analysis.get(sinkType);
                     if (dci == null) {
                         System.out.println("Invalid sinkType in file " + sinkFileName);
                         System.out.println("- " + sinkType);
@@ -333,16 +333,16 @@ public class MyOptions {
         }
     }
 
-    private static DependencyClientInformation[] analyses = {
-        new DependencyClientInformation("xss", "at.ac.tuwien.infosys.www.pixy.XSSAnalysis"),
-        new DependencyClientInformation("sql", "at.ac.tuwien.infosys.www.pixy.SQLAnalysis"),
-        new DependencyClientInformation("sqlsanit", "at.ac.tuwien.infosys.www.pixy.sanitation.SQLSanitationAnalysis"),
-        new DependencyClientInformation("xsssanit", "at.ac.tuwien.infosys.www.pixy.sanitation.XSSSanitationAnalysis"),
-        new DependencyClientInformation("file", "at.ac.tuwien.infosys.www.pixy.FileAnalysis")
+    private static VulnerabilityAnalysisInformation[] analyses = {
+        new VulnerabilityAnalysisInformation("xss", "at.ac.tuwien.infosys.www.pixy.XssAnalysis"),
+        new VulnerabilityAnalysisInformation("sql", "at.ac.tuwien.infosys.www.pixy.SQLAnalysis"),
+        new VulnerabilityAnalysisInformation("sqlsanit", "at.ac.tuwien.infosys.www.pixy.sanitation.SQLSanitationAnalysis"),
+        new VulnerabilityAnalysisInformation("xsssanit", "at.ac.tuwien.infosys.www.pixy.sanitation.XSSSanitationAnalysis"),
+        new VulnerabilityAnalysisInformation("file", "at.ac.tuwien.infosys.www.pixy.FileAnalysis")
     };
 
     // "name to depclientinfo" mapping
-    private static Map<String, DependencyClientInformation> name2Analysis;
+    private static Map<String, VulnerabilityAnalysisInformation> name2Analysis;
 
     // "class name to analysis name" mapping
     private static Map<String, String> className2Name;
@@ -360,7 +360,7 @@ public class MyOptions {
 
             String taintString = st.nextToken();
 
-            DependencyClientInformation dci = name2Analysis.get(taintString);
+            VulnerabilityAnalysisInformation dci = name2Analysis.get(taintString);
             if (dci != null) {
                 dci.setPerformMe(true);
             } else {
@@ -405,25 +405,25 @@ public class MyOptions {
 
         name2Analysis = new HashMap<>();
         className2Name = new HashMap<>();
-        for (DependencyClientInformation dci : analyses) {
+        for (VulnerabilityAnalysisInformation dci : analyses) {
             name2Analysis.put(dci.getName(), dci);
             className2Name.put(dci.getClassName(), dci.getName());
         }
     }
 
-    public static DependencyClientInformation getDepClientInfo(String analysisClassName) {
+    public static VulnerabilityAnalysisInformation getVulnerabilityAnalysisInformation(String analysisClassName) {
         String analysisName = className2Name.get(analysisClassName);
         if (analysisName == null) {
             throw new RuntimeException("Illegal analysis class: " + analysisClassName);
         }
-        DependencyClientInformation dci = name2Analysis.get(analysisName);
+        VulnerabilityAnalysisInformation dci = name2Analysis.get(analysisName);
         if (dci == null) {
             throw new RuntimeException("Illegal analysis name: " + analysisName);
         }
         return dci;
     }
 
-    public static DependencyClientInformation[] getDepClients() {
+    public static VulnerabilityAnalysisInformation[] getVulnerabilityAnalyses() {
         return analyses;
     }
 

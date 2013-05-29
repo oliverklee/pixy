@@ -22,7 +22,7 @@ public class IncludeTestCase extends TestCase {
 
     // these are recomputed for every single test
     private DependencyAnalysis dependencyAnalysis;
-    private XSSAnalysis xssAnalysis;
+    private XssAnalysis xssAnalysis;
     List<Sink> sinks;
 
 //  ********************************************************************************
@@ -48,7 +48,7 @@ public class IncludeTestCase extends TestCase {
         TacConverter tac = checker.initialize().getTac();
         checker.analyzeTaint(tac, functional);
         this.dependencyAnalysis = checker.gta.dependencyAnalysis;
-        this.xssAnalysis = (XSSAnalysis) checker.gta.getDependencyClients().get(0);
+        this.xssAnalysis = (XssAnalysis) checker.gta.getAbstractVulnerabilityAnalyses().get(0);
 
         // collect sinks
         this.sinks = this.xssAnalysis.collectSinks();

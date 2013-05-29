@@ -18,28 +18,32 @@ import java.util.*;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class XSSAnalysis extends AbstractVulnerabilityAnalysis {
-    public XSSAnalysis(DependencyAnalysis dependencyAnalysis) {
+public class XssAnalysis extends AbstractVulnerabilityAnalysis {
+    public XssAnalysis(DependencyAnalysis dependencyAnalysis) {
         super(dependencyAnalysis);
     }
 
-//  ********************************************************************************
-
-    // how it works:
-    // - extracts the "relevant subgraph" (see there for an explanation)
-    // - this relevant subgraph has the nice property that we can check for
-    //   a vulnerability by simply looking at the remaining <uninit> nodes:
-    //   if all these nodes belong to variables that are initially harmless,
-    //   everything is OK; otherwise, we have a vulnerability
-    public List<Integer> detectVulns() {
-
+     /**
+      * Detects vulnerabilities and returns a list with the line numbers of the detected vulnerabilities.
+     *
+     * How it works:
+     *
+     * - extracts the "relevant subgraph" (see there for an explanation)
+     * - this relevant subgraph has the nice property that we can check for
+     * a vulnerability by simply looking at the remaining <uninit> nodes:
+     * if all these nodes belong to variables that are initially harmless,
+     * everything is OK; otherwise, we have a vulnerability
+     *
+     * @return the line numbers of the detected vulnerabilities
+     */
+    public List<Integer> detectVulnerabilities() {
         System.out.println();
         System.out.println("*****************");
         System.out.println("XSS Analysis BEGIN");
         System.out.println("*****************");
         System.out.println();
 
-        List<Integer> retMe = new LinkedList<>();
+        List<Integer> lineNumbersOfVulnerabilities = new LinkedList<>();
 
         // collect sinks
         List<Sink> sinks = this.collectSinks();
@@ -58,26 +62,25 @@ public class XSSAnalysis extends AbstractVulnerabilityAnalysis {
 
         String fileName = MyOptions.entryFile.getName();
 
-        int graphcount = 0;
-        int vulncount = 0;
+        int numberOfDependencyGraphs = 0;
+        int numberOfVulnerabilities = 0;
         for (Sink sink : sinks) {
             Collection<DependencyGraph> dependencyGraphs = dependencyAnalysis.getDepGraph(sink);
 
             for (DependencyGraph dependencyGraph : dependencyGraphs) {
+                numberOfDependencyGraphs++;
 
-                graphcount++;
-
-                String graphNameBase = "xss_" + fileName + "_" + graphcount;
+                String graphNameBase = "xss_" + fileName + "_" + numberOfDependencyGraphs;
 
                 if (!MyOptions.optionW) {
-                    dependencyGraph.dumpDot(graphNameBase + "_dep", MyOptions.graphPath, this.dci);
+                    dependencyGraph.dumpDot(graphNameBase + "_dep", MyOptions.graphPath, this.vulnerabilityAnalysisInformation);
                 }
 
                 // create the relevant subgraph
                 DependencyGraph relevant = this.getRelevant(dependencyGraph);
 
                 // find those uninit nodes that are dangerous
-                Map<UninitializedNode, InitialTaint> dangerousUninit = this.findDangerousUninit(relevant);
+                Map<UninitializedNode, InitialTaint> dangerousUninit = this.findDangerousUninitialized(relevant);
 
                 // if there are any dangerous uninit nodes...
                 if (!dangerousUninit.isEmpty()) {
@@ -93,10 +96,10 @@ public class XSSAnalysis extends AbstractVulnerabilityAnalysis {
                         fillUs = dangerousUninit.keySet();
                     }
 
-                    vulncount++;
+                    numberOfVulnerabilities++;
                     NormalNode root = dependencyGraph.getRoot();
                     AbstractCfgNode cfgNode = root.getCfgNode();
-                    retMe.add(cfgNode.getOrigLineno());
+                    lineNumbersOfVulnerabilities.add(cfgNode.getOrigLineno());
                     System.out.println("Vulnerability detected!");
                     if (dangerousUninit.values().contains(InitialTaint.ALWAYS)) {
                         System.out.println("- unconditional");
@@ -105,8 +108,8 @@ public class XSSAnalysis extends AbstractVulnerabilityAnalysis {
                     }
                     System.out.println("- " + cfgNode.getLoc());
 
-                    System.out.println("- Graph: xss" + graphcount);
-                    relevant.dumpDot(graphNameBase + "_min", MyOptions.graphPath, fillUs, this.dci);
+                    System.out.println("- Graph: xss" + numberOfDependencyGraphs);
+                    relevant.dumpDot(graphNameBase + "_min", MyOptions.graphPath, fillUs, this.vulnerabilityAnalysisInformation);
                     System.out.println();
 
                     if (MyOptions.optionW) {
@@ -142,9 +145,9 @@ public class XSSAnalysis extends AbstractVulnerabilityAnalysis {
         // initial sink count and final graph count may differ (e.g., if some sinks
         // are not reachable)
         if (MyOptions.optionV) {
-            System.out.println("Total Graph Count: " + graphcount);
+            System.out.println("Total Graph Count: " + numberOfDependencyGraphs);
         }
-        System.out.println("Total Vuln Count: " + vulncount);
+        System.out.println("Total Vuln Count: " + numberOfVulnerabilities);
 
         System.out.println();
         System.out.println("*****************");
@@ -157,15 +160,17 @@ public class XSSAnalysis extends AbstractVulnerabilityAnalysis {
             Utils.writeToFile(quickReport.toString(), MyOptions.graphPath + "/xssQuickReport.txt");
         }
 
-        return retMe;
+        return lineNumbersOfVulnerabilities;
     }
 
-//  ********************************************************************************
-
-    // alternative to detectVulns;
-    // returns those depgraphs for which a vulnerability was detected
+    /**
+     * Alternative to detectVulnerabilities;
+     *
+     * Returns those DependencyGraphs for which a vulnerability was detected.
+     *
+     * @return
+     */
     public VulnerabilityInformation detectAlternative() {
-
         // will contain depgraphs for which a vulnerability was detected
         VulnerabilityInformation retMe = new VulnerabilityInformation();
 
@@ -179,18 +184,16 @@ public class XSSAnalysis extends AbstractVulnerabilityAnalysis {
         int hasCustomSanitCount = 0;
         int customSanitThrownAwayCount = 0;
         for (Sink sink : sinks) {
-
             Collection<DependencyGraph> dependencyGraphs = dependencyAnalysis.getDepGraph(sink);
 
             for (DependencyGraph dependencyGraph : dependencyGraphs) {
-
                 graphcount++;
 
                 // create the relevant subgraph
                 DependencyGraph relevant = this.getRelevant(dependencyGraph);
 
                 // find those uninit nodes that are dangerous
-                Map<UninitializedNode, InitialTaint> dangerousUninit = this.findDangerousUninit(relevant);
+                Map<UninitializedNode, InitialTaint> dangerousUninit = this.findDangerousUninitialized(relevant);
 
                 // if there are any dangerous uninit nodes...
                 boolean tainted = false;
@@ -228,15 +231,17 @@ public class XSSAnalysis extends AbstractVulnerabilityAnalysis {
         return retMe;
     }
 
-//  ********************************************************************************
-
-    // checks if the given node (inside the given function) is a sensitive sink;
-    // adds an appropriate sink object to the given list if it is a sink
-    protected void checkForSink(AbstractCfgNode cfgNodeX, TacFunction traversedFunction,
-                                List<Sink> sinks) {
-
+    /**
+     * Checks if the given node (inside the given function) is a sensitive sink.
+     *
+     * Adds an appropriate sink object to the given list if it is a sink.
+     *
+     * @param cfgNodeX
+     * @param traversedFunction
+     * @param sinks
+     */
+    protected void checkForSink(AbstractCfgNode cfgNodeX, TacFunction traversedFunction, List<Sink> sinks) {
         if (cfgNodeX instanceof Echo) {
-
             // echo() or print()
             Echo cfgNode = (Echo) cfgNodeX;
 
@@ -247,36 +252,36 @@ public class XSSAnalysis extends AbstractVulnerabilityAnalysis {
             // add it to the list of sensitive sinks
             sinks.add(sink);
         } else if (cfgNodeX instanceof CallBuiltinFunction) {
-
             // builtin function sinks
-
             CallBuiltinFunction cfgNode = (CallBuiltinFunction) cfgNodeX;
             String functionName = cfgNode.getFunctionName();
 
             checkForSinkHelper(functionName, cfgNode, cfgNode.getParamList(), traversedFunction, sinks);
         } else if (cfgNodeX instanceof CallPreparation) {
-
             CallPreparation cfgNode = (CallPreparation) cfgNodeX;
             String functionName = cfgNode.getFunctionNamePlace().toString();
 
             // user-defined custom sinks
-
             checkForSinkHelper(functionName, cfgNode, cfgNode.getParamList(), traversedFunction, sinks);
-        } else {
-            // not a sink
         }
     }
 
-//  ********************************************************************************
-
-    // LATER: this method looks very similar in all client analyses;
-    // possibility to reduce code redundancy
-    private void checkForSinkHelper(String functionName, AbstractCfgNode cfgNode,
-                                    List<TacActualParameter> paramList, TacFunction traversedFunction, List<Sink> sinks) {
-
-        if (this.dci.getSinks().containsKey(functionName)) {
+    /**
+     * Later: This method looks very similar in all client analyses. Possibility to reduce code redundancy.
+     *
+     * @param functionName
+     * @param cfgNode
+     * @param paramList
+     * @param traversedFunction
+     * @param sinks
+     */
+    private void checkForSinkHelper(
+        String functionName, AbstractCfgNode cfgNode, List<TacActualParameter> paramList, TacFunction traversedFunction,
+        List<Sink> sinks
+    ) {
+        if (this.vulnerabilityAnalysisInformation.getSinks().containsKey(functionName)) {
             Sink sink = new Sink(cfgNode, traversedFunction);
-            Set<Integer> indexList = this.dci.getSinks().get(functionName);
+            Set<Integer> indexList = this.vulnerabilityAnalysisInformation.getSinks().get(functionName);
             if (indexList == null) {
                 // special treatment is necessary here
                 if (functionName.equals("printf")) {
@@ -295,8 +300,6 @@ public class XSSAnalysis extends AbstractVulnerabilityAnalysis {
                     }
                 }
             }
-        } else {
-            // not a sink
         }
     }
 }

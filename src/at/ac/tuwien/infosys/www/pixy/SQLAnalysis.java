@@ -25,34 +25,33 @@ import java.util.*;
  * SQL Injection detection.
  *
  * Note: This class will be instantiated via reflection in GenericTaintAnalysis.createAnalysis. It is registered in
- * MyOptions.DependencyClientInformation.
+ * MyOptions.VulnerabilityAnalysisInformation.
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
-    // flag indicating whether to use transducers or not (are still unstable)
+    /** flag indicating whether to use transducers (are still unstable) */
     private boolean useTransducers = false;
-
-//  ********************************************************************************
 
     public SQLAnalysis(DependencyAnalysis dependencyAnalysis) {
         super(dependencyAnalysis);
         this.getIsTainted = !MyOptions.optionI;
     }
 
-//  ********************************************************************************
-
-    public List<Integer> detectVulns() {
-
+    /**
+     * Detects vulnerabilities and returns a list with the line numbers of the detected vulnerabilities.
+     *
+     * @return the line numbers of the detected vulnerabilities
+     */
+    public List<Integer> detectVulnerabilities() {
         System.out.println();
         System.out.println("*****************");
         System.out.println("SQL Analysis BEGIN");
         System.out.println("*****************");
         System.out.println();
 
-        List<Integer> retMe = new LinkedList<>();
+        List<Integer> lineNumbersOfVulnerabilities = new LinkedList<>();
 
-        // collect sinks
         List<Sink> sinks = this.collectSinks();
         Collections.sort(sinks);
 
@@ -65,22 +64,20 @@ public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
 
         String fileName = MyOptions.entryFile.getName();
 
-        int graphcount = 0;
-        int vulncount = 0;
+        int numberOfDependencyGraphs = 0;
+        int numberOfVulnerabilities = 0;
         for (Sink sink : sinks) {
-
             Collection<DependencyGraph> dependencyGraphs = dependencyAnalysis.getDepGraph(sink);
 
             for (DependencyGraph dependencyGraph : dependencyGraphs) {
+                numberOfDependencyGraphs++;
 
-                graphcount++;
-
-                String graphNameBase = "sql_" + fileName + "_" + graphcount;
+                String graphNameBase = "sql_" + fileName + "_" + numberOfDependencyGraphs;
 
                 DependencyGraph sqlGraph = new DependencyGraph(dependencyGraph);
                 AbstractCfgNode cfgNode = dependencyGraph.getRoot().getCfgNode();
 
-                dependencyGraph.dumpDot(graphNameBase + "_dep", MyOptions.graphPath, dependencyGraph.getUninitNodes(), this.dci);
+                dependencyGraph.dumpDot(graphNameBase + "_dep", MyOptions.graphPath, dependencyGraph.getUninitNodes(), this.vulnerabilityAnalysisInformation);
 
                 Automaton auto = this.toAutomaton(sqlGraph, dependencyGraph);
 
@@ -96,18 +93,18 @@ public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
                     }
                 }
                 if (tainted) {
-                    vulncount++;
-                    retMe.add(cfgNode.getOrigLineno());
+                    numberOfVulnerabilities++;
+                    lineNumbersOfVulnerabilities.add(cfgNode.getOrigLineno());
 
                     System.out.println("- " + cfgNode.getLoc());
-                    System.out.println("- Graphs: sql" + graphcount);
+                    System.out.println("- Graphs: sql" + numberOfDependencyGraphs);
                 }
 
                 // if we have detected a vulnerability, also dump a reduced
                 // SQL dependency graph
                 if (tainted) {
                     DependencyGraph relevant = this.getRelevant(dependencyGraph);
-                    Map<UninitializedNode, InitialTaint> dangerousUninit = this.findDangerousUninit(relevant);
+                    Map<UninitializedNode, InitialTaint> dangerousUninit = this.findDangerousUninitialized(relevant);
                     if (!dangerousUninit.isEmpty()) {
                         if (dangerousUninit.values().contains(InitialTaint.ALWAYS)) {
                             System.out.println("- unconditional");
@@ -122,7 +119,7 @@ public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
                         } else {
                             fillUs = dangerousUninit.keySet();
                         }
-                        relevant.dumpDot(graphNameBase + "_min", MyOptions.graphPath, fillUs, this.dci);
+                        relevant.dumpDot(graphNameBase + "_min", MyOptions.graphPath, fillUs, this.vulnerabilityAnalysisInformation);
                     }
 
                     System.out.println();
@@ -135,9 +132,9 @@ public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
         // initial sink count and final graph count may differ (e.g., if some sinks
         // are not reachable)
         if (MyOptions.optionV) {
-            System.out.println("Total Graph Count: " + graphcount);
+            System.out.println("Total Graph Count: " + numberOfDependencyGraphs);
         }
-        System.out.println("Total Vuln Count: " + vulncount);
+        System.out.println("Total Vuln Count: " + numberOfVulnerabilities);
 
         System.out.println();
         System.out.println("*****************");
@@ -145,15 +142,17 @@ public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
         System.out.println("*****************");
         System.out.println();
 
-        return retMe;
+        return lineNumbersOfVulnerabilities;
     }
 
-//  ********************************************************************************
-
-    // alternative to detectVulns;
-    // returns those depgraphs for which a vulnerability was detected
+    /**
+     * Alternative to detectVulnerabilities.
+     *
+     * Returns those DependencyGraphs for which a vulnerability was detected.
+     *
+     * @return
+     */
     public VulnerabilityInformation detectAlternative() {
-
         // will contain depgraphs for which a vulnerability was detected
         VulnerabilityInformation retMe = new VulnerabilityInformation();
 
@@ -167,11 +166,9 @@ public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
         int hasCustomSanitCount = 0;
         int customSanitThrownAwayCount = 0;
         for (Sink sink : sinks) {
-
             Collection<DependencyGraph> dependencyGraphs = dependencyAnalysis.getDepGraph(sink);
 
             for (DependencyGraph dependencyGraph : dependencyGraphs) {
-
                 graphcount++;
 
                 DependencyGraph workGraph = new DependencyGraph(dependencyGraph);
@@ -187,10 +184,9 @@ public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
                     }
                 }
                 if (tainted) {
-
                     // create a smaller version of this graph
                     DependencyGraph relevant = this.getRelevant(dependencyGraph);
-                    Map<UninitializedNode, InitialTaint> dangerousUninit = this.findDangerousUninit(relevant);
+                    Map<UninitializedNode, InitialTaint> dangerousUninit = this.findDangerousUninitialized(relevant);
                     relevant.reduceWithLeaves(dangerousUninit.keySet());
 
                     retMe.addDepGraph(dependencyGraph, relevant);
@@ -218,6 +214,7 @@ public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
         retMe.setBasicPathCount(basicPathCount);
         retMe.setCustomSanitCount(hasCustomSanitCount);
         retMe.setCustomSanitThrownAwayCount(customSanitThrownAwayCount);
+
         return retMe;
     }
 
@@ -241,9 +238,10 @@ public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
 //  ********************************************************************************
 
     // decorates the given node (and all its successors) with an automaton
-    private void decorate(AbstractNode node, Map<AbstractNode, Automaton> deco,
-                          Set<AbstractNode> visited, DependencyGraph dependencyGraph, DependencyGraph origDependencyGraph) {
-
+    private void decorate(
+        AbstractNode node, Map<AbstractNode, Automaton> deco,
+        Set<AbstractNode> visited, DependencyGraph dependencyGraph, DependencyGraph origDependencyGraph
+    ) {
         visited.add(node);
 
         // if this node has successors, decorate them first (if not done yet)
@@ -257,7 +255,6 @@ public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
         }
 
         // now that all successors are decorated, we can decorate this node
-
         Automaton auto = null;
         if (node instanceof NormalNode) {
             NormalNode normalNode = (NormalNode) node;
@@ -295,7 +292,6 @@ public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
         } else if (node instanceof BuiltinFunctionNode) {
             auto = this.makeAutoForOp((BuiltinFunctionNode) node, deco, dependencyGraph);
         } else if (node instanceof CompleteGraphNode) {
-
             // for SCC nodes, we generate a coarse string approximation (.* automaton);
             // the taint value depends on the taint value of the successors:
             // if any of the successors is tainted in any way, we make the resulting
@@ -317,12 +313,12 @@ public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
              */
 
             Transition.Taint taint = Transition.Taint.Untainted;
-            for (AbstractNode succ : successors) {
-                if (succ == node) {
+            for (AbstractNode successor : successors) {
+                if (successor == node) {
                     // a simple loop, should be part of the SCC
                     throw new RuntimeException("SNH");
                 }
-                Automaton succAuto = deco.get(succ);
+                Automaton succAuto = deco.get(successor);
                 if (succAuto == null) {
                     throw new RuntimeException("SNH");
                 }
@@ -334,7 +330,6 @@ public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
 
             auto = Automaton.makeAnyString(taint);
         } else if (node instanceof UninitializedNode) {
-
             // retrieve predecessor
             Set<AbstractNode> preds = dependencyGraph.getPredecessors(node);
             if (preds.size() != 1) {
@@ -346,7 +341,7 @@ public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
                 NormalNode preNormal = (NormalNode) pre;
                 switch (this.initiallyTainted(preNormal.getPlace())) {
                     case ALWAYS:
-                    case IFRG:
+                    case IF_REGISTER_GLOBALS:
                         auto = Automaton.makeAnyString(Transition.Taint.Directly);
                         break;
                     case NEVER:
@@ -370,7 +365,7 @@ public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
 
                         switch (this.initiallyTainted(origPreNormal.getPlace())) {
                             case ALWAYS:
-                            case IFRG:
+                            case IF_REGISTER_GLOBALS:
                                 auto = Automaton.makeAnyString(Transition.Taint.Directly);
                                 break;
                             case NEVER:
@@ -400,12 +395,18 @@ public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
         deco.put(node, auto);
     }
 
-//  ********************************************************************************
-
-    // returns an automaton for the given operation node
-    private Automaton makeAutoForOp(BuiltinFunctionNode node, Map<AbstractNode, Automaton> deco,
-                                    DependencyGraph dependencyGraph) {
-
+    /**
+     * Returns an automaton for the given operation node.
+     *
+     * @param node
+     * @param deco
+     * @param dependencyGraph
+     *
+     * @return
+     */
+    private Automaton makeAutoForOp(
+        BuiltinFunctionNode node, Map<AbstractNode, Automaton> deco, DependencyGraph dependencyGraph
+    ) {
         List<AbstractNode> successors = dependencyGraph.getSuccessors(node);
         if (successors == null) {
             successors = new LinkedList<>();
@@ -418,7 +419,6 @@ public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
         List<Integer> multiList = new LinkedList<>();
 
         if (!node.isBuiltin()) {
-
             // call to function or method for which no definition
             // could be found
 
@@ -447,16 +447,12 @@ public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
             // WEAK SANITIZATION FUNCTIONS *******************************
             // ops that perform sanitization, but which are insufficient
             // in cases where the output is not enclosed by quotes in an SQL query
-
-        } else if (isWeakSanit(opName, multiList)) {
-
+        } else if (isWeakSanitation(opName, multiList)) {
             retMe = Automaton.makeAnyString(Transition.Taint.Indirectly);
 
             // STRONG SANITIZATION FUNCTIONS *******************************
             // e.g., ops that return numeric values
-
-        } else if (isStrongSanit(opName)) {
-
+        } else if (isStrongSanitation(opName)) {
             retMe = Automaton.makeAnyString(Transition.Taint.Untainted);
 
             // EVIL FUNCTIONS ***************************************
@@ -464,9 +460,7 @@ public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
             // the treatment of SCC nodes in decorate()
 
             // MULTI-OR-DEPENDENCY **********************************
-
         } else if (useTransducers && opName.equals("str_replace")) {
-
             if (successors.size() < 3) {
                 throw new RuntimeException("SNH");
             }
@@ -497,17 +491,14 @@ public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
 
             Automaton transduced = new MyTransductions().str_replace(searchString, replaceString, subjectAuto);
             return transduced;
-        } else if (isMulti(opName, multiList)) {
-
+        } else if (isMultiDependencyOperation(opName, multiList)) {
             Transition.Taint taint = this.multiDependencyAuto(successors, deco, multiList, false);
             retMe = Automaton.makeAnyString(taint);
-        } else if (isInverseMulti(opName, multiList)) {
-
+        } else if (isInverseMultiDependencyOperation(opName, multiList)) {
             Transition.Taint taint = this.multiDependencyAuto(successors, deco, multiList, true);
             retMe = Automaton.makeAnyString(taint);
 
             // CATCH-ALL ********************************************
-
         } else {
             System.out.println("Unmodeled builtin function (SQL): " + opName);
 
@@ -519,23 +510,23 @@ public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
         return retMe;
     }
 
-//  ********************************************************************************
-
-    // checks if the given node (inside the given function) is a sensitive sink;
-    // adds an appropriate sink object to the given list if it is a sink
-    protected void checkForSink(AbstractCfgNode cfgNodeX, TacFunction traversedFunction,
-                                List<Sink> sinks) {
-
+    /**
+     * Checks if the given node (inside the given function) is a sensitive sink.
+     *
+     * Adds an appropriate sink object to the given list if it is a sink.
+     *
+     * @param cfgNodeX
+     * @param traversedFunction
+     * @param sinks
+     */
+    protected void checkForSink(AbstractCfgNode cfgNodeX, TacFunction traversedFunction, List<Sink> sinks) {
         if (cfgNodeX instanceof CallBuiltinFunction) {
-
             // builtin function sinks
-
             CallBuiltinFunction cfgNode = (CallBuiltinFunction) cfgNodeX;
             String functionName = cfgNode.getFunctionName();
 
             checkForSinkHelper(functionName, cfgNode, cfgNode.getParamList(), traversedFunction, sinks);
         } else if (cfgNodeX instanceof CallPreparation) {
-
             CallPreparation cfgNode = (CallPreparation) cfgNodeX;
             String functionName = cfgNode.getFunctionNamePlace().toString();
 
@@ -545,14 +536,13 @@ public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
         }
     }
 
-//  ********************************************************************************
-
-    private void checkForSinkHelper(String functionName, AbstractCfgNode cfgNode,
-                                    List<TacActualParameter> paramList, TacFunction traversedFunction, List<Sink> sinks) {
-
-        if (this.dci.getSinks().containsKey(functionName)) {
+    private void checkForSinkHelper(
+        String functionName, AbstractCfgNode cfgNode,
+        List<TacActualParameter> paramList, TacFunction traversedFunction, List<Sink> sinks
+    ) {
+        if (this.vulnerabilityAnalysisInformation.getSinks().containsKey(functionName)) {
             Sink sink = new Sink(cfgNode, traversedFunction);
-            for (Integer param : this.dci.getSinks().get(functionName)) {
+            for (Integer param : this.vulnerabilityAnalysisInformation.getSinks().get(functionName)) {
                 if (paramList.size() > param) {
                     sink.addSensitivePlace(paramList.get(param).getPlace());
                     // add this sink to the list of sensitive sinks
@@ -562,16 +552,14 @@ public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
         }
     }
 
-//  ********************************************************************************
-
-    private Transition.Taint multiDependencyAuto(List<AbstractNode> succs,
-                                                 Map<AbstractNode, Automaton> deco, List<Integer> indices, boolean inverse) {
-
+    private Transition.Taint multiDependencyAuto(
+        List<AbstractNode> successors, Map<AbstractNode, Automaton> deco, List<Integer> indices, boolean inverse
+    ) {
         boolean indirectly = false;
         Set<Integer> indexSet = new HashSet<>(indices);
 
         int count = -1;
-        for (AbstractNode succ : succs) {
+        for (AbstractNode successor : successors) {
             count++;
 
             // check if there is a dependency on this successor
@@ -585,14 +573,14 @@ public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
                 }
             }
 
-            Automaton succAuto = deco.get(succ);
-            if (succAuto == null) {
+            Automaton successorAutomaton = deco.get(successor);
+            if (successorAutomaton == null) {
                 throw new RuntimeException("SNH");
             }
-            if (succAuto.hasDirectlyTaintedTransitions()) {
+            if (successorAutomaton.hasDirectlyTaintedTransitions()) {
                 return Transition.Taint.Directly;
             }
-            if (succAuto.hasIndirectlyTaintedTransitions()) {
+            if (successorAutomaton.hasIndirectlyTaintedTransitions()) {
                 indirectly = true;
             }
         }
@@ -605,10 +593,7 @@ public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
         }
     }
 
-//  ********************************************************************************
-
     void dumpDotAuto(Automaton auto, String graphName, String path) {
-
         String filename = graphName + ".dot";
         (new File(path)).mkdir();
 
@@ -649,8 +634,6 @@ public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
             System.out.println();
         }
     }
-
-//  ********************************************************************************
 
     void dumpDotAutoUnique(Automaton auto, String graphName, String path) {
         String filename = graphName + ".dot";

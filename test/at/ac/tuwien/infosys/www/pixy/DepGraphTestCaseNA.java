@@ -26,7 +26,7 @@ public class DepGraphTestCaseNA extends TestCase {
 
     // these are recomputed for every single test
     private DependencyAnalysis dependencyAnalysis;
-    private XSSAnalysis xssAnalysis;
+    private XssAnalysis xssAnalysis;
     List<Sink> sinks;
 
 //  ********************************************************************************
@@ -52,7 +52,7 @@ public class DepGraphTestCaseNA extends TestCase {
         TacConverter tac = checker.initialize().getTac();
         checker.analyzeTaint(tac, functional);
         this.dependencyAnalysis = checker.gta.dependencyAnalysis;
-        this.xssAnalysis = (XSSAnalysis) checker.gta.getDependencyClients().get(0);
+        this.xssAnalysis = (XssAnalysis) checker.gta.getAbstractVulnerabilityAnalyses().get(0);
 
         // collect sinks
         this.sinks = xssAnalysis.collectSinks();
@@ -123,7 +123,7 @@ public class DepGraphTestCaseNA extends TestCase {
 
             String xssFileName = "test" + testNum + "_" + graphCount + "_xss";
             DependencyGraph relevant = this.xssAnalysis.getRelevant(dependencyGraph);
-            Map<UninitializedNode, AbstractVulnerabilityAnalysis.InitialTaint> dangerousUninit = this.xssAnalysis.findDangerousUninit(relevant);
+            Map<UninitializedNode, AbstractVulnerabilityAnalysis.InitialTaint> dangerousUninit = this.xssAnalysis.findDangerousUninitialized(relevant);
             if (!dangerousUninit.isEmpty()) {
                 vulnCount++;
                 relevant.reduceWithLeaves(dangerousUninit.keySet());

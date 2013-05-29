@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.dependency.graph;
 
-import at.ac.tuwien.infosys.www.pixy.DependencyClientInformation;
+import at.ac.tuwien.infosys.www.pixy.VulnerabilityAnalysisInformation;
 import at.ac.tuwien.infosys.www.pixy.Dumper;
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
@@ -1107,13 +1107,13 @@ public class DependencyGraph {
 
     // dumps this depgraph to a dot file with to the given name (extension
     // is added automatically) and path
-    public void dumpDot(String graphName, String path, DependencyClientInformation dci) {
+    public void dumpDot(String graphName, String path, VulnerabilityAnalysisInformation dci) {
         this.dumpDot(graphName, path, new HashSet<AbstractNode>(), dci);
     }
 
     // dumps this depgraph to a dot file with to the given name (extension
     // is added automatically) and path, shading the given nodes
-    public void dumpDot(String graphName, String path, Set<? extends AbstractNode> fillUs, DependencyClientInformation dci) {
+    public void dumpDot(String graphName, String path, Set<? extends AbstractNode> fillUs, VulnerabilityAnalysisInformation dci) {
         try {
             (new File(path)).mkdir();
             Writer outWriter = new FileWriter(path + "/" + graphName + ".dot");
@@ -1127,7 +1127,7 @@ public class DependencyGraph {
 
 //  ********************************************************************************
 
-    public void writeDot(String graphName, Set<? extends AbstractNode> fillUs, Writer outWriter, DependencyClientInformation dci)
+    public void writeDot(String graphName, Set<? extends AbstractNode> fillUs, Writer outWriter, VulnerabilityAnalysisInformation dci)
         throws IOException {
 
         // distinguish between verbose and normal output
@@ -1139,7 +1139,7 @@ public class DependencyGraph {
     }
 
     // writes a dot representation of this depgraph to the given writer
-    public void writeDotVerbose(String graphName, Set<? extends AbstractNode> fillUs, Writer outWriter, DependencyClientInformation dci)
+    public void writeDotVerbose(String graphName, Set<? extends AbstractNode> fillUs, Writer outWriter, VulnerabilityAnalysisInformation dci)
         throws IOException {
 
         outWriter.write("digraph cfg {\n  label=\"");

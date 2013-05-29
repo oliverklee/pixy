@@ -8,7 +8,7 @@
     <node x="336.0" y="449.0">at.ac.tuwien.infosys.www.pixy.TypeTestCase</node>
     <node x="179.0" y="375.0">at.ac.tuwien.infosys.www.pixy.IncludeTestCase</node>
     <node x="389.0" y="301.0">at.ac.tuwien.infosys.www.pixy.DepGraphTestCase</node>
-    <node x="253.0" y="79.0">at.ac.tuwien.infosys.www.pixy.XSSAnalysis</node>
+    <node x="253.0" y="79.0">at.ac.tuwien.infosys.www.pixy.XssAnalysis</node>
     <node x="126.0" y="79.0">at.ac.tuwien.infosys.www.pixy.SQLAnalysis</node>
     <node x="0.0" y="597.0">at.ac.tuwien.infosys.www.pixy.Dumper</node>
     <node x="355.0" y="375.0">at.ac.tuwien.infosys.www.pixy.LiteralTestCase</node>
@@ -16,7 +16,7 @@
     <node x="0.0" y="523.0">at.ac.tuwien.infosys.www.pixy.SQLTestCase</node>
     <node x="379.0" y="79.0">at.ac.tuwien.infosys.www.pixy.sanitation</node>
     <node x="456.0" y="523.0">at.ac.tuwien.infosys.www.pixy.Checker</node>
-    <node x="0.0" y="153.0">at.ac.tuwien.infosys.www.pixy.DependencyClientInformation</node>
+    <node x="0.0" y="153.0">at.ac.tuwien.infosys.www.pixy.VulnerabilityAnalysisInformation</node>
     <node x="0.0" y="227.0">at.ac.tuwien.infosys.www.pixy.DepGraphTestCaseNA</node>
     <node x="0.0" y="79.0">at.ac.tuwien.infosys.www.pixy.FileAnalysis</node>
     <node x="195.0" y="301.0">at.ac.tuwien.infosys.www.pixy.conversion</node>
@@ -37,7 +37,7 @@
       <point x="315.125" y="54.0" />
       <point x="72.375" y="14.5" />
     </edge>
-    <edge source="at.ac.tuwien.infosys.www.pixy.XSSAnalysis" target="at.ac.tuwien.infosys.www.pixy.AbstractVulnerabilityAnalysis">
+    <edge source="at.ac.tuwien.infosys.www.pixy.XssAnalysis" target="at.ac.tuwien.infosys.www.pixy.AbstractVulnerabilityAnalysis">
       <point x="0.0" y="-14.5" />
       <point x="306.0" y="54.0" />
       <point x="266.875" y="54.0" />

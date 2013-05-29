@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.sanitation;
 
 import at.ac.tuwien.infosys.www.pixy.VulnerabilityInformation;
-import at.ac.tuwien.infosys.www.pixy.XSSAnalysis;
+import at.ac.tuwien.infosys.www.pixy.XssAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.Sink;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParameter;
@@ -18,7 +18,7 @@ import java.util.Set;
  * XSS detection.
  *
  * Note: This class will be instantiated via reflection in GenericTaintAnalysis.createAnalysis. It is registered in
- * MyOptions.DependencyClientInformation.
+ * MyOptions.VulnerabilityAnalysisInformation.
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
@@ -31,8 +31,8 @@ public class XSSSanitationAnalysis extends AbstractSanitationAnalysis {
 
 //  ********************************************************************************
 
-    public List<Integer> detectVulns() {
-        return detectVulns(new XSSAnalysis(this.dependencyAnalysis));
+    public List<Integer> detectVulnerabilities() {
+        return detectVulnerabilities(new XssAnalysis(this.dependencyAnalysis));
     }
 
     public VulnerabilityInformation detectAlternative() {
@@ -85,9 +85,9 @@ public class XSSSanitationAnalysis extends AbstractSanitationAnalysis {
     private void checkForSinkHelper(String functionName, AbstractCfgNode cfgNode,
                                     List<TacActualParameter> paramList, TacFunction traversedFunction, List<Sink> sinks) {
 
-        if (this.dci.getSinks().containsKey(functionName)) {
+        if (this.vulnerabilityAnalysisInformation.getSinks().containsKey(functionName)) {
             Sink sink = new Sink(cfgNode, traversedFunction);
-            Set<Integer> indexList = this.dci.getSinks().get(functionName);
+            Set<Integer> indexList = this.vulnerabilityAnalysisInformation.getSinks().get(functionName);
             if (indexList == null) {
                 // special treatment is necessary here
                 if (functionName.equals("printf")) {

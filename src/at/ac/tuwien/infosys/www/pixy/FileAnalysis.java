@@ -22,7 +22,7 @@ import java.util.*;
  * This class extracts strings used in file access functions.
  *
  * Note: This class will be instantiated via reflection in GenericTaintAnalysis.createAnalysis. It is registered in
- * MyOptions.DependencyClientInformation.
+ * MyOptions.VulnerabilityAnalysisInformation.
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
@@ -31,17 +31,20 @@ public class FileAnalysis extends AbstractVulnerabilityAnalysis {
         super(dependencyAnalysis);
     }
 
-    public List<Integer> detectVulns() {
-
+    /**
+     * Detects vulnerabilities and returns a list with the line numbers of the detected vulnerabilities.
+     *
+     * @return the line numbers of the detected vulnerabilities
+     */
+    public List<Integer> detectVulnerabilities() {
         System.out.println();
         System.out.println("*****************");
         System.out.println("File Analysis BEGIN");
         System.out.println("*****************");
         System.out.println();
 
-        List<Integer> retMe = new LinkedList<>();
+        List<Integer> lineNumbersOfVulnerabilities = new LinkedList<>();
 
-        // collect sinks
         List<Sink> sinks = this.collectSinks();
 
         System.out.println("Creating DepGraphs for " + sinks.size() + " sinks...");
@@ -52,9 +55,9 @@ public class FileAnalysis extends AbstractVulnerabilityAnalysis {
         System.out.println("----------------------------");
         System.out.println();
 
-        int graphcount = 0;
+        int numberOfDependencyGraphs = 0;
         for (DependencyGraph dependencyGraph : dependencyGraphs) {
-            graphcount++;
+            numberOfDependencyGraphs++;
 
             DependencyGraph stringGraph = new DependencyGraph(dependencyGraph);
             NormalNode root = dependencyGraph.getRoot();
@@ -70,15 +73,16 @@ public class FileAnalysis extends AbstractVulnerabilityAnalysis {
             }
             System.out.println("Line:  " + cfgNode.getOrigLineno());
             System.out.println("File:  " + fileName);
-            System.out.println("Graph: file" + graphcount);
+            System.out.println("Graph: file" + numberOfDependencyGraphs);
 
-            this.dumpDotAuto(auto, "file" + graphcount, MyOptions.graphPath);
+            this.dumpDotAuto(auto, "file" + numberOfDependencyGraphs, MyOptions.graphPath);
         }
 
         // initial sink count and final graph count may differ (e.g., if some sinks
         // are not reachable)
-        if (MyOptions.optionV)
-            System.out.println("Total Graph Count: " + graphcount);
+        if (MyOptions.optionV) {
+            System.out.println("Total Graph Count: " + numberOfDependencyGraphs);
+        }
 
         System.out.println();
         System.out.println("*****************");
@@ -86,17 +90,14 @@ public class FileAnalysis extends AbstractVulnerabilityAnalysis {
         System.out.println("*****************");
         System.out.println();
 
-        return retMe;
+        return lineNumbersOfVulnerabilities;
     }
 
     public VulnerabilityInformation detectAlternative() {
         throw new RuntimeException("not yet");
     }
 
-//  ********************************************************************************
-
     private void dumpDotAuto(Automaton auto, String graphName, String path) {
-
         String filename = graphName + ".dot";
         (new File(path)).mkdir();
 
@@ -137,12 +138,18 @@ public class FileAnalysis extends AbstractVulnerabilityAnalysis {
         }
     }
 
-//  ********************************************************************************
-
-    // returns the automaton representation of the given dependency graph;
-    // is done by decorating the nodes of the graph with automata bottom-up,
-    // and returning the automaton that eventually decorates the root;
-    // BEWARE: this also eliminates cycles!
+    /**
+     * Returns the automaton representation of the given dependency graph.
+     *
+     * This is done by decorating the nodes of the graph with automata bottom-up, and returning the automaton that
+     * eventually decorates the root.
+     *
+     * Beware: This also eliminates cycles!
+     *
+     * @param dependencyGraph
+     *
+     * @return
+     */
     private Automaton toAutomaton(DependencyGraph dependencyGraph) {
         dependencyGraph.eliminateCycles();
         AbstractNode root = dependencyGraph.getRoot();
@@ -150,17 +157,23 @@ public class FileAnalysis extends AbstractVulnerabilityAnalysis {
         Set<AbstractNode> visited = new HashSet<>();
         this.decorate(root, deco, visited, dependencyGraph);
         Automaton rootDeco = deco.get(root).clone();
+
         // BEWARE: minimization can lead to an automaton that is less human-readable
         //rootDeco.minimize();
         return rootDeco;
     }
 
-//  ********************************************************************************
-
-    // decorates the given node (and all its successors) with an automaton
-    private void decorate(AbstractNode node, Map<AbstractNode, Automaton> deco,
-                          Set<AbstractNode> visited, DependencyGraph dependencyGraph) {
-
+    /**
+     * Decorates the given node (and all its successors) with an automaton.
+     *
+     * @param node
+     * @param deco
+     * @param visited
+     * @param dependencyGraph
+     */
+    private void decorate(
+        AbstractNode node, Map<AbstractNode, Automaton> deco, Set<AbstractNode> visited, DependencyGraph dependencyGraph
+    ) {
         visited.add(node);
 
         // if this node has successors, decorate them first (if not done yet)
@@ -174,7 +187,6 @@ public class FileAnalysis extends AbstractVulnerabilityAnalysis {
         }
 
         // now that all successors are decorated, we can decorate this node
-
         Automaton auto = null;
         if (node instanceof NormalNode) {
             NormalNode normalNode = (NormalNode) node;
@@ -203,25 +215,24 @@ public class FileAnalysis extends AbstractVulnerabilityAnalysis {
                 }
             }
         } else if (node instanceof BuiltinFunctionNode) {
-            auto = this.makeAutoForOp((BuiltinFunctionNode) node, deco, dependencyGraph);
+            auto = this.makeAutomatonForOperationNode((BuiltinFunctionNode) node, deco, dependencyGraph);
         } else if (node instanceof CompleteGraphNode) {
             // conservative decision for SCCs
             auto = Automaton.makeAnyString(Transition.Taint.Directly);
         } else if (node instanceof UninitializedNode) {
-
             // retrieve predecessor
-            Set<AbstractNode> preds = dependencyGraph.getPredecessors(node);
-            if (preds.size() != 1) {
+            Set<AbstractNode> predecessors = dependencyGraph.getPredecessors(node);
+            if (predecessors.size() != 1) {
                 throw new RuntimeException("SNH");
             }
-            AbstractNode pre = preds.iterator().next();
+            AbstractNode pre = predecessors.iterator().next();
 
             if (pre instanceof NormalNode) {
                 NormalNode preNormal = (NormalNode) pre;
 
                 switch (this.initiallyTainted(preNormal.getPlace())) {
                     case ALWAYS:
-                    case IFRG:
+                    case IF_REGISTER_GLOBALS:
                         auto = Automaton.makeAnyString(Transition.Taint.Directly);
                         break;
                     case NEVER:
@@ -249,12 +260,18 @@ public class FileAnalysis extends AbstractVulnerabilityAnalysis {
         deco.put(node, auto);
     }
 
-//  ********************************************************************************
-
-    // returns an automaton for the given operation node
-    private Automaton makeAutoForOp(BuiltinFunctionNode node, Map<AbstractNode, Automaton> deco,
-                                    DependencyGraph dependencyGraph) {
-
+    /**
+     * Returns an automaton for the given operation node.
+     *
+     * @param node
+     * @param deco
+     * @param dependencyGraph
+     *
+     * @return
+     */
+    private Automaton makeAutomatonForOperationNode(
+        BuiltinFunctionNode node, Map<AbstractNode, Automaton> deco, DependencyGraph dependencyGraph)
+    {
         List<AbstractNode> successors = dependencyGraph.getSuccessors(node);
         if (successors == null) {
             successors = new LinkedList<>();
@@ -264,14 +281,13 @@ public class FileAnalysis extends AbstractVulnerabilityAnalysis {
 
         String opName = node.getName();
         if (opName.equals(".")) {
-
             // CONCAT
-            for (AbstractNode succ : successors) {
-                Automaton succAuto = deco.get(succ);
+            for (AbstractNode successor : successors) {
+                Automaton successorAutomaton = deco.get(successor);
                 if (retMe == null) {
-                    retMe = succAuto;
+                    retMe = successorAutomaton;
                 } else {
-                    retMe = retMe.concatenate(succAuto);
+                    retMe = retMe.concatenate(successorAutomaton);
                 }
             }
         } else {
@@ -283,25 +299,24 @@ public class FileAnalysis extends AbstractVulnerabilityAnalysis {
         return retMe;
     }
 
-//  ********************************************************************************
-
-    // checks if the given node (inside the given function) is a sensitive sink;
-    // adds an appropriate sink object to the given list if it is a sink
-    protected void checkForSink(AbstractCfgNode cfgNodeX, TacFunction traversedFunction,
-                                List<Sink> sinks) {
-
+    /**
+     * Checks if the given node (inside the given function) is a sensitive sink.
+     *
+     * Adds an appropriate sink object to the given list if it is a sink.
+     *
+     * @param cfgNodeX
+     * @param traversedFunction
+     * @param sinks
+     */
+    protected void checkForSink(AbstractCfgNode cfgNodeX, TacFunction traversedFunction, List<Sink> sinks) {
         if (cfgNodeX instanceof CallBuiltinFunction) {
-
             // builtin function sinks
-
             CallBuiltinFunction cfgNode = (CallBuiltinFunction) cfgNodeX;
             String functionName = cfgNode.getFunctionName();
 
             checkForSinkHelper(functionName, cfgNode, cfgNode.getParamList(), traversedFunction, sinks);
         } else if (cfgNodeX instanceof CallPreparation) {
-
             // user-defined custom sinks
-
             CallPreparation cfgNode = (CallPreparation) cfgNodeX;
             String functionName = cfgNode.getFunctionNamePlace().toString();
 
@@ -309,14 +324,13 @@ public class FileAnalysis extends AbstractVulnerabilityAnalysis {
         }
     }
 
-//  ********************************************************************************
-
-    private void checkForSinkHelper(String functionName, AbstractCfgNode cfgNode,
-                                    List<TacActualParameter> paramList, TacFunction traversedFunction, List<Sink> sinks) {
-
-        if (this.dci.getSinks().containsKey(functionName)) {
+    private void checkForSinkHelper(
+        String functionName, AbstractCfgNode cfgNode, List<TacActualParameter> paramList, TacFunction traversedFunction,
+        List<Sink> sinks
+    ) {
+        if (this.vulnerabilityAnalysisInformation.getSinks().containsKey(functionName)) {
             Sink sink = new Sink(cfgNode, traversedFunction);
-            for (Integer param : this.dci.getSinks().get(functionName)) {
+            for (Integer param : this.vulnerabilityAnalysisInformation.getSinks().get(functionName)) {
                 if (paramList.size() > param) {
                     sink.addSensitivePlace(paramList.get(param).getPlace());
                     // add this sink to the list of sensitive sinks

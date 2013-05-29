@@ -20,26 +20,30 @@ import java.util.*;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public abstract class AbstractSanitationAnalysis extends AbstractVulnerabilityAnalysis {
-    // if this flag is active, untainted values (most notably: static strings)
-    // are treated as empty strings during depgraph decoration
+    /**
+     * If this flag is active, untainted values (most notably: static strings) are treated as empty strings during
+     * dependency graph decoration.
+     */
     private boolean trimUntainted = !MyOptions.optionR;
 
-    // automaton representing the undesired stuff
-    protected FSAAutomaton undesir;
+    /** automaton representing the undesired stuff */
+    protected FSAAutomaton undesiredAutomaton;
 
-    // xss, sql, ...
+    /** "xss", "sql", ... */
     protected String name;
 
     protected AbstractSanitationAnalysis(String name, DependencyAnalysis dependencyAnalysis, FSAAutomaton undesired) {
         super(dependencyAnalysis);
         this.name = name;
-        this.undesir = undesired;
+        this.undesiredAutomaton = undesired;
     }
 
-//  ********************************************************************************
-
-    public List<Integer> detectVulns(AbstractVulnerabilityAnalysis dependencyClient) {
-
+    /**
+     * Detects vulnerabilities and returns a list with the line numbers of the detected vulnerabilities.
+     *
+     * @return the line numbers of the detected vulnerabilities
+     */
+    public List<Integer> detectVulnerabilities(AbstractVulnerabilityAnalysis dependencyClient) {
         System.out.println();
         System.out.println("*****************");
         System.out.println(name.toUpperCase() + " Sanit Analysis BEGIN");
@@ -66,7 +70,7 @@ public abstract class AbstractSanitationAnalysis extends AbstractVulnerabilityAn
         System.out.println();
 
         // dump the automaton that represents the undesired stuff
-        this.dumpDotAuto(this.undesir, "undesired_" + name, MyOptions.graphPath);
+        this.dumpDotAuto(this.undesiredAutomaton, "undesired_" + name, MyOptions.graphPath);
 
         // info for dynamic analysis
         StringBuilder dynInfo = new StringBuilder();
@@ -81,8 +85,8 @@ public abstract class AbstractSanitationAnalysis extends AbstractVulnerabilityAn
             DependencyGraph minGraph = minIter.next();
 
             // in any case, dump the vulnerable depgraphs
-            dependencyGraph.dumpDot(name + "sanitation" + graphcount + "i", MyOptions.graphPath, dependencyGraph.getUninitNodes(), this.dci);
-            minGraph.dumpDot(name + "sanitation" + graphcount + "m", MyOptions.graphPath, dependencyGraph.getUninitNodes(), this.dci);
+            dependencyGraph.dumpDot(name + "sanitation" + graphcount + "i", MyOptions.graphPath, dependencyGraph.getUninitNodes(), this.vulnerabilityAnalysisInformation);
+            minGraph.dumpDot(name + "sanitation" + graphcount + "m", MyOptions.graphPath, dependencyGraph.getUninitNodes(), this.vulnerabilityAnalysisInformation);
 
             AbstractCfgNode cfgNode = dependencyGraph.getRoot().getCfgNode();
 
@@ -108,7 +112,7 @@ public abstract class AbstractSanitationAnalysis extends AbstractVulnerabilityAn
 
             // intersect this automaton with the undesired stuff;
             // if the intersection is empty, it means that we are safe!
-            FSAAutomaton intersection = auto.intersect(this.undesir);
+            FSAAutomaton intersection = auto.intersect(this.undesiredAutomaton);
             if (!intersection.isEmpty()) {
 
                 // dump the intersection automaton:
@@ -131,7 +135,7 @@ public abstract class AbstractSanitationAnalysis extends AbstractVulnerabilityAn
                     possible_vuln++;
 
                     // dump the minimized graph
-                    sanitMinGraph.dumpDot(name + "sanitation" + graphcount + "mm", MyOptions.graphPath, dependencyGraph.getUninitNodes(), this.dci);
+                    sanitMinGraph.dumpDot(name + "sanitation" + graphcount + "mm", MyOptions.graphPath, dependencyGraph.getUninitNodes(), this.vulnerabilityAnalysisInformation);
 
                     dynInfo.append("SINK:\n");
                     dynInfo.append(sanitMinGraph.getRoot().toString());
@@ -195,14 +199,23 @@ public abstract class AbstractSanitationAnalysis extends AbstractVulnerabilityAn
         return new LinkedList<>();
     }
 
-//  ********************************************************************************
-
-    // returns the automaton representation of the given dependency graph;
-    // is done by decorating the nodes of the graph with automata bottom-up,
-    // and returning the automaton that eventually decorates the root;
-    // BEWARE: this also eliminates cycles!
-    protected FSAAutomaton toAutomatonSanit(DependencyGraph dependencyGraph, DependencyGraph origDependencyGraph,
-                                            Map<AbstractNode, FSAAutomaton> deco) {
+    /**
+     * Returns the automaton representation of the given dependency graph.
+     *
+     * This is done by decorating the nodes of the graph with automata bottom-up, and returning the automaton that
+     * eventually decorates the root.
+     *
+     * Beware: this also eliminates cycles!
+     *
+     * @param dependencyGraph
+     * @param origDependencyGraph
+     * @param deco
+     *
+     * @return
+     */
+    protected FSAAutomaton toAutomatonSanit(
+        DependencyGraph dependencyGraph, DependencyGraph origDependencyGraph, Map<AbstractNode, FSAAutomaton> deco
+    ) {
         dependencyGraph.eliminateCycles();
         AbstractNode root = dependencyGraph.getRoot();
         Set<AbstractNode> visited = new HashSet<>();
@@ -212,13 +225,20 @@ public abstract class AbstractSanitationAnalysis extends AbstractVulnerabilityAn
         return rootDeco;
     }
 
-//  ********************************************************************************
-
-    // decorates the given node (and all its successors) with an automaton
-    private void decorateSanit(AbstractNode node, Map<AbstractNode, FSAAutomaton> deco,
-                                     Set<AbstractNode> visited, DependencyGraph dependencyGraph, DependencyGraph origDependencyGraph,
-                                     boolean trimAllowed) {
-
+    /**
+     * Decorates the given node (and all its successors) with an automaton.
+     *
+     * @param node
+     * @param deco
+     * @param visited
+     * @param dependencyGraph
+     * @param origDependencyGraph
+     * @param trimAllowed
+     */
+    private void decorateSanit(
+        AbstractNode node, Map<AbstractNode, FSAAutomaton> deco, Set<AbstractNode> visited,
+        DependencyGraph dependencyGraph, DependencyGraph origDependencyGraph, boolean trimAllowed
+    ) {
         visited.add(node);
 
         TrimInfo trimInfo;
@@ -242,7 +262,6 @@ public abstract class AbstractSanitationAnalysis extends AbstractVulnerabilityAn
         }
 
         // now that all successors are decorated, we can decorate this node
-
         FSAAutomaton auto = null;
         if (node instanceof NormalNode) {
             NormalNode normalNode = (NormalNode) node;
@@ -284,7 +303,6 @@ public abstract class AbstractSanitationAnalysis extends AbstractVulnerabilityAn
         } else if (node instanceof BuiltinFunctionNode) {
             auto = this.makeAutoForOp((BuiltinFunctionNode) node, deco, dependencyGraph, trimAllowed);
         } else if (node instanceof CompleteGraphNode) {
-
             // for SCC nodes, we generate a coarse string approximation (.* automaton);
             // the taint value depends on the taint value of the successors:
             // if any of the successors is tainted in any way, we make the resulting
@@ -304,9 +322,7 @@ public abstract class AbstractSanitationAnalysis extends AbstractVulnerabilityAn
              * do here
              *
              */
-
             if (trimUntainted && trimAllowed) {
-
                 auto = FSAAutomaton.makeString("");
 
                 for (AbstractNode succ : successors) {
@@ -327,19 +343,18 @@ public abstract class AbstractSanitationAnalysis extends AbstractVulnerabilityAn
                 auto = FSAAutomaton.makeAnyString();
             }
         } else if (node instanceof UninitializedNode) {
-
             // retrieve predecessor
-            Set<AbstractNode> preds = dependencyGraph.getPredecessors(node);
-            if (preds.size() != 1) {
+            Set<AbstractNode> predecessors = dependencyGraph.getPredecessors(node);
+            if (predecessors.size() != 1) {
                 throw new RuntimeException("SNH");
             }
-            AbstractNode pre = preds.iterator().next();
+            AbstractNode pre = predecessors.iterator().next();
 
             if (pre instanceof NormalNode) {
                 NormalNode preNormal = (NormalNode) pre;
                 switch (this.initiallyTainted(preNormal.getPlace())) {
                     case ALWAYS:
-                    case IFRG:
+                    case IF_REGISTER_GLOBALS:
                         auto = FSAAutomaton.makeAnyString();
                         break;
                     case NEVER:
@@ -367,7 +382,7 @@ public abstract class AbstractSanitationAnalysis extends AbstractVulnerabilityAn
 
                         switch (this.initiallyTainted(origPreNormal.getPlace())) {
                             case ALWAYS:
-                            case IFRG:
+                            case IF_REGISTER_GLOBALS:
                                 auto = FSAAutomaton.makeAnyString();
                                 break;
                             case NEVER:
@@ -401,17 +416,26 @@ public abstract class AbstractSanitationAnalysis extends AbstractVulnerabilityAn
         deco.put(node, auto);
     }
 
-//  ********************************************************************************
-
-    // returns an automaton for the given operation node
-    private FSAAutomaton makeAutoForOp(BuiltinFunctionNode node, Map<AbstractNode, FSAAutomaton> deco,
-                                             DependencyGraph dependencyGraph, boolean trimAllowed) {
+    /**
+     * Returns an automaton for the given operation node.
+     *
+     * @param node
+     * @param deco
+     * @param dependencyGraph
+     * @param trimAllowed
+     *
+     * @return
+     */
+    private FSAAutomaton makeAutoForOp(
+        BuiltinFunctionNode node, Map<AbstractNode, FSAAutomaton> deco, DependencyGraph dependencyGraph,
+        boolean trimAllowed
+    ) {
         List<AbstractNode> successors = dependencyGraph.getSuccessors(node);
         if (successors == null) {
             successors = new LinkedList<>();
         }
 
-        FSAAutomaton retMe = null;
+        FSAAutomaton automaton = null;
 
         String opName = node.getName();
 
@@ -425,12 +449,12 @@ public abstract class AbstractSanitationAnalysis extends AbstractVulnerabilityAn
                 CallUnknownFunction cfgNode = (CallUnknownFunction) cfgNodeX;
                 if (cfgNode.isMethod()) {
                     if (trimUntainted && trimAllowed) {
-                        retMe = FSAAutomaton.makeString("");
+                        automaton = FSAAutomaton.makeString("");
                     } else {
-                        retMe = FSAAutomaton.makeAnyString();
+                        automaton = FSAAutomaton.makeAnyString();
                     }
                 } else {
-                    retMe = FSAAutomaton.makeAnyString();
+                    automaton = FSAAutomaton.makeAnyString();
                 }
             } else {
                 throw new RuntimeException("SNH");
@@ -439,17 +463,15 @@ public abstract class AbstractSanitationAnalysis extends AbstractVulnerabilityAn
             // CONCAT
             for (AbstractNode succ : successors) {
                 FSAAutomaton succAuto = deco.get(succ);
-                if (retMe == null) {
-                    retMe = succAuto;
+                if (automaton == null) {
+                    automaton = succAuto;
                 } else {
-                    retMe = retMe.concatenate(succAuto);
+                    automaton = automaton.concatenate(succAuto);
                 }
             }
 
             // TRANSDUCIBLES ****************************************
-
         } else if (opName.equals("preg_replace")) {
-
             if (successors.size() < 3) {
                 throw new RuntimeException("SNH");
             }
@@ -466,7 +488,6 @@ public abstract class AbstractSanitationAnalysis extends AbstractVulnerabilityAn
                 subjectAuto, true, node.getCfgNode());
             return transduced;
         } else if (opName.equals("ereg_replace")) {
-
             if (successors.size() < 3) {
                 throw new RuntimeException("SNH");
             }
@@ -483,7 +504,6 @@ public abstract class AbstractSanitationAnalysis extends AbstractVulnerabilityAn
                 subjectAuto, false, node.getCfgNode());
             return transduced;
         } else if (opName.equals("str_replace")) {
-
             if (successors.size() < 3) {
                 throw new RuntimeException("SNH");
             }
@@ -500,7 +520,6 @@ public abstract class AbstractSanitationAnalysis extends AbstractVulnerabilityAn
                 searchAuto, replaceAuto, subjectAuto, node.getCfgNode());
             return transduced;
         } else if (opName.equals("addslashes")) {
-
             if (successors.size() != 1) {
                 throw new RuntimeException("SNH");
             }
@@ -513,24 +532,20 @@ public abstract class AbstractSanitationAnalysis extends AbstractVulnerabilityAn
             // WEAK SANITIZATION FUNCTIONS *******************************
             // ops that perform sanitization, but which are insufficient
             // in cases where the output is not enclosed by quotes in an SQL query
-
-        } else if (isWeakSanit(opName, multiList)) {
-
+        } else if (isWeakSanitation(opName, multiList)) {
             if (trimUntainted && trimAllowed) {
-                retMe = FSAAutomaton.makeString("");
+                automaton = FSAAutomaton.makeString("");
             } else {
-                retMe = FSAAutomaton.makeAnyString();
+                automaton = FSAAutomaton.makeAnyString();
             }
 
             // STRONG SANITIZATION FUNCTIONS *******************************
             // e.g., ops that return numeric values
-
-        } else if (isStrongSanit(opName)) {
-
+        } else if (isStrongSanitation(opName)) {
             if (trimUntainted && trimAllowed) {
-                retMe = FSAAutomaton.makeString("");
+                automaton = FSAAutomaton.makeString("");
             } else {
-                retMe = FSAAutomaton.makeAnyString();
+                automaton = FSAAutomaton.makeAnyString();
             }
 
             // EVIL FUNCTIONS ***************************************
@@ -538,36 +553,39 @@ public abstract class AbstractSanitationAnalysis extends AbstractVulnerabilityAn
             // the treatment of SCC nodes in decorate()
 
             // MULTI-OR-DEPENDENCY **********************************
-
-        } else if (isMulti(opName, multiList)) {
-
-            retMe = this.multiDependencyAutoSanit(successors, deco, multiList, false);
-        } else if (isInverseMulti(opName, multiList)) {
-
-            retMe = this.multiDependencyAutoSanit(successors, deco, multiList, true);
+        } else if (isMultiDependencyOperation(opName, multiList)) {
+            automaton = this.multiDependencyAutoSanit(successors, deco, multiList, false);
+        } else if (isInverseMultiDependencyOperation(opName, multiList)) {
+            automaton = this.multiDependencyAutoSanit(successors, deco, multiList, true);
 
             // CATCH-ALL ********************************************
-
         } else {
             System.out.println("Unmodeled builtin function (SQL-Sanit): " + opName);
 
             // conservative decision for operations that have not been
             // modeled yet: .*
-            retMe = FSAAutomaton.makeAnyString();
+            automaton = FSAAutomaton.makeAnyString();
         }
 
-        return retMe;
+        return automaton;
     }
 
-//  ********************************************************************************
-
-    // if trimUntainted == false: always returns .*
-    // else:
-    // - if all successors are empty: returns empty
-    // - else: returns .*
-    private FSAAutomaton multiDependencyAutoSanit(List<AbstractNode> succs,
-                                                  Map<AbstractNode, FSAAutomaton> deco, List<Integer> indices, boolean inverse) {
-
+    /**
+     * If trimUntainted == false: always returns .*
+     * else:
+     * - if all successors are empty: returns empty
+     * - else: returns .*
+     *
+     * @param successors
+     * @param deco
+     * @param indices
+     * @param inverse
+     *
+     * @return
+     */
+    private FSAAutomaton multiDependencyAutoSanit(
+        List<AbstractNode> successors, Map<AbstractNode, FSAAutomaton> deco, List<Integer> indices, boolean inverse
+    ) {
         if (!trimUntainted) {
             return FSAAutomaton.makeAnyString();
         }
@@ -575,7 +593,7 @@ public abstract class AbstractSanitationAnalysis extends AbstractVulnerabilityAn
         Set<Integer> indexSet = new HashSet<>(indices);
 
         int count = -1;
-        for (AbstractNode succ : succs) {
+        for (AbstractNode succ : successors) {
             count++;
 
             // check if there is a dependency on this successor
@@ -601,10 +619,7 @@ public abstract class AbstractSanitationAnalysis extends AbstractVulnerabilityAn
         return FSAAutomaton.makeString("");
     }
 
-//  ********************************************************************************
-
     protected void dumpDotAuto(FSAAutomaton auto, String graphName, String path) {
-
         String baseFileName = path + "/" + graphName;
 
         (new File(path)).mkdir();
@@ -613,11 +628,14 @@ public abstract class AbstractSanitationAnalysis extends AbstractVulnerabilityAn
         Utils.writeToFile(auto.toDot(), dotFileName);
     }
 
-//  ********************************************************************************
-
-    // checks if the given node is a custom sanitization node
+    /**
+     * Checks if the given node is a custom sanitization node.
+     *
+     * @param node
+     *
+     * @return
+     */
     public static boolean isCustomSanit(AbstractNode node) {
-
         if (node instanceof NormalNode) {
             return false;
         } else if (node instanceof UninitializedNode) {
@@ -648,11 +666,7 @@ public abstract class AbstractSanitationAnalysis extends AbstractVulnerabilityAn
         }
     }
 
-//  ********************************************************************************
-
-    public boolean isIneffective(AbstractNode customSanit,
-                                 Map<AbstractNode, FSAAutomaton> deco) {
-
+    public boolean isIneffective(AbstractNode customSanit, Map<AbstractNode, FSAAutomaton> deco) {
         FSAAutomaton auto = deco.get(customSanit);
         if (auto == null) {
             // no decoration for this node: be conservative
@@ -660,28 +674,36 @@ public abstract class AbstractSanitationAnalysis extends AbstractVulnerabilityAn
         }
 
         // intersect!
-        FSAAutomaton intersection = auto.intersect(this.undesir);
+        FSAAutomaton intersection = auto.intersect(this.undesiredAutomaton);
         return !intersection.isEmpty();
     }
 
-//  ********************************************************************************
-
-    // locates custom sanitization nodes in the given depgraph and returns them
+    /**
+     * Locates custom sanitization nodes in the given dependency graph and returns them.
+     *
+     * @param dependencyGraph
+     *
+     * @return
+     */
     public static List<AbstractNode> findCustomSanit(DependencyGraph dependencyGraph) {
-        List<AbstractNode> retMe = new LinkedList<>();
+        List<AbstractNode> customSanitationNOdes = new LinkedList<>();
         for (AbstractNode node : dependencyGraph.getNodes()) {
             if (isCustomSanit(node)) {
-                retMe.add(node);
+                customSanitationNOdes.add(node);
             }
         }
-        return retMe;
+
+        return customSanitationNOdes;
     }
 
-//  ********************************************************************************
-
-    // take care: if trimAllowed == false, no need to call this method...
+    /**
+     * Take care: if trimAllowed == false, no need to call this method.
+     *
+     * @param node
+     *
+     * @return
+     */
     private TrimInfo checkTrim(AbstractNode node) {
-
         // start with default triminfo: everything can be trimmed
         TrimInfo retMe = new TrimInfo();
 
@@ -701,15 +723,15 @@ public abstract class AbstractSanitationAnalysis extends AbstractVulnerabilityAn
         return retMe;
     }
 
-//  ********************************************************************************
-
-    // helper class for exchanging information on whether to allow trimming
+    /**
+     * Helper class for exchanging information on whether to allow trimming.
+     */
     private class TrimInfo {
-        // these indices must be trimmed
+        /** these indices must be trimmed */
         private List<Integer> trim;
-        // these indices must not be trimmed
+        /** these indices must not be trimmed */
         private List<Integer> noTrim;
-        // what to do with all remaining indices
+        /** what to do with all remaining indices */
         private boolean defaultTrim;
 
         TrimInfo() {

@@ -18,60 +18,62 @@ import java.util.List;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class GenericTaintAnalysis {
-    private List<AbstractVulnerabilityAnalysis> dependencyClients;
+    private List<AbstractVulnerabilityAnalysis> abstractVulnerabilityAnalyses;
 
     public DependencyAnalysis dependencyAnalysis;
 
-//  ********************************************************************************
-
     private GenericTaintAnalysis() {
-        this.dependencyClients = new LinkedList<>();
+        this.abstractVulnerabilityAnalyses = new LinkedList<>();
     }
-
-//  ********************************************************************************
 
     private void addDepClient(AbstractVulnerabilityAnalysis dependencyClient) {
-        this.dependencyClients.add(dependencyClient);
+        this.abstractVulnerabilityAnalyses.add(dependencyClient);
     }
 
-//  ********************************************************************************
+    /**
+     * Returns null if the given taintString is illegal.
+     *
+     * @param tac
+     * @param enclosingAnalysis
+     * @param checker
+     * @param workList
+     * @param globalsModificationAnalysis
+     *
+     * @return
+     */
+    static GenericTaintAnalysis createAnalysis(
+        TacConverter tac, AbstractAnalysisType enclosingAnalysis, Checker checker, InterproceduralWorklist workList,
+        GlobalsModificationAnalysis globalsModificationAnalysis
+    ) {
+        GenericTaintAnalysis genericTaintAnalysis = new GenericTaintAnalysis();
 
-    // returns null if the given taintString is illegal
-    static GenericTaintAnalysis createAnalysis(TacConverter tac,
-                                               AbstractAnalysisType enclosingAnalysis, Checker checker,
-                                               InterproceduralWorklist workList, GlobalsModificationAnalysis globalsModificationAnalysis) {
-
-        GenericTaintAnalysis gta = new GenericTaintAnalysis();
-
-        gta.dependencyAnalysis = new DependencyAnalysis(tac,
-            checker.aliasAnalysis, checker.literalAnalysis, enclosingAnalysis,
-            workList, globalsModificationAnalysis);
+        genericTaintAnalysis.dependencyAnalysis = new DependencyAnalysis(
+            tac, checker.aliasAnalysis, checker.literalAnalysis, enclosingAnalysis, workList, globalsModificationAnalysis
+        );
 
         try {
+            // each of the VulnerabilityAnalysis will get the dependencyAnalysis as parameter
+            Class<?>[] argumentsClass = new Class<?>[] {
+                Class.forName("at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyAnalysis")
+            };
+            Object[] arguments = new Object[]{genericTaintAnalysis.dependencyAnalysis};
 
-            // each of the depclients will get the dependencyAnalysis as parameter
-            Class<?>[] argsClass = new Class<?>[]{
-                Class.forName("at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyAnalysis")};
-            Object[] args = new Object[]{gta.dependencyAnalysis};
-
-            // for each requested depclient...
-            for (DependencyClientInformation dci : MyOptions.getDepClients()) {
-                if (!dci.performMe()) {
+            // for each requested VulnerabilityAnalysis ...
+            for (VulnerabilityAnalysisInformation analysisInformation : MyOptions.getVulnerabilityAnalyses()) {
+                if (!analysisInformation.performMe()) {
                     continue;
                 }
-                Class<?> clientDefinition = Class.forName(dci.getClassName());
-                Constructor<?> constructor = clientDefinition.getConstructor(argsClass);
-                AbstractVulnerabilityAnalysis dependencyClient = (AbstractVulnerabilityAnalysis) constructor.newInstance(args);
-                gta.addDepClient(dependencyClient);
+                Class<?> clientDefinition = Class.forName(analysisInformation.getClassName());
+                Constructor<?> constructor = clientDefinition.getConstructor(argumentsClass);
+                AbstractVulnerabilityAnalysis dependencyClient = (AbstractVulnerabilityAnalysis) constructor.newInstance(arguments);
+                genericTaintAnalysis.addDepClient(dependencyClient);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-        return gta;
+        return genericTaintAnalysis;
     }
-
-//  ********************************************************************************
 
     void analyze() {
         this.dependencyAnalysis.analyze();
@@ -80,19 +82,21 @@ public class GenericTaintAnalysis {
         this.dependencyAnalysis.checkReachability();
     }
 
-//  ********************************************************************************
-
-    List<Integer> detectVulns() {
-        List<Integer> retMe = new LinkedList<>();
-        for (AbstractVulnerabilityAnalysis dependencyClient : this.dependencyClients) {
-            retMe.addAll(dependencyClient.detectVulns());
+    /**
+     * Detects vulnerabilities and returns a list with the line numbers of the detected vulnerabilities.
+     *
+     * @return the line numbers of the detected vulnerabilities
+     */
+    List<Integer> detectVulnerabilities() {
+        List<Integer> lineNumbersOfVulnerabilities = new LinkedList<>();
+        for (AbstractVulnerabilityAnalysis dependencyClient : this.abstractVulnerabilityAnalyses) {
+            lineNumbersOfVulnerabilities.addAll(dependencyClient.detectVulnerabilities());
         }
-        return retMe;
+
+        return lineNumbersOfVulnerabilities;
     }
 
-//  ********************************************************************************
-
-    List<AbstractVulnerabilityAnalysis> getDependencyClients() {
-        return this.dependencyClients;
+    List<AbstractVulnerabilityAnalysis> getAbstractVulnerabilityAnalyses() {
+        return this.abstractVulnerabilityAnalyses;
     }
 }

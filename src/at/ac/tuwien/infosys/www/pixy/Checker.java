@@ -170,7 +170,7 @@ public final class Checker {
 
         // detect vulnerabilities
         System.out.println("\n*** detecting vulnerabilities ***\n");
-        checker.gta.detectVulns();
+        checker.gta.detectVulnerabilities();
 
         if (!MyOptions.optionB) {
             long endTime = System.currentTimeMillis();
