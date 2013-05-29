@@ -13,18 +13,15 @@ import java.util.List;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class Sink implements Comparable<Sink> {
-    // a list of sensitive places
-    // (i.e. places for which we want to get dependency graphs)
+    /**
+     * a list of sensitive places (i.e., places for which we want to get dependency graphs)
+     */
     private List<AbstractTacPlace> sensitivePlaces;
     private AbstractCfgNode cfgNode;
     private int lineNo;
 
-    // function containing this sink
+    /** function containing this sink */
     private TacFunction function;
-
-//  ********************************************************************************
-//  CONSTRUCTORS *******************************************************************
-//  ********************************************************************************
 
     public Sink(AbstractCfgNode cfgNode, TacFunction function) {
         this.cfgNode = cfgNode;
@@ -32,10 +29,6 @@ public class Sink implements Comparable<Sink> {
         this.lineNo = -1;
         this.function = function;
     }
-
-//  ********************************************************************************
-//  GET ****************************************************************************
-//  ********************************************************************************
 
     AbstractCfgNode getNode() {
         return this.cfgNode;
@@ -48,23 +41,20 @@ public class Sink implements Comparable<Sink> {
         return this.lineNo;
     }
 
-//  ********************************************************************************
-//  OTHER **************************************************************************
-//  ********************************************************************************
-
     public void addSensitivePlace(AbstractTacPlace place) {
         this.sensitivePlaces.add(place);
     }
 
-    // returns a list of SinkProblems for each sensitive place in this sink
+    /**
+     * Returns a list of SinkProblems for each sensitive place in this sink.
+     *
+     * @return
+     */
     List<SinkProblem> getSinkProblems() {
-
-        // to be returned
         List<SinkProblem> problems = new LinkedList<>();
 
-        // for each sensitive place
         for (AbstractTacPlace sensitivePlace : this.sensitivePlaces) {
-            // list of CallNode's that call the function containing the sink
+            /** list of call nodes that call the function containing the sink */
             List<AbstractCfgNode> calledBy = new LinkedList<>();
 
             SinkProblem problem = new SinkProblem(sensitivePlace);
@@ -75,10 +65,16 @@ public class Sink implements Comparable<Sink> {
         return problems;
     }
 
-    // comparison regarding line number
-    public int compareTo(Sink comp) {
+    /**
+     * Comparison regarding line number.
+     *
+     * @param otherSink
+     *
+     * @return
+     */
+    public int compareTo(Sink otherSink) {
         int myLineNo = this.getLineNo();
-        int compLineNo = comp.getLineNo();
+        int compLineNo = otherSink.getLineNo();
         if (myLineNo < compLineNo) {
             return -1;
         } else if (myLineNo == compLineNo) {

@@ -45,7 +45,6 @@ public class XssAnalysis extends AbstractVulnerabilityAnalysis {
 
         List<Integer> lineNumbersOfVulnerabilities = new LinkedList<>();
 
-        // collect sinks
         List<Sink> sinks = this.collectSinks();
         Collections.sort(sinks);
 
