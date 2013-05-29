@@ -10,16 +10,14 @@ import java.util.List;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class SinkProblem {
-    // a place for which we want to know something
+    /** a place for which we want to know something */
     AbstractTacPlace place;
 
-    // nodes from which the function containing the
-    // sensitive sink is called
-    List<AbstractCfgNode> callNodes;
+    /** nodes from which the function containing the sensitive sink is called */
+    List<AbstractCfgNode> callNodes = new LinkedList<>();
 
     public SinkProblem(AbstractTacPlace place) {
         this.place = place;
-        this.callNodes = new LinkedList<>();
     }
 
     public void setCallList(List<AbstractCfgNode> callNodes) {
