@@ -8,6 +8,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * This class represents a sink.
+ *
  * Note: This class has a natural ordering that is inconsistent with equals().
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
