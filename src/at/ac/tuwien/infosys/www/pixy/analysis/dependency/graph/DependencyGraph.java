@@ -96,11 +96,12 @@ public class DependencyGraph {
      * @param mainSymTab
      * @param dependencyAnalysis
      *
-     * @return
+     * @return the created dependency graph, will be null if the start node is unreachable
      */
-    public static DependencyGraph create(AbstractTacPlace place, AbstractCfgNode start, InterproceduralAnalysisInformation analysisInfo,
-                                  SymbolTable mainSymTab, DependencyAnalysis dependencyAnalysis) {
-
+    public static DependencyGraph create(
+        AbstractTacPlace place, AbstractCfgNode start, InterproceduralAnalysisInformation analysisInfo,
+        SymbolTable mainSymTab, DependencyAnalysis dependencyAnalysis
+    ) {
         DependencyGraph dependencyGraph = new DependencyGraph();
         dependencyGraph.nodes = new LinkedHashMap<>();
         dependencyGraph.edges = new LinkedHashMap<>();
