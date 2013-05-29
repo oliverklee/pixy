@@ -85,8 +85,8 @@ public abstract class AbstractSanitationAnalysis extends AbstractVulnerabilityAn
             DependencyGraph minGraph = minIter.next();
 
             // in any case, dump the vulnerable depgraphs
-            dependencyGraph.dumpDot(name + "sanitation" + graphcount + "i", MyOptions.graphPath, dependencyGraph.getUninitNodes(), this.vulnerabilityAnalysisInformation);
-            minGraph.dumpDot(name + "sanitation" + graphcount + "m", MyOptions.graphPath, dependencyGraph.getUninitNodes(), this.vulnerabilityAnalysisInformation);
+            dependencyGraph.dumpDot(name + "sanitation" + graphcount + "i", MyOptions.graphPath, dependencyGraph.getUninitializedNodes(), this.vulnerabilityAnalysisInformation);
+            minGraph.dumpDot(name + "sanitation" + graphcount + "m", MyOptions.graphPath, dependencyGraph.getUninitializedNodes(), this.vulnerabilityAnalysisInformation);
 
             AbstractCfgNode cfgNode = dependencyGraph.getRootNode().getCfgNode();
 
@@ -135,7 +135,7 @@ public abstract class AbstractSanitationAnalysis extends AbstractVulnerabilityAn
                     possible_vuln++;
 
                     // dump the minimized graph
-                    sanitMinGraph.dumpDot(name + "sanitation" + graphcount + "mm", MyOptions.graphPath, dependencyGraph.getUninitNodes(), this.vulnerabilityAnalysisInformation);
+                    sanitMinGraph.dumpDot(name + "sanitation" + graphcount + "mm", MyOptions.graphPath, dependencyGraph.getUninitializedNodes(), this.vulnerabilityAnalysisInformation);
 
                     dynInfo.append("SINK:\n");
                     dynInfo.append(sanitMinGraph.getRootNode().toString());
@@ -352,7 +352,7 @@ public abstract class AbstractSanitationAnalysis extends AbstractVulnerabilityAn
 
             if (pre instanceof NormalNode) {
                 NormalNode preNormal = (NormalNode) pre;
-                switch (this.initiallyTainted(preNormal.getPlace())) {
+                switch (this.getInitialTaintForPlace(preNormal.getPlace())) {
                     case ALWAYS:
                     case IF_REGISTER_GLOBALS:
                         auto = FSAAutomaton.makeAnyString();
@@ -380,7 +380,7 @@ public abstract class AbstractSanitationAnalysis extends AbstractVulnerabilityAn
                     if (origPre instanceof NormalNode) {
                         NormalNode origPreNormal = (NormalNode) origPre;
 
-                        switch (this.initiallyTainted(origPreNormal.getPlace())) {
+                        switch (this.getInitialTaintForPlace(origPreNormal.getPlace())) {
                             case ALWAYS:
                             case IF_REGISTER_GLOBALS:
                                 auto = FSAAutomaton.makeAnyString();

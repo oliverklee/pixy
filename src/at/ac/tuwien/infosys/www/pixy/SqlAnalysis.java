@@ -100,7 +100,7 @@ public class SqlAnalysis extends AbstractVulnerabilityAnalysis {
             DependencyGraph sqlGraph = new DependencyGraph(dependencyGraph);
             AbstractCfgNode cfgNode = dependencyGraph.getRootNode().getCfgNode();
 
-            dependencyGraph.dumpDot(graphNameBase + "_dep", MyOptions.graphPath, dependencyGraph.getUninitNodes(), this.vulnerabilityAnalysisInformation);
+            dependencyGraph.dumpDot(graphNameBase + "_dep", MyOptions.graphPath, dependencyGraph.getUninitializedNodes(), this.vulnerabilityAnalysisInformation);
 
             Automaton automaton = this.toAutomaton(sqlGraph, dependencyGraph);
 
@@ -345,7 +345,7 @@ public class SqlAnalysis extends AbstractVulnerabilityAnalysis {
 
             if (pre instanceof NormalNode) {
                 NormalNode preNormal = (NormalNode) pre;
-                switch (this.initiallyTainted(preNormal.getPlace())) {
+                switch (this.getInitialTaintForPlace(preNormal.getPlace())) {
                     case ALWAYS:
                     case IF_REGISTER_GLOBALS:
                         auto = Automaton.makeAnyString(Transition.Taint.Directly);
@@ -369,7 +369,7 @@ public class SqlAnalysis extends AbstractVulnerabilityAnalysis {
                     if (origPre instanceof NormalNode) {
                         NormalNode origPreNormal = (NormalNode) origPre;
 
-                        switch (this.initiallyTainted(origPreNormal.getPlace())) {
+                        switch (this.getInitialTaintForPlace(origPreNormal.getPlace())) {
                             case ALWAYS:
                             case IF_REGISTER_GLOBALS:
                                 auto = Automaton.makeAnyString(Transition.Taint.Directly);

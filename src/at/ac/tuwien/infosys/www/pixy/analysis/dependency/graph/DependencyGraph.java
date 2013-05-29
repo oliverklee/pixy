@@ -1033,14 +1033,20 @@ public class DependencyGraph {
         return leafCandidates;
     }
 
-    // returns all uninitialized nodes
-    public Set<UninitializedNode> getUninitNodes() {
+    /**
+     * Returns all uninitialized nodes.
+     *
+     * @return all uninitialized nodes
+     */
+    public Set<UninitializedNode> getUninitializedNodes() {
         Set<UninitializedNode> uninitializedNodes = new HashSet<>();
+
         for (AbstractNode node : this.nodes.keySet()) {
             if (node instanceof UninitializedNode) {
                 uninitializedNodes.add((UninitializedNode) node);
             }
         }
+
         return uninitializedNodes;
     }
 
@@ -1604,7 +1610,7 @@ public class DependencyGraph {
     public Set<AbstractNode> removeUninitializedNodes() {
         Set<AbstractNode> retme = new HashSet<>();
 
-        Set<UninitializedNode> uninitializedNodes = getUninitNodes();
+        Set<UninitializedNode> uninitializedNodes = getUninitializedNodes();
         for (UninitializedNode uninitializedNode : uninitializedNodes) {
 
             Set<AbstractNode> preds = this.getPredecessors(uninitializedNode);

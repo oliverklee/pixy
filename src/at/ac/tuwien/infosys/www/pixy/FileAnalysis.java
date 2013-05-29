@@ -230,7 +230,7 @@ public class FileAnalysis extends AbstractVulnerabilityAnalysis {
             if (pre instanceof NormalNode) {
                 NormalNode preNormal = (NormalNode) pre;
 
-                switch (this.initiallyTainted(preNormal.getPlace())) {
+                switch (this.getInitialTaintForPlace(preNormal.getPlace())) {
                     case ALWAYS:
                     case IF_REGISTER_GLOBALS:
                         auto = Automaton.makeAnyString(Transition.Taint.Directly);
