@@ -1535,15 +1535,14 @@ public class DependencyGraph {
         }
     }
 
-//  ********************************************************************************
-
-    // makes the depgraph smaller in two ways:
-    // - reduces it to those nodes that are on a path from the root
-    //   to any of the given leaves
-    // - removes unnecessary temporary nodes that precede those nodes that
-    //   represent function return variables
+    /**
+     * Makes the dependency graph smaller in two ways:
+     * - reduces it to those nodes that are on a path from the root to any of the given leaves
+     * - removes unnecessary temporary nodes that precede those nodes that represent function return variables
+     *
+     * @param leaves
+     */
     public void reduceWithLeaves(Collection<? extends AbstractNode> leaves) {
-
         this.leavesReduced = true;
 
         // mark reachable nodes
@@ -1626,8 +1625,6 @@ public class DependencyGraph {
             }
         }
     }
-
-//  ********************************************************************************
 
     private void reduceWithLeavesHelper(AbstractNode node,
                                         Set<AbstractNode> reachable, Set<NormalNode> retVars) {

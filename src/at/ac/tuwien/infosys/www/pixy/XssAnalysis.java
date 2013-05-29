@@ -19,6 +19,11 @@ import java.util.*;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class XssAnalysis extends AbstractVulnerabilityAnalysis {
+
+    private int dependencyGraphCount;
+    private int vulnerabilityCount;
+    private List<Integer> lineNumbersOfVulnerabilities;
+
     public XssAnalysis(DependencyAnalysis dependencyAnalysis) {
         super(dependencyAnalysis);
     }
@@ -43,7 +48,7 @@ public class XssAnalysis extends AbstractVulnerabilityAnalysis {
         System.out.println("*****************");
         System.out.println();
 
-        List<Integer> lineNumbersOfVulnerabilities = new LinkedList<>();
+        lineNumbersOfVulnerabilities = new LinkedList<>();
 
         List<Sink> sinks = this.collectSinks();
         Collections.sort(sinks);
@@ -61,92 +66,18 @@ public class XssAnalysis extends AbstractVulnerabilityAnalysis {
 
         String fileName = MyOptions.entryFile.getName();
 
-        int numberOfDependencyGraphs = 0;
-        int numberOfVulnerabilities = 0;
+        dependencyGraphCount = 0;
+        vulnerabilityCount = 0;
         for (Sink sink : sinks) {
-            Collection<DependencyGraph> dependencyGraphs = dependencyAnalysis.getDepGraph(sink);
-
-            for (DependencyGraph dependencyGraph : dependencyGraphs) {
-                numberOfDependencyGraphs++;
-
-                String graphNameBase = "xss_" + fileName + "_" + numberOfDependencyGraphs;
-
-                if (!MyOptions.optionW) {
-                    dependencyGraph.dumpDot(graphNameBase + "_dep", MyOptions.graphPath, this.vulnerabilityAnalysisInformation);
-                }
-
-                // create the relevant subgraph
-                DependencyGraph relevant = this.getRelevant(dependencyGraph);
-
-                // find those uninit nodes that are dangerous
-                Map<UninitializedNode, InitialTaint> dangerousUninit = this.findDangerousUninitialized(relevant);
-
-                // if there are any dangerous uninit nodes...
-                if (!dangerousUninit.isEmpty()) {
-
-                    // make the relevant subgraph smaller
-                    relevant.reduceWithLeaves(dangerousUninit.keySet());
-
-                    Set<? extends AbstractNode> fillUs;
-                    if (MyOptions.option_V) {
-                        relevant.removeTemporaries();
-                        fillUs = relevant.removeUninitNodes();
-                    } else {
-                        fillUs = dangerousUninit.keySet();
-                    }
-
-                    numberOfVulnerabilities++;
-                    NormalNode root = dependencyGraph.getRoot();
-                    AbstractCfgNode cfgNode = root.getCfgNode();
-                    lineNumbersOfVulnerabilities.add(cfgNode.getOrigLineno());
-                    System.out.println("Vulnerability detected!");
-                    if (dangerousUninit.values().contains(InitialTaint.ALWAYS)) {
-                        System.out.println("- unconditional");
-                    } else {
-                        System.out.println("- conditional on register_globals=on");
-                    }
-                    System.out.println("- " + cfgNode.getLoc());
-
-                    System.out.println("- Graph: xss" + numberOfDependencyGraphs);
-                    relevant.dumpDot(graphNameBase + "_min", MyOptions.graphPath, fillUs, this.vulnerabilityAnalysisInformation);
-                    System.out.println();
-
-                    if (MyOptions.optionW) {
-                        sink2Graph.append(sink.getLineNo());
-                        sink2Graph.append(":");
-                        sink2Graph.append(graphNameBase + "_min");
-                        sink2Graph.append("\n");
-
-                        quickReport.append("Line ");
-                        quickReport.append(sink.getLineNo());
-                        quickReport.append("\nSources:\n");
-                        for (AbstractNode leafX : relevant.getLeafNodes()) {
-                            quickReport.append("  ");
-                            if (leafX instanceof NormalNode) {
-                                NormalNode leaf = (NormalNode) leafX;
-                                quickReport.append(leaf.getLine());
-                                quickReport.append(" : ");
-                                quickReport.append(leaf.getPlace());
-                            } else if (leafX instanceof BuiltinFunctionNode) {
-                                BuiltinFunctionNode leaf = (BuiltinFunctionNode) leafX;
-                                quickReport.append(leaf.getLine());
-                                quickReport.append(" : ");
-                                quickReport.append(leaf.getName());
-                            }
-                            quickReport.append("\n");
-                        }
-                        quickReport.append("\n");
-                    }
-                }
-            }
+            detectVulnerabilitiesForSink(sink2Graph, quickReport, fileName, sink);
         }
 
         // initial sink count and final graph count may differ (e.g., if some sinks
         // are not reachable)
         if (MyOptions.optionV) {
-            System.out.println("Total Graph Count: " + numberOfDependencyGraphs);
+            System.out.println("Total Graph Count: " + dependencyGraphCount);
         }
-        System.out.println("Total Vuln Count: " + numberOfVulnerabilities);
+        System.out.println("Total Vuln Count: " + vulnerabilityCount);
 
         System.out.println();
         System.out.println("*****************");
@@ -162,6 +93,88 @@ public class XssAnalysis extends AbstractVulnerabilityAnalysis {
         return lineNumbersOfVulnerabilities;
     }
 
+    private void detectVulnerabilitiesForSink(
+        StringBuilder sink2Graph, StringBuilder quickReport, String fileName, Sink sink
+    ) {
+        for (DependencyGraph dependencyGraph : dependencyAnalysis.getDependencyGraphsForSink(sink)) {
+            dependencyGraphCount++;
+
+            String graphNameBase = "xss_" + fileName + "_" + dependencyGraphCount;
+
+            if (!MyOptions.optionW) {
+                dependencyGraph.dumpDot(graphNameBase + "_dep", MyOptions.graphPath, this.vulnerabilityAnalysisInformation);
+            }
+
+            detectVulnerabilitiesInDependencyGraphForSink(sink2Graph, quickReport, sink, dependencyGraph, graphNameBase);
+        }
+    }
+
+    private void detectVulnerabilitiesInDependencyGraphForSink(
+        StringBuilder sink2Graph, StringBuilder quickReport, Sink sink, DependencyGraph dependencyGraph, String graphNameBase
+    ) {
+        DependencyGraph relevantSubgraph = this.getRelevant(dependencyGraph);
+
+        Map<UninitializedNode, InitialTaint> dangerousUninitializedNodes
+            = this.findDangerousUninitializedNodes(relevantSubgraph);
+
+        if (dangerousUninitializedNodes.isEmpty()) {
+            return;
+        }
+
+        relevantSubgraph.reduceWithLeaves(dangerousUninitializedNodes.keySet());
+
+        Set<? extends AbstractNode> fillUs;
+        if (MyOptions.option_V) {
+            relevantSubgraph.removeTemporaries();
+            fillUs = relevantSubgraph.removeUninitNodes();
+        } else {
+            fillUs = dangerousUninitializedNodes.keySet();
+        }
+
+        vulnerabilityCount++;
+        NormalNode root = dependencyGraph.getRoot();
+        AbstractCfgNode cfgNode = root.getCfgNode();
+        lineNumbersOfVulnerabilities.add(cfgNode.getOrigLineno());
+        System.out.println("Vulnerability detected!");
+        if (dangerousUninitializedNodes.values().contains(InitialTaint.ALWAYS)) {
+            System.out.println("- unconditional");
+        } else {
+            System.out.println("- conditional on register_globals=on");
+        }
+        System.out.println("- " + cfgNode.getLoc());
+
+        System.out.println("- Graph: xss" + dependencyGraphCount);
+        relevantSubgraph.dumpDot(graphNameBase + "_min", MyOptions.graphPath, fillUs, this.vulnerabilityAnalysisInformation);
+        System.out.println();
+
+        if (MyOptions.optionW) {
+            sink2Graph.append(sink.getLineNo());
+            sink2Graph.append(":");
+            sink2Graph.append(graphNameBase + "_min");
+            sink2Graph.append("\n");
+
+            quickReport.append("Line ");
+            quickReport.append(sink.getLineNo());
+            quickReport.append("\nSources:\n");
+            for (AbstractNode leafX : relevantSubgraph.getLeafNodes()) {
+                quickReport.append("  ");
+                if (leafX instanceof NormalNode) {
+                    NormalNode leaf = (NormalNode) leafX;
+                    quickReport.append(leaf.getLine());
+                    quickReport.append(" : ");
+                    quickReport.append(leaf.getPlace());
+                } else if (leafX instanceof BuiltinFunctionNode) {
+                    BuiltinFunctionNode leaf = (BuiltinFunctionNode) leafX;
+                    quickReport.append(leaf.getLine());
+                    quickReport.append(" : ");
+                    quickReport.append(leaf.getName());
+                }
+                quickReport.append("\n");
+            }
+            quickReport.append("\n");
+        }
+    }
+
     /**
      * Alternative to detectVulnerabilities;
      *
@@ -170,39 +183,35 @@ public class XssAnalysis extends AbstractVulnerabilityAnalysis {
      * @return
      */
     public VulnerabilityInformation detectAlternative() {
-        // will contain depgraphs for which a vulnerability was detected
-        VulnerabilityInformation retMe = new VulnerabilityInformation();
+        VulnerabilityInformation dependencyGraphsWithVulnerabilities = new VulnerabilityInformation();
 
-        // collect sinks
         List<Sink> sinks = this.collectSinks();
         Collections.sort(sinks);
 
-        int graphcount = 0;
+        int graphCount = 0;
         int totalPathCount = 0;
         int basicPathCount = 0;
-        int hasCustomSanitCount = 0;
-        int customSanitThrownAwayCount = 0;
+        int hasCustomSanitationCount = 0;
+        int customSanitationThrownAwayCount = 0;
         for (Sink sink : sinks) {
-            Collection<DependencyGraph> dependencyGraphs = dependencyAnalysis.getDepGraph(sink);
+            Collection<DependencyGraph> dependencyGraphs = dependencyAnalysis.getDependencyGraphsForSink(sink);
 
             for (DependencyGraph dependencyGraph : dependencyGraphs) {
-                graphcount++;
+                graphCount++;
 
-                // create the relevant subgraph
-                DependencyGraph relevant = this.getRelevant(dependencyGraph);
+                DependencyGraph relevantSubgraph = this.getRelevant(dependencyGraph);
+                Map<UninitializedNode, InitialTaint> dangerousUninitializedNodes
+                    = this.findDangerousUninitializedNodes(relevantSubgraph);
 
-                // find those uninit nodes that are dangerous
-                Map<UninitializedNode, InitialTaint> dangerousUninit = this.findDangerousUninitialized(relevant);
-
-                // if there are any dangerous uninit nodes...
-                boolean tainted = false;
-                if (!dangerousUninit.isEmpty()) {
+                boolean tainted;
+                if (dangerousUninitializedNodes.isEmpty()) {
+                    tainted = false;
+                } else {
                     tainted = true;
 
-                    // make the relevant subgraph smaller
-                    relevant.reduceWithLeaves(dangerousUninit.keySet());
+                    relevantSubgraph.reduceWithLeaves(dangerousUninitializedNodes.keySet());
 
-                    retMe.addDepGraph(dependencyGraph, relevant);
+                    dependencyGraphsWithVulnerabilities.addDepGraph(dependencyGraph, relevantSubgraph);
                 }
 
                 if (MyOptions.countPaths) {
@@ -214,55 +223,65 @@ public class XssAnalysis extends AbstractVulnerabilityAnalysis {
                 }
 
                 if (!AbstractSanitationAnalysis.findCustomSanit(dependencyGraph).isEmpty()) {
-                    hasCustomSanitCount++;
+                    hasCustomSanitationCount++;
                     if (!tainted) {
-                        customSanitThrownAwayCount++;
+                        customSanitationThrownAwayCount++;
                     }
                 }
             }
         }
 
-        retMe.setInitialGraphCount(graphcount);
-        retMe.setTotalPathCount(totalPathCount);
-        retMe.setBasicPathCount(basicPathCount);
-        retMe.setCustomSanitCount(hasCustomSanitCount);
-        retMe.setCustomSanitThrownAwayCount(customSanitThrownAwayCount);
-        return retMe;
+        dependencyGraphsWithVulnerabilities.setInitialGraphCount(graphCount);
+        dependencyGraphsWithVulnerabilities.setTotalPathCount(totalPathCount);
+        dependencyGraphsWithVulnerabilities.setBasicPathCount(basicPathCount);
+        dependencyGraphsWithVulnerabilities.setCustomSanitCount(hasCustomSanitationCount);
+        dependencyGraphsWithVulnerabilities.setCustomSanitThrownAwayCount(customSanitationThrownAwayCount);
+
+        return dependencyGraphsWithVulnerabilities;
     }
 
     /**
      * Checks if the given node (inside the given function) is a sensitive sink.
      *
-     * Adds an appropriate sink object to the given list if it is a sink.
+     * If it is a sink, adds an appropriate sink object to the given list.
      *
-     * @param cfgNodeX
+     * @param cfgNode the node to check for whether it is a sink
      * @param traversedFunction
-     * @param sinks
+     * @param sinks the current sink list to which the node should be added
      */
-    protected void checkForSink(AbstractCfgNode cfgNodeX, TacFunction traversedFunction, List<Sink> sinks) {
-        if (cfgNodeX instanceof Echo) {
-            // echo() or print()
-            Echo cfgNode = (Echo) cfgNodeX;
-
-            // create sink object for this node
-            Sink sink = new Sink(cfgNode, traversedFunction);
-            sink.addSensitivePlace(cfgNode.getPlace());
-
-            // add it to the list of sensitive sinks
-            sinks.add(sink);
-        } else if (cfgNodeX instanceof CallBuiltinFunction) {
-            // builtin function sinks
-            CallBuiltinFunction cfgNode = (CallBuiltinFunction) cfgNodeX;
-            String functionName = cfgNode.getFunctionName();
-
-            checkForSinkHelper(functionName, cfgNode, cfgNode.getParamList(), traversedFunction, sinks);
-        } else if (cfgNodeX instanceof CallPreparation) {
-            CallPreparation cfgNode = (CallPreparation) cfgNodeX;
-            String functionName = cfgNode.getFunctionNamePlace().toString();
-
-            // user-defined custom sinks
-            checkForSinkHelper(functionName, cfgNode, cfgNode.getParamList(), traversedFunction, sinks);
+    protected void checkForSink(AbstractCfgNode cfgNode, TacFunction traversedFunction, List<Sink> sinks) {
+        if (cfgNode instanceof Echo) {
+            processEchoSink((Echo) cfgNode, traversedFunction, sinks);
+        } else if (cfgNode instanceof CallBuiltinFunction) {
+            processCallBuiltinFunctionPotentialSink((CallBuiltinFunction) cfgNode, traversedFunction, sinks);
+        } else if (cfgNode instanceof CallPreparation) {
+            processCallPreparationPotentialSink((CallPreparation) cfgNode, traversedFunction, sinks);
         }
+    }
+
+    private void processEchoSink(Echo echoNode, TacFunction traversedFunction, List<Sink> sinks) {
+        Sink sink = new Sink(echoNode, traversedFunction);
+        sink.addSensitivePlace(echoNode.getPlace());
+
+        sinks.add(sink);
+    }
+
+    private void processCallBuiltinFunctionPotentialSink(
+        CallBuiltinFunction builtinFunctionNode, TacFunction traversedFunction, List<Sink> sinks
+    ) {
+        String functionName = builtinFunctionNode.getFunctionName();
+
+        checkForSinkHelper(
+            functionName, builtinFunctionNode, builtinFunctionNode.getParamList(), traversedFunction, sinks
+        );
+    }
+
+    private void processCallPreparationPotentialSink(
+        CallPreparation callPreparationNode, TacFunction traversedFunction, List<Sink> sinks
+    ) {
+        String functionName = callPreparationNode.getFunctionNamePlace().toString();
+
+        checkForSinkHelper(functionName, callPreparationNode, callPreparationNode.getParamList(), traversedFunction, sinks);
     }
 
     /**

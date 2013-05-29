@@ -67,7 +67,7 @@ public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
         int numberOfDependencyGraphs = 0;
         int numberOfVulnerabilities = 0;
         for (Sink sink : sinks) {
-            Collection<DependencyGraph> dependencyGraphs = dependencyAnalysis.getDepGraph(sink);
+            Collection<DependencyGraph> dependencyGraphs = dependencyAnalysis.getDependencyGraphsForSink(sink);
 
             for (DependencyGraph dependencyGraph : dependencyGraphs) {
                 numberOfDependencyGraphs++;
@@ -104,7 +104,7 @@ public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
                 // SQL dependency graph
                 if (tainted) {
                     DependencyGraph relevant = this.getRelevant(dependencyGraph);
-                    Map<UninitializedNode, InitialTaint> dangerousUninit = this.findDangerousUninitialized(relevant);
+                    Map<UninitializedNode, InitialTaint> dangerousUninit = this.findDangerousUninitializedNodes(relevant);
                     if (!dangerousUninit.isEmpty()) {
                         if (dangerousUninit.values().contains(InitialTaint.ALWAYS)) {
                             System.out.println("- unconditional");
@@ -166,7 +166,7 @@ public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
         int hasCustomSanitCount = 0;
         int customSanitThrownAwayCount = 0;
         for (Sink sink : sinks) {
-            Collection<DependencyGraph> dependencyGraphs = dependencyAnalysis.getDepGraph(sink);
+            Collection<DependencyGraph> dependencyGraphs = dependencyAnalysis.getDependencyGraphsForSink(sink);
 
             for (DependencyGraph dependencyGraph : dependencyGraphs) {
                 graphcount++;
@@ -186,7 +186,7 @@ public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
                 if (tainted) {
                     // create a smaller version of this graph
                     DependencyGraph relevant = this.getRelevant(dependencyGraph);
-                    Map<UninitializedNode, InitialTaint> dangerousUninit = this.findDangerousUninitialized(relevant);
+                    Map<UninitializedNode, InitialTaint> dangerousUninit = this.findDangerousUninitializedNodes(relevant);
                     relevant.reduceWithLeaves(dangerousUninit.keySet());
 
                     retMe.addDepGraph(dependencyGraph, relevant);

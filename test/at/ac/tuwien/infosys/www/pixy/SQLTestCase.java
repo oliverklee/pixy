@@ -90,7 +90,7 @@ public class SQLTestCase extends TestCase {
         // collect dependencyGraphs
         List<DependencyGraph> dependencyGraphs = new LinkedList<>();
         for (Sink sink : sinks) {
-            dependencyGraphs.addAll(dependencyAnalysis.getDepGraph(sink));
+            dependencyGraphs.addAll(dependencyAnalysis.getDependencyGraphsForSink(sink));
         }
 
         Assert.assertTrue("Graphs real: " + dependencyGraphs.size() + ", expected: "

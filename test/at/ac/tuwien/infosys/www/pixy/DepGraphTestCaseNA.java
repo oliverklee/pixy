@@ -97,7 +97,7 @@ public class DepGraphTestCaseNA extends TestCase {
         // collect dependencyGraphs
         List<DependencyGraph> dependencyGraphs = new LinkedList<>();
         for (Sink sink : sinks) {
-            dependencyGraphs.addAll(dependencyAnalysis.getDepGraph(sink));
+            dependencyGraphs.addAll(dependencyAnalysis.getDependencyGraphsForSink(sink));
         }
 
         Assert.assertTrue("Graphs real: " + dependencyGraphs.size() + ", expected: "
@@ -123,7 +123,7 @@ public class DepGraphTestCaseNA extends TestCase {
 
             String xssFileName = "test" + testNum + "_" + graphCount + "_xss";
             DependencyGraph relevant = this.xssAnalysis.getRelevant(dependencyGraph);
-            Map<UninitializedNode, AbstractVulnerabilityAnalysis.InitialTaint> dangerousUninit = this.xssAnalysis.findDangerousUninitialized(relevant);
+            Map<UninitializedNode, AbstractVulnerabilityAnalysis.InitialTaint> dangerousUninit = this.xssAnalysis.findDangerousUninitializedNodes(relevant);
             if (!dangerousUninit.isEmpty()) {
                 vulnCount++;
                 relevant.reduceWithLeaves(dangerousUninit.keySet());

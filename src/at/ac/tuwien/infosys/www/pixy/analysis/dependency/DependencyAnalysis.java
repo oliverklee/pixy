@@ -375,18 +375,19 @@ public class DependencyAnalysis extends AbstractInterproceduralAnalysis {
 //  OTHER **************************************************************************
 //  ********************************************************************************
 
-//  evalIf *************************************************************************
-
     protected Boolean evalIf(If ifNode, AbstractLatticeElement inValue) {
         return this.literalAnalysis.evalIf(ifNode);
     }
 
-//  getDepGraph ********************************************************************
-
-    // returns the dependency graphs for the given sink
-    public List<DependencyGraph> getDepGraph(Sink sink) {
-
-        List<DependencyGraph> retMe = new LinkedList<>();
+    /**
+     * Returns the dependency graphs for the given sink.
+     *
+     * @param sink
+     *
+     * @return
+     */
+    public List<DependencyGraph> getDependencyGraphsForSink(Sink sink) {
+        List<DependencyGraph> dependencyGraphs = new LinkedList<>();
 
         TacFunction mainFunc = this.mainFunction;
         SymbolTable mainSymTab = mainFunc.getSymbolTable();
@@ -397,12 +398,11 @@ public class DependencyAnalysis extends AbstractInterproceduralAnalysis {
 
         // if this sink has no problems: done!
         if (problems.isEmpty()) {
-            return retMe;
+            return dependencyGraphs;
         }
 
         // create dependency graphs for all sensitive places in this sink
         for (SinkProblem problem : problems) {
-
             DependencyGraph dependencyGraph = DependencyGraph.create(problem.getPlace(),
                 sink.getNode(), this.interproceduralAnalysisInformation, mainSymTab, this);
 
@@ -411,18 +411,15 @@ public class DependencyAnalysis extends AbstractInterproceduralAnalysis {
                 continue;
             }
 
-            retMe.add(dependencyGraph);
+            dependencyGraphs.add(dependencyGraph);
         }
 
-        return retMe;
+        return dependencyGraphs;
     }
-
-// getDependencyGraphs ********************************************************************
 
     // returns the dependency graphs for all given sinks;
     // this (older) function collects some nice statistics
     public List<DependencyGraph> getDepGraphs(List<Sink> sinks) {
-
         List<DependencyGraph> retMe = new LinkedList<>();
 
         // sort sinks by line
@@ -484,13 +481,9 @@ public class DependencyAnalysis extends AbstractInterproceduralAnalysis {
         return retMe;
     }
 
-//  recycle ************************************************************************
-
     public AbstractLatticeElement recycle(AbstractLatticeElement recycleMe) {
         return this.repos.recycle(recycleMe);
     }
-
-//  ********************************************************************************
 
     // checks if the callgraph contains unreachable code (i.e., nodes that have not
     // been associated with analysis information)
