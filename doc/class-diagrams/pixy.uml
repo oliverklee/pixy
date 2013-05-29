@@ -9,7 +9,7 @@
     <node x="179.0" y="375.0">at.ac.tuwien.infosys.www.pixy.IncludeTestCase</node>
     <node x="389.0" y="301.0">at.ac.tuwien.infosys.www.pixy.DepGraphTestCase</node>
     <node x="253.0" y="79.0">at.ac.tuwien.infosys.www.pixy.XssAnalysis</node>
-    <node x="126.0" y="79.0">at.ac.tuwien.infosys.www.pixy.SQLAnalysis</node>
+    <node x="126.0" y="79.0">at.ac.tuwien.infosys.www.pixy.SqlAnalysis</node>
     <node x="0.0" y="597.0">at.ac.tuwien.infosys.www.pixy.Dumper</node>
     <node x="355.0" y="375.0">at.ac.tuwien.infosys.www.pixy.LiteralTestCase</node>
     <node x="415.0" y="227.0">at.ac.tuwien.infosys.www.pixy.GenericTaintAnalysis</node>
@@ -49,7 +49,7 @@
       <point x="170.375" y="54.0" />
       <point x="-72.375" y="14.5" />
     </edge>
-    <edge source="at.ac.tuwien.infosys.www.pixy.SQLAnalysis" target="at.ac.tuwien.infosys.www.pixy.AbstractVulnerabilityAnalysis">
+    <edge source="at.ac.tuwien.infosys.www.pixy.SqlAnalysis" target="at.ac.tuwien.infosys.www.pixy.AbstractVulnerabilityAnalysis">
       <point x="0.0" y="-14.5" />
       <point x="179.5" y="54.0" />
       <point x="218.625" y="54.0" />

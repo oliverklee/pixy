@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.sanitation;
 
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
-import at.ac.tuwien.infosys.www.pixy.SQLAnalysis;
+import at.ac.tuwien.infosys.www.pixy.SqlAnalysis;
 import at.ac.tuwien.infosys.www.pixy.Utils;
 import at.ac.tuwien.infosys.www.pixy.VulnerabilityInformation;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyAnalysis;
@@ -39,7 +39,7 @@ public class SQLSanitationAnalysis extends AbstractSanitationAnalysis {
 //  ********************************************************************************
 
     public List<Integer> detectVulnerabilities() {
-        return detectVulnerabilities(new SQLAnalysis(this.dependencyAnalysis));
+        return detectVulnerabilities(new SqlAnalysis(this.dependencyAnalysis));
     }
 
     public VulnerabilityInformation detectAlternative() {

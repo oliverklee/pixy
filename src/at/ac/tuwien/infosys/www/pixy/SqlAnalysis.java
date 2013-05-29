@@ -29,14 +29,14 @@ import java.util.*;
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
-public class SQLAnalysis extends AbstractVulnerabilityAnalysis {
+public class SqlAnalysis extends AbstractVulnerabilityAnalysis {
     /** flag indicating whether to use transducers (are still unstable) */
     private boolean useTransducers = false;
     private List<Integer> lineNumbersOfVulnerabilities;
     private int dependencyGraphCount;
     private int vulnerabilityCount;
 
-    public SQLAnalysis(DependencyAnalysis dependencyAnalysis) {
+    public SqlAnalysis(DependencyAnalysis dependencyAnalysis) {
         super(dependencyAnalysis);
         this.getIsTainted = !MyOptions.optionI;
     }

@@ -335,7 +335,7 @@ public class MyOptions {
 
     private static VulnerabilityAnalysisInformation[] analyses = {
         new VulnerabilityAnalysisInformation("xss", "at.ac.tuwien.infosys.www.pixy.XssAnalysis"),
-        new VulnerabilityAnalysisInformation("sql", "at.ac.tuwien.infosys.www.pixy.SQLAnalysis"),
+        new VulnerabilityAnalysisInformation("sql", "at.ac.tuwien.infosys.www.pixy.SqlAnalysis"),
         new VulnerabilityAnalysisInformation("sqlsanit", "at.ac.tuwien.infosys.www.pixy.sanitation.SQLSanitationAnalysis"),
         new VulnerabilityAnalysisInformation("xsssanit", "at.ac.tuwien.infosys.www.pixy.sanitation.XSSSanitationAnalysis"),
         new VulnerabilityAnalysisInformation("file", "at.ac.tuwien.infosys.www.pixy.FileAnalysis")

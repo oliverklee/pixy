@@ -23,7 +23,7 @@ public class SQLTestCase extends TestCase {
 
     // these are recomputed for every single test
     private DependencyAnalysis dependencyAnalysis;
-    private SQLAnalysis sqlAnalysis;
+    private SqlAnalysis sqlAnalysis;
     List<Sink> sinks;
 
 //  ********************************************************************************
@@ -49,7 +49,7 @@ public class SQLTestCase extends TestCase {
         TacConverter tac = checker.initialize().getTac();
         checker.analyzeTaint(tac, functional);
         this.dependencyAnalysis = checker.gta.dependencyAnalysis;
-        this.sqlAnalysis = (SQLAnalysis) checker.gta.getAbstractVulnerabilityAnalyses().get(0);
+        this.sqlAnalysis = (SqlAnalysis) checker.gta.getAbstractVulnerabilityAnalyses().get(0);
 
         // collect sinks
         this.sinks = this.sqlAnalysis.collectSinks();
