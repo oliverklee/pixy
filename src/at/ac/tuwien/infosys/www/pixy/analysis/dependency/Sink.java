@@ -18,7 +18,7 @@ public class Sink implements Comparable<Sink> {
      */
     private List<AbstractTacPlace> sensitivePlaces;
     private AbstractCfgNode cfgNode;
-    private int lineNo;
+    private int lineNumber = -1;
 
     /** function containing this sink */
     private TacFunction function;
@@ -26,7 +26,6 @@ public class Sink implements Comparable<Sink> {
     public Sink(AbstractCfgNode cfgNode, TacFunction function) {
         this.cfgNode = cfgNode;
         this.sensitivePlaces = new LinkedList<>();
-        this.lineNo = -1;
         this.function = function;
     }
 
@@ -34,11 +33,11 @@ public class Sink implements Comparable<Sink> {
         return this.cfgNode;
     }
 
-    public int getLineNo() {
-        if (this.lineNo == -1) {
-            this.lineNo = this.cfgNode.getOrigLineno();
+    public int getLineNumber() {
+        if (this.lineNumber == -1) {
+            this.lineNumber = this.cfgNode.getOrigLineno();
         }
-        return this.lineNo;
+        return this.lineNumber;
     }
 
     public void addSensitivePlace(AbstractTacPlace place) {
@@ -73,8 +72,8 @@ public class Sink implements Comparable<Sink> {
      * @return
      */
     public int compareTo(Sink otherSink) {
-        int myLineNo = this.getLineNo();
-        int compLineNo = otherSink.getLineNo();
+        int myLineNo = this.getLineNumber();
+        int compLineNo = otherSink.getLineNumber();
         if (myLineNo < compLineNo) {
             return -1;
         } else if (myLineNo == compLineNo) {

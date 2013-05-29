@@ -148,13 +148,13 @@ public class XssAnalysis extends AbstractVulnerabilityAnalysis {
         System.out.println();
 
         if (MyOptions.optionW) {
-            sink2Graph.append(sink.getLineNo());
+            sink2Graph.append(sink.getLineNumber());
             sink2Graph.append(":");
             sink2Graph.append(graphNameBase + "_min");
             sink2Graph.append("\n");
 
             quickReport.append("Line ");
-            quickReport.append(sink.getLineNo());
+            quickReport.append(sink.getLineNumber());
             quickReport.append("\nSources:\n");
             for (AbstractNode leafX : relevantSubgraph.getLeafNodes()) {
                 quickReport.append("  ");
