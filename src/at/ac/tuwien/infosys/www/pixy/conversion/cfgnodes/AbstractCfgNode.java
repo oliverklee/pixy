@@ -14,33 +14,36 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * This class represents a node in the control flow graph.
+ *
+ * A node generally can have several ingoing edges, but only one real outgoing edge.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public abstract class AbstractCfgNode {
+    /** the parse node (from the parse tree) to which this node refers */
     protected final ParseNode parseNode;
 
-    protected List<CfgEdge> inEdges;
+    protected List<CfgEdge> inEdges = new ArrayList<>();
     // index 0: for false edge (or normal edge)
     // index 1: for true edge
-    protected CfgEdge[] outEdges;
+    protected CfgEdge[] outEdges = new CfgEdge[2];
 
     // number of this cfg node in reverse post-order (speeds up the analysis
     // if used by the worklist); -1 if uninitialized
-    private int reversePostOrder;
+    private int reversePostOrder = -1;
 
     // this can be one of the following:
     // - the enclosing basic block, if there is one (BasicBlock)
     // - a function's CfgEntry, if this cfg node is member of one of this
     //   function's default param cfgs
     // - null, if neither of the above applies
-    private AbstractCfgNode enclosingNode;
+    private AbstractCfgNode enclosingNode = null;
 
     // function that contains this cfgNode;
     // note: you can't just set this in the constructor, since it
     // might change during include file resolution
     private TacFunction enclosingFunction = null;
-
-// CONSTRUCTORS ********************************************************************
 
     AbstractCfgNode() {
         this(null);
@@ -48,14 +51,9 @@ public abstract class AbstractCfgNode {
 
     AbstractCfgNode(ParseNode parseNode) {
         this.parseNode = parseNode;
-        this.inEdges = new ArrayList<>();
-        this.outEdges = new CfgEdge[2];
-        this.outEdges[0] = this.outEdges[1] = null;
-        this.reversePostOrder = -1;
-        this.enclosingNode = null;
+        this.outEdges[0] = null;
+        this.outEdges[1] = null;
     }
-
-// GET *****************************************************************************
 
     // returns
     // - the enclosing basic block, if it is enclosed in one
@@ -96,7 +94,7 @@ public abstract class AbstractCfgNode {
 
     public AbstractCfgNode getSuccessor(int index) {
         if (this.outEdges[index] != null) {
-            return this.outEdges[index].getDest();
+            return this.outEdges[index].getDestination();
         } else {
             return null;
         }
@@ -105,11 +103,12 @@ public abstract class AbstractCfgNode {
     public List<AbstractCfgNode> getSuccessors() {
         List<AbstractCfgNode> successors = new LinkedList<>();
         if (this.outEdges[0] != null) {
-            successors.add(this.outEdges[0].getDest());
+            successors.add(this.outEdges[0].getDestination());
             if (this.outEdges[1] != null) {
-                successors.add(this.outEdges[1].getDest());
+                successors.add(this.outEdges[1].getDestination());
             }
         }
+
         return successors;
     }
 
@@ -131,7 +130,7 @@ public abstract class AbstractCfgNode {
         return predecessors;
     }
 
-    public int getOrigLineno() {
+    public int getOriginalLineNumber() {
         // in some cases, this method is currently not very useful because
         // it returns "-2" (i.e., the line number of the epsilon node), especially
         // for constructs such as $x = "hello $world";
@@ -153,18 +152,19 @@ public abstract class AbstractCfgNode {
 
     public String getLoc() {
         if (!MyOptions.optionB && !MyOptions.optionW) {
-            return this.getFileName() + ":" + this.getOrigLineno();
+            return this.getFileName() + ":" + this.getOriginalLineNumber();
         } else {
-            return Utils.basename(this.getFileName()) + ":" + this.getOrigLineno();
+            return Utils.basename(this.getFileName()) + ":" + this.getOriginalLineNumber();
         }
     }
 
     public TacFunction getEnclosingFunction() {
         if (this.enclosingFunction == null) {
             System.out.println(this.getFileName());
-            System.out.println(this.toString() + ", " + this.getOrigLineno());
+            System.out.println(this.toString() + ", " + this.getOriginalLineNumber());
             throw new RuntimeException("SNH");
         }
+
         return this.enclosingFunction;
     }
 
@@ -204,8 +204,6 @@ public abstract class AbstractCfgNode {
         }
     }
 
-// SET *****************************************************************************
-
     // replaces the variable with the given index in the list returned by getVariables
     // by the given replacement variable
     public abstract void replaceVariable(int index, Variable replacement);
@@ -233,18 +231,16 @@ public abstract class AbstractCfgNode {
         this.enclosingFunction = function;
     }
 
-// OTHER ***************************************************************************
-
     public void addInEdge(CfgEdge edge) {
         this.inEdges.add(edge);
     }
 
     // removes the edge coming in from the given predecessor
     public void removeInEdge(AbstractCfgNode predecessor) {
-        for (Iterator<CfgEdge> iter = this.inEdges.iterator(); iter.hasNext(); ) {
-            CfgEdge inEdge = iter.next();
+        for (Iterator<CfgEdge> iterator = this.inEdges.iterator(); iterator.hasNext(); ) {
+            CfgEdge inEdge = iterator.next();
             if (inEdge.getSource() == predecessor) {
-                iter.remove();
+                iterator.remove();
             }
         }
     }

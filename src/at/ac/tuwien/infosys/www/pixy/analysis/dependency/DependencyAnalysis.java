@@ -233,7 +233,7 @@ public class DependencyAnalysis extends AbstractInterproceduralAnalysis {
 
             // at this point, unknown functions should already be represented
             // by their own special cfg node
-            System.out.println(cfgNodeX.getFileName() + ", " + cfgNodeX.getOrigLineno());
+            System.out.println(cfgNodeX.getFileName() + ", " + cfgNodeX.getOriginalLineNumber());
             System.out.println(cfgNode.getFunctionNamePlace());
             throw new RuntimeException("SNH");
 
@@ -264,7 +264,7 @@ public class DependencyAnalysis extends AbstractInterproceduralAnalysis {
             // the unknown function
             throw new RuntimeException(
                 "More actual than formal params for function " +
-                    cfgNode.getFunctionNamePlace().toString() + " on line " + cfgNode.getOrigLineno());
+                    cfgNode.getFunctionNamePlace().toString() + " on line " + cfgNode.getOriginalLineNumber());
         } else {
             tf = new CallPreparation(actualParams, formalParams,
                 callingFunction, calledFunction, this, cfgNode);
@@ -531,7 +531,7 @@ public class DependencyAnalysis extends AbstractInterproceduralAnalysis {
                 for (int i = 0; (i < 2) && (next == null); i++) {
                     CfgEdge outEdge = current.getOutEdge(i);
                     if (outEdge != null) {
-                        next = outEdge.getDest();
+                        next = outEdge.getDestination();
                         if (visited.contains(next)) {
                             // try another one
                             next = null;

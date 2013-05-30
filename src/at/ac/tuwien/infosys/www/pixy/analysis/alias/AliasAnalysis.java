@@ -153,7 +153,7 @@ public class AliasAnalysis extends AbstractInterproceduralAnalysis {
             // the unknown function
             throw new RuntimeException(
                 "More actual than formal params for function " +
-                    cfgNode.getFunctionNamePlace().toString() + " on line " + cfgNode.getOrigLineno());
+                    cfgNode.getFunctionNamePlace().toString() + " on line " + cfgNode.getOriginalLineNumber());
         } else {
             tf = new at.ac.tuwien.infosys.www.pixy.analysis.alias.transferfunction.CallPreparation(callingFunction, this, cfgNode);
         }

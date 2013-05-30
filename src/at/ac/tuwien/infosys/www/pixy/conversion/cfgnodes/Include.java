@@ -95,7 +95,7 @@ public class Include extends AbstractCfgNode implements Comparable<Include> {
         if (fileComp != 0) {
             return fileComp;
         } else {
-            return new Integer(this.getOrigLineno()).compareTo(comp.getOrigLineno());
+            return new Integer(this.getOriginalLineNumber()).compareTo(comp.getOriginalLineNumber());
         }
     }
 }

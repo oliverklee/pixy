@@ -71,7 +71,7 @@ public class FileAnalysis extends AbstractVulnerabilityAnalysis {
             if (MyOptions.optionB) {
                 fileName = Utils.basename(fileName);
             }
-            System.out.println("Line:  " + cfgNode.getOrigLineno());
+            System.out.println("Line:  " + cfgNode.getOriginalLineNumber());
             System.out.println("File:  " + fileName);
             System.out.println("Graph: file" + numberOfDependencyGraphs);
 

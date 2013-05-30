@@ -49,7 +49,7 @@ public class AliasTestCase extends TestCase {
             this.elements[i] = (AliasLatticeElement) this.getHotspotInfo(i).getUnrecycledFoldedValue();
             if (this.elements[i] == null) {
                 Hotspot hot = this.tac.getHotspot(i);
-                System.out.println("thenode: " + hot.toString() + ", " + hot.getOrigLineno());
+                System.out.println("thenode: " + hot.toString() + ", " + hot.getOriginalLineNumber());
                 System.out.println("enclosing: " + hot.getEnclosingBasicBlock());
                 throw new RuntimeException("SNH");
             }

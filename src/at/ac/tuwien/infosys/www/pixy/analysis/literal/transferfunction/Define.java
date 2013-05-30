@@ -55,7 +55,7 @@ public class Define extends AbstractTransferFunction {
         // case is rather seldom, we just issue a warning;
         if (constantLit == Literal.TOP) {
             System.out.println("Warning: can't resolve constant to be defined");
-            System.out.println("- " + cfgNode.getFileName() + ":" + cfgNode.getOrigLineno());
+            System.out.println("- " + cfgNode.getFileName() + ":" + cfgNode.getOriginalLineNumber());
             return out;
         }
 

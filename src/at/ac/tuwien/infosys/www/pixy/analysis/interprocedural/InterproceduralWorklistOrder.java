@@ -156,7 +156,7 @@ public class InterproceduralWorklistOrder {
                 for (int i = 0; (i < 2) && (nextElement == null); i++) {
                     CfgEdge outEdge = cfgNode.getOutEdge(i);
                     if (outEdge != null) {
-                        AbstractCfgNode succNode = outEdge.getDest();
+                        AbstractCfgNode succNode = outEdge.getDestination();
                         nextElement = new InterproceduralWorklistElement(succNode, context);
                         if (visited.contains(nextElement)) {
                             // try next one

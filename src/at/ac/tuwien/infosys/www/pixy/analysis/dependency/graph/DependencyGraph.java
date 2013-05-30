@@ -180,7 +180,7 @@ public class DependencyGraph {
         AbstractTacPlace place, AbstractCfgNode current, TacFunction function, List<AbstractTacPlace> indices,
         Set<AbstractContext> contexts
     ) throws NotReachableException {
-        debug("  visiting: " + current.getClass() + ", " + current.getOrigLineno() + ", " + place);
+        debug("  visiting: " + current.getClass() + ", " + current.getOriginalLineNumber() + ", " + place);
         debug(current.toString());
         debug("in function : " + function.getName());
         debug("under contexts: " + contexts);
@@ -220,7 +220,7 @@ public class DependencyGraph {
                 addNode(uninitializedNode);
                 addEdge(dgn, uninitializedNode);
             } else {
-                debug("getting used places for " + dependencyLabel.getCfgNode().getOrigLineno());
+                debug("getting used places for " + dependencyLabel.getCfgNode().getOriginalLineNumber());
 
                 // we retrieve the places that were "used" (read) at the given cfg node
                 // and recursively continue the graph construction algorithm

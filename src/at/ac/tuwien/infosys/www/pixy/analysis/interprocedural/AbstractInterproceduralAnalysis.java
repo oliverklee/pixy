@@ -227,7 +227,7 @@ public abstract class AbstractInterproceduralAnalysis extends AbstractAnalysis {
 
                     // get necessary function information (= called function)
                     TacFunction function = callNode.getCallee();
-                    CallReturn callRet = (CallReturn) node.getOutEdge(0).getDest();
+                    CallReturn callRet = (CallReturn) node.getOutEdge(0).getDestination();
 
                     if (function == null) {
                         // callee could not be determined yet;
@@ -278,7 +278,7 @@ public abstract class AbstractInterproceduralAnalysis extends AbstractAnalysis {
                         // previously computed function summary can be used;
                         // determine successor node (unique) of this call node
                         CfgEdge[] outEdges = callNode.getOutEdges();
-                        AbstractCfgNode succ = outEdges[0].getDest();
+                        AbstractCfgNode succ = outEdges[0].getDestination();
                         propagate(context, exitInValue, succ);
                     } else {
 
@@ -326,7 +326,7 @@ public abstract class AbstractInterproceduralAnalysis extends AbstractAnalysis {
 
                         // determine successor node (unique) of the call node
                         CfgEdge[] outEdges = callNode.getOutEdges();
-                        CallReturn callRetNode = (CallReturn) outEdges[0].getDest();
+                        CallReturn callRetNode = (CallReturn) outEdges[0].getDestination();
 
                         // determine predecessor node (unique) of the call node
                         CallPreparation callPrepNode = callRetNode.getCallPrepNode();
@@ -360,14 +360,14 @@ public abstract class AbstractInterproceduralAnalysis extends AbstractAnalysis {
                         // static evaluation of if condition failed, continue
                         // analysis along both outgoing edges
 
-                        propagate(context, outValue, outEdges[0].getDest());
-                        propagate(context, outValue, outEdges[1].getDest());
+                        propagate(context, outValue, outEdges[0].getDestination());
+                        propagate(context, outValue, outEdges[1].getDestination());
                     } else if (eval == Boolean.TRUE) {
                         // continue analysis along true edge
-                        propagate(context, outValue, outEdges[1].getDest());
+                        propagate(context, outValue, outEdges[1].getDestination());
                     } else {
                         // continue analysis along false edge
-                        propagate(context, outValue, outEdges[0].getDest());
+                        propagate(context, outValue, outEdges[0].getDestination());
                     }
                 } else if (node instanceof CallReturn) {
 
@@ -385,7 +385,7 @@ public abstract class AbstractInterproceduralAnalysis extends AbstractAnalysis {
                         if (outEdge != null) {
 
                             // determine the successor
-                            AbstractCfgNode succ = outEdge.getDest();
+                            AbstractCfgNode succ = outEdge.getDestination();
 
                             // propagate the result of applying the transfer function
                             // to the successor (under the current context)
@@ -404,7 +404,7 @@ public abstract class AbstractInterproceduralAnalysis extends AbstractAnalysis {
                         if (outEdge != null) {
 
                             // determine the successor
-                            AbstractCfgNode succ = outEdge.getDest();
+                            AbstractCfgNode succ = outEdge.getDestination();
 
                             // propagate the result of applying the transfer function
                             // to the successor (under the current context)
@@ -413,7 +413,7 @@ public abstract class AbstractInterproceduralAnalysis extends AbstractAnalysis {
                     }
                 }
             } catch (RuntimeException ex) {
-                System.out.println("File:" + node.getFileName() + ", Line: " + node.getOrigLineno());
+                System.out.println("File:" + node.getFileName() + ", Line: " + node.getOriginalLineNumber());
                 throw ex;
             }
         }

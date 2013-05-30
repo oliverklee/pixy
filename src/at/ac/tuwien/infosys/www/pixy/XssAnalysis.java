@@ -134,7 +134,7 @@ public class XssAnalysis extends AbstractVulnerabilityAnalysis {
         vulnerabilityCount++;
         NormalNode root = dependencyGraph.getRootNode();
         AbstractCfgNode cfgNode = root.getCfgNode();
-        lineNumbersOfVulnerabilities.add(cfgNode.getOrigLineno());
+        lineNumbersOfVulnerabilities.add(cfgNode.getOriginalLineNumber());
         System.out.println("Vulnerability detected!");
         if (dangerousUninitializedNodes.values().contains(InitialTaint.ALWAYS)) {
             System.out.println("- unconditional");

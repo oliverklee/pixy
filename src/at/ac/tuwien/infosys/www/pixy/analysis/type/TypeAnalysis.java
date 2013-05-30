@@ -172,7 +172,7 @@ public class TypeAnalysis extends AbstractInterproceduralAnalysis {
             // the unknown function
             throw new RuntimeException(
                 "More actual than formal params for function " +
-                    cfgNode.getFunctionNamePlace().toString() + " on line " + cfgNode.getOrigLineno());
+                    cfgNode.getFunctionNamePlace().toString() + " on line " + cfgNode.getOriginalLineNumber());
         } else {
             tf = new CallPreparation(actualParams, formalParams,
                 callingFunction, calledFunction, this);

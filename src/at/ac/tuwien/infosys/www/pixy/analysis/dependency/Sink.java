@@ -37,7 +37,7 @@ public class Sink implements Comparable<Sink> {
 
     public int getLineNumber() {
         if (this.lineNumber == -1) {
-            this.lineNumber = this.cfgNode.getOrigLineno();
+            this.lineNumber = this.cfgNode.getOriginalLineNumber();
         }
         return this.lineNumber;
     }

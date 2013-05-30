@@ -34,7 +34,7 @@ public class Assign extends AbstractTransferFunction {
 
         // check for unsupported features
         this.supported =
-            AliasAnalysis.isSupported(this.left, this.right, true, cfgNode.getOrigLineno());
+            AliasAnalysis.isSupported(this.left, this.right, true, cfgNode.getOriginalLineNumber());
     }
 
 // *********************************************************************************

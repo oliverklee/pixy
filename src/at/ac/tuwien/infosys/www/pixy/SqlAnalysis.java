@@ -117,7 +117,7 @@ public class SqlAnalysis extends AbstractVulnerabilityAnalysis {
             }
             if (tainted) {
                 vulnerabilityCount++;
-                lineNumbersOfVulnerabilities.add(cfgNode.getOrigLineno());
+                lineNumbersOfVulnerabilities.add(cfgNode.getOriginalLineNumber());
 
                 System.out.println("- " + cfgNode.getLoc());
                 System.out.println("- Graphs: sql" + dependencyGraphCount);
@@ -273,7 +273,7 @@ public class SqlAnalysis extends AbstractVulnerabilityAnalysis {
                     // this case should not happen any longer (now that
                     // we have "uninit" nodes, see below)
                     throw new RuntimeException("SNH: " + place + ", " + normalNode.getCfgNode().getFileName() + "," +
-                        normalNode.getCfgNode().getOrigLineno());
+                        normalNode.getCfgNode().getOriginalLineNumber());
                 }
             } else {
                 // this is an interior node, not a leaf node;

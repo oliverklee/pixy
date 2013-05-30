@@ -591,7 +591,7 @@ public class LiteralLatticeElement extends AbstractLatticeElement {
                         // it just says 'there might be a path through the
                         // program leading to a division by zero'
                         System.out.println("Warning: might be division by zero");
-                        System.out.println("Line: " + cfgNode.getOrigLineno());
+                        System.out.println("Line: " + cfgNode.getOriginalLineNumber());
                         effectiveLit = Literal.FALSE;
                     } else {
                         effectiveLit = new Literal(Literal.numberToString(

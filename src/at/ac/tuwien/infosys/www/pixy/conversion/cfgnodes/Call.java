@@ -139,7 +139,7 @@ public class Call extends AbstractCfgNode {
                 // none of the variables must be an array or etc.;
                 // in such a case, ignore it and continue with the next cbr-param
                 boolean supported = AliasAnalysis.isSupported(
-                    formalVar, actualVar, true, this.getOrigLineno());
+                    formalVar, actualVar, true, this.getOriginalLineNumber());
 
                 if (!supported) {
                     continue;

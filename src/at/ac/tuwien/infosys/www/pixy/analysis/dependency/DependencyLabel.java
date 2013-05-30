@@ -59,7 +59,7 @@ public class DependencyLabel implements Recyclable {
         if (this.cfgNode == null) {
             buf.append("none");
         } else {
-            buf.append(this.cfgNode.getOrigLineno());
+            buf.append(this.cfgNode.getOriginalLineNumber());
         }
         buf.append(", ");
         buf.append(this.cfgNode.toString());

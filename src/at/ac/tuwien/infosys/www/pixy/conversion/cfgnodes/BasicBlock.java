@@ -64,11 +64,11 @@ public class BasicBlock extends AbstractCfgNode {
         }
     }
 
-    public int getOrigLineno() {
+    public int getOriginalLineNumber() {
         if (!this.containedNodes.isEmpty()) {
-            return this.containedNodes.get(0).getOrigLineno();
+            return this.containedNodes.get(0).getOriginalLineNumber();
         } else {
-            return super.getOrigLineno();
+            return super.getOriginalLineNumber();
         }
     }
 }

@@ -188,7 +188,7 @@ public class LiteralAnalysis extends AbstractInterproceduralAnalysis {
             throw new RuntimeException(
                 "More actual than formal params for function " +
                     cfgNode.getFunctionNamePlace().toString() + " in file " +
-                    cfgNode.getFileName() + ", line " + cfgNode.getOrigLineno());
+                    cfgNode.getFileName() + ", line " + cfgNode.getOriginalLineNumber());
         } else {
             tf = new CallPreparation(actualParams, formalParams,
                 callingFunction, calledFunction, this, cfgNode);
@@ -354,7 +354,7 @@ public class LiteralAnalysis extends AbstractInterproceduralAnalysis {
             (LiteralLatticeElement) getAnalysisNode(ifNode).getUnrecycledFoldedValue();
         if (folded == null) {
             // this means that literal analysis never reaches this point;
-            // throw new RuntimeException("SNH, line " + ifNode.getOrigLineno());
+            // throw new RuntimeException("SNH, line " + ifNode.getOriginalLineNumber());
             return null;
         }
 

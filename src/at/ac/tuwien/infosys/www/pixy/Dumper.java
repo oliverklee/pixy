@@ -198,7 +198,7 @@ public final class Dumper {
 
             if (outEdge != null) {
 
-                AbstractCfgNode succNode = outEdge.getDest();
+                AbstractCfgNode succNode = outEdge.getDestination();
 
                 // print successor
                 Integer succIdInt = Dumper.node2Int.get(succNode);
@@ -618,7 +618,7 @@ public final class Dumper {
         for (Map.Entry<AbstractCfgNode, AbstractAnalysisNode> entry : analysis.getAnalysisInfo().getMap().entrySet()) {
             AbstractCfgNode cfgNode = entry.getKey();
             IntraproceduralAnalysisNode analysisNode = (IntraproceduralAnalysisNode) entry.getValue();
-            System.out.println("dominators for cfg node " + cfgNode.toString() + ", " + cfgNode.getOrigLineno());
+            System.out.println("dominators for cfg node " + cfgNode.toString() + ", " + cfgNode.getOriginalLineNumber());
             Dumper.dump(analysisNode.getInValue());
         }
     }
@@ -656,7 +656,7 @@ public final class Dumper {
                 for (Iterator<AbstractCfgNode> bft = controlFlowGraph.bfIterator(); bft.hasNext(); ) {
                     AbstractCfgNode cfgNode = bft.next();
                     writer.write("----------------------------------------" + linesep);
-                    writer.write(cfgNode.getFileName() + ", " + cfgNode.getOrigLineno() +
+                    writer.write(cfgNode.getFileName() + ", " + cfgNode.getOriginalLineNumber() +
                         ", " + makeCfgNodeName(cfgNode) + linesep);
                     dump(analysisInfoNew.getAnalysisNode(cfgNode).getRecycledFoldedValue(), writer);
                 }
@@ -721,7 +721,7 @@ public final class Dumper {
                 System.out.println("<<empty>>");
             } else {
                 for (AbstractCfgNode dominator : dominators) {
-                    System.out.println(dominator.toString() + ", " + dominator.getOrigLineno());
+                    System.out.println(dominator.toString() + ", " + dominator.getOriginalLineNumber());
                 }
             }
         } else if (elementX instanceof LatticeElementBottom) {

@@ -28,12 +28,12 @@ public class NormalNode extends AbstractNode {
      * @return
      */
     public String dotName() {
-        return Dumper.escapeDot(this.place.toString(), 0) + " (" + this.cfgNode.getOrigLineno() + ")" +
+        return Dumper.escapeDot(this.place.toString(), 0) + " (" + this.cfgNode.getOriginalLineNumber() + ")" +
             "\\n" + this.cfgNode.getFileName();
     }
 
     public String comparableName() {
-        return Dumper.escapeDot(this.place.toString(), 0) + " (" + this.cfgNode.getOrigLineno() + ")" +
+        return Dumper.escapeDot(this.place.toString(), 0) + " (" + this.cfgNode.getOriginalLineNumber() + ")" +
             "\\n" + this.cfgNode.getFileName();
     }
 
@@ -44,7 +44,7 @@ public class NormalNode extends AbstractNode {
      */
     public String dotNameShort() {
         String fileName = this.cfgNode.getFileName();
-        return Dumper.escapeDot(this.place.toString(), 0) + " (" + this.cfgNode.getOrigLineno() + ")" +
+        return Dumper.escapeDot(this.place.toString(), 0) + " (" + this.cfgNode.getOriginalLineNumber() + ")" +
             "\\n" + fileName.substring(fileName.lastIndexOf('/') + 1);
     }
 
@@ -53,9 +53,9 @@ public class NormalNode extends AbstractNode {
 
         if (!MyOptions.optionW) {
             // don't print file name for web interface
-            retme += this.cfgNode.getFileName() + " : " + this.cfgNode.getOrigLineno() + "\\n";
+            retme += this.cfgNode.getFileName() + " : " + this.cfgNode.getOriginalLineNumber() + "\\n";
         } else {
-            retme += "Line " + this.cfgNode.getOrigLineno() + "\\n";
+            retme += "Line " + this.cfgNode.getOriginalLineNumber() + "\\n";
         }
 
         if (this.place instanceof Variable) {
@@ -82,7 +82,7 @@ public class NormalNode extends AbstractNode {
     }
 
     public int getLine() {
-        return this.cfgNode.getOrigLineno();
+        return this.cfgNode.getOriginalLineNumber();
     }
 
     public boolean equals(Object compX) {
@@ -106,7 +106,7 @@ public class NormalNode extends AbstractNode {
     }
 
     public String toString() {
-        return this.place.toString() + " (" + this.cfgNode.getOrigLineno() + ") " +
+        return this.place.toString() + " (" + this.cfgNode.getOriginalLineNumber() + ") " +
             this.cfgNode.getFileName();
     }
 }

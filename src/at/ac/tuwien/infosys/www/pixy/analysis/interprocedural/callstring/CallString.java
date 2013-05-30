@@ -62,7 +62,7 @@ public class CallString {
         for (Call callNode : this.callNodeList) {
             b.append(callNode.getFileName());
             b.append(":");
-            b.append(callNode.getOrigLineno());
+            b.append(callNode.getOriginalLineNumber());
             b.append("\n");
         }
         return b.toString();

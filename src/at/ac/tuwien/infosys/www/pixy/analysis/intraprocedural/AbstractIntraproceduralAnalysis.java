@@ -134,7 +134,7 @@ public abstract class AbstractIntraproceduralAnalysis extends AbstractAnalysis {
                     if (outEdge != null) {
 
                         // determine the successor
-                        AbstractCfgNode succ = outEdge.getDest();
+                        AbstractCfgNode succ = outEdge.getDestination();
 
                         // propagate the result of applying the transfer function
                         // to the successor
@@ -142,7 +142,7 @@ public abstract class AbstractIntraproceduralAnalysis extends AbstractAnalysis {
                     }
                 }
             } catch (RuntimeException ex) {
-                System.out.println("File:" + node.getFileName() + ", Line: " + node.getOrigLineno());
+                System.out.println("File:" + node.getFileName() + ", Line: " + node.getOriginalLineNumber());
                 throw ex;
             }
         }

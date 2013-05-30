@@ -297,7 +297,7 @@ public class TacConverter {
                 // embed basic block:
                 // connect with predecessors
                 for (CfgEdge inEdge : inEdges) {
-                    inEdge.setDest(basicBlock);
+                    inEdge.setDestination(basicBlock);
                     basicBlock.addInEdge(inEdge);
                 }
                 // connect with successor
@@ -520,7 +520,7 @@ public class TacConverter {
             // node after the "include" node
             AbstractCfgNode afterInclude;
             try {
-                afterInclude = includeOutEdges[0].getDest();
+                afterInclude = includeOutEdges[0].getDestination();
             } catch (NullPointerException e) {
                 System.out.println(includeNode.getLoc());
                 throw e;
@@ -532,7 +532,7 @@ public class TacConverter {
 
             // redirect edges that enter the include node to includeStart
             for (CfgEdge inEdge : includeInEdges) {
-                inEdge.setDest(includeStart);
+                inEdge.setDestination(includeStart);
                 includeStart.addInEdge(inEdge);
             }
 
@@ -542,7 +542,7 @@ public class TacConverter {
 
             // redirect edges that enter the included cfg's exit node to includeEnd
             for (CfgEdge inEdge : beforeExitList) {
-                inEdge.setDest(includeEnd);
+                inEdge.setDestination(includeEnd);
                 includeEnd.addInEdge(inEdge);
             }
 
@@ -796,14 +796,14 @@ public class TacConverter {
         CfgEdge outEdge = cfgNode.getOutEdge(0);
         List<CfgEdge> inEdges = cfgNode.getInEdges();
         if (outEdge != null) {
-            AbstractCfgNode succ = outEdge.getDest();
+            AbstractCfgNode succ = outEdge.getDestination();
 
             // remove this edge (from the viewpoint of the successor)
             succ.removeInEdge(cfgNode);
 
             // redirect all incoming nodes to this successor node:
             for (CfgEdge inEdge : inEdges) {
-                inEdge.setDest(succ);
+                inEdge.setDestination(succ);
                 succ.addInEdge(inEdge);
             }
             return succ;
@@ -944,7 +944,7 @@ public class TacConverter {
                     // raplace
                     Variable theGlobal = declaredAsGlobal.get(var.getName());
                     if (theGlobal != null) {
-                        //System.out.println("at: " + cfgNode.getClass() + ", " + cfgNode.getOrigLineno());
+                        //System.out.println("at: " + cfgNode.getClass() + ", " + cfgNode.getOriginalLineNumber());
                         //System.out.println("replacing: " + var);
                         //System.out.println("with: " + theGlobal);
                         cfgNode.replaceVariable(varCount, theGlobal);
@@ -2065,7 +2065,7 @@ public class TacConverter {
             for (CallPreparation prepNode : callList) {
 
                 Call callNode = prepNode.getCallNode();
-                CallReturn retNode = (CallReturn) callNode.getOutEdge(0).getDest();
+                CallReturn retNode = (CallReturn) callNode.getOutEdge(0).getDestination();
 
                 AbstractTacPlace functionNamePlace = prepNode.getFunctionNamePlace();
 
@@ -2165,7 +2165,7 @@ public class TacConverter {
         // update predecessors:
         // redirect edges that enter the prep node
         for (CfgEdge inEdge : prepNode.getInEdges()) {
-            inEdge.setDest(callUnknown);
+            inEdge.setDestination(callUnknown);
             callUnknown.addInEdge(inEdge);
         }
 

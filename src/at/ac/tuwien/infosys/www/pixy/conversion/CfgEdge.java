@@ -3,6 +3,9 @@ package at.ac.tuwien.infosys.www.pixy.conversion;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
 /**
+ * This class represents a (directed) edge in the control flow graph. An edge always is between two
+ * AbstractCfgNodes.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public final class CfgEdge {
@@ -13,24 +16,20 @@ public final class CfgEdge {
 
     private final int type;
     private final AbstractCfgNode source;
-    private AbstractCfgNode dest;
+    private AbstractCfgNode destination;
 
-// CONSTRUCTORS ********************************************************************
-
-    CfgEdge(AbstractCfgNode source, AbstractCfgNode dest, int type) {
+    CfgEdge(AbstractCfgNode source, AbstractCfgNode destination, int type) {
         this.source = source;
-        this.dest = dest;
+        this.destination = destination;
         this.type = type;
     }
-
-// GET *****************************************************************************
 
     public AbstractCfgNode getSource() {
         return this.source;
     }
 
-    public AbstractCfgNode getDest() {
-        return this.dest;
+    public AbstractCfgNode getDestination() {
+        return this.destination;
     }
 
     public int getType() {
@@ -52,10 +51,8 @@ public final class CfgEdge {
         }
     }
 
-// SET *****************************************************************************
-
     // don't forget to inform the destination node about me with "addInEdge"
-    void setDest(AbstractCfgNode dest) {
-        this.dest = dest;
+    void setDestination(AbstractCfgNode destination) {
+        this.destination = destination;
     }
 }

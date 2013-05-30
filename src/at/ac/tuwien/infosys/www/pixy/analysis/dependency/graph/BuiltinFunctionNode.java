@@ -30,7 +30,7 @@ public class BuiltinFunctionNode extends AbstractNode {
      * @return
      */
     public String dotName() {
-        return "OP: " + Dumper.escapeDot(this.name, 0) + " (" + this.cfgNode.getOrigLineno() + ")" +
+        return "OP: " + Dumper.escapeDot(this.name, 0) + " (" + this.cfgNode.getOriginalLineNumber() + ")" +
             "\\n" + this.cfgNode.getFileName();
     }
 
@@ -40,13 +40,13 @@ public class BuiltinFunctionNode extends AbstractNode {
      * @return
      */
     public String comparableName() {
-        return "OP: " + Dumper.escapeDot(this.name, 0) + " (" + this.cfgNode.getOrigLineno() + ")" +
+        return "OP: " + Dumper.escapeDot(this.name, 0) + " (" + this.cfgNode.getOriginalLineNumber() + ")" +
             "\\n" + this.cfgNode.getFileName();
     }
 
     public String dotNameShort() {
         String fileName = this.cfgNode.getFileName();
-        return "OP: " + Dumper.escapeDot(this.name, 0) + " (" + this.cfgNode.getOrigLineno() + ")" +
+        return "OP: " + Dumper.escapeDot(this.name, 0) + " (" + this.cfgNode.getOriginalLineNumber() + ")" +
             "\\n" + fileName.substring(fileName.lastIndexOf('/') + 1);
     }
 
@@ -55,7 +55,7 @@ public class BuiltinFunctionNode extends AbstractNode {
 
         if (!MyOptions.optionW) {
             // don't print file name for web interface
-            retme += this.cfgNode.getFileName() + " : " + this.cfgNode.getOrigLineno() + "\\n";
+            retme += this.cfgNode.getFileName() + " : " + this.cfgNode.getOriginalLineNumber() + "\\n";
         }
 
         if (BuiltinFunctions.isBuiltinFunction(this.name) ||
@@ -89,7 +89,7 @@ public class BuiltinFunctionNode extends AbstractNode {
     }
 
     public int getLine() {
-        return this.cfgNode.getOrigLineno();
+        return this.cfgNode.getOriginalLineNumber();
     }
 
     public int hashCode() {
