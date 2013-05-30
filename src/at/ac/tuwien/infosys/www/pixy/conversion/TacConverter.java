@@ -772,7 +772,7 @@ public class TacConverter {
 
     // removes empty nodes from a controlFlowGraph;
     // the controlFlowGraph must have at least one non-empty node;
-    private void optimize(ControlFlowGraph controlFlowGraph) {
+    private void removeEmptyNodesFromCfg(ControlFlowGraph controlFlowGraph) {
         AbstractCfgNode startHere;
 
         // remove leading empty nodes
@@ -1367,7 +1367,7 @@ public class TacConverter {
         this.functionStack.removeLast();
 
         // optimize function's ControlFlowGraph
-        this.optimize(controlFlowGraph);
+        this.removeEmptyNodesFromCfg(controlFlowGraph);
     }
 
     TacFunction methodHelper(ParseNode node, int paramListNum, int statNum, String functionName) {
@@ -1420,7 +1420,7 @@ public class TacConverter {
         this.functionStack.removeLast();
 
         // optimize function's ControlFlowGraph
-        this.optimize(controlFlowGraph);
+        this.removeEmptyNodesFromCfg(controlFlowGraph);
 
         return function;
     }
@@ -2234,7 +2234,7 @@ public class TacConverter {
         connect(atts0.getControlFlowGraph(), exitNode);
 
         this.functionStack.removeLast();
-        this.optimize(controlFlowGraph);
+        this.removeEmptyNodesFromCfg(controlFlowGraph);
 
         // transform entries of the $GLOBALS array into corresponding
         // global variables (= local variables of the main mainFunction);
@@ -2582,7 +2582,7 @@ public class TacConverter {
                     connect(atts2.getControlFlowGraph(), cfgNode);
                     ControlFlowGraph defaultControlFlowGraph = new ControlFlowGraph(
                         atts2.getControlFlowGraph().getHead(), cfgNode);
-                    this.optimize(defaultControlFlowGraph);
+                    this.removeEmptyNodesFromCfg(defaultControlFlowGraph);
                     TacFormalParameter param = new TacFormalParameter(
                         paramPlace.getVariable(), true, defaultControlFlowGraph);
 
@@ -2640,7 +2640,7 @@ public class TacConverter {
                             connect(attsScalar.getControlFlowGraph(), cfgNode);
                             ControlFlowGraph defaultControlFlowGraph = new ControlFlowGraph(
                                 attsScalar.getControlFlowGraph().getHead(), cfgNode);
-                            this.optimize(defaultControlFlowGraph);
+                            this.removeEmptyNodesFromCfg(defaultControlFlowGraph);
                             TacFormalParameter param = new TacFormalParameter(
                                 paramPlace.getVariable(), true, defaultControlFlowGraph);
 
