@@ -3546,34 +3546,47 @@ public class TacConverter {
     // - cfg
     // - place
     TacAttributes expr(ParseNode node) {
-        TacAttributes myAtts = null;
+        TacAttributes attributes = null;
 
         ParseNode firstChild = node.getChild(0);
         switch (firstChild.getSymbol()) {
             // -> r_cvar
             case PhpSymbols.r_cvar: {
-                myAtts = this.r_cvar(firstChild);
+                attributes = this.r_cvar(firstChild);
                 break;
             }
 
             // -> expr_without_variable
             case PhpSymbols.expr_without_variable: {
-                myAtts = this.expr_without_variable(firstChild);
+                attributes = this.expr_without_variable(firstChild);
                 break;
             }
         }
 
-        return myAtts;
+        return attributes;
     }
 
     // - cfg
     // - place
+
+    /**
+     * An expr_without_variable can contain:
+     *
+     * - an assignment: cvar T_ASSIGN expr
+     * - or a new: T_NEW static_or_variable_string ctor_arguments
+     * - or a scalar: scalar
+     *
+     * This is the function that deals with constructs like $foo->bar = 42;.
+     *
+     * @param node
+     *
+     * @return
+     */
     TacAttributes expr_without_variable(ParseNode node) {
         TacAttributes myAtts = new TacAttributes();
 
         ParseNode firstChild = node.getChild(0);
         switch (firstChild.getSymbol()) {
-
             // -> T_LIST ( assignment_list ) = expr
             case PhpSymbols.T_LIST: {
                 TacAttributes attsExpr = this.expr(node.getChild(5));
@@ -3659,7 +3672,6 @@ public class TacConverter {
 
                                     // mostly analogous to the version without reference operator
                                     // (search for "t_new" below)
-
                                     TacAttributes attsCvar = this.cvar(firstChild);
                                     TacAttributes attsCtor = this.ctor_arguments(node.getChild(5));
 
@@ -3669,9 +3681,7 @@ public class TacConverter {
 
                                     ParseNode classNameNode = node.getChild(4).getChild(0);
                                     if (classNameNode.getSymbol() == PhpSymbols.T_STRING) {
-
                                         // classname can be resolved
-
                                         String className = classNameNode.getLexeme().toLowerCase();
 
                                         Variable tempPlace = newTemp();
@@ -3786,7 +3796,6 @@ public class TacConverter {
             // -> T_NEW static_or_variable_string ctor_arguments
             case PhpSymbols.T_NEW: {
                 TacAttributes attsCtor = this.ctor_arguments(node.getChild(2));
-
                 // there are two possibilities for static_or_variable_string:
                 // - T_STRING (e.g., "new MyClass()")
                 // - r_cvar   (e.g., "new $x()")

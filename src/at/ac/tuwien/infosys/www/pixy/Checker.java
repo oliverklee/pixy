@@ -151,8 +151,8 @@ public final class Checker {
         long startTime = System.currentTimeMillis();
 
         // convert the whole program (with file inclusions)
-        ProgramConverter pcv = checker.initialize();
-        TacConverter tac = pcv.getTac();
+        ProgramConverter programConverter = checker.initialize();
+        TacConverter tac = programConverter.getTac();
 
         // params: tac, functional?, desired analyses
         checker.analyzeTaint(tac, !MyOptions.optionA);
@@ -477,7 +477,6 @@ public final class Checker {
     //  but can lead to less precise results in if-evaluation and the resolution of
     //  defined constants; can solve easy cases, however (see DummyLiteralAnalysis.java)
     public void analyzeTaint(TacConverter tac, boolean functional) {
-
         // perform literal analysis if necessary; also takes care of alias analysis
         this.analyzeLiterals(tac);
 
