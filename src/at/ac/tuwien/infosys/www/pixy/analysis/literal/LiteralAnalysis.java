@@ -71,7 +71,7 @@ public class LiteralAnalysis extends AbstractInterproceduralAnalysis {
     protected void initLattice() {
         this.lattice = new LiteralLattice(
             this.tac.getPlacesList(), this.tac.getConstantsTable(), this.functions,
-            this.tac.getSuperSymbolTable());
+            this.tac.getSuperglobalsSymbolTable());
         // start value for literal analysis:
         // a lattice element that adds no information to the default lattice element
         this.startValue = new LiteralLatticeElement();

@@ -26,21 +26,20 @@ import java.util.*;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class TacConverter {
-    // the file from which the parse tree was constructed
+    /** the file from which the parse tree was constructed */
     private File file;
 
-    // the PHP parse tree
+    /** the PHP parse tree */
     private ParseTree phpParseTree;
 
-    // counter for temporary variables
+    /** counter for temporary variables */
     private int tempId = 0;
-    // for logging the maximum temporary id
-    private int maxTempId = 0;
-    // ID for this converter; necessary to prevent name clash of
-    // temporaries between different converters (converted files)
+    /** for logging the maximum temporary ID */
+    private int maximumTemporaryId = 0;
+    /** ID for this converter; necessary to prevent name clash of temporaries between different converters (converted files) */
     private int id;
 
-    // various stacks
+    /* various stacks */
     private LinkedList<AbstractCfgNode> breakTargetStack;
     private LinkedList<AbstractCfgNode> continueTargetStack;
     private LinkedList<TacFunction> functionStack;
@@ -50,85 +49,90 @@ public class TacConverter {
     // in the enclosing program converter (now: only the superglobals
     // are kept at this higher level)
 
-    // symbol table for special variables;
-    private SymbolTable specialSymbolTable;
+    /** symbol table for special variables */
+    private SymbolTable specialVariablesSymbolTable;
 
-    // symbol table for superglobals;
-    // note: superglobals are defined in ProgramConverter.java
-    private SymbolTable superSymbolTable;
+    /**
+     * Symbol table for superglobals.
+     * Note: Superglobals are defined in ProgramConverter.
+     */
+    private SymbolTable superglobalsSymbolTable;
 
-    // shortcut to the symbol table of the main function, contains global variables
-    private SymbolTable mainSymbolTable;
+    /** shortcut to the symbol table of the main function, contains global variables */
+    private SymbolTable mainFunctionSymbolTable;
 
-    // table containing constants (constant are not local to the
-    // function in which they are defined, but accessible from
-    // everywhere)
+    /**
+     * Table containing constants.
+     *
+     * Constant are not local to the function in which they are defined, but accessible from everywhere.
+     */
     private ConstantsTable constantsTable;
 
-    // places for predefined constants
+    /** place for predefined constant */
     private final AbstractTacPlace lineCPlace;
+    /** place for predefined constant */
     private final AbstractTacPlace functionCPlace;
+    /** place for predefined constant */
     private final AbstractTacPlace classCPlace;
 
-    // special places
-    //
-    // special void place (for functions with "void" return value)
+    /* special places */
+
+    /** special void place (for functions with "void" return value) */
     private final AbstractTacPlace voidPlace;
-    //
-    // empty array offset
+    /** special place for empty array offset */
     private final AbstractTacPlace emptyOffsetPlace;
-    //
-    // an object
+    /** special place an object */
     private final Variable objectPlace;
-    //
-    // object member variable
+    /** special place for an object member variable */
     private final Variable memberPlace;
 
-    // CAUTION: function names are case-insensitive in PHP, so bar()
-    // and BAR() refer to the same function; the converter achieves this
-    // behavior by transforming function names to lower case;
+    // CAUTION: Function names are case-insensitive in PHP, so bar() and BAR() refer to the same function.
+    // The converter achieves this behavior by transforming function names to lower case;
 
-    // user-defined functions, including the main function;
-    // function name -> function
+    /** user-defined functions, including the main function; function name -> function */
     private Map<String, TacFunction> userFunctions;
 
-    // method name -> class name -> method object
-    // NOTE: method names are suffixed with a special string
-    // (see InternalStrings) to keep them distinct from normal functions
+    /**
+     * method name -> class name -> method object
+     *
+     * Note: method names are suffixed with a special string (see InternalStrings) to keep them distinct
+     * from normal functions.
+     */
     private Map<String, Map<String, TacFunction>> userMethods;
 
-    // class name -> class
+    /** class name -> class */
     private Map<String, TacClass> userClasses;
 
-    // shortcut to the main function
+    /** shortcut to the main function */
     private TacFunction mainFunction;
 
-    // maps functions AND methods to a list of function calls (for backpatching),
-    // except for those function calls for which backpatching is known to be hopeless
+    /**
+     * Maps functions AND methods to a list of function calls (for backpatching),
+     * except for those function calls for which backpatching is known to be hopeless.
+     */
     private Map<TacFunction, List<CallPreparation>> functionCalls;
-    // maps functions AND methods to a list of method calls (for backpatching),
-    // except for those method calls for which backpatching is known to be hopeless
+    /**
+     * Maps functions AND methods to a list of method calls (for backpatching),
+     * except for those method calls for which backpatching is known to be hopeless.
+     */
     private Map<TacFunction, List<CallPreparation>> methodCalls;
 
-    // switch indicating whether special node markers (~_) should be
-    // considered
-    private boolean specialNodes;
+    /** switch indicating whether special node markers (~_) should be considered */
+    private boolean specialNodeMarkersShouldBeConsidered;
 
-    // Map hotspotId (Integer) -> Hotspot
-    // only used for JUnit tests
+    /** Map hotspotId (Integer) -> Hotspot. Only used for JUnit tests. */
     private Map<Integer, Hotspot> hotspots;
 
-    // list of include nodes; note that this list is only valid until the
-    // first inclusion operation is performed
+    /**
+     * List of include nodes.
+     *
+     * Note that this list is only valid until the first inclusion operation is performed.
+     */
     private List<Include> includeNodes;
 
-// *********************************************************************************
-// CONSTRUCTORS ********************************************************************
-// *********************************************************************************
-
-    public TacConverter(ParseTree phpParseTree, boolean specialNodes, int id,
-                        File file, ProgramConverter pcv) {
-
+    public TacConverter(
+        ParseTree phpParseTree, boolean specialNodeMarkersShouldBeConsidered, int id, File file, ProgramConverter programConverter
+    ) {
         this.id = id;
         this.file = file;
 
@@ -142,23 +146,21 @@ public class TacConverter {
         this.methodCalls = new HashMap<>();
 
         this.voidPlace = new Literal("_void");
-        // populate the special symbol table
-        this.specialSymbolTable = new SymbolTable("_special");
-        this.emptyOffsetPlace = new Variable("_emptyOffset", this.specialSymbolTable);
-        this.specialSymbolTable.add((Variable) this.emptyOffsetPlace);
-        this.objectPlace = new Variable("_object", this.specialSymbolTable);
-        this.specialSymbolTable.add(this.objectPlace);
-        this.memberPlace = new Variable(InternalStrings.memberName, this.specialSymbolTable);
+        this.specialVariablesSymbolTable = new SymbolTable("_special");
+        this.emptyOffsetPlace = new Variable("_emptyOffset", this.specialVariablesSymbolTable);
+        this.specialVariablesSymbolTable.add((Variable) this.emptyOffsetPlace);
+        this.objectPlace = new Variable("_object", this.specialVariablesSymbolTable);
+        this.specialVariablesSymbolTable.add(this.objectPlace);
+        this.memberPlace = new Variable(InternalStrings.memberName, this.specialVariablesSymbolTable);
         this.memberPlace.setIsMember(true);
-        this.specialSymbolTable.add(this.memberPlace);
+        this.specialVariablesSymbolTable.add(this.memberPlace);
 
-        this.mainSymbolTable = null;
+        this.mainFunctionSymbolTable = null;
 
         this.userFunctions = new HashMap<>();
         this.mainFunction = null;
 
-        // initialize symbol table for superglobals
-        this.superSymbolTable = pcv.getSuperSymbolTable();
+        this.superglobalsSymbolTable = programConverter.getSuperSymbolTable();
 
         // special superglobals for tainted and untainted values
         // (used in the builtin functions file);
@@ -167,7 +169,6 @@ public class TacConverter {
         this.addSuperGlobal("$_TAINTED");
         this.addSuperGlobal("$_UNTAINTED");
 
-        // initialize constants table
         this.constantsTable = new ConstantsTable();
 
         Constant lineConstant = Constant.getInstance("__LINE__");
@@ -189,9 +190,8 @@ public class TacConverter {
         this.functionCPlace = functionConstant;
         this.classCPlace = classConstant;
 
-        this.specialNodes = specialNodes;
+        this.specialNodeMarkersShouldBeConsidered = specialNodeMarkersShouldBeConsidered;
 
-        // initialize hotspots map
         this.hotspots = new HashMap<>();
 
         this.includeNodes = new LinkedList<>();
@@ -199,10 +199,6 @@ public class TacConverter {
         this.userClasses = new HashMap<>();
         this.userMethods = new HashMap<>();
     }
-
-// *********************************************************************************
-// OTHER ***************************************************************************
-// *********************************************************************************
 
     public void assignFunctionsToControlFlowGraphNodes() {
         for (TacFunction function : this.userFunctions.values()) {
@@ -314,7 +310,6 @@ public class TacConverter {
             // if this is not a one-element basic block...
             // (i.e., does not create single-node basic blocks)
             if (contained > 1) {
-
                 startNode.clearInEdges();
                 basicBlock.informEnclosedNodes();
 
@@ -364,9 +359,10 @@ public class TacConverter {
             cfgNode instanceof EmptyTest ||
             cfgNode instanceof Isset ||
             cfgNode instanceof Static
-            ) {
+        ) {
             return true;
         }
+
         return false;
     }
 
@@ -509,7 +505,7 @@ public class TacConverter {
 
         // HOTSPOTS
 
-        if (this.specialNodes) {
+        if (this.specialNodeMarkersShouldBeConsidered) {
             this.hotspots.putAll(includedTac.hotspots);
         }
     }
@@ -530,7 +526,6 @@ public class TacConverter {
         if (afterEntry instanceof CfgExit) {
             this.removeCfgNode(includeNode);
         } else {
-
             IncludeStart includeStart = new IncludeStart(includeNode.getFile(), includeNode.getParseNode());
             IncludeEnd includeEnd = new IncludeEnd(includeStart);
 
@@ -576,18 +571,18 @@ public class TacConverter {
     }
 
     // resets the global tempId to the given logId;
-    // use this method because it maintains maxTempId
+    // use this method because it maintains maximumTemporaryId
     private void resetId(int logId) {
-        if (this.tempId > this.maxTempId) {
-            this.maxTempId = tempId;
+        if (this.tempId > this.maximumTemporaryId) {
+            this.maximumTemporaryId = tempId;
         }
         this.tempId = logId;
     }
 
     public void convert() {
         this.start(this.phpParseTree.getRoot());
-        if (this.tempId > this.maxTempId) {
-            this.maxTempId = tempId;
+        if (this.tempId > this.maximumTemporaryId) {
+            this.maximumTemporaryId = tempId;
         }
     }
 
@@ -645,16 +640,16 @@ public class TacConverter {
         return this.mainFunction.isEmpty();
     }
 
-    public SymbolTable getSuperSymbolTable() {
-        return this.superSymbolTable;
+    public SymbolTable getSuperglobalsSymbolTable() {
+        return this.superglobalsSymbolTable;
     }
 
     public ConstantsTable getConstantsTable() {
         return this.constantsTable;
     }
 
-    public int getMaxTempId() {
-        return this.maxTempId;
+    public int getMaximumTemporaryId() {
+        return this.maximumTemporaryId;
     }
 
     // returns a list containing all variables and constants
@@ -662,8 +657,8 @@ public class TacConverter {
         List<AbstractTacPlace> placesList = new LinkedList<>();
         placesList.addAll(this.constantsTable.getConstants().values());
         placesList.addAll(this.getVariablesList());
-        placesList.addAll(this.superSymbolTable.getVariables().values());
-        placesList.addAll(this.specialSymbolTable.getVariables().values());
+        placesList.addAll(this.superglobalsSymbolTable.getVariables().values());
+        placesList.addAll(this.specialVariablesSymbolTable.getVariables().values());
         return placesList;
     }
 
@@ -671,11 +666,10 @@ public class TacConverter {
 
     // prints statistical information
     public void stats() {
-
         // global variables
         int globalVarsReal = 0;
         int globalVarsTemp = 0;
-        for (Variable globalVar : this.mainSymbolTable.getVariablesColl()) {
+        for (Variable globalVar : this.mainFunctionSymbolTable.getVariablesColl()) {
             if (globalVar.isTemp()) {
                 globalVarsTemp++;
             } else {
@@ -725,39 +719,29 @@ public class TacConverter {
             System.out.println("F-Shadows:     " + fShadowsTotal);
             System.out.println();
             System.out.println("Constants Table size: " + this.constantsTable.size());
-            System.out.println("SuperSymTab size:     " + this.superSymbolTable.size());
-            System.out.println("Special SymTab size:  " + this.specialSymbolTable.size());
+            System.out.println("SuperSymTab size:     " + this.superglobalsSymbolTable.size());
+            System.out.println("Special SymTab size:  " + this.specialVariablesSymbolTable.size());
             System.out.println();
             System.out.println("Classes: " + this.userClasses.size());
         }
     }
 
-// getMemberPlace ******************************************************************
-
     public Variable getMemberPlace() {
         return this.memberPlace;
     }
 
-//  getMainFunction ****************************************************************
-
     public TacFunction getMainFunction() {
         return this.mainFunction;
     }
-
-//  getHotspot *********************************************************************
 
     // returns null if the given hotspot doesn't exist
     public Hotspot getHotspot(int hotspotId) {
         return this.hotspots.get(hotspotId);
     }
 
-//  addHotspot *********************************************************************
-
     void addHotspot(Hotspot node) {
         this.hotspots.put(node.getHotspotId(), node);
     }
-
-// getVariablesList ****************************************************************
 
     // returns a list containing all variables
     List<Variable> getVariablesList() {
@@ -771,20 +755,16 @@ public class TacConverter {
         return variablesList;
     }
 
-//  getVariable ********************************************************************
-
     // returns the variable with the given name that is local to the
     // given function or method; also tries to find it in the superglobals
     // symbol table returns null it doesn't exist;
     public Variable getVariable(TacFunction fm, String varName) {
         Variable var = fm.getVariable(varName);
         if (var == null) {
-            var = this.superSymbolTable.getVariable(varName);
+            var = this.superglobalsSymbolTable.getVariable(varName);
         }
         return var;
     }
-
-//  getVariable ********************************************************************
 
     // returns the variable with the given name that is local to the
     // given function (NOT method); throws an exception if it doesn't exist;
@@ -796,31 +776,22 @@ public class TacConverter {
         return retMe;
     }
 
-//  getSuperGlobal *****************************************************************
-
     // returns the superglobal variable with the given name
     public Variable getSuperGlobal(String varName) {
-        return this.superSymbolTable.getVariable(varName);
+        return this.superglobalsSymbolTable.getVariable(varName);
     }
-
-//  getIncludeNodes () *************************************************************
 
     public List<Include> getIncludeNodes() {
         return this.includeNodes;
     }
 
-//  ********************************************************************************
-
     public Map<String, TacClass> getUserClasses() {
         return this.userClasses;
     }
 
-// optimize(ControlFlowGraph) *******************************************************************
-
     // removes empty nodes from a controlFlowGraph;
     // the controlFlowGraph must have at least one non-empty node;
     private void optimize(ControlFlowGraph controlFlowGraph) {
-
         AbstractCfgNode startHere;
 
         // remove leading empty nodes
@@ -838,11 +809,8 @@ public class TacConverter {
         }
     }
 
-// removeCfgNode *******************************************************************
-
     // removes empty cfg node and returns successor
     private AbstractCfgNode removeCfgNode(AbstractCfgNode cfgNode) {
-
         // empty nodes have at most one successor:
         CfgEdge outEdge = cfgNode.getOutEdge(0);
         List<CfgEdge> inEdges = cfgNode.getInEdges();
@@ -866,18 +834,14 @@ public class TacConverter {
         }
     }
 
-//  transformGlobals(ControlFlowGraph) **********************************************************
-
     // replaces literal entries of the $GLOBALS array in the given CFG with
     // the corresponding global variables (i.e., with local variables of the
     // main function)
     private void transformGlobals(ControlFlowGraph controlFlowGraph) {
-
-        Variable globalsArray = this.superSymbolTable.getVariable("$GLOBALS");
+        Variable globalsArray = this.superglobalsSymbolTable.getVariable("$GLOBALS");
 
         // traverse CFG...
         for (AbstractCfgNode cfgNode : controlFlowGraph.dfPreOrder()) {
-
             // inspect this node's variables...
             int varCount = -1;
             for (Variable var : cfgNode.getVariables()) {
@@ -920,13 +884,11 @@ public class TacConverter {
                 String varName = varNameBuffer.toString();
 
                 // retrieve/create the corresponding variable and use it as replacement
-                Variable transformedVar = this.makePlace(varName, this.mainSymbolTable);
+                Variable transformedVar = this.makePlace(varName, this.mainFunctionSymbolTable);
                 cfgNode.replaceVariable(varCount, transformedVar);
             }
         }
     }
-
-//  ********************************************************************************
 
     // scans the program for "global" statements; replaces local function variables
     // with global variables accordingly; e.g., if it finds the statement
@@ -935,7 +897,6 @@ public class TacConverter {
     // all cases (not flow-sensitive), but it provides good results in practice;
     // this should only be used if a full-fledged alias analysis is not desired
     void replaceGlobals() {
-
         // for each user-defined function...
         for (TacFunction userFunction : this.userFunctions.values()) {
 
@@ -957,10 +918,10 @@ public class TacConverter {
                 }
                 Global cfgNode = (Global) cfgNodeX;
                 String varName = cfgNode.getOperand().getName();
-                Variable correspondingGlobal = this.mainSymbolTable.getVariable(varName);
+                Variable correspondingGlobal = this.mainFunctionSymbolTable.getVariable(varName);
 
                 if (correspondingGlobal == null) {
-                    if (this.superSymbolTable.getVariable(varName) != null) {
+                    if (this.superglobalsSymbolTable.getVariable(varName) != null) {
                         // this is bad programming practice: the programmer has
                         // declared a superglobal as "global"; nothing to do here
                     } else {
@@ -1016,15 +977,13 @@ public class TacConverter {
         }
     }
 
-// makePlace(String, SymbolTable) **************************************************
-
     private Variable makePlace(String varName, SymbolTable symbolTable) {
         // lookup variable in given symbol table
         Variable variable = symbolTable.getVariable(varName);
 
         // if it isn't there: lookup variable in superglobals symbol table
         if (variable == null) {
-            variable = this.superSymbolTable.getVariable(varName);
+            variable = this.superglobalsSymbolTable.getVariable(varName);
         }
 
         // if it isn't there either: add it to the given symbol table
@@ -1033,8 +992,8 @@ public class TacConverter {
             symbolTable.add(variable);
         }
 
-        // if it is created for the superSymbolTable, it has to be a superglobal
-        if (symbolTable == this.superSymbolTable) {
+        // if it is created for the superglobalsSymbolTable, it has to be a superglobal
+        if (symbolTable == this.superglobalsSymbolTable) {
             variable.setIsSuperGlobal(true);
         }
 
@@ -1042,28 +1001,21 @@ public class TacConverter {
         return variable;
     }
 
-// makePlace(String) ***************************************************************
-
     // convenience wrapper around makePlace(String, SymbolTable)
     private Variable makePlace(String varName) {
         return this.makePlace(varName, this.functionStack.getLast().getSymbolTable());
     }
 
-// makeReturnPlace(String) *********************************************************
-
     // returns the place for the given function's return variable;
     // return variables are named
     // "InternalStrings.returnPrefix<function name>"
     private Variable makeReturnPlace(String functionName) {
-        Variable returnPlace = this.makePlace(InternalStrings.returnPrefix + functionName, this.superSymbolTable);
+        Variable returnPlace = this.makePlace(InternalStrings.returnPrefix + functionName, this.superglobalsSymbolTable);
         returnPlace.setIsReturnVariable(true);
         return returnPlace;
     }
 
-// makeConstantPlace ***************************************************************
-
     private AbstractTacPlace makeConstantPlace(String label) {
-
         // lookup constant
         Constant constant = this.constantsTable.getConstant(label);
 
@@ -1078,19 +1030,14 @@ public class TacConverter {
         return constant;
     }
 
-// addSuperGlobal ******************************************************************
-
     private void addSuperGlobal(String varName) {
-        AbstractTacPlace sgPlace = this.makePlace(varName, this.superSymbolTable);
+        AbstractTacPlace sgPlace = this.makePlace(varName, this.superglobalsSymbolTable);
         Variable var = sgPlace.getVariable();
         var.setIsSuperGlobal(true);
     }
 
-// connect(CfgNode, CfgNode, int) **************************************************
-
     private static void connect(AbstractCfgNode source, AbstractCfgNode dest, int edgeType) {
         if (edgeType != CfgEdge.NO_EDGE) {
-
             // create edge
             CfgEdge edge = new CfgEdge(source, dest, edgeType);
 
@@ -1106,13 +1053,9 @@ public class TacConverter {
         }
     }
 
-// connect(CfgNode, CfgNode) **************************************************
-
     static void connect(AbstractCfgNode source, AbstractCfgNode dest) {
         connect(source, dest, CfgEdge.NORMAL_EDGE);
     }
-
-// connect(ControlFlowGraph, ControlFlowGraph) ***************************************************************
 
     static void connect(ControlFlowGraph firstControlFlowGraph, ControlFlowGraph secondControlFlowGraph) {
         connect(
@@ -1121,16 +1064,12 @@ public class TacConverter {
             firstControlFlowGraph.getTailEdgeType());
     }
 
-// connect(ControlFlowGraph, CfgNode) ***********************************************************
-
     static void connect(ControlFlowGraph firstControlFlowGraph, AbstractCfgNode dest) {
         connect(
             firstControlFlowGraph.getTail(),
             dest,
             firstControlFlowGraph.getTailEdgeType());
     }
-
-// connect(CfgNode, ControlFlowGraph, int) ******************************************************
 
     private static void connect(AbstractCfgNode source, ControlFlowGraph secondControlFlowGraph, int edgeType) {
         connect(
@@ -1139,13 +1078,9 @@ public class TacConverter {
             edgeType);
     }
 
-// connect(CfgNode, ControlFlowGraph) ******************************************************
-
     static void connect(AbstractCfgNode source, ControlFlowGraph secondControlFlowGraph) {
         connect(source, secondControlFlowGraph, CfgEdge.NORMAL_EDGE);
     }
-
-//  ********************************************************************************
 
     // adds a method to this.userMethods; if a method with this methodName and
     // className already exists, it returns the already existing method;
@@ -1165,8 +1100,6 @@ public class TacConverter {
         }
     }
 
-//  ********************************************************************************
-
     // returns the method with the given name in the given class; null if
     // there is no such method
     private TacFunction getMethod(String methodName, String className) {
@@ -1185,10 +1118,7 @@ public class TacConverter {
 /*
  * The following methods are closely related to the "Parse Rule Methods" below and
  * have been "outsourced" to prevent code redundancy.
- *
  */
-
-// booleanHelper *******************************************************************
 
     // handles short-circuit code for AND, &&, OR, ||
     void booleanHelper(ParseNode node, TacAttributes myAtts, int type) {
@@ -1271,11 +1201,8 @@ public class TacConverter {
         myAtts.setPlace(myPlace);
     }
 
-// expOpExp ************************************************************************
-
     // expression operator expression
     void expOpExp(ParseNode node, int op, TacAttributes myAtts) {
-
         Variable myPlace = null;
         int logId = this.tempId;
 
@@ -1313,8 +1240,6 @@ public class TacConverter {
         myAtts.setPlace(myPlace);
     }
 
-// cvarOpExp ***********************************************************************
-
     // cvar operator expression
     void cvarOpExp(ParseNode node, int op, TacAttributes myAtts) {
 
@@ -1330,11 +1255,8 @@ public class TacConverter {
         myAtts.setPlace(atts0.getPlace());
     }
 
-// postIncDec **********************************************************************
-
     // post-increment and post-decrement
     void postIncDec(ParseNode node, int op, TacAttributes myAtts) {
-
         // temporary to rescue the variable's old value;
         // will be the expression's place
         Variable tempPlace = newTemp();
@@ -1356,8 +1278,6 @@ public class TacConverter {
         myAtts.setPlace(tempPlace);
     }
 
-// preIncDec **********************************************************************
-
     // pre-increment and pre-decrement
     void preIncDec(ParseNode node, int op, TacAttributes myAtts) {
 
@@ -1373,8 +1293,6 @@ public class TacConverter {
         myAtts.setPlace(atts1.getPlace());
     }
 
-// opExp ***************************************************************************
-
     // operator expression
     void opExp(ParseNode node, int op, TacAttributes myAtts) {
 
@@ -1389,10 +1307,7 @@ public class TacConverter {
         myAtts.setPlace(tempPlace);
     }
 
-// functionHelper ******************************************************************
-
     void functionHelper(ParseNode node, int paramListNum, int statNum, TacAttributes myAtts) {
-
         // LATER
         // - case: no return statement inside the function, but a caller uses
         //   the function's return value: probably a bug
@@ -1474,10 +1389,7 @@ public class TacConverter {
         this.optimize(controlFlowGraph);
     }
 
-// methodHelper ********************************************************************
-
     TacFunction methodHelper(ParseNode node, int paramListNum, int statNum, String functionName) {
-
         // referencedom
         boolean isReference = (node.getChild(1).getChild(0).getSymbol() == PhpSymbols.T_EPSILON);
 
@@ -1532,11 +1444,8 @@ public class TacConverter {
         return function;
     }
 
-//  ********************************************************************************
-
     // creates an empty constructor for the given class name
     TacFunction constructorHelper(ParseNode node, String className) {
-
         // the constructor's empty ControlFlowGraph
         CfgEntry entryNode = new CfgEntry(node);
         CfgExit exitNode = new CfgExit(node);
@@ -1559,8 +1468,6 @@ public class TacConverter {
         return function;
     }
 
-//  generateShadows() **************************************************************
-
     // generate shadow variables for every function in this.userFunctions
     public void generateShadows() {
         for (TacFunction userFunction : this.userFunctions.values()) {
@@ -1571,19 +1478,16 @@ public class TacConverter {
         }
     }
 
-//  generateShadows(TacFunction) ***************************************************
-
     // generates shadow variables for the given function;
     // don't call this function before calling transformGlobals(), otherwise
     // you will miss some g-shadows
     private void generateShadows(TacFunction function) {
-
         SymbolTable symTab = function.getSymbolTable();
 
         // G-SHADOWS
 
         // for each variable in the main function...
-        for (Variable var : this.mainSymbolTable.getVariablesColl()) {
+        for (Variable var : this.mainFunctionSymbolTable.getVariablesColl()) {
             // no need to create shadows for temporaries
             // [what about arrays and array elements?]
             if (var.isTemp()) {
@@ -1604,8 +1508,6 @@ public class TacConverter {
             symTab.addFShadow(var);
         }
     }
-
-// functionCallHelper **************************************************************
 
     // constructs a sub-cfg for a function call and returns it;
     // if "backpatch" is set to false, "function" must be non-null
@@ -1683,8 +1585,6 @@ public class TacConverter {
         return new ControlFlowGraph(prep, callRet);
     }
 
-//  ********************************************************************************
-
     public void addFunctionCall(TacFunction enclosingFunction, CallPreparation prepNode) {
         List<CallPreparation> nodeList = this.functionCalls.get(enclosingFunction);
         if (nodeList == null) {
@@ -1711,8 +1611,6 @@ public class TacConverter {
             return retMe;
         }
     }
-
-//  ********************************************************************************
 
     public void addMethodCall(TacFunction enclosingFunction, CallPreparation prepNode) {
         List<CallPreparation> nodeList = this.methodCalls.get(enclosingFunction);
@@ -1741,12 +1639,9 @@ public class TacConverter {
         }
     }
 
-//  addSuperGlobalElements *********************************************************
-
     // explicitly adds pre-defined elements of the
     // superglobal $_SERVER and $HTTP_SERVER_VARS arrays
     public void addSuperGlobalElements() {
-
         String[] indices = {
             "PHP_SELF", "SERVER_NAME", "HTTP_HOST", "HTTP_REFERER",
             "HTTP_ACCEPT_LANGUAGE", "SERVER_SOFTWARE", "PHP_AUTH_USER",
@@ -1757,22 +1652,22 @@ public class TacConverter {
         // *** $_SERVER[...] ***
 
         String superName = "$_SERVER";
-        Variable superVar = this.superSymbolTable.getVariable(superName);
+        Variable superVar = this.superglobalsSymbolTable.getVariable(superName);
         Variable var = null;
         for (String indice : indices) {
             // only add the variable if it does not exist yet
-            var = this.superSymbolTable.getVariable(superName + "[" + indice + "]");
+            var = this.superglobalsSymbolTable.getVariable(superName + "[" + indice + "]");
             if (var == null) {
                 this.makeArrayElementPlace(superVar, new Literal(indice));
             }
         }
 
         // LATER: not so elegant...
-        Variable argv = this.superSymbolTable.getVariable(superName + "[argv]");
+        Variable argv = this.superglobalsSymbolTable.getVariable(superName + "[argv]");
         if (argv == null) {
             argv = this.makeArrayElementPlace(superVar, new Literal("argv"));
         }
-        var = this.superSymbolTable.getVariable(superName + "[argv][0]");
+        var = this.superglobalsSymbolTable.getVariable(superName + "[argv][0]");
         if (var == null) {
             this.makeArrayElementPlace(argv, new Literal("0"));
         }
@@ -1781,33 +1676,30 @@ public class TacConverter {
         // *** $HTTP_SERVER_VARS[...] ***
 
         superName = "$HTTP_SERVER_VARS";
-        superVar = this.superSymbolTable.getVariable(superName);
+        superVar = this.superglobalsSymbolTable.getVariable(superName);
         for (String indice : indices) {
             // only add the variable if it does not exist yet
-            var = this.superSymbolTable.getVariable(superName + "[" + indice + "]");
+            var = this.superglobalsSymbolTable.getVariable(superName + "[" + indice + "]");
             if (var == null) {
                 this.makeArrayElementPlace(superVar, new Literal(indice));
             }
         }
 
-        argv = this.superSymbolTable.getVariable(superName + "[argv]");
+        argv = this.superglobalsSymbolTable.getVariable(superName + "[argv]");
         if (argv == null) {
             argv = this.makeArrayElementPlace(superVar, new Literal("argv"));
         }
-        var = this.superSymbolTable.getVariable(superName + "[argv][0]");
+        var = this.superglobalsSymbolTable.getVariable(superName + "[argv][0]");
         if (var == null) {
             this.makeArrayElementPlace(argv, new Literal("0"));
         }
     }
-
-// makeArrayElementPlace ***********************************************************
 
     // - marks the enclosing array as array
     // - determines if the enclosing array is superglobal or not
     // - creates the array element and sets its properties
     // - informs the enclosing array about the element
     Variable makeArrayElementPlace(AbstractTacPlace arrayPlace, AbstractTacPlace offsetPlace) {
-
         // the enclosing array
         Variable arrayVar = arrayPlace.getVariable();
         // mark it as array
@@ -1821,7 +1713,7 @@ public class TacConverter {
         boolean superGlobal;
         SymbolTable symbolTable;
         if (arrayVar.isSuperGlobal()) {
-            symbolTable = this.superSymbolTable;
+            symbolTable = this.superglobalsSymbolTable;
             superGlobal = true;
         } else {
             symbolTable = this.functionStack.getLast().getSymbolTable();
@@ -1852,8 +1744,6 @@ public class TacConverter {
         return arrayElementVar;
     }
 
-// arrayPairListHelper *************************************************************
-
     // - creates the array element and
     //   creates a ControlFlowGraph node which either assigns a value to the array element
     //   or makes the array element a reference to the given valuePlace
@@ -1871,12 +1761,9 @@ public class TacConverter {
         }
     }
 
-// encapsListHelper ****************************************************************
-
     // encaps_list -> encaps_list, <some token>
     // - encapsList
     void encapsListHelper(ParseNode node, TacAttributes myAtts) {
-
         TacAttributes attsList = this.encaps_list(node.getChild(0));
         AbstractTacPlace stringPlace = new Literal(node.getChild(1).getLexeme(), false);
 
@@ -1885,16 +1772,12 @@ public class TacConverter {
         myAtts.setEncapsList(encapsList);
     }
 
-// exprVarHelper *******************************************************************
-
     // returns the right place for
     // $ { expr }
     // no matter if it is encountered within double quotes or not
     AbstractTacPlace exprVarHelper(AbstractTacPlace exprPlace) {
-
         AbstractTacPlace myPlace = null;
         if (exprPlace.isLiteral()) {
-
             // intended transformations for literals:
             // ${'123'}  -->  ${'123'}
             // ${'1xy'}  -->  ${'1xy'}
@@ -1927,8 +1810,6 @@ public class TacConverter {
 
         return myPlace;
     }
-
-// foreachHelper *******************************************************************
 
     // attsArray: the array to be run through ($arr in the example below)
     private void foreachHelper(ParseNode node, TacAttributes attsArray, TacAttributes myAtts) {
@@ -2044,8 +1925,6 @@ public class TacConverter {
         myAtts.setControlFlowGraph(new ControlFlowGraph(attsArray.getControlFlowGraph().getHead(), endNode));
     }
 
-//  backpatch **********************************************************************
-
     // preliminary backpatching
     public void backpatch() {
         backpatch(false, false, null, null);
@@ -2057,9 +1936,7 @@ public class TacConverter {
     // - finalPass: issues warnings for unresolved calls, and performs some
     //   source code replacements
     // - typeAnalysis: can also be null
-    public void backpatch(boolean riskMethods, boolean finalPass,
-                          TypeAnalysis typeAnalysis, CallGraph callGraph) {
-
+    public void backpatch(boolean riskMethods, boolean finalPass, TypeAnalysis typeAnalysis, CallGraph callGraph) {
         // method backpatching
         for (List<CallPreparation> callList : this.methodCalls.values()) {
             for (CallPreparation prepNode : callList) {
@@ -2141,7 +2018,6 @@ public class TacConverter {
                         }
                     }
                 } else {
-
                     if (finalPass && reachable) {
                         System.out.println("Warning: can't resolve method call (no definition found)");
                         System.out.println("- name:    " + functionNamePlace);
@@ -2150,7 +2026,6 @@ public class TacConverter {
                 }
 
                 if (callee == null) {
-
                     if (finalPass) {
                         // replace the three call nodes with a cfgnodecallunknown
                         this.replaceUnknownCall(prepNode, functionNamePlace.toString(), true);
@@ -2174,7 +2049,6 @@ public class TacConverter {
                                 actualParams.remove(actualParams.size() - 1);
                             }
                         } else {
-
                             // more formal than actual params;
                             // this is only ok if the missing actuals are matched by
                             // default formals; otherwise, it is a bug
@@ -2228,7 +2102,6 @@ public class TacConverter {
                 // (or the special _unknownFunction) by the CP
                 TacFunction callee = this.userFunctions.get(functionNamePlace.toString());
                 if (callee == null) {
-
                     if (BuiltinFunctions.isBuiltinFunction(functionNamePlace.toString())) {
                         // since we are now using a separate cfg node for calls to
                         // builtin functions, this case should not happen
@@ -2237,14 +2110,12 @@ public class TacConverter {
                         // not having information about a non-builtin function IS bad,
                         // since it could contain sensitive sinks
                         if (finalPass) {
-
                             if (reachable) {
                                 System.out.println("Warning: can't find function " + functionNamePlace);
                                 System.out.println("- " + prepNode.getLoc());
                             }
 
                             // replace the three call nodes with a cfgnodecallunknown
-
                             this.replaceUnknownCall(prepNode, functionNamePlace.toString(), false);
                         }
 
@@ -2299,9 +2170,7 @@ public class TacConverter {
         }
     }
 
-    private void replaceUnknownCall(CallPreparation prepNode,
-                                    String functionName, boolean isMethod) {
-
+    private void replaceUnknownCall(CallPreparation prepNode, String functionName, boolean isMethod) {
         CallReturn callRet = prepNode.getCallRetNode();
 
         // the replacement node
@@ -2337,10 +2206,7 @@ public class TacConverter {
 // PARSE RULE METHODS **************************************************************
 // *********************************************************************************
 
-// start ***************************************************************************
-
     void start(ParseNode node) {
-
         // always:
         // -> top_statement_list
 
@@ -2374,7 +2240,7 @@ public class TacConverter {
         this.mainFunction = function;
 
         // make shortcut to the symbol table of the main function
-        this.mainSymbolTable = function.getSymbolTable();
+        this.mainFunctionSymbolTable = function.getSymbolTable();
 
         // push function onto the function stack
         this.functionStack.add(function);
@@ -2398,15 +2264,12 @@ public class TacConverter {
         }
     }
 
-// top_statement_list **************************************************************
-
     // - cfg
     TacAttributes top_statement_list(ParseNode node) {
         TacAttributes myAtts = new TacAttributes();
 
         ParseNode firstChild = node.getChild(0);
         switch (firstChild.getSymbol()) {
-
             // -> top_statement_list top_statement
             case PhpSymbols.top_statement_list: {
                 int logId = this.tempId;
@@ -2433,8 +2296,6 @@ public class TacConverter {
         return myAtts;
     }
 
-// top_statement *******************************************************************
-
     // - cfg
     TacAttributes top_statement(ParseNode node) {
         TacAttributes myAtts = new TacAttributes();
@@ -2460,16 +2321,12 @@ public class TacConverter {
         return myAtts;
     }
 
-// declaration_statement *****************************************************************
-
     // - cfg
     TacAttributes declaration_statement(ParseNode node) {
         // always:
         // -> unticked_declaration_statement
         return this.unticked_declaration_statement(node.getChild(0));
     }
-
-// unticked_declaration_statement *****************************************************************
 
     // - cfg
     TacAttributes unticked_declaration_statement(ParseNode node) {
@@ -2577,8 +2434,6 @@ public class TacConverter {
         return myAtts;
     }
 
-// class_statement_list ************************************************************
-
     // does not return anything in the attributes, only collects information
     // about the class and writes it into the provided TacClass
     TacAttributes class_statement_list(ParseNode node, TacClass c) {
@@ -2606,8 +2461,6 @@ public class TacConverter {
         return myAtts;
     }
 
-// class_statement *****************************************************************
-
     // - (nothing)
     TacAttributes class_statement(ParseNode node, TacClass c) {
         TacAttributes myAtts = new TacAttributes();
@@ -2615,9 +2468,9 @@ public class TacConverter {
         ParseNode firstChild = node.getChild(0);
         switch (firstChild.getSymbol()) {
 
-            // -> T_VAR class_variable_decleration T_SEMICOLON
+            // -> T_VAR class_variable_declaration T_SEMICOLON
             case PhpSymbols.T_VAR: {
-                this.class_variable_decleration(node.getChild(1), c);
+                this.class_variable_declaration(node.getChild(1), c);
                 break;
             }
 
@@ -2657,28 +2510,26 @@ public class TacConverter {
         return myAtts;
     }
 
-//  class_variable_decleration (sic) ***********************************************
-
     // - (nothing)
-    TacAttributes class_variable_decleration(ParseNode node, TacClass c) {
+    TacAttributes class_variable_declaration(ParseNode node, TacClass c) {
         TacAttributes myAtts = new TacAttributes();
 
         ParseNode firstChild = node.getChild(0);
         switch (firstChild.getSymbol()) {
 
-            // -> class_variable_decleration ...
+            // -> class_variable_declaration ...
             case PhpSymbols.class_variable_decleration: {
                 if (node.getNumChildren() == 3) {
-                    // -> class_variable_decleration T_COMMA T_VARIABLE
-                    this.class_variable_decleration(firstChild, c);
+                    // -> class_variable_declaration T_COMMA T_VARIABLE
+                    this.class_variable_declaration(firstChild, c);
 
                     Variable var = this.newTemp();
                     AbstractCfgNode cfgNode = new AssignSimple(var, this.constantsTable.getConstant("NULL"), node);
                     ControlFlowGraph nullControlFlowGraph = new ControlFlowGraph(cfgNode, cfgNode);
                     c.addMember(node.getChild(2).getLexeme(), nullControlFlowGraph, var);
                 } else {
-                    // -> class_variable_decleration T_COMMA T_VARIABLE T_ASSIGN static_scalar
-                    this.class_variable_decleration(firstChild, c);
+                    // -> class_variable_declaration T_COMMA T_VARIABLE T_ASSIGN static_scalar
+                    this.class_variable_declaration(firstChild, c);
 
                     TacAttributes atts4 = this.static_scalar(node.getChild(4));
                     c.addMember(node.getChild(2).getLexeme(), atts4.getControlFlowGraph(), atts4.getPlace());
@@ -2708,8 +2559,6 @@ public class TacConverter {
         return myAtts;
     }
 
-// parameter_list *****************************************************************
-
     // - paramList
     TacAttributes parameter_list(ParseNode node) {
         TacAttributes myAtts = new TacAttributes();
@@ -2725,8 +2574,6 @@ public class TacConverter {
 
         return myAtts;
     }
-
-// non_empty_parameter_list *****************************************************************
 
     // - paramList
     TacAttributes non_empty_parameter_list(ParseNode node) {
@@ -2853,8 +2700,6 @@ public class TacConverter {
         return myAtts;
     }
 
-// static_scalar *****************************************************************
-
     // - cfg
     // - place
     TacAttributes static_scalar(ParseNode node) {
@@ -2923,8 +2768,6 @@ public class TacConverter {
         return myAtts;
     }
 
-// static_array_pair_list *****************************************************************
-
     // - cfg
     TacAttributes static_array_pair_list(ParseNode node, AbstractTacPlace arrayPlace) {
         TacAttributes myAtts = new TacAttributes();
@@ -2945,8 +2788,6 @@ public class TacConverter {
         return myAtts;
     }
 
-// non_empty_static_array_pair_list *****************************************************************
-
     // - cfg
     // very similar to parts of non_empty_array_pair_list
     TacAttributes non_empty_static_array_pair_list(ParseNode node, AbstractTacPlace arrayPlace) {
@@ -2957,7 +2798,6 @@ public class TacConverter {
         if (firstChild.getSymbol() == PhpSymbols.non_empty_static_array_pair_list) {
             if (node.getNumChildren() == 5) {
                 // -> non_empty_static_array_pair_list , static_scalar T_DOUBLE_ARROW static_scalar
-
                 TacAttributes attsList = null;
                 try {
                     attsList = this.non_empty_static_array_pair_list(firstChild, arrayPlace);
@@ -2981,7 +2821,6 @@ public class TacConverter {
                     cfgNode));
             } else {
                 // -> non_empty_static_array_pair_list , static_scalar
-
                 TacAttributes attsList =
                     this.non_empty_static_array_pair_list(firstChild, arrayPlace);
                 TacAttributes attsScalar = this.static_scalar(node.getChild(2));
@@ -3011,7 +2850,6 @@ public class TacConverter {
         } else {
             if (node.getNumChildren() == 3) {
                 // -> static_scalar T_DOUBLE_ARROW static_scalar
-
                 TacAttributes attsScalar1 = this.static_scalar(firstChild);
                 TacAttributes attsScalar2 = this.static_scalar(node.getChild(2));
 
@@ -3025,7 +2863,6 @@ public class TacConverter {
                     cfgNode));
             } else {
                 // -> static_scalar
-
                 TacAttributes attsScalar = this.static_scalar(firstChild);
 
                 AbstractCfgNode cfgNode = this.arrayPairListHelper(
@@ -3045,8 +2882,6 @@ public class TacConverter {
         this.resetId(logId);
         return myAtts;
     }
-
-// inner_statement_list *****************************************************************
 
     // - cfg
     TacAttributes inner_statement_list(ParseNode node) {
@@ -3080,15 +2915,12 @@ public class TacConverter {
         return myAtts;
     }
 
-// inner_statement *****************************************************************
-
     // - cfg
     TacAttributes inner_statement(ParseNode node) {
         TacAttributes myAtts = new TacAttributes();
 
         ParseNode firstChild = node.getChild(0);
         switch (firstChild.getSymbol()) {
-
             // -> statement
             case PhpSymbols.statement: {
                 TacAttributes atts0 = this.statement(firstChild);
@@ -3107,16 +2939,12 @@ public class TacConverter {
         return myAtts;
     }
 
-// statement ***********************************************************************
-
     // - cfg
     TacAttributes statement(ParseNode node) {
         // always:
         // -> unticked_statement
         return this.unticked_statement(node.getChild(0));
     }
-
-// unticked_statement **************************************************************
 
     // - cfg
     TacAttributes unticked_statement(ParseNode node) {
@@ -3583,8 +3411,6 @@ public class TacConverter {
         return myAtts;
     }
 
-// foreach_statement *****************************************************************
-
     // - cfg
     TacAttributes foreach_statement(ParseNode node) {
         TacAttributes myAtts = new TacAttributes();
@@ -3603,8 +3429,6 @@ public class TacConverter {
         return myAtts;
     }
 
-// foreach_optional_arg *****************************************************************
-
     // - cfg
     // - place
     // can return null!
@@ -3619,8 +3443,6 @@ public class TacConverter {
         }
     }
 
-// static_var_list *****************************************************************
-
     // - cfg
     TacAttributes static_var_list(ParseNode node) {
         TacAttributes myAtts = new TacAttributes();
@@ -3630,7 +3452,6 @@ public class TacConverter {
         if (firstChild.getSymbol() == PhpSymbols.static_var_list) {
             if (node.getNumChildren() == 3) {
                 // -> static_var_list , T_VARIABLE
-
                 TacAttributes atts0 = this.static_var_list(firstChild);
 
                 AbstractTacPlace varPlace = makePlace(node.getChild(2).getLexeme());
@@ -3643,7 +3464,6 @@ public class TacConverter {
                     cfgNode));
             } else {
                 // -> static_var_list , T_VARIABLE = static_scalar
-
                 TacAttributes atts0 = this.static_var_list(firstChild);
                 TacAttributes atts4 = this.static_scalar(node.getChild(4));
 
@@ -3660,13 +3480,11 @@ public class TacConverter {
         } else {
             if (node.getNumChildren() == 1) {
                 // -> T_VARIABLE
-
                 AbstractTacPlace varPlace = makePlace(firstChild.getLexeme());
                 AbstractCfgNode cfgNode = new Static(varPlace, node);
                 myAtts.setControlFlowGraph(new ControlFlowGraph(cfgNode, cfgNode));
             } else {
                 // -> T_VARIABLE = static_scalar
-
                 TacAttributes atts2 = this.static_scalar(node.getChild(2));
 
                 AbstractTacPlace varPlace = makePlace(firstChild.getLexeme());
@@ -3683,8 +3501,6 @@ public class TacConverter {
         return myAtts;
     }
 
-// global_var_list *****************************************************************
-
     // - cfg
     TacAttributes global_var_list(ParseNode node) {
         TacAttributes myAtts = new TacAttributes();
@@ -3693,7 +3509,6 @@ public class TacConverter {
 
         if (firstChild.getSymbol() == PhpSymbols.global_var_list) {
             // -> global_var_list , global_var
-
             TacAttributes atts0 = this.global_var_list(firstChild);
             TacAttributes atts2 = this.global_var(node.getChild(2));
             connect(atts0.getControlFlowGraph(), atts2.getControlFlowGraph());
@@ -3709,19 +3524,16 @@ public class TacConverter {
         return myAtts;
     }
 
-// global_var **********************************************************************
-
     // - cfg
     TacAttributes global_var(ParseNode node) {
         TacAttributes myAtts = new TacAttributes();
 
         if (node.getChild(0).getSymbol() == PhpSymbols.T_VARIABLE) {
             // -> T_VARIABLE
-
             String varLex = node.getChild(0).getLexeme();
             AbstractTacPlace varPlace = makePlace(varLex);
             // there also has to be a global variable with the same name
-            makePlace(varLex, this.mainSymbolTable);
+            makePlace(varLex, this.mainFunctionSymbolTable);
             AbstractCfgNode cfgNode = new Global(varPlace, node);
             myAtts.setControlFlowGraph(new ControlFlowGraph(cfgNode, cfgNode));
         } else if (node.getChild(1).getSymbol() == PhpSymbols.r_cvar) {
@@ -3750,8 +3562,6 @@ public class TacConverter {
         return myAtts;
     }
 
-// expr ****************************************************************************
-
     // - cfg
     // - place
     TacAttributes expr(ParseNode node) {
@@ -3759,7 +3569,6 @@ public class TacConverter {
 
         ParseNode firstChild = node.getChild(0);
         switch (firstChild.getSymbol()) {
-
             // -> r_cvar
             case PhpSymbols.r_cvar: {
                 myAtts = this.r_cvar(firstChild);
@@ -3775,8 +3584,6 @@ public class TacConverter {
 
         return myAtts;
     }
-
-// expr_without_variable ***********************************************************
 
     // - cfg
     // - place
@@ -3806,10 +3613,8 @@ public class TacConverter {
             // -> cvar ...
             case PhpSymbols.cvar: {
                 switch (node.getChild(1).getSymbol()) {
-
                     // -> cvar = ...
                     case PhpSymbols.T_ASSIGN: {
-
                         if (node.getNumChildren() == 3) {
                             // -> cvar = expr
                             TacAttributes atts0 = this.cvar(firstChild);
@@ -3999,7 +3804,6 @@ public class TacConverter {
 
             // -> T_NEW static_or_variable_string ctor_arguments
             case PhpSymbols.T_NEW: {
-
                 TacAttributes attsCtor = this.ctor_arguments(node.getChild(2));
 
                 // there are two possibilities for static_or_variable_string:
@@ -4008,7 +3812,6 @@ public class TacConverter {
                 // we can only call the constructor for T_STRING
                 ParseNode classNameNode = node.getChild(1).getChild(0);
                 if (classNameNode.getSymbol() == PhpSymbols.T_STRING) {
-
                     String className = classNameNode.getLexeme().toLowerCase();
 
                     // temporary variable for catching the
@@ -4070,9 +3873,7 @@ public class TacConverter {
 
             // -> expr ...
             case PhpSymbols.expr: {
-
                 switch (node.getChild(1).getSymbol()) {
-
                     // -> expr T_BOOLEAN_OR expr
                     // -> expr T_LOGICAL_OR expr
                     case PhpSymbols.T_BOOLEAN_OR:
@@ -4343,7 +4144,7 @@ public class TacConverter {
                 // if this is a valid special node marker
                 boolean special = false;
                 String marker = null;
-                if (this.specialNodes) {
+                if (this.specialNodeMarkersShouldBeConsidered) {
                     try {
                         ParseNode constantNode =
                             node.getChild(1).getChild(0).getChild(0).getChild(0);
@@ -4529,8 +4330,6 @@ public class TacConverter {
         return myAtts;
     }
 
-// ctor_arguments *****************************************************************
-
     // - cfg
     TacAttributes ctor_arguments(ParseNode node) {
         TacAttributes myAtts = new TacAttributes();
@@ -4551,8 +4350,6 @@ public class TacConverter {
         return myAtts;
     }
 
-// internal_functions_in_yacc *****************************************************************
-
     // - cfg
     // - place
     TacAttributes internal_functions_in_yacc(ParseNode node) {
@@ -4560,7 +4357,6 @@ public class TacConverter {
 
         ParseNode firstChild = node.getChild(0);
         switch (firstChild.getSymbol()) {
-
             // -> T_ISSET ( isset_variables )
             case PhpSymbols.T_ISSET: {
                 TacAttributes atts2 = this.isset_variables(node.getChild(2));
@@ -4661,8 +4457,6 @@ public class TacConverter {
         return myAtts;
     }
 
-// isset_variables *****************************************************************
-
     // - cfg
     // - place
     TacAttributes isset_variables(ParseNode node) {
@@ -4706,8 +4500,6 @@ public class TacConverter {
         return myAtts;
     }
 
-// exit_expr *****************************************************************
-
     // - cfg
     // - no place: not needed
     TacAttributes exit_expr(ParseNode node) {
@@ -4735,8 +4527,6 @@ public class TacConverter {
         return myAtts;
     }
 
-// function_call *****************************************************************
-
     // - code
     // - place
     TacAttributes function_call(ParseNode node) {
@@ -4746,7 +4536,6 @@ public class TacConverter {
         Variable tempVar = newTemp();
 
         if (node.getChild(0).getSymbol() == PhpSymbols.cvar) {
-
             // -> cvar ( function_call_parameter_list )
 
             // dynamic dispatch problem! examples:
@@ -4760,7 +4549,6 @@ public class TacConverter {
             // (or something else that we could not resolve)
             if (attsCvar.isKnownCall()) {
                 // method call
-
                 connect(attsList.getControlFlowGraph(), attsCvar.getControlFlowGraph());
 
                 myAtts.setControlFlowGraph(new ControlFlowGraph(
@@ -4797,9 +4585,7 @@ public class TacConverter {
                 // node responsible for catching the function's return value
             }
         } else if (node.getChild(1).getSymbol() == PhpSymbols.T_OPEN_BRACES) {
-
             // -> T_STRING ( function_call_parameter_list )
-
             TacAttributes attsList = this.function_call_parameter_list(node.getChild(2));
             String functionName = node.getChild(0).getLexeme().toLowerCase();
 
@@ -4815,12 +4601,9 @@ public class TacConverter {
 
             myAtts.setPlace(tempVar);
         } else {
-
             // -> T_STRING T_PAAMAYIM_NEKUDOTAYIM static_or_variable_string ( function_call_parameter_list )
-
             // e.g.:
             // $x = Foo::bar();
-
             TacAttributes attsList = this.function_call_parameter_list(node.getChild(4));
 
             String className = node.getChild(0).getLexeme().toLowerCase();
@@ -4861,8 +4644,6 @@ public class TacConverter {
         return myAtts;
     }
 
-// function_call_parameter_list *****************************************************************
-
     // - cfg
     // - paramList
     TacAttributes function_call_parameter_list(ParseNode node) {
@@ -4870,14 +4651,11 @@ public class TacConverter {
 
         ParseNode firstChild = node.getChild(0);
         if (firstChild.getSymbol() == PhpSymbols.non_empty_function_call_parameter_list) {
-
             // -> non_empty_function_call_parameter_list
-
             TacAttributes attsList = this.non_empty_function_call_parameter_list(firstChild);
             myAtts.setControlFlowGraph(attsList.getControlFlowGraph());
             myAtts.setActualParamList(attsList.getActualParamList());
         } else {
-
             // -> empty
             AbstractCfgNode cfgNode = new Empty();
             myAtts.setControlFlowGraph(new ControlFlowGraph(cfgNode, cfgNode));
@@ -4888,8 +4666,6 @@ public class TacConverter {
         return myAtts;
     }
 
-// non_empty_function_call_parameter_list *****************************************************************
-
     // - cfg
     // - paramList
     TacAttributes non_empty_function_call_parameter_list(ParseNode node) {
@@ -4897,10 +4673,8 @@ public class TacConverter {
 
         ParseNode firstChild = node.getChild(0);
         switch (firstChild.getSymbol()) {
-
             // -> expr_without_variable
             case PhpSymbols.expr_without_variable: {
-
                 TacAttributes attsExpr = this.expr_without_variable(firstChild);
                 myAtts.setControlFlowGraph(attsExpr.getControlFlowGraph());
 
@@ -4913,7 +4687,6 @@ public class TacConverter {
 
             // -> cvar
             case PhpSymbols.cvar: {
-
                 TacAttributes attsCvar = this.cvar(firstChild);
                 myAtts.setControlFlowGraph(attsCvar.getControlFlowGraph());
 
@@ -4926,7 +4699,6 @@ public class TacConverter {
 
             // -> & w_cvar
             case PhpSymbols.T_BITWISE_AND: {
-
                 TacAttributes attsCvar = this.w_cvar(node.getChild(1));
                 myAtts.setControlFlowGraph(attsCvar.getControlFlowGraph());
 
@@ -4943,9 +4715,7 @@ public class TacConverter {
                 int thirdSymbol = thirdChild.getSymbol();
 
                 if (thirdSymbol == PhpSymbols.expr_without_variable) {
-
                     // -> non_empty_function_call_parameter_list , expr_without_variable
-
                     TacAttributes attsList =
                         this.non_empty_function_call_parameter_list(firstChild);
                     TacAttributes attsExpr = this.expr_without_variable(thirdChild);
@@ -4960,9 +4730,7 @@ public class TacConverter {
                     paramList.add(new TacActualParameter(attsExpr.getPlace(), false));
                     myAtts.setActualParamList(paramList);
                 } else if (thirdSymbol == PhpSymbols.cvar) {
-
                     // -> non_empty_function_call_parameter_list , cvar
-
                     TacAttributes attsList =
                         this.non_empty_function_call_parameter_list(firstChild);
                     TacAttributes attsCvar = this.cvar(thirdChild);
@@ -4978,7 +4746,6 @@ public class TacConverter {
                     myAtts.setActualParamList(paramList);
                 } else {
                     // -> non_empty_function_call_parameter_list , & w_cvar
-
                     TacAttributes attsList =
                         this.non_empty_function_call_parameter_list(firstChild);
                     TacAttributes attsCvar = this.w_cvar(node.getChild(3));
@@ -5001,8 +4768,6 @@ public class TacConverter {
         return myAtts;
     }
 
-// array_pair_list *****************************************************************
-
     // - cfg
     TacAttributes array_pair_list(ParseNode node, Variable arrayPlace) {
         TacAttributes myAtts = new TacAttributes();
@@ -5022,8 +4787,6 @@ public class TacConverter {
         return myAtts;
     }
 
-// non_empty_array_pair_list *****************************************************************
-
     // - cfg
     // - arrayIndex: largest existing array index
     // parts are very similar to non_empty_static_array_pair_list
@@ -5033,13 +4796,10 @@ public class TacConverter {
         int logId = this.tempId;
         ParseNode firstChild = node.getChild(0);
         switch (firstChild.getSymbol()) {
-
             // -> non_empty_array_pair_list ...
             case PhpSymbols.non_empty_array_pair_list: {
                 if (node.getNumChildren() == 3) {
-
                     // -> non_empty_array_pair_list , expr
-
                     TacAttributes attsList = this.non_empty_array_pair_list(firstChild, arrayPlace);
                     TacAttributes attsExpr = this.expr(node.getChild(2));
 
@@ -5065,9 +4825,7 @@ public class TacConverter {
                         attsList.getControlFlowGraph().getHead(),
                         cfgNode));
                 } else if (node.getChild(2).getSymbol() == PhpSymbols.T_BITWISE_AND) {
-
                     // -> non_empty_array_pair_list , & w_cvar
-
                     TacAttributes attsList = this.non_empty_array_pair_list(firstChild, arrayPlace);
                     TacAttributes attsCvar = this.w_cvar(node.getChild(3));
 
@@ -5083,9 +4841,7 @@ public class TacConverter {
                         attsList.getControlFlowGraph().getHead(),
                         cfgNode));
                 } else if (node.getChild(4).getSymbol() == PhpSymbols.expr) {
-
                     // -> non_empty_array_pair_list , expr T_DOUBLE_ARROW expr
-
                     TacAttributes attsList = this.non_empty_array_pair_list(firstChild, arrayPlace);
                     TacAttributes attsExpr1 = this.expr(node.getChild(2));
                     TacAttributes attsExpr2 = this.expr(node.getChild(4));
@@ -5101,9 +4857,7 @@ public class TacConverter {
                         attsList.getControlFlowGraph().getHead(),
                         cfgNode));
                 } else {
-
                     // -> non_empty_array_pair_list , expr T_DOUBLE_ARROW & w_cvar
-
                     TacAttributes attsList = this.non_empty_array_pair_list(firstChild, arrayPlace);
                     TacAttributes attsExpr1 = this.expr(node.getChild(2));
                     TacAttributes attsCvar = this.w_cvar(node.getChild(5));
@@ -5126,9 +4880,7 @@ public class TacConverter {
             // -> expr ...
             case PhpSymbols.expr: {
                 if (node.getNumChildren() == 1) {
-
                     // -> expr
-
                     TacAttributes attsExpr = this.expr(firstChild);
 
                     AbstractCfgNode cfgNode = this.arrayPairListHelper(
@@ -5142,9 +4894,7 @@ public class TacConverter {
 
                     myAtts.setArrayIndex(0);
                 } else if (node.getChild(2).getSymbol() == PhpSymbols.expr) {
-
                     // -> expr T_DOUBLE_ARROW expr
-
                     TacAttributes attsExpr1 = this.expr(firstChild);
                     TacAttributes attsExpr2 = this.expr(node.getChild(2));
 
@@ -5158,9 +4908,7 @@ public class TacConverter {
                         attsExpr1.getControlFlowGraph().getHead(),
                         cfgNode));
                 } else {
-
                     // -> expr T_DOUBLE_ARROW & w_cvar
-
                     TacAttributes attsExpr1 = this.expr(firstChild);
                     TacAttributes attsCvar = this.w_cvar(node.getChild(3));
 
@@ -5199,8 +4947,6 @@ public class TacConverter {
         return myAtts;
     }
 
-// cvar ****************************************************************************
-
     TacAttributes cvar(ParseNode node) {
         return this.cvar(node, null, null);
     }
@@ -5208,9 +4954,7 @@ public class TacConverter {
     // - cfg
     // - place
     // - isUnknownCall
-    TacAttributes cvar(ParseNode node,
-                       List<TacActualParameter> paramList, Variable catchVar) {
-
+    TacAttributes cvar(ParseNode node, List<TacActualParameter> paramList, Variable catchVar) {
         TacAttributes myAtts = new TacAttributes();
 
         if (node.getNumChildren() == 1) {
@@ -5219,7 +4963,6 @@ public class TacConverter {
             myAtts.setIsKnownCall(false);
         } else {
             // -> cvar_without_objects T_OBJECT_OPERATOR ref_list
-
             TacAttributes atts0 = this.cvar_without_objects(node.getChild(0));
             TacAttributes atts2 = this.ref_list(node.getChild(2), atts0.getPlace().getVariable(),
                 paramList, catchVar);
@@ -5235,17 +4978,11 @@ public class TacConverter {
         return myAtts;
     }
 
-    // the following methods are only stubs (that's why they are commented out)
-
-// ref_list ************************************************************************
-
     // - cfg
     // - place
     // - isUnknownCall
     // leftPlace = the place on the left side of the last "->"
-    TacAttributes ref_list(ParseNode node, Variable leftPlace,
-                           List<TacActualParameter> paramList, Variable catchVar) {
-
+    TacAttributes ref_list(ParseNode node, Variable leftPlace, List<TacActualParameter> paramList, Variable catchVar) {
         TacAttributes myAtts = new TacAttributes();
 
         if (node.getNumChildren() == 1) {
@@ -5299,19 +5036,16 @@ public class TacConverter {
         return myAtts;
     }
 
-// object_property *****************************************************************
-
     // - cfg
     // - place
     // - isUnknownCall
-    TacAttributes object_property(ParseNode node, Variable leftPlace,
-                                  List<TacActualParameter> paramList, Variable catchVar) {
-
+    TacAttributes object_property(
+        ParseNode node, Variable leftPlace, List<TacActualParameter> paramList, Variable catchVar
+    ) {
         TacAttributes myAtts = new TacAttributes();
 
         ParseNode firstChild = node.getChild(0);
         switch (firstChild.getSymbol()) {
-
             // -> object_dim_list
             case PhpSymbols.object_dim_list: {
                 TacAttributes atts0 = this.object_dim_list(
@@ -5326,7 +5060,6 @@ public class TacConverter {
             // -> cvar_without_objects
             case PhpSymbols.cvar_without_objects: {
                 // something like "$x->$y" or "$x->$y()"
-
                 // very simple approximation
                 AbstractCfgNode emptyNode = new Empty();
                 myAtts.setControlFlowGraph(new ControlFlowGraph(emptyNode, emptyNode));
@@ -5339,18 +5072,16 @@ public class TacConverter {
         return myAtts;
     }
 
-// object_dim_list *****************************************************************
-
     // - cfg
     // - place
     // - isUnknownCall
-    TacAttributes object_dim_list(ParseNode node, Variable leftPlace,
-                                  List<TacActualParameter> paramList, Variable catchVar) {
+    TacAttributes object_dim_list(
+        ParseNode node, Variable leftPlace, List<TacActualParameter> paramList, Variable catchVar
+    ) {
         TacAttributes myAtts = new TacAttributes();
 
         ParseNode firstChild = node.getChild(0);
         switch (firstChild.getSymbol()) {
-
             // -> object_dim_list ...
             case PhpSymbols.object_dim_list: {
                 // the accessed member variable is an array element;
@@ -5364,7 +5095,6 @@ public class TacConverter {
                 }
 
                 // something like "$x->y[1]"
-
                 if (node.getChild(1).getSymbol() == PhpSymbols.T_OPEN_RECT_BRACES) {
                     // -> object_dim_list T_OPEN_RECT_BRACES dim_offset T_CLOSE_RECT_BRACES
                 } else {
@@ -5397,22 +5127,19 @@ public class TacConverter {
         return myAtts;
     }
 
-// variable_name *******************************************************************
-
     // - cfg
     // - place
-    TacAttributes variable_name(ParseNode node, Variable leftPlace,
-                                List<TacActualParameter> paramList, Variable catchVar) {
+    TacAttributes variable_name(
+        ParseNode node, Variable leftPlace, List<TacActualParameter> paramList, Variable catchVar
+    ) {
         TacAttributes myAtts = new TacAttributes();
 
         ParseNode firstChild = node.getChild(0);
         switch (firstChild.getSymbol()) {
-
             // -> T_STRING
             case PhpSymbols.T_STRING: {
                 if (paramList != null) {
                     // a method call
-
                     // the method's name
                     String methodName = firstChild.getLexeme().toLowerCase() + InternalStrings.methodSuffix;
                     // if this call is applied on $this, we can easily extract the classname
@@ -5453,8 +5180,6 @@ public class TacConverter {
         return myAtts;
     }
 
-// r_cvar ****************************************************************************
-
     // - cfg
     // - place
     TacAttributes r_cvar(ParseNode node) {
@@ -5462,8 +5187,6 @@ public class TacConverter {
         // -> cvar
         return this.cvar(node.getChild(0));
     }
-
-// w_cvar *****************************************************************
 
     // - cfg
     // - place
@@ -5473,8 +5196,6 @@ public class TacConverter {
         return this.cvar(node.getChild(0));
     }
 
-// rw_cvar *****************************************************************
-
     // - cfg
     // - place
     TacAttributes rw_cvar(ParseNode node) {
@@ -5483,8 +5204,6 @@ public class TacConverter {
         return this.cvar(node.getChild(0));
     }
 
-// cvar_without_objects ************************************************************
-
     // - cfg
     // - place
     TacAttributes cvar_without_objects(ParseNode node) {
@@ -5492,7 +5211,6 @@ public class TacConverter {
 
         ParseNode firstChild = node.getChild(0);
         switch (firstChild.getSymbol()) {
-
             // -> reference_variable
             case PhpSymbols.reference_variable: {
                 TacAttributes attsVar = this.reference_variable(firstChild);
@@ -5516,8 +5234,6 @@ public class TacConverter {
         return myAtts;
     }
 
-// simple_indirect_reference ********************************************************
-
     // - place
     TacAttributes simple_indirect_reference(ParseNode node, AbstractTacPlace depPlace) {
         TacAttributes myAtts = new TacAttributes();
@@ -5539,8 +5255,6 @@ public class TacConverter {
 
         return myAtts;
     }
-
-// reference_variable **************************************************************
 
     // - cfg
     // - place
@@ -5589,8 +5303,6 @@ public class TacConverter {
         return myAtts;
     }
 
-// dim_offset *****************************************************************
-
     // - cfg
     // - place
     TacAttributes dim_offset(ParseNode node) {
@@ -5598,7 +5310,6 @@ public class TacConverter {
 
         ParseNode firstChild = node.getChild(0);
         switch (firstChild.getSymbol()) {
-
             // -> empty
             case PhpSymbols.T_EPSILON: {
                 AbstractCfgNode emptyNode = new Empty();
@@ -5618,8 +5329,6 @@ public class TacConverter {
 
         return myAtts;
     }
-
-// compound_variable **************************************************************
 
     // - cfg
     // - place
@@ -5650,8 +5359,6 @@ public class TacConverter {
 
         return myAtts;
     }
-
-// scalar **************************************************************************
 
     // - cfg
     // - place
@@ -5730,8 +5437,6 @@ public class TacConverter {
         return myAtts;
     }
 
-// encaps_list *****************************************************************
-
     // - NO cfg
     // - NO place
     // - encapsList
@@ -5741,14 +5446,12 @@ public class TacConverter {
         ParseNode firstChild = node.getChild(0);
         if (firstChild.getSymbol() == PhpSymbols.T_EPSILON) {
             // -> empty
-
             myAtts.setEncapsList(new EncapsList());
             return myAtts;
         }
 
         ParseNode secondChild = node.getChild(1);
         switch (secondChild.getSymbol()) {
-
             // -> encaps_list encaps_var
             case PhpSymbols.encaps_var: {
                 TacAttributes attsList = this.encaps_list(firstChild);
@@ -5826,8 +5529,6 @@ public class TacConverter {
         return myAtts;
     }
 
-// encaps_var *****************************************************************
-
     // - cfg
     // - place
     TacAttributes encaps_var(ParseNode node) {
@@ -5842,7 +5543,6 @@ public class TacConverter {
         }
 
         switch (node.getChild(1).getSymbol()) {
-
             // -> T_VARIABLE [ encaps_var_offset ]
             case PhpSymbols.T_OPEN_RECT_BRACES: {
                 TacAttributes attsOffset = this.encaps_var_offset(node.getChild(2));
@@ -5897,8 +5597,6 @@ public class TacConverter {
         return myAtts;
     }
 
-// encaps_var_offset *****************************************************************
-
     // - place
     TacAttributes encaps_var_offset(ParseNode node) {
         TacAttributes myAtts = new TacAttributes();
@@ -5928,8 +5626,6 @@ public class TacConverter {
 
         return myAtts;
     }
-
-// common_scalar *******************************************************************
 
     // - cfg (always just an empty node)
     // - place
@@ -6011,8 +5707,6 @@ public class TacConverter {
         return myAtts;
     }
 
-// elseif_list *****************************************************************
-
     // - cfg
     TacAttributes elseif_list(ParseNode node, AbstractCfgNode trueSucc, AbstractCfgNode falseSucc) {
         TacAttributes myAtts = new TacAttributes();
@@ -6056,8 +5750,6 @@ public class TacConverter {
         return myAtts;
     }
 
-// else_single *****************************************************************
-
     // - cfg
     TacAttributes else_single(ParseNode node) {
         TacAttributes myAtts = new TacAttributes();
@@ -6082,8 +5774,6 @@ public class TacConverter {
 
         return myAtts;
     }
-
-// new_elseif_list *****************************************************************
 
     // - cfg
     TacAttributes new_elseif_list(ParseNode node, AbstractCfgNode trueSucc, AbstractCfgNode falseSucc) {
@@ -6131,8 +5821,6 @@ public class TacConverter {
         return myAtts;
     }
 
-// new_else_single *****************************************************************
-
     // - cfg
     TacAttributes new_else_single(ParseNode node) {
         TacAttributes myAtts = new TacAttributes();
@@ -6159,15 +5847,12 @@ public class TacConverter {
         return myAtts;
     }
 
-// while_statement *****************************************************************
-
     // - cfg
     TacAttributes while_statement(ParseNode node) {
         TacAttributes myAtts = new TacAttributes();
 
         ParseNode firstChild = node.getChild(0);
         switch (firstChild.getSymbol()) {
-
             // -> statement
             case PhpSymbols.statement: {
                 TacAttributes atts0 = this.statement(firstChild);
@@ -6186,15 +5871,12 @@ public class TacConverter {
         return myAtts;
     }
 
-// for_statement *****************************************************************
-
     // - cfg
     TacAttributes for_statement(ParseNode node) {
         TacAttributes myAtts = new TacAttributes();
 
         ParseNode firstChild = node.getChild(0);
         switch (firstChild.getSymbol()) {
-
             // -> statement
             case PhpSymbols.statement: {
                 TacAttributes atts0 = this.statement(firstChild);
@@ -6212,8 +5894,6 @@ public class TacConverter {
 
         return myAtts;
     }
-
-// for_expr *****************************************************************
 
     // - cfg
     // - place
@@ -6242,8 +5922,6 @@ public class TacConverter {
 
         return myAtts;
     }
-
-// non_empty_for_expr *****************************************************************
 
     // - cfg
     // - place
@@ -6281,16 +5959,13 @@ public class TacConverter {
         return myAtts;
     }
 
-// switch_case_list *****************************************************************
-
     // - cfg
     // - defaultNode
-    TacAttributes switch_case_list(ParseNode node,
-                                   AbstractTacPlace switchPlace, AbstractCfgNode nextTest, AbstractCfgNode nextStatement) {
-
+    TacAttributes switch_case_list(
+        ParseNode node, AbstractTacPlace switchPlace, AbstractCfgNode nextTest, AbstractCfgNode nextStatement
+    ) {
         ParseNode listNode = null;
         switch (node.getChild(2).getSymbol()) {
-
             // -> { case_list }
             case PhpSymbols.T_CLOSE_CURLY_BRACES: {
                 listNode = node.getChild(1);
@@ -6322,24 +5997,20 @@ public class TacConverter {
         return myAtts;
     }
 
-// case_list *****************************************************************
-
     // - cfg
     // - defaultNode
-    TacAttributes case_list(ParseNode node,
-                            AbstractTacPlace switchPlace, AbstractCfgNode nextTest, AbstractCfgNode nextStatement) {
-
+    TacAttributes case_list(
+        ParseNode node, AbstractTacPlace switchPlace, AbstractCfgNode nextTest, AbstractCfgNode nextStatement
+    ) {
         TacAttributes myAtts = new TacAttributes();
 
         if (node.getChild(0).getSymbol() == PhpSymbols.T_EPSILON) {
-
             // -> empty
             AbstractCfgNode emptyNode = new Empty();
             connect(emptyNode, nextTest);
             myAtts.setControlFlowGraph(new ControlFlowGraph(emptyNode, emptyNode));
             myAtts.setDefaultNode(null);
         } else if (node.getChild(1).getSymbol() == PhpSymbols.T_CASE) {
-
             // -> case_list T_CASE expr case_separator inner_statement_list
             TacAttributes attsExpr = this.expr(node.getChild(2));
             TacAttributes attsStatement = this.inner_statement_list(node.getChild(4));
@@ -6365,7 +6036,6 @@ public class TacConverter {
 
             myAtts.setDefaultNode(attsCaseList.getDefaultNode());
         } else {
-
             // -> case_list T_DEFAULT case_separator inner_statement_list
             TacAttributes attsStatement = this.inner_statement_list(node.getChild(3));
             TacAttributes attsCaseList = this.case_list(node.getChild(0),
@@ -6383,8 +6053,6 @@ public class TacConverter {
 
         return myAtts;
     }
-
-// echo_expr_list *****************************************************************
 
     // - cfg
     TacAttributes echo_expr_list(ParseNode node) {
@@ -6425,15 +6093,12 @@ public class TacConverter {
         return myAtts;
     }
 
-// unset_variables *****************************************************************
-
     // - cfg
     TacAttributes unset_variables(ParseNode node) {
         TacAttributes myAtts = new TacAttributes();
 
         ParseNode firstChild = node.getChild(0);
         switch (firstChild.getSymbol()) {
-
             // -> unset_variable
             case PhpSymbols.unset_variable: {
                 TacAttributes atts0 = this.unset_variable(firstChild);
@@ -6456,8 +6121,6 @@ public class TacConverter {
         return myAtts;
     }
 
-// unset_variable *****************************************************************
-
     // - cfg
     TacAttributes unset_variable(ParseNode node) {
         TacAttributes myAtts = new TacAttributes();
@@ -6474,8 +6137,6 @@ public class TacConverter {
 
         return myAtts;
     }
-
-// declare_statement *****************************************************************
 
     // - cfg
     TacAttributes declare_statement(ParseNode node) {
@@ -6502,17 +6163,13 @@ public class TacConverter {
         return myAtts;
     }
 
-// assignment_list *****************************************************************
-
     // - arrayIndex
     // - cfg
     TacAttributes assignment_list(ParseNode node, AbstractTacPlace arrayPlace, int arrayIndex) {
         TacAttributes myAtts = new TacAttributes();
 
         if (node.getNumChildren() == 3) {
-
             // -> assignment_list , assignment_list_element
-
             TacAttributes attsList = this.assignment_list(
                 node.getChild(0),
                 arrayPlace,
@@ -6529,9 +6186,7 @@ public class TacConverter {
 
             myAtts.setArrayIndex(attsList.getArrayIndex() + 1);
         } else {
-
             // -> assignment_list_element
-
             TacAttributes attsElement = this.assignment_list_element(
                 node.getChild(0),
                 arrayPlace,
@@ -6544,15 +6199,12 @@ public class TacConverter {
         return myAtts;
     }
 
-// assignment_list_element *****************************************************************
-
     // - cfg
     TacAttributes assignment_list_element(ParseNode node, AbstractTacPlace arrayPlace, int arrayIndex) {
         TacAttributes myAtts = new TacAttributes();
 
         ParseNode firstChild = node.getChild(0);
         switch (firstChild.getSymbol()) {
-
             // -> cvar
             case PhpSymbols.cvar: {
                 TacAttributes attsCvar = this.cvar(firstChild);
@@ -6592,7 +6244,6 @@ public class TacConverter {
 
             // -> empty
             case PhpSymbols.T_EPSILON: {
-
                 AbstractCfgNode emptyNode = new Empty();
                 myAtts.setControlFlowGraph(new ControlFlowGraph(emptyNode, emptyNode));
                 break;

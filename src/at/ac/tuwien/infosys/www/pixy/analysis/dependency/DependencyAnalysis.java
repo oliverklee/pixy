@@ -61,7 +61,7 @@ public class DependencyAnalysis extends AbstractInterproceduralAnalysis {
         this.tac = tac;
         this.places = tac.getPlacesList();
         this.constantsTable = tac.getConstantsTable();
-        this.superSymbolTable = tac.getSuperSymbolTable();
+        this.superSymbolTable = tac.getSuperglobalsSymbolTable();
         this.memberPlace = tac.getMemberPlace();
         this.repos = new GenericRepository<>();
 

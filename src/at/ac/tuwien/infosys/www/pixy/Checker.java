@@ -379,11 +379,11 @@ public final class Checker {
     }
 
     private void printMaximumNumberOfTemporaries(TacConverter tac) {
-        System.out.println("Maximum number of temporaries: " + tac.getMaxTempId());
+        System.out.println("Maximum number of temporaries: " + tac.getMaximumTemporaryId());
     }
 
     private void printSymbolTables(TacConverter tac) {
-        Dumper.dump(tac.getSuperSymbolTable(), "Superglobals");
+        Dumper.dump(tac.getSuperglobalsSymbolTable(), "Superglobals");
         for (TacFunction function : tac.getUserFunctions().values()) {
             Dumper.dump(function.getSymbolTable(), function.getName());
         }

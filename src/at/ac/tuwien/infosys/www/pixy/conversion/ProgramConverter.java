@@ -109,7 +109,7 @@ public class ProgramConverter {
         return this.baseTac;
     }
 
-// getSuperSymbolTable *************************************************************
+// getSuperglobalsSymbolTable *************************************************************
 
     public SymbolTable getSuperSymbolTable() {
         return this.superSymbolTable;
