@@ -17,1165 +17,1222 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Resembles DepGraphTestCase, but does not perform alias analysis (see mySetUp()) and tests object-oriented stuff.
+ * Resembles DepGraphTestCase, but does not perform alias analysis (see initialize()) and tests object-oriented stuff.
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class DepGraphTestCaseNA extends TestCase {
-    private String path;    // complete path to the testfile directory (with trailing slash)
+    /** complete path to the test file directory (with trailing slash) */
+    private String testFilesPathWithTrailingSlash;
 
     // these are recomputed for every single test
     private DependencyAnalysis dependencyAnalysis;
     private XssAnalysis xssAnalysis;
     List<Sink> sinks;
 
-//  ********************************************************************************
-//  SETUP **************************************************************************
-//  ********************************************************************************
+    private boolean generateGraphs = false;
 
-    // called automatically
     protected void setUp() {
-        this.path = MyOptions.pixyHome + "/testfiles/depgraph/";
+        this.testFilesPathWithTrailingSlash = MyOptions.pixyHome + "/testfiles/depgraph/";
         MyOptions.graphPath = MyOptions.pixyHome + "/graphs";
     }
 
-    // call this at the beginning of each test; optionally uses
-    // a functional analysis instead of call-string ("functional" param),
-    // and uses a dummy literal analysis
-    private void mySetUp(String testFile, boolean functional) {
-
-        Checker checker = new Checker(this.path + testFile);
-        MyOptions.option_A = false;   // don't perform alias analysis
+    /**
+     * Call this at the beginning of each test.
+     *
+     * Optionally uses a functional analysis instead of call-string ("functional" param), and uses
+     * a dummy literal analysis.
+     *
+     * @param testFile
+     * @param useFunctionalAnalysis whether to use functional analysis instead of call-string analysis
+     */
+    private void initialize(String testFile, boolean useFunctionalAnalysis) {
+        Checker checker = new Checker(this.testFilesPathWithTrailingSlash + testFile);
+        // Don't perform alias analysis.
+        MyOptions.option_A = false;
         MyOptions.setAnalyses("xss");
 
         // initialize & analyze
         TacConverter tac = checker.initialize().getTac();
-        checker.analyzeTaint(tac, functional);
+        checker.analyzeTaint(tac, useFunctionalAnalysis);
         this.dependencyAnalysis = checker.gta.dependencyAnalysis;
         this.xssAnalysis = (XssAnalysis) checker.gta.getAbstractVulnerabilityAnalyses().get(0);
 
-        // collect sinks
         this.sinks = xssAnalysis.collectSinks();
         Collections.sort(sinks);
     }
 
-    // returns the contents of the given file as string
+    /**
+     * Returns the contents of the given file as string.
+     *
+     * @param fileName
+     *
+     * @return
+     */
     private String readFile(String fileName) {
-        StringBuilder ret = new StringBuilder();
+        StringBuilder fileContents = new StringBuilder();
         try {
-            FileReader fr = new FileReader(fileName);
-            int c;
-            ret = new StringBuilder();
-            while ((c = fr.read()) != -1) {
-                ret.append((char) c);
+            FileReader fileReader = new FileReader(fileName);
+            int character;
+            fileContents = new StringBuilder();
+            while ((character = fileReader.read()) != -1) {
+                fileContents.append((char) character);
             }
         } catch (FileNotFoundException e) {
             Assert.fail("File not found: " + fileName);
         } catch (IOException e) {
             Assert.fail(e.getMessage());
         }
-        return ret.toString();
+        return fileContents.toString();
     }
 
-    // set "generate" to false if you want to generate graphs
-    // (instead of checking against existing graphs)
-    private void performTest(String testNum, int sinkNum, int graphNum,
-                             boolean generate, int vulnNum) {
-        performTest(testNum, sinkNum, graphNum, generate, false, vulnNum);
+    /**
+     * @param testNumber
+     * @param expectedNumberOfSinks
+     * @param expectedNumberOfGraphs
+     * @param generateGraphs set to true if you want to generate graphs (instead of checking against existing graphs)
+     * @param expectedNumberOfVulnerabilities
+     */
+    private void performTestWithCallStringAnalysis(
+        String testNumber, int expectedNumberOfSinks, int expectedNumberOfGraphs, boolean generateGraphs,
+        int expectedNumberOfVulnerabilities
+    ) {
+        this.generateGraphs = generateGraphs;
+
+        performTest(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
-    private void performTest(String testNum, int sinkNum, int graphNum,
-                             boolean generate, boolean functional, int vulnNum) {
+    /**
+     * @param testNumber
+     * @param expectedNumberOfSinks
+     * @param expectedNumberOfGraphs
+     * @param generateGraphs set to true if you want to generate graphs (instead of checking against existing graphs)
+     * @param expectedNumberOfVulnerabilities
+     */
+    private void performTestWithFunctionalAnalysis(
+        String testNumber, int expectedNumberOfSinks, int expectedNumberOfGraphs, boolean generateGraphs,
+        int expectedNumberOfVulnerabilities
+    ) {
+        this.generateGraphs = generateGraphs;
 
-        //generate = true;
+        performTest(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, true, expectedNumberOfVulnerabilities);
+    }
 
-        mySetUp("test" + testNum + ".php", functional);
+    private void performTest(
+        String testNumber, int expectedNumberOfSinks, int expectedNumberOfGraphs, boolean useFunctionalAnalysis,
+        int expectedNumberOfVulnerabilities
+    ) {
+        initialize("test" + testNumber + ".php", useFunctionalAnalysis);
 
-        Assert.assertTrue("Sinks real: " + sinks.size() + ", expected: "
-            + sinkNum, sinks.size() == sinkNum);
+        Assert.assertTrue(
+            "Sinks real: " + sinks.size() + ", expected: " + expectedNumberOfSinks,
+            sinks.size() == expectedNumberOfSinks
+        );
 
-        // collect dependencyGraphs
-        List<DependencyGraph> dependencyGraphs = new LinkedList<>();
-        for (Sink sink : sinks) {
-            dependencyGraphs.addAll(dependencyAnalysis.getDependencyGraphsForSink(sink));
-        }
+        List<DependencyGraph> dependencyGraphs = collectDependencyGraphs();
+        Assert.assertTrue(
+            "Graphs real: " + dependencyGraphs.size() + ", expected: " + expectedNumberOfGraphs,
+            dependencyGraphs.size() == expectedNumberOfGraphs
+        );
 
-        Assert.assertTrue("Graphs real: " + dependencyGraphs.size() + ", expected: "
-            + graphNum, dependencyGraphs.size() == graphNum);
+        int graphNumber = 0;
+        int actualNumberOfVulnerabilities = 0;
 
-        int graphCount = 0;
-        int vulnCount = 0;
         for (DependencyGraph dependencyGraph : dependencyGraphs) {
+            graphNumber++;
+            checkDependencyGraph(testNumber, dependencyGraph, graphNumber);
 
-            // check depgraph
-
-            graphCount++;
-            String fileName = "test" + testNum + "_" + graphCount;
-            if (generate) {
-                dependencyGraph.dumpDotUnique(fileName, this.path);
-            } else {
-                String encountered = dependencyGraph.makeDotUnique(fileName);
-                String expected = this.readFile(this.path + fileName + ".dot");
-                Assert.assertEquals(expected, encountered);
-            }
-
-            // check xssgraph
-
-            String xssFileName = "test" + testNum + "_" + graphCount + "_xss";
-            DependencyGraph relevant = this.xssAnalysis.getRelevantSubgraph(dependencyGraph);
-            Map<UninitializedNode, AbstractVulnerabilityAnalysis.InitialTaint> dangerousUninit = this.xssAnalysis.findDangerousUninitializedNodes(relevant);
-            if (!dangerousUninit.isEmpty()) {
-                vulnCount++;
-                relevant.reduceWithLeaves(dangerousUninit.keySet());
-
-                if (generate) {
-                    relevant.dumpDotUnique(xssFileName, this.path);
-                } else {
-                    String encountered = relevant.makeDotUnique(xssFileName);
-                    String expected = this.readFile(this.path + xssFileName + ".dot");
-                    Assert.assertEquals(expected, encountered);
-                }
+            if (checkXssGraph(testNumber, dependencyGraph, graphNumber)) {
+                actualNumberOfVulnerabilities++;
             }
         }
 
-        // check if all vulns were detected
-        Assert.assertEquals(vulnNum, vulnCount);
+        Assert.assertEquals(expectedNumberOfVulnerabilities, actualNumberOfVulnerabilities);
 
-        if (generate) {
+        if (generateGraphs) {
             // just to make sure that you don't accidentally forget
             // to switch generation off, and turn checking on
             Assert.fail("no check performed");
         }
     }
 
-//  ********************************************************************************
-//  TESTS **************************************************************************
-//  ********************************************************************************
+    private List<DependencyGraph> collectDependencyGraphs() {
+        List<DependencyGraph> dependencyGraphs = new LinkedList<>();
+        for (Sink sink : sinks) {
+            dependencyGraphs.addAll(dependencyAnalysis.getDependencyGraphsForSink(sink));
+        }
 
+        return dependencyGraphs;
+    }
+
+    private void checkDependencyGraph(String testNumber, DependencyGraph dependencyGraph, int graphNumber) {
+        String fileName = "test" + testNumber + "_" + graphNumber;
+        if (generateGraphs) {
+            dependencyGraph.dumpDotUnique(fileName, this.testFilesPathWithTrailingSlash);
+        } else {
+            String encountered = dependencyGraph.makeDotUnique(fileName);
+            String expected = this.readFile(this.testFilesPathWithTrailingSlash + fileName + ".dot");
+            Assert.assertEquals(expected, encountered);
+        }
+    }
+
+    /**
+     * Checks the XSS graph.
+     *
+     *
+     * @param testNumber
+     * @param dependencyGraph
+     * @param actualNumberOfGraphs
+     *
+     * @return true if a vulnerability has been detected, false otherwise
+     */
+    private boolean checkXssGraph(
+        String testNumber, DependencyGraph dependencyGraph, int actualNumberOfGraphs
+    ) {
+        String xssFileName = "test" + testNumber + "_" + actualNumberOfGraphs + "_xss";
+        DependencyGraph relevant = this.xssAnalysis.getRelevantSubgraph(dependencyGraph);
+        Map<UninitializedNode, AbstractVulnerabilityAnalysis.InitialTaint> dangerousUninitializedNodes
+            = this.xssAnalysis.findDangerousUninitializedNodes(relevant);
+
+        boolean hasVulnerability = !dangerousUninitializedNodes.isEmpty();
+
+        if (hasVulnerability) {
+            relevant.reduceWithLeaves(dangerousUninitializedNodes.keySet());
+
+            if (generateGraphs) {
+                relevant.dumpDotUnique(xssFileName, this.testFilesPathWithTrailingSlash);
+            } else {
+                String encountered = relevant.makeDotUnique(xssFileName);
+                String expected = this.readFile(this.testFilesPathWithTrailingSlash + xssFileName + ".dot");
+                Assert.assertEquals(expected, encountered);
+            }
+        }
+
+        return hasVulnerability;
+    }
     public void test001() {
-        String testNum = "001";
-        int sinkNum = 2;        // expected number of sinks
-        int graphNum = 2;       // expected number of graphs
-        int vulnNum = 2;        // expected number of vulnerabilities
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "001";
+        int expectedNumberOfSinks = 2;
+        int expectedNumberOfGraphs = 2;
+        int expectedNumberOfVulnerabilities = 2;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test002() {
-        String testNum = "002";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "002";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test003() {
-        String testNum = "003";
-        int sinkNum = 2;
-        int graphNum = 2;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "003";
+        int expectedNumberOfSinks = 2;
+        int expectedNumberOfGraphs = 2;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test004() {
-        String testNum = "004";
-        int sinkNum = 2;
-        int graphNum = 2;
-        int vulnNum = 2;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "004";
+        int expectedNumberOfSinks = 2;
+        int expectedNumberOfGraphs = 2;
+        int expectedNumberOfVulnerabilities = 2;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test005() {
-        String testNum = "005";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "005";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test006() {
-        String testNum = "006";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "006";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test007() {
-        String testNum = "007";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "007";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test008() {
-        String testNum = "008";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "008";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test009() {
-        String testNum = "009";
-        int sinkNum = 2;
-        int graphNum = 2;
-        int vulnNum = 2;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "009";
+        int expectedNumberOfSinks = 2;
+        int expectedNumberOfGraphs = 2;
+        int expectedNumberOfVulnerabilities = 2;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test010() {
-        String testNum = "010";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "010";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test011() {
-        String testNum = "011";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "011";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test012() {
-        String testNum = "012";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "012";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test013() {
-        String testNum = "013";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "013";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test014() {
-        String testNum = "014";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "014";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test015() {
-        String testNum = "015";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "015";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test016() {
-        String testNum = "016";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "016";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test017() {
-        String testNum = "017";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "017";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test018() {
-        String testNum = "018";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "018";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test021() {
-        String testNum = "021";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "021";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test022() {
-        String testNum = "022";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "022";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test023() {
-        String testNum = "023";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "023";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test024() {
-        String testNum = "024";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "024";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test025() {
-        String testNum = "025";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "025";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test026() {
-        String testNum = "026";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "026";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test027() {
-        String testNum = "027";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "027";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test028() {
-        String testNum = "028";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "028";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test035() {
-        String testNum = "035";
-        int sinkNum = 2;
-        int graphNum = 2;
-        int vulnNum = 2;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "035";
+        int expectedNumberOfSinks = 2;
+        int expectedNumberOfGraphs = 2;
+        int expectedNumberOfVulnerabilities = 2;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test036() {
-        String testNum = "036";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "036";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test037() {
-        String testNum = "037";
-        int sinkNum = 1;
-        int graphNum = 3;
-        int vulnNum = 2;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "037";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 3;
+        int expectedNumberOfVulnerabilities = 2;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test038() {
-        String testNum = "038";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "038";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test039() {
-        String testNum = "039";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "039";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test040() {
-        String testNum = "040";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "040";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test041b() {
-        String testNum = "041b";
-        int sinkNum = 2;
-        int graphNum = 2;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "041b";
+        int expectedNumberOfSinks = 2;
+        int expectedNumberOfGraphs = 2;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test042() {
-        String testNum = "042";
-        int sinkNum = 2;
-        int graphNum = 2;
-        int vulnNum = 0;
-        // use functional analysis here
-        this.performTest(testNum, sinkNum, graphNum, false, true, vulnNum);
+        String testNumber = "042";
+        int expectedNumberOfSinks = 2;
+        int expectedNumberOfGraphs = 2;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithFunctionalAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test043() {
-        String testNum = "043";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "043";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test044() {
-        String testNum = "044";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "044";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test045() {
-        String testNum = "045";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "045";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test046() {
-        String testNum = "046";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "046";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test047() {
-        String testNum = "047";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "047";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test048() {
-        String testNum = "048";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "048";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test049() {
-        String testNum = "049";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "049";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test050() {
-        String testNum = "050";
-        int sinkNum = 2;
-        int graphNum = 2;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "050";
+        int expectedNumberOfSinks = 2;
+        int expectedNumberOfGraphs = 2;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test051() {
-        String testNum = "051";
-        int sinkNum = 2;
-        int graphNum = 2;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "051";
+        int expectedNumberOfSinks = 2;
+        int expectedNumberOfGraphs = 2;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test052() {
-        String testNum = "052";
-        int sinkNum = 1;
-        int graphNum = 0;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "052";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 0;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test053() {
-        String testNum = "053";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "053";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test054() {
-        String testNum = "054";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "054";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test055b() {
-        String testNum = "055b";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "055b";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test056() {
-        String testNum = "056";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "056";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test057() {
-        String testNum = "057";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "057";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test058() {
-        String testNum = "058";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "058";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test059() {
-        String testNum = "059";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "059";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test060() {
-        String testNum = "060";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "060";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test061() {
-        String testNum = "061";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "061";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test062() {
-        String testNum = "062";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "062";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test063() {
-        String testNum = "063";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "063";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test064() {
-        String testNum = "064";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "064";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test065() {
-        String testNum = "065";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "065";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test066() {
-        String testNum = "066";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "066";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test067() {
-        String testNum = "067";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "067";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test068() {
-        String testNum = "068";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "068";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test069() {
-        String testNum = "069";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "069";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test070() {
-        String testNum = "070";
-        int sinkNum = 3;
-        int graphNum = 3;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "070";
+        int expectedNumberOfSinks = 3;
+        int expectedNumberOfGraphs = 3;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test071() {
-        String testNum = "071";
-        int sinkNum = 3;
-        int graphNum = 3;
-        int vulnNum = 2;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "071";
+        int expectedNumberOfSinks = 3;
+        int expectedNumberOfGraphs = 3;
+        int expectedNumberOfVulnerabilities = 2;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test072() {
-        String testNum = "072";
-        int sinkNum = 3;
-        int graphNum = 3;
-        int vulnNum = 2;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "072";
+        int expectedNumberOfSinks = 3;
+        int expectedNumberOfGraphs = 3;
+        int expectedNumberOfVulnerabilities = 2;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test073() {
-        String testNum = "073";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "073";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test074() {
-        String testNum = "074";
-        int sinkNum = 1;
-        int graphNum = 0;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "074";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 0;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test075() {
-        String testNum = "075";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "075";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test076() {
-        String testNum = "076";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "076";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test077() {
-        String testNum = "077";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "077";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test078() {
-        String testNum = "078";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "078";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test079() {
-        String testNum = "079";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "079";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test080() {
-        String testNum = "080";
-        int sinkNum = 0;
-        int graphNum = 0;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "080";
+        int expectedNumberOfSinks = 0;
+        int expectedNumberOfGraphs = 0;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test081() {
-        String testNum = "081";
-        int sinkNum = 3;
-        int graphNum = 3;
-        int vulnNum = 2;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "081";
+        int expectedNumberOfSinks = 3;
+        int expectedNumberOfGraphs = 3;
+        int expectedNumberOfVulnerabilities = 2;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test082() {
-        String testNum = "082";
-        int sinkNum = 2;
-        int graphNum = 2;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "082";
+        int expectedNumberOfSinks = 2;
+        int expectedNumberOfGraphs = 2;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test083() {
-        String testNum = "083";
-        int sinkNum = 3;
-        int graphNum = 3;
-        int vulnNum = 2;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "083";
+        int expectedNumberOfSinks = 3;
+        int expectedNumberOfGraphs = 3;
+        int expectedNumberOfVulnerabilities = 2;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test084() {
-        String testNum = "084";
-        int sinkNum = 0;
-        int graphNum = 0;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "084";
+        int expectedNumberOfSinks = 0;
+        int expectedNumberOfGraphs = 0;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test085() {
-        String testNum = "085";
-        int sinkNum = 3;
-        int graphNum = 3;
-        int vulnNum = 2;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "085";
+        int expectedNumberOfSinks = 3;
+        int expectedNumberOfGraphs = 3;
+        int expectedNumberOfVulnerabilities = 2;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test086() {
-        String testNum = "086";
-        int sinkNum = 2;
-        int graphNum = 2;
-        int vulnNum = 2;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "086";
+        int expectedNumberOfSinks = 2;
+        int expectedNumberOfGraphs = 2;
+        int expectedNumberOfVulnerabilities = 2;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test087() {
-        String testNum = "087";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "087";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test088() {
-        String testNum = "088";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "088";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test089() {
-        String testNum = "089";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "089";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test090() {
-        String testNum = "090";
-        int sinkNum = 0;
-        int graphNum = 0;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "090";
+        int expectedNumberOfSinks = 0;
+        int expectedNumberOfGraphs = 0;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test091() {
-        String testNum = "091";
-        int sinkNum = 10;
-        int graphNum = 10;
-        int vulnNum = 7;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "091";
+        int expectedNumberOfSinks = 10;
+        int expectedNumberOfGraphs = 10;
+        int expectedNumberOfVulnerabilities = 7;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test092() {
-        String testNum = "092";
-        int sinkNum = 4;
-        int graphNum = 4;
-        int vulnNum = 2;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "092";
+        int expectedNumberOfSinks = 4;
+        int expectedNumberOfGraphs = 4;
+        int expectedNumberOfVulnerabilities = 2;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test093() {
-        String testNum = "093";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "093";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test094() {
-        String testNum = "094";
-        int sinkNum = 2;
-        int graphNum = 2;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "094";
+        int expectedNumberOfSinks = 2;
+        int expectedNumberOfGraphs = 2;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test095() {
-        String testNum = "095";
-        int sinkNum = 3;
-        int graphNum = 3;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "095";
+        int expectedNumberOfSinks = 3;
+        int expectedNumberOfGraphs = 3;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test096() {
-        String testNum = "096";
-        int sinkNum = 3;
-        int graphNum = 3;
-        int vulnNum = 2;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "096";
+        int expectedNumberOfSinks = 3;
+        int expectedNumberOfGraphs = 3;
+        int expectedNumberOfVulnerabilities = 2;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test097() {
-        String testNum = "097";
-        int sinkNum = 2;
-        int graphNum = 2;
-        int vulnNum = 2;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "097";
+        int expectedNumberOfSinks = 2;
+        int expectedNumberOfGraphs = 2;
+        int expectedNumberOfVulnerabilities = 2;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test098() {
-        String testNum = "098";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "098";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test099() {
-        String testNum = "099";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "099";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test100() {
-        String testNum = "100";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "100";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test101() {
-        String testNum = "101";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "101";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test102() {
-        String testNum = "102";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "102";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test103() {
-        String testNum = "103";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "103";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test104() {
-        String testNum = "104";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "104";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test105() {
-        String testNum = "105";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "105";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test106() {
-        String testNum = "106";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "106";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test107() {
-        String testNum = "107";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "107";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test108() {
-        String testNum = "108";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "108";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test109() {
-        String testNum = "109";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "109";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test110() {
-        String testNum = "110";
-        int sinkNum = 0;
-        int graphNum = 0;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "110";
+        int expectedNumberOfSinks = 0;
+        int expectedNumberOfGraphs = 0;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test111() {
-        String testNum = "111";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "111";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test112() {
-        String testNum = "112";
-        int sinkNum = 0;
-        int graphNum = 0;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "112";
+        int expectedNumberOfSinks = 0;
+        int expectedNumberOfGraphs = 0;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test113() {
-        String testNum = "113";
-        int sinkNum = 3;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "113";
+        int expectedNumberOfSinks = 3;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test114() {
-        String testNum = "114";
-        int sinkNum = 4;
-        int graphNum = 4;
-        int vulnNum = 3;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "114";
+        int expectedNumberOfSinks = 4;
+        int expectedNumberOfGraphs = 4;
+        int expectedNumberOfVulnerabilities = 3;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test115() {
-        String testNum = "115";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "115";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test116() {
-        String testNum = "116";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "116";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test117() {
-        String testNum = "117";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "117";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test118() {
-        String testNum = "118";
-        int sinkNum = 2;
-        int graphNum = 2;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "118";
+        int expectedNumberOfSinks = 2;
+        int expectedNumberOfGraphs = 2;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test119() {
-        String testNum = "119";
-        int sinkNum = 0;
-        int graphNum = 0;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "119";
+        int expectedNumberOfSinks = 0;
+        int expectedNumberOfGraphs = 0;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test120() {
-        String testNum = "120";
-        int sinkNum = 2;
-        int graphNum = 2;
-        int vulnNum = 2;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "120";
+        int expectedNumberOfSinks = 2;
+        int expectedNumberOfGraphs = 2;
+        int expectedNumberOfVulnerabilities = 2;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test121() {
-        String testNum = "121";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "121";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test122() {
-        String testNum = "122";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "122";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test123() {
-        String testNum = "123";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
+        String testNumber = "123";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
         // TODO: This test currently fails. Please see issue #1 for details.
-        // this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        // this.performTest(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test124() {
-        String testNum = "124";
-        int sinkNum = 3;
-        int graphNum = 3;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "124";
+        int expectedNumberOfSinks = 3;
+        int expectedNumberOfGraphs = 3;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test125() {
-        String testNum = "125";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "125";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test126() {
-        String testNum = "126";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "126";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test127() {
-        String testNum = "127";
-        int sinkNum = 0;
-        int graphNum = 0;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "127";
+        int expectedNumberOfSinks = 0;
+        int expectedNumberOfGraphs = 0;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test128() {
-        String testNum = "128";
-        int sinkNum = 3;
-        int graphNum = 3;
-        int vulnNum = 3;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "128";
+        int expectedNumberOfSinks = 3;
+        int expectedNumberOfGraphs = 3;
+        int expectedNumberOfVulnerabilities = 3;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test129() {
-        String testNum = "129";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "129";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test130() {
-        String testNum = "130";
-        int sinkNum = 5;
-        int graphNum = 5;
-        int vulnNum = 2;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "130";
+        int expectedNumberOfSinks = 5;
+        int expectedNumberOfGraphs = 5;
+        int expectedNumberOfVulnerabilities = 2;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test131() {
-        String testNum = "131";
-        int sinkNum = 4;
-        int graphNum = 4;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "131";
+        int expectedNumberOfSinks = 4;
+        int expectedNumberOfGraphs = 4;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test132() {
-        String testNum = "132";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "132";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test133() {
-        String testNum = "133";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "133";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test134() {
-        String testNum = "134";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 1;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "134";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 1;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test135() {
-        String testNum = "135";
-        int sinkNum = 1;
-        int graphNum = 1;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "135";
+        int expectedNumberOfSinks = 1;
+        int expectedNumberOfGraphs = 1;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     public void test136() {
-        String testNum = "136";
-        int sinkNum = 4;
-        int graphNum = 4;
-        int vulnNum = 0;
-        this.performTest(testNum, sinkNum, graphNum, false, vulnNum);
+        String testNumber = "136";
+        int expectedNumberOfSinks = 4;
+        int expectedNumberOfGraphs = 4;
+        int expectedNumberOfVulnerabilities = 0;
+        this.performTestWithCallStringAnalysis(testNumber, expectedNumberOfSinks, expectedNumberOfGraphs, false, expectedNumberOfVulnerabilities);
     }
 
     /*
@@ -1189,6 +1246,5 @@ public class DepGraphTestCaseNA extends TestCase {
      *   graphs are dumped to the filesystem
      * - check if the dot files look as you expected
      * - switch the fourth parameter back to false
-     *
      */
 }
