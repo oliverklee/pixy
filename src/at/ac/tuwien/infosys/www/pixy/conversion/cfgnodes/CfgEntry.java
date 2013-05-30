@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * This class represents the entry node of a control flow graph.
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class CfgEntry extends AbstractCfgNode {

@@ -7,56 +7,54 @@ import java.util.*;
  */
 public class Variable extends AbstractTacPlace {
     private String name;
-    private SymbolTable symbolTable; // the symbol table this variable belongs to;
-    private boolean isSuperGlobal;   // member of the superglobals symboltable?
+    /** the symbol table this variable belongs to */
+    private SymbolTable symbolTable;
+    /** member of the superglobals symbol table? */
+    private boolean isSuperGlobal = false;
     private boolean isLocal;
-    private boolean isGlobal;   // local variable of the main function?
+    /** local variable of the main function? */
+    private boolean isGlobal;
     // (temporaries excluded);
     // hence, globals and superglobals are different
 
     // a variable is either local or global or superglobal
 
-    // array properties; array elements can also be arrays, if they have
-    // elements themselves
-    private boolean isArray;
-    // AbstractTacPlace (=index) -> Variable
-    // (only direct elements, i.e., who are one dimension deeper)
-    private Map<AbstractTacPlace, Variable> elements;
+    /** array properties; array elements can also be arrays, if they have elements themselves */
+    private boolean isArray = false;
+    /** only direct elements, i.e., who are one dimension deeper */
+    private Map<AbstractTacPlace, Variable> elements = null;
     // "shortcut": contains all elements with a literal last index;
     // (only direct elements)
-    private List<Variable> literalElements;
+    private List<Variable> literalElements = null;
 
     // array element properties
-    private boolean isArrayElement;
-    private Variable enclosingArray;
-    private Variable topEnclosingArray;
-    private AbstractTacPlace index;     // last index for multidimensions
-    private List<AbstractTacPlace> indices;   // all indices
+    private boolean isArrayElement = false;
+    private Variable enclosingArray = null;
+    private Variable topEnclosingArray = null;
+    /** last index for multi-dimensions */
+    private AbstractTacPlace index = null;
+    /** all indices */
+    private List<AbstractTacPlace> indices = null;
     private boolean hasNonLiteralIndices;
 
-    // additional information for variable variables
-    private AbstractTacPlace dependsOn;
+    /** additional information for variable variables */
+    private AbstractTacPlace dependsOn = null;
 
-    // list of array elements whose LAST index is this variable
-    private List<Variable> indexFor;
+    /** list of array elements whose LAST index is this variable */
+    private List<Variable> indexFor = new LinkedList<>();
 
-    // is this a temporary variable?
-    private boolean isTemp;
+    /** is this a temporary variable? */
+    private boolean isTemp = false;
 
-    // is this an object member variable?
-    private boolean isMember;
+    /** is this an object member variable? */
+    private boolean isMember = false;
 
-    // is this a function return variable?
-    private boolean isReturnVariable;
-
-// *********************************************************************************
-// CONSTRUCTORS ********************************************************************
-// *********************************************************************************
+    /** is this a function return variable? */
+    private boolean isReturnVariable = false;
 
     public Variable(String name, SymbolTable symbolTable) {
         this.name = name;
         this.symbolTable = symbolTable;
-        this.isSuperGlobal = false;
         if (symbolTable.isMain()) {
             this.isLocal = false;
             this.isGlobal = true;
@@ -64,23 +62,6 @@ public class Variable extends AbstractTacPlace {
             this.isLocal = true;
             this.isGlobal = false;
         }
-
-        this.isArray = false;
-        this.elements = null;
-        this.literalElements = null;
-
-        this.isArrayElement = false;
-        this.enclosingArray = null;
-        this.topEnclosingArray = null;
-        this.index = null;
-        this.indices = null;
-
-        this.dependsOn = null;
-        this.indexFor = new LinkedList<>();
-
-        this.isTemp = false;
-        this.isMember = false;
-        this.isReturnVariable = false;
     }
 
     public Variable(String name, SymbolTable symbolTable, boolean isTemp) {
@@ -113,7 +94,6 @@ public class Variable extends AbstractTacPlace {
 
     public List<Variable> getElements() {
         if (this.elements == null) {
-            // System.out.println("WARNING: unchecked call to Variable.getElements()");
             return Collections.emptyList();
         } else {
             return new LinkedList<>(this.elements.values());
@@ -131,6 +111,7 @@ public class Variable extends AbstractTacPlace {
                 retMe.addAll(directElement.getElementsRecursive());
             }
         }
+
         return retMe;
     }
 
@@ -228,10 +209,6 @@ public class Variable extends AbstractTacPlace {
         return this.enclosingArray.isArrayElementOf(array);
     }
 
-// *********************************************************************************
-// SET *****************************************************************************
-// *********************************************************************************
-
     void setIsSuperGlobal(boolean isSuperGlobal) {
         this.isSuperGlobal = isSuperGlobal;
         if (isSuperGlobal) {
@@ -261,7 +238,6 @@ public class Variable extends AbstractTacPlace {
     }
 
     void setArrayElementAttributes(Variable enclosingArray, AbstractTacPlace index) {
-
         this.isArrayElement = true;
         this.indices = new LinkedList<>();
         this.hasNonLiteralIndices = enclosingArray.hasNonLiteralIndices();
@@ -301,7 +277,6 @@ public class Variable extends AbstractTacPlace {
 
     void setSymbolTable(SymbolTable symbolTable) {
         this.symbolTable = symbolTable;
-        // this.resetHashCode();
     }
 
     void addIndexFor(Variable var) {
@@ -326,10 +301,6 @@ public class Variable extends AbstractTacPlace {
         this.isGlobal = false;
     }
 
-// *********************************************************************************
-// OTHER ***************************************************************************
-// *********************************************************************************
-
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
@@ -343,7 +314,6 @@ public class Variable extends AbstractTacPlace {
 
     // EFF: hashcode caching
     public int hashCode() {
-
         int hashCode = 17;
         hashCode = 37 * hashCode + this.name.hashCode();
         hashCode = 37 * hashCode + this.symbolTable.hashCode();

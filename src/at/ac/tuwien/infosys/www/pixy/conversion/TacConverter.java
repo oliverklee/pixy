@@ -2187,49 +2187,49 @@ public class TacConverter {
 // PARSE RULE METHODS **************************************************************
 // *********************************************************************************
 
-    void start(ParseNode node) {
+    void start(ParseNode rootNode) {
         // always:
         // -> top_statement_list
 
-        // entry and exit nodes for the (virtual) main function;
+        // entry and exit nodes for the (virtual) main mainFunction;
         // no need for a CfgNodeExitPrep here
-        AbstractCfgNode entryNode = new CfgEntry(node);
-        AbstractCfgNode exitNode = new CfgExit(node);
+        AbstractCfgNode entryNode = new CfgEntry(rootNode);
+        AbstractCfgNode exitNode = new CfgExit(rootNode);
 
-        // ControlFlowGraph for the main function
+        // ControlFlowGraph for the main mainFunction
         ControlFlowGraph controlFlowGraph = new ControlFlowGraph(entryNode, exitNode, CfgEdge.NO_EDGE);
 
-        // name of main function
+        // name of main mainFunction
         String mainFunctionName = InternalStrings.mainFunctionName;
 
-        // function object
-        TacFunction function = new TacFunction(
+        // mainFunction object
+        TacFunction mainFunction = new TacFunction(
             mainFunctionName,
             controlFlowGraph,
             this.makeReturnPlace(mainFunctionName),
             false,
-            node, "");
+            rootNode, "");
         // not necessary, but clean
         List<TacFormalParameter> l = Collections.emptyList();
-        function.setParams(l);
-        function.setIsMain(true);
+        mainFunction.setParams(l);
+        mainFunction.setIsMain(true);
 
-        // add the function to the list of user functions
-        this.userFunctions.put(mainFunctionName, function);
+        // add the mainFunction to the list of user functions
+        this.userFunctions.put(mainFunctionName, mainFunction);
 
-        // make shortcut to the main function
-        this.mainFunction = function;
+        // make shortcut to the main mainFunction
+        this.mainFunction = mainFunction;
 
-        // make shortcut to the symbol table of the main function
-        this.mainFunctionSymbolTable = function.getSymbolTable();
+        // make shortcut to the symbol table of the main mainFunction
+        this.mainFunctionSymbolTable = mainFunction.getSymbolTable();
 
-        // push function onto the function stack
-        this.functionStack.add(function);
+        // push mainFunction onto the mainFunction stack
+        this.functionStack.add(mainFunction);
 
         // descend into parse tree
-        TacAttributes atts0 = this.top_statement_list(node.getChild(0));
+        TacAttributes atts0 = this.top_statement_list(rootNode.getChild(0));
 
-        // embed recursively constructed ControlFlowGraph into the function's frame ControlFlowGraph
+        // embed recursively constructed ControlFlowGraph into the mainFunction's frame ControlFlowGraph
         connect(entryNode, atts0.getControlFlowGraph());
         connect(atts0.getControlFlowGraph(), exitNode);
 
@@ -2237,7 +2237,7 @@ public class TacConverter {
         this.optimize(controlFlowGraph);
 
         // transform entries of the $GLOBALS array into corresponding
-        // global variables (= local variables of the main function);
+        // global variables (= local variables of the main mainFunction);
         // note: $GLOBALS-stuff can't be used for formal params, so it is
         // sufficient to traverse the CFG's
         for (TacFunction userFunction : this.userFunctions.values()) {
