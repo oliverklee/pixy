@@ -40,10 +40,10 @@ public class TacConverter {
     private int id;
 
     /* various stacks */
-    private LinkedList<AbstractCfgNode> breakTargetStack;
-    private LinkedList<AbstractCfgNode> continueTargetStack;
-    private LinkedList<TacFunction> functionStack;
-    private LinkedList<TacClass> classStack;
+    private LinkedList<AbstractCfgNode> breakTargetStack = new LinkedList<>();
+    private LinkedList<AbstractCfgNode> continueTargetStack = new LinkedList<>();
+    private LinkedList<TacFunction> functionStack = new LinkedList<>();
+    private LinkedList<TacClass> classStack = new LinkedList<>();
 
     // LATER: it would be cleaner to keep all symbol tables
     // in the enclosing program converter (now: only the superglobals
@@ -59,7 +59,7 @@ public class TacConverter {
     private SymbolTable superglobalsSymbolTable;
 
     /** shortcut to the symbol table of the main function, contains global variables */
-    private SymbolTable mainFunctionSymbolTable;
+    private SymbolTable mainFunctionSymbolTable = null;
 
     /**
      * Table containing constants.
@@ -90,7 +90,7 @@ public class TacConverter {
     // The converter achieves this behavior by transforming function names to lower case;
 
     /** user-defined functions, including the main function; function name -> function */
-    private Map<String, TacFunction> userFunctions;
+    private Map<String, TacFunction> userFunctions = new HashMap<>();
 
     /**
      * method name -> class name -> method object
@@ -98,37 +98,37 @@ public class TacConverter {
      * Note: method names are suffixed with a special string (see InternalStrings) to keep them distinct
      * from normal functions.
      */
-    private Map<String, Map<String, TacFunction>> userMethods;
+    private Map<String, Map<String, TacFunction>> userMethods = new HashMap<>();
 
     /** class name -> class */
-    private Map<String, TacClass> userClasses;
+    private Map<String, TacClass> userClasses = new HashMap<>();
 
     /** shortcut to the main function */
-    private TacFunction mainFunction;
+    private TacFunction mainFunction = null;
 
     /**
      * Maps functions AND methods to a list of function calls (for backpatching),
      * except for those function calls for which backpatching is known to be hopeless.
      */
-    private Map<TacFunction, List<CallPreparation>> functionCalls;
+    private Map<TacFunction, List<CallPreparation>> functionCalls = new HashMap<>();
     /**
      * Maps functions AND methods to a list of method calls (for backpatching),
      * except for those method calls for which backpatching is known to be hopeless.
      */
-    private Map<TacFunction, List<CallPreparation>> methodCalls;
+    private Map<TacFunction, List<CallPreparation>> methodCalls = new HashMap<>();
 
     /** switch indicating whether special node markers (~_) should be considered */
     private boolean specialNodeMarkersShouldBeConsidered;
 
     /** Map hotspotId (Integer) -> Hotspot. Only used for JUnit tests. */
-    private Map<Integer, Hotspot> hotspots;
+    private Map<Integer, Hotspot> hotspots = new HashMap<>();
 
     /**
      * List of include nodes.
      *
      * Note that this list is only valid until the first inclusion operation is performed.
      */
-    private List<Include> includeNodes;
+    private List<Include> includeNodes = new LinkedList<>();
 
     public TacConverter(
         ParseTree phpParseTree, boolean specialNodeMarkersShouldBeConsidered, int id, File file, ProgramConverter programConverter
@@ -137,13 +137,6 @@ public class TacConverter {
         this.file = file;
 
         this.phpParseTree = phpParseTree;
-        this.breakTargetStack = new LinkedList<>();
-        this.continueTargetStack = new LinkedList<>();
-        this.functionStack = new LinkedList<>();
-        this.classStack = new LinkedList<>();
-
-        this.functionCalls = new HashMap<>();
-        this.methodCalls = new HashMap<>();
 
         this.voidPlace = new Literal("_void");
         this.specialVariablesSymbolTable = new SymbolTable("_special");
@@ -154,11 +147,6 @@ public class TacConverter {
         this.memberPlace = new Variable(InternalStrings.memberName, this.specialVariablesSymbolTable);
         this.memberPlace.setIsMember(true);
         this.specialVariablesSymbolTable.add(this.memberPlace);
-
-        this.mainFunctionSymbolTable = null;
-
-        this.userFunctions = new HashMap<>();
-        this.mainFunction = null;
 
         this.superglobalsSymbolTable = programConverter.getSuperSymbolTable();
 
@@ -191,13 +179,6 @@ public class TacConverter {
         this.classCPlace = classConstant;
 
         this.specialNodeMarkersShouldBeConsidered = specialNodeMarkersShouldBeConsidered;
-
-        this.hotspots = new HashMap<>();
-
-        this.includeNodes = new LinkedList<>();
-
-        this.userClasses = new HashMap<>();
-        this.userMethods = new HashMap<>();
     }
 
     public void assignFunctionsToControlFlowGraphNodes() {
