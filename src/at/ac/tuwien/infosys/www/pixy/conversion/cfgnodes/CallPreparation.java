@@ -10,6 +10,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * This class represents a call node's predecessor.
+ *
  * Almost identical to Call.
  *
  * Doesn't do 'function.addCall(this)' in the constructor and in setFunction, and has cbrPairs.
@@ -17,13 +19,9 @@ import java.util.List;
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class CallPreparation extends AbstractCfgNode {
-// CONSTRUCTORS ********************************************************************
-
     public CallPreparation(ParseNode node) {
         super(node);
     }
-
-// GET *****************************************************************************
 
     public TacFunction getCallee() {
         return this.getCallNode().getCallee();
@@ -58,8 +56,6 @@ public class CallPreparation extends AbstractCfgNode {
     public List<List<Variable>> getCbrParams() {
         return this.getCallNode().getCbrParams();
     }
-
-// SET *****************************************************************************
 
     public void replaceVariable(int index, Variable replacement) {
         // do nothing

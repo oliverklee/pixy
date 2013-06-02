@@ -204,8 +204,12 @@ public abstract class AbstractCfgNode {
         }
     }
 
-    // replaces the variable with the given index in the list returned by getVariables
-    // by the given replacement variable
+    /**
+     * Replaces the variable with the given index in the list returned by getVariables by the given replacement variable.
+     *
+     * @param index
+     * @param replacement
+     */
     public abstract void replaceVariable(int index, Variable replacement);
 
     public void setOutEdge(int index, CfgEdge edge) {

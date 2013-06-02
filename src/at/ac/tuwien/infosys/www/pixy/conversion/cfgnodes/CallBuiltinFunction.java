@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * A function call.
+ * A call of a PHP builtin function.
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */

@@ -16,15 +16,11 @@ public class IncludeStart extends AbstractCfgNode {
     private File containingFile;  // file in which this node occurs
     private IncludeEnd peer;
 
-//  CONSTRUCTORS *******************************************************************
-
     public IncludeStart(File file, ParseNode parseNode) {
         super(parseNode);
         this.containingFile = file;
         this.peer = null;
     }
-
-//  GET ****************************************************************************
 
     public File getContainingFile() {
         return this.containingFile;
@@ -33,8 +29,6 @@ public class IncludeStart extends AbstractCfgNode {
     public List<Variable> getVariables() {
         return Collections.emptyList();
     }
-
-//  SET ****************************************************************************
 
     public void replaceVariable(int index, Variable replacement) {
     }

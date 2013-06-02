@@ -9,19 +9,17 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * This class represents an echo call in the form echo(variable).
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class Echo extends AbstractCfgNode {
     private AbstractTacPlace place;
 
-// CONSTRUCTORS ********************************************************************
-
     public Echo(AbstractTacPlace place, ParseNode node) {
         super(node);
         this.place = place;
     }
-
-//  GET *****************************************************************************
 
     public AbstractTacPlace getPlace() {
         return this.place;
@@ -36,8 +34,6 @@ public class Echo extends AbstractCfgNode {
             return Collections.emptyList();
         }
     }
-
-//  SET ****************************************************************************
 
     public void replaceVariable(int index, Variable replacement) {
         switch (index) {

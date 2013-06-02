@@ -8,9 +8,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * "left = leftOperand op rightOperand"
+ * A CFG node for assignments in the form "variable = place operator place".
  *
- * "op" can be: TacOperators.<...>
+ * "operator" can be: TacOperators.<...>
  * CONCAT, BOOLEAN_AND, BITWISE_OR, BITWISE_AND, BITWISE_XOR,
  * PLUS, MINUS, MULT, DIV, MODULO,
  * SL, SR, IS_IDENTICAL, IS_NOT_IDENTICAL, IS_EQUAL, IS_NOT_EQUAL,
@@ -24,8 +24,6 @@ public class AssignBinary extends AbstractCfgNode {
     private AbstractTacPlace rightOperand;
     private int op;
 
-//  CONSTRUCTORS *******************************************************************
-
     public AssignBinary(
         Variable left, AbstractTacPlace leftOperand, AbstractTacPlace rightOperand,
         int op, ParseNode node) {
@@ -36,8 +34,6 @@ public class AssignBinary extends AbstractCfgNode {
         this.rightOperand = rightOperand;
         this.op = op;
     }
-
-//  GET ****************************************************************************
 
     public Variable getLeft() {
         return this.left;
@@ -70,8 +66,6 @@ public class AssignBinary extends AbstractCfgNode {
         }
         return retMe;
     }
-
-//  SET ****************************************************************************
 
     public void replaceVariable(int index, Variable replacement) {
         switch (index) {

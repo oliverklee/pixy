@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * A function call.
+ * This class represents a function call.
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
@@ -42,13 +42,12 @@ public class Call extends AbstractCfgNode {
     // - of it it is a constructor invocation ("new")
     private Variable object;
 
-// CONSTRUCTORS ********************************************************************
-
     // if you pass "null" for "function", don't forget to call "setFunction" later
     public Call(
         AbstractTacPlace functionNamePlace, TacFunction calledFunction, ParseNode node,
         TacFunction enclosingFunction, Variable retVar, AbstractTacPlace tempPlace,
-        List<TacActualParameter> paramList, Variable object) {
+        List<TacActualParameter> paramList, Variable object
+    ) {
 
         super(node);
         this.functionNamePlace = functionNamePlace;
@@ -67,8 +66,6 @@ public class Call extends AbstractCfgNode {
         this.calleeClassName = null;
         this.object = object;
     }
-
-// GET *****************************************************************************
 
     public TacFunction getCallee() {
         return this.callee;
@@ -107,7 +104,6 @@ public class Call extends AbstractCfgNode {
     // returns a list consisting of two-element-lists consisting of
     // (actual cbr-param, formal cbr-param) (Variable objects)
     public List<List<Variable>> getCbrParams() {
-
         if (this.cbrParamList != null) {
             return this.cbrParamList;
         }
@@ -126,7 +122,6 @@ public class Call extends AbstractCfgNode {
 
             // if this is a cbr-param...
             if (actualParam.isReference() || formalParam.isReference()) {
-
                 // the actual part of a cbr-param must always be a variable
                 if (!(actualParam.getPlace() instanceof Variable)) {
                     throw new RuntimeException("Error in the PHP file!");
@@ -162,8 +157,6 @@ public class Call extends AbstractCfgNode {
     public Variable getObject() {
         return this.object;
     }
-
-// SET *****************************************************************************
 
     public void replaceVariable(int index, Variable replacement) {
         TacActualParameter param = this.paramList.get(index);

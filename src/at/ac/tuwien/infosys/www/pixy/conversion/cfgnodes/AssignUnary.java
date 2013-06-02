@@ -8,9 +8,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * "left = op right"
+ * A CFG node for assignments in the form "variable = operator place".
  *
- * "op" can be:
+ * "operator" can be:
  * + - ! ~ (int) (double) (string) (array) (object) (bool) (unset)
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
@@ -20,16 +20,12 @@ public class AssignUnary extends AbstractCfgNode {
     private AbstractTacPlace right;
     private int op;
 
-// CONSTRUCTORS ********************************************************************
-
     public AssignUnary(Variable left, AbstractTacPlace right, int op, ParseNode node) {
         super(node);
         this.left = left;
         this.right = right;
         this.op = op;
     }
-
-//  GET ****************************************************************************
 
     public Variable getLeft() {
         return this.left;
@@ -53,8 +49,6 @@ public class AssignUnary extends AbstractCfgNode {
         }
         return retMe;
     }
-
-//  SET ****************************************************************************
 
     public void replaceVariable(int index, Variable replacement) {
         switch (index) {

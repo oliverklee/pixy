@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * This class represents the entry node of a control flow graph.
+ * This class represents the entry node of the control flow graph.
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
@@ -19,8 +19,6 @@ public class CfgEntry extends AbstractCfgNode {
     public List<Variable> getVariables() {
         return Collections.emptyList();
     }
-
-//  SET ****************************************************************************
 
     public void replaceVariable(int index, Variable replacement) {
         // do nothing

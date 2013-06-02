@@ -14,15 +14,11 @@ public class EmptyTest extends AbstractCfgNode {
     private AbstractTacPlace left;
     private AbstractTacPlace right;
 
-// CONSTRUCTORS ********************************************************************
-
     public EmptyTest(AbstractTacPlace left, AbstractTacPlace right, ParseNode node) {
         super(node);
         this.left = left;
         this.right = right;
     }
-
-// GET *****************************************************************************
 
     public AbstractTacPlace getLeft() {
         return this.left;
@@ -46,8 +42,6 @@ public class EmptyTest extends AbstractCfgNode {
         }
         return retMe;
     }
-
-//  SET ****************************************************************************
 
     public void replaceVariable(int index, Variable replacement) {
         switch (index) {

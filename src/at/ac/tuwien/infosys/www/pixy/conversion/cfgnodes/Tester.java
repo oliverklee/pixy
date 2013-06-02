@@ -22,15 +22,11 @@ public class Tester extends AbstractCfgNode {
     // what to test: must be one of the above final's
     private int whatToTest;
 
-// CONSTRUCTORS ********************************************************************
-
     public Tester(int whatToTest, Set<Integer> paramNumbers) {
         super();
         this.whatToTest = whatToTest;
         this.paramNumbers = paramNumbers;
     }
-
-// GET *****************************************************************************
 
     public List<Variable> getVariables() {
         return Collections.emptyList();
@@ -43,8 +39,6 @@ public class Tester extends AbstractCfgNode {
     public Set<Integer> getParamNumbers() {
         return this.paramNumbers;
     }
-
-//  SET ****************************************************************************
 
     public void replaceVariable(int index, Variable replacement) {
         // should not be necessary for this node

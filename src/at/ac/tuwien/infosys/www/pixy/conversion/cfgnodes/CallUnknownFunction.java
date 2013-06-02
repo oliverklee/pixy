@@ -26,8 +26,6 @@ public class CallUnknownFunction extends AbstractCfgNode {
     // is this a call to an unknown method?
     private boolean isMethod;
 
-// CONSTRUCTORS ********************************************************************
-
     public CallUnknownFunction(String functionName, List<TacActualParameter> paramList,
                                AbstractTacPlace tempPlace, ParseNode node, boolean isMethod) {
 
@@ -37,8 +35,6 @@ public class CallUnknownFunction extends AbstractCfgNode {
         this.tempVar = (Variable) tempPlace;
         this.isMethod = isMethod;
     }
-
-// GET *****************************************************************************
 
     public String getFunctionName() {
         return this.functionName;
@@ -68,8 +64,6 @@ public class CallUnknownFunction extends AbstractCfgNode {
     public boolean isMethod() {
         return this.isMethod;
     }
-
-// SET *****************************************************************************
 
     public void replaceVariable(int index, Variable replacement) {
         TacActualParameter param = this.paramList.get(index);

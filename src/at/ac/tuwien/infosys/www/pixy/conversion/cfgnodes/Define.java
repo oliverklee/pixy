@@ -8,6 +8,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * This class represents the CFG node of a constant definition using define(key, value).
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class Define extends AbstractCfgNode {

@@ -379,7 +379,6 @@ public class TacConverter {
         // ADD FUNCTIONS ********************************************
 
         for (TacFunction includedFunc : includedUserFunctions.values()) {
-
             if (includedFunc.isMain()) {
                 // we have already dealt with the main function above
                 continue;

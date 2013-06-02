@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * This class represents the exit node of a control flow graph.
+ * This class represents an exit node of the control flow graph.
  *
  * Don't assign any transfer function other than ID to this node!
  *

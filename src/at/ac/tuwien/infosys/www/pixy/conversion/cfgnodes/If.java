@@ -16,8 +16,6 @@ public class If extends AbstractCfgNode {
     private AbstractTacPlace rightOperand;  // may only be Constant.TRUE or Constant.FALSE
     private int op;
 
-//CONSTRUCTORS ********************************************************************
-
     public If(AbstractTacPlace leftOperand, AbstractTacPlace rightOperand, int op, ParseNode node) {
         super(node);
         // make sure that right operand is valid (i.e. true or false)
@@ -52,8 +50,6 @@ public class If extends AbstractCfgNode {
         }
         return retMe;
     }
-
-//  SET ****************************************************************************
 
     public void replaceVariable(int index, Variable replacement) {
         switch (index) {

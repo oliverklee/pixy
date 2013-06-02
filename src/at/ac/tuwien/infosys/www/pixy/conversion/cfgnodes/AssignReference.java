@@ -8,21 +8,19 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * A CFG node for assignment by reference in the form "variable =& variable".
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class AssignReference extends AbstractCfgNode {
     private Variable left;
     private Variable right;
 
-//  CONSTRUCTORS *******************************************************************
-
     public AssignReference(Variable left, Variable right, ParseNode node) {
         super(node);
         this.left = left;
         this.right = right;
     }
-
-//  GET ****************************************************************************
 
     public Variable getLeft() {
         return this.left;
@@ -38,8 +36,6 @@ public class AssignReference extends AbstractCfgNode {
         retMe.add(this.right);
         return retMe;
     }
-
-//  SET ****************************************************************************
 
     public void replaceVariable(int index, Variable replacement) {
         switch (index) {

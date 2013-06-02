@@ -8,18 +8,16 @@ import java.util.List;
 
 
 /**
+ * This class represents a call node's successor.
+ *
  * Return from called function. "2nd half" of a function call node.
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class CallReturn extends AbstractCfgNode {
-// CONSTRUCTORS ********************************************************************
-
     public CallReturn(ParseNode parseNode) {
         super(parseNode);
     }
-
-//  GET ****************************************************************************
 
     public Variable getRetVar() {
         return this.getCallNode().getRetVar();
@@ -41,8 +39,6 @@ public class CallReturn extends AbstractCfgNode {
     public List<Variable> getVariables() {
         return Collections.emptyList();
     }
-
-//  SET ****************************************************************************
 
     public void replaceVariable(int index, Variable replacement) {
         // do nothing

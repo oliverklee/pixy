@@ -13,14 +13,10 @@ import java.util.List;
 public class Hotspot extends AbstractCfgNode {
     private Integer hotspotId;
 
-//  CONSTRUCTORS *******************************************************************
-
     public Hotspot(Integer hotspotId) {
         super();
         this.hotspotId = hotspotId;
     }
-
-//  GET ****************************************************************************
 
     public Integer getHotspotId() {
         return this.hotspotId;
@@ -29,8 +25,6 @@ public class Hotspot extends AbstractCfgNode {
     public List<Variable> getVariables() {
         return Collections.emptyList();
     }
-
-//  SET ****************************************************************************
 
     public void replaceVariable(int index, Variable replacement) {
         // do nothing

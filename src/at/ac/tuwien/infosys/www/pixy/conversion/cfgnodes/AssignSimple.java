@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * "left = right"
+ * A CFG node for assignments in the form "variable = place".
  *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */

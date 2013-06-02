@@ -15,8 +15,6 @@ public class Static extends AbstractCfgNode {
     private AbstractTacPlace initialPlace;
     private boolean hasInitialPlace;
 
-// CONSTRUCTORS ********************************************************************
-
     public Static(AbstractTacPlace operand, ParseNode node) {
         super(node);
         this.operand = operand;
@@ -30,8 +28,6 @@ public class Static extends AbstractCfgNode {
         this.hasInitialPlace = true;
         this.initialPlace = initialPlace;
     }
-
-// GET *****************************************************************************
 
     public boolean hasInitialPlace() {
         return this.hasInitialPlace;
@@ -59,8 +55,6 @@ public class Static extends AbstractCfgNode {
         }
         return retMe;
     }
-
-//  SET ****************************************************************************
 
     public void replaceVariable(int index, Variable replacement) {
         switch (index) {

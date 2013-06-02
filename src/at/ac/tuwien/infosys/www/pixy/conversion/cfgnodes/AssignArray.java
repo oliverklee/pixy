@@ -7,19 +7,17 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * A CFG node for assignments in the form "variable = array()".
+ *
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class AssignArray extends AbstractCfgNode {
     private Variable left;
 
-// CONSTRUCTORS ********************************************************************
-
     public AssignArray(Variable left, ParseNode node) {
         super(node);
         this.left = left;
     }
-
-// GET *****************************************************************************
 
     public Variable getLeft() {
         return this.left;
@@ -30,8 +28,6 @@ public class AssignArray extends AbstractCfgNode {
         retMe.add(this.left);
         return retMe;
     }
-
-//  SET ****************************************************************************
 
     public void replaceVariable(int index, Variable replacement) {
         switch (index) {

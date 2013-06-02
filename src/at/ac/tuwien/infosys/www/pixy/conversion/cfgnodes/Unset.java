@@ -8,19 +8,18 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * A CFG node for assignments in the form "unset(variable)".
+
  * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
  */
 public class Unset extends AbstractCfgNode {
     private Variable operand;
 
-// CONSTRUCTORS ********************************************************************
-
     public Unset(AbstractTacPlace operand, ParseNode node) {
         super(node);
-        this.operand = (Variable) operand;  // must be a variable
+        // must be a variable
+        this.operand = (Variable) operand;
     }
-
-// GET *****************************************************************************
 
     public Variable getOperand() {
         return this.operand;
@@ -35,8 +34,6 @@ public class Unset extends AbstractCfgNode {
         }
         return retMe;
     }
-
-//  SET ****************************************************************************
 
     public void replaceVariable(int index, Variable replacement) {
         switch (index) {
