@@ -1,6 +1,6 @@
 # Pixy
 
-[![Build Status](https://travis-ci.org/oliverklee/pixy.png?branch=task/java-versions)](https://travis-ci.org/oliverklee/pixy)
+[![Build Status](https://travis-ci.org/oliverklee/pixy.svg?branch=master)](https://travis-ci.org/oliverklee/pixy)
 
 
 ## Authors and maintainer
