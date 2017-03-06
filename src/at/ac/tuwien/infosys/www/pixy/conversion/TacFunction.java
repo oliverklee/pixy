@@ -1,190 +1,206 @@
 package at.ac.tuwien.infosys.www.pixy.conversion;
 
-import at.ac.tuwien.infosys.www.phpparser.ParseNode;
+import java.util.*;
+
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Call;
+import at.ac.tuwien.infosys.www.pixy.phpParser.ParseNode;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-
-/**
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public class TacFunction {
-    private String name;
-    private ControlFlowGraph controlFlowGraph;    // the CFG's tail MUST be the function's exit node
-    private boolean isReference;
-    private List<TacFormalParameter> params;  // contains TacFormalParameter objects
-    private Variable retVar;
 
-    private SymbolTable symbolTable;
+	private String name;
+	private ControlFlowGraph cfg;
+	private boolean isReference;
+	private List<TacFormalParameter> params;
+	private Variable retVar;
 
-    // a list of CFG nodes calling this function (Call)
-    private List<Call> calledFrom;
+	private SymbolTable symbolTable;
 
-    // is this the main function?
-    private boolean isMain;
+	private List<Call> calledFrom;
 
-    // name of the enclosing class, if this is a method;
-    // the empty string otherwise
-    private String className;
-    // is this the constructor of the above class?
-    private boolean isConstructor;
+	private boolean isMain;
 
-    private ParseNode parseNode;
+	private String className;
+	private boolean isConstructor;
 
-// *********************************************************************************
-// CONSTRUCTORS ********************************************************************
-// *********************************************************************************
+	private boolean isAbstract;
+	private boolean isStatic;
+	private boolean isFinal;
+	private String accessModifier;
 
-    // DON'T FORGET TO SET THE PARAMETERS with setParams()!
-    TacFunction(String name, ControlFlowGraph controlFlowGraph, Variable retVar, boolean isReference,
-                ParseNode parseNode, String className) {
+	private ParseNode parseNode;
 
-        this.name = name;
-        this.controlFlowGraph = controlFlowGraph;
-        this.retVar = retVar;
-        this.isReference = isReference;
-        this.parseNode = parseNode;
-        this.className = className;
-        this.isConstructor = false;
-        if (!className.isEmpty()) {
-            String name2 = name.substring(0, name.length() - InternalStrings.methodSuffix.length());
-            if (name2.equals(className)) {
-                this.isConstructor = true;
-            }
-        }
+	TacFunction(String name, ControlFlowGraph cfg, Variable retVar, boolean isReference, ParseNode parseNode,
+			String className) {
 
-        this.params = Collections.emptyList();
-        this.symbolTable = new SymbolTable(name);
-        this.calledFrom = new LinkedList<>();
-        this.isMain = false;
+		this.name = name;
+		this.cfg = cfg;
+		this.retVar = retVar;
+		this.isReference = isReference;
+		this.parseNode = parseNode;
+		this.className = className;
+		this.isConstructor = false;
+		if (!className.isEmpty()) {
+			String name2 = name.substring(0, name.length() - InternalStrings.methodSuffix.length());
+			if (name2.equals(className)) {
+				this.isConstructor = true;
+			}
+		}
 
-        // this is necessary, even though we use TacFunction's assignFunction()
-        // for assigning functions to controlFlowGraph nodes; the reason is that assignFunction()
-        // is called in the final stage of program conversion, but we need function
-        // information already during conversion (literals analysis for include
-        // file resolution: AbstractInterproceduralAnalysis);
-        // a cleaner solution would be to force the assignment of functions to
-        // cfgnodes by requiring this information in each cfgnode's constructor
-        this.controlFlowGraph.getTail().setEnclosingFunction(this);
-    }
+		this.params = Collections.emptyList();
+		this.symbolTable = new SymbolTable(name);
+		this.calledFrom = new LinkedList<Call>();
+		this.isMain = false;
 
-// *********************************************************************************
-// GET *****************************************************************************
-// *********************************************************************************
+		this.cfg.getTail().setEnclosingFunction(this);
+	}
 
-    public String getName() {
-        return this.name;
-    }
+	public String getName() {
+		return this.name;
+	}
 
-    public ControlFlowGraph getControlFlowGraph() {
-        return this.controlFlowGraph;
-    }
+	public ControlFlowGraph getCfg() {
+		return this.cfg;
+	}
 
-    public boolean isReference() {
-        return this.isReference;
-    }
+	public boolean isReference() {
+		return this.isReference;
+	}
 
-    public List<TacFormalParameter> getParams() {
-        return this.params;
-    }
+	public List<TacFormalParameter> getParams() {
+		return this.params;
+	}
 
-    public TacFormalParameter getParam(int index) {
-        return this.params.get(index);
-    }
+	public TacFormalParameter getParam(int index) {
+		return this.params.get(index);
+	}
 
-    public Variable getRetVar() {
-        return this.retVar;
-    }
+	public Variable getRetVar() {
+		return this.retVar;
+	}
 
-    public SymbolTable getSymbolTable() {
-        return this.symbolTable;
-    }
+	public SymbolTable getSymbolTable() {
+		return this.symbolTable;
+	}
 
-    // returns the function's local variable with the given name
-    Variable getVariable(String varName) {
-        return this.symbolTable.getVariable(varName);
-    }
+	Variable getVariable(String varName) {
+		return this.symbolTable.getVariable(varName);
+	}
 
-    public List<Call> getCalledFrom() {
-        return this.calledFrom;
-    }
+	public List<Call> getCalledFrom() {
+		return this.calledFrom;
+	}
 
-    public List<Call> getContainedCalls() {
-        return this.controlFlowGraph.getContainedCalls();
-    }
+	public List<Call> getContainedCalls() {
+		return this.cfg.getContainedCalls();
+	}
 
-    public boolean isMain() {
-        return this.isMain;
-    }
+	public boolean isMain() {
+		return this.isMain;
+	}
 
-    public boolean isConstructor() {
-        return this.isConstructor;
-    }
+	public boolean isConstructor() {
+		return this.isConstructor;
+	}
 
-    // returns true if this function's CFG has only 2 nodes (entry and exit
-    // node), and false otherwise
-    boolean isEmpty() {
-        return this.controlFlowGraph.size() == 2;
-    }
+	boolean isEmpty() {
+		if (this.cfg.size() == 2) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
-    // returns a collection containing this function's locals
-    public Collection<Variable> getLocals() {
-        return this.symbolTable.getVariablesColl();
-    }
+	public Collection<Variable> getLocals() {
+		return this.symbolTable.getVariablesColl();
+	}
 
-    public int size() {
-        return this.controlFlowGraph.size();
-    }
+	public long size() {
+		return this.cfg.size();
+	}
 
-    public String getFileName() {
-        return this.parseNode.getFileName();
-    }
+	public String getFileName() {
+		return this.parseNode.getFileName();
+	}
 
-    public String getLoc() {
-        return this.parseNode.getLoc();
-    }
+	public String getLoc() {
+		if (this.parseNode.isToken()) {
+			return "Column: ((" + this.parseNode.column() + ")) , Line Number:  ((" + this.parseNode.getLineno()
+					+ ")).";
+		}
+		return "unknown";
+	}
 
-    public String getClassName() {
-        return this.className;
-    }
+	public int getLine() {
+		return this.cfg.getHead().getOriginalLineNumber();
+	}
 
-// *********************************************************************************
-// SET *****************************************************************************
-// *********************************************************************************
+	public String getClassName() {
+		return this.className;
+	}
 
-    // expects a List containing TacFormalParameter objects
-    void setParams(List<TacFormalParameter> params) {
-        this.params = params;
-    }
+	void setParams(List<TacFormalParameter> params) {
+		this.params = params;
+	}
 
-    void setIsMain(boolean isMain) {
-        this.isMain = isMain;
-    }
+	void setIsMain(boolean isMain) {
+		this.isMain = isMain;
+	}
 
-    public void addCalledFrom(Call callNode) {
-        this.calledFrom.add(callNode);
-    }
+	public void addCalledFrom(Call callNode) {
+		this.calledFrom.add(callNode);
+	}
 
-//  *********************************************************************************
-//  OTHER ***************************************************************************
-//  *********************************************************************************
+	public void assignReversePostOrder() {
+		this.cfg.assignReversePostOrder();
+	}
 
-    public void assignReversePostOrder() {
-        this.controlFlowGraph.assignReversePostOrder();
-    }
+	public int hashCode() {
+		return this.name.hashCode();
+	}
 
-    public int hashCode() {
-        return this.name.hashCode();
-    }
+	public boolean equals(Object obj) {
+		if (!(obj instanceof TacFunction)) {
+			return false;
+		}
+		TacFunction comp = (TacFunction) obj;
+		if (!this.name.equals(comp.name)) {
+			return false;
+		}
+		if (!this.className.equals(comp.className)) {
+			return false;
+		}
+		return true;
+	}
 
-    public boolean equals(Object obj) {
-        if (!(obj instanceof TacFunction)) {
-            return false;
-        }
-        TacFunction comp = (TacFunction) obj;
-        return this.name.equals(comp.name) && this.className.equals(comp.className);
-    }
+	public boolean IsAbstract() {
+		return isAbstract;
+	}
+
+	public void SetAbstract(boolean isAbstract) {
+		this.isAbstract = isAbstract;
+	}
+
+	public boolean IsStatic() {
+		return isStatic;
+	}
+
+	public void SetStatic(boolean isStatic) {
+		this.isStatic = isStatic;
+	}
+
+	public String getAccessModifier() {
+		return accessModifier;
+	}
+
+	public void setAccessModifier(String accessModifier) {
+		this.accessModifier = accessModifier;
+	}
+
+	public boolean IsFinal() {
+		return isFinal;
+	}
+
+	public void SetFinal(boolean isFinal) {
+		this.isFinal = isFinal;
+	}
 }

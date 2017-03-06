@@ -5,31 +5,21 @@ import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.TypeLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
-/**
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public class Isset extends AbstractTransferFunction {
-    private Variable setMe;
 
-// *********************************************************************************
-// CONSTRUCTORS ********************************************************************
-// *********************************************************************************
+	private Variable setMe;
 
-    public Isset(Variable setMe) {
-        this.setMe = setMe;
-    }
+	public Isset(Variable setMe) {
+		this.setMe = setMe;
+	}
 
-// *********************************************************************************
-// OTHER ***************************************************************************
-// *********************************************************************************
+	public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
 
-    public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
+		TypeLatticeElement in = (TypeLatticeElement) inX;
+		TypeLatticeElement out = new TypeLatticeElement(in);
 
-        TypeLatticeElement in = (TypeLatticeElement) inX;
-        TypeLatticeElement out = new TypeLatticeElement(in);
+		out.unset(setMe);
 
-        out.unset(setMe);
-
-        return out;
-    }
+		return out;
+	}
 }

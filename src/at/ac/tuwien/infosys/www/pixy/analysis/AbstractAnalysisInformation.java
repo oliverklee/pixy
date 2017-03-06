@@ -1,31 +1,27 @@
 package at.ac.tuwien.infosys.www.pixy.analysis;
 
-import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
-
 import java.util.HashMap;
 
-/**
- * At the moment, this is just a wrapper class around a hash table.
- *
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
+import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
+
 public abstract class AbstractAnalysisInformation {
-    // CfgNode -> AbstractAnalysisNode
-    protected HashMap<AbstractCfgNode, AbstractAnalysisNode> map;
 
-    protected AbstractAnalysisInformation() {
-        this.map = new HashMap<>();
-    }
+	protected HashMap<AbstractCfgNode, AbstractAnalysisNode> map;
 
-    public void add(AbstractCfgNode cfgNode, AbstractAnalysisNode analysisNode) {
-        this.map.put(cfgNode, analysisNode);
-    }
+	protected AbstractAnalysisInformation() {
+		this.map = new HashMap<AbstractCfgNode, AbstractAnalysisNode>();
+	}
 
-    public int size() {
-        return this.map.size();
-    }
+	public void add(AbstractCfgNode cfgNode, AbstractAnalysisNode analysisNode) {
+		this.map.put(cfgNode, analysisNode);
+	}
 
-    public HashMap<AbstractCfgNode, AbstractAnalysisNode> getMap() {
-        return this.map;
-    }
+	public int size() {
+		return this.map.size();
+	}
+
+	public HashMap<AbstractCfgNode, AbstractAnalysisNode> getMap() {
+		return this.map;
+	}
+
 }

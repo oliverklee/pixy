@@ -1,0 +1,23 @@
+# standard SQL sinks
+
+# format:
+# <functionName> = <parameter list>
+# - use only lowercase characters for the function's name
+# - the parameter list's entries are separated with :
+
+backticks = 0
+# xyz = 0:1:3
+exec = 0
+# xyz = 0:1:3
+passthru = 0
+# xyz = 0:1:3
+pcntl_exec = 0
+# xyz = 0:1:3
+popen = 0
+# xyz = 0:1:3
+proc_open = 0
+# xyz = 0:1:3
+shell_exec = 0
+# xyz = 0:1:3
+system = 0
+# xyz = 0:1:3

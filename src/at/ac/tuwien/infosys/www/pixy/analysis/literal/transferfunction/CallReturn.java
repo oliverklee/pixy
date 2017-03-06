@@ -1,5 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction;
 
+import java.util.*;
+
 import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
@@ -11,231 +13,159 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreparation;
 
-import java.util.*;
-
-/**
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public class CallReturn extends AbstractTransferFunction {
-    private AbstractInterproceduralAnalysisNode analysisNodeAtCallPrep;
-    private TacFunction caller;
-    private TacFunction callee;
-    private CallPreparation prepNode;
-    private at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallReturn retNode;
-    private AliasAnalysis aliasAnalysis;
 
-    // call-by-reference parameter pairs
-    private List<List<Variable>> cbrParams;
+	private AbstractInterproceduralAnalysisNode analysisNodeAtCallPrep;
+	private TacFunction caller;
+	private TacFunction callee;
+	private CallPreparation prepNode;
+	private at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallReturn retNode;
+	private AliasAnalysis aliasAnalysis;
+	private List<List<Variable>> cbrParams;
+	private Collection<Variable> localCallerVars;
 
-    // local variables of the calling function
-    private Collection<Variable> localCallerVars;
+	public CallReturn(AbstractInterproceduralAnalysisNode analysisNodeAtCallPrep, TacFunction caller,
+			TacFunction callee, at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreparation prepNode,
+			at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallReturn retNode, AliasAnalysis aliasAnalysis,
+			AbstractLatticeElement bottom) {
 
-// *********************************************************************************
-// CONSTRUCTORS ********************************************************************
-// *********************************************************************************
+		this.analysisNodeAtCallPrep = analysisNodeAtCallPrep;
+		this.caller = caller;
+		this.callee = callee;
 
-    public CallReturn(
-        AbstractInterproceduralAnalysisNode analysisNodeAtCallPrep,
-        TacFunction caller,
-        TacFunction callee,
-        at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreparation prepNode,
-        at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallReturn retNode,
-        AliasAnalysis aliasAnalysis,
-        AbstractLatticeElement bottom) {
+		this.cbrParams = prepNode.getCbrParams();
 
-        this.analysisNodeAtCallPrep = analysisNodeAtCallPrep;
-        this.caller = caller;
-        this.callee = callee;
+		this.localCallerVars = caller.getLocals();
+		this.aliasAnalysis = aliasAnalysis;
+		this.prepNode = prepNode;
+		this.retNode = retNode;
 
-        // call-by-reference parameter pairs
-        this.cbrParams = prepNode.getCbrParams();
+	}
 
-        // local variables of the calling function
-        this.localCallerVars = caller.getLocals();
+	public AbstractLatticeElement transfer(AbstractLatticeElement inX, AbstractContext context) {
 
-        this.aliasAnalysis = aliasAnalysis;
+		LiteralLatticeElement origInfo = (LiteralLatticeElement) this.analysisNodeAtCallPrep.getPhiValue(context);
 
-        this.prepNode = prepNode;
-        this.retNode = retNode;
-    }
+		if (origInfo == null) {
+			throw new RuntimeException("SNH");
+		}
 
-// *********************************************************************************
-// OTHER ***************************************************************************
-// *********************************************************************************
+		LiteralLatticeElement calleeIn = (LiteralLatticeElement) inX;
 
-    public AbstractLatticeElement transfer(AbstractLatticeElement inX, AbstractContext context) {
+		LiteralLatticeElement outInfo = new LiteralLatticeElement();
 
-        // lattice element entering the call prep node under the current
-        // context
-        LiteralLatticeElement origInfo =
-            (LiteralLatticeElement) this.analysisNodeAtCallPrep.getPhiValue(context);
+		Set<Variable> visitedVars = new HashSet<Variable>();
 
-        if (origInfo == null) {
-            throw new RuntimeException("SNH");
-        }
+		outInfo.copyGlobalLike(calleeIn);
 
-        // lattice element coming in from the callee (= base for interprocedural info);
-        // still contains the callee's locals
-        LiteralLatticeElement calleeIn = (LiteralLatticeElement) inX;
+		if (this.caller.isMain()) {
+			this.handleReturnValue(calleeIn, outInfo);
+			return outInfo;
+		}
 
-        // start only with default mappings
-        LiteralLatticeElement outInfo = new LiteralLatticeElement();
+		outInfo.copyLocals(origInfo);
 
-        // contains variables that have been tagged as visited
-        Set<Variable> visitedVars = new HashSet<>();
+		for (Iterator<Variable> iter = localCallerVars.iterator(); iter.hasNext();) {
+			Variable localCallerVar = (Variable) iter.next();
 
-        // copy mappings of "global-like" places from calleeIn to outInfo
-        // ("global-like": globals, superglobals, and constants)
-        outInfo.copyGlobalLike(calleeIn);
+			Variable globalMustAlias = this.aliasAnalysis.getGlobalMustAlias(localCallerVar, this.prepNode);
+			if (globalMustAlias == null) {
+				continue;
+			}
+			Variable globalMustAliasShadow = this.callee.getSymbolTable().getGShadow(globalMustAlias);
+			if (globalMustAliasShadow == null) {
+				System.out.println("call: " + this.caller.getName() + " -> " + this.callee.getName());
+				throw new RuntimeException("no shadow for: " + globalMustAlias);
+			}
+			outInfo.setLocal(localCallerVar, calleeIn.getLiteral(globalMustAliasShadow));
+			visitedVars.add(localCallerVar);
 
-        // LOCAL VARIABLES *************
+		}
+		for (Iterator<List<Variable>> iter = this.cbrParams.iterator(); iter.hasNext();) {
 
-        // no need to do this if the caller is main:
-        // its local variables are global variables
-        if (this.caller.isMain()) {
-            this.handleReturnValue(calleeIn, outInfo);
-            return outInfo;
-        }
+			List<?> paramPair = (List<?>) iter.next();
+			Iterator<?> paramPairIter = paramPair.iterator();
+			Variable actualVar = (Variable) paramPairIter.next();
+			Variable formalVar = (Variable) paramPairIter.next();
+			Set<?> localMustAliases = this.aliasAnalysis.getLocalMustAliases(actualVar, this.prepNode);
+			for (Iterator<?> lmaIter = localMustAliases.iterator(); lmaIter.hasNext();) {
+				Variable localMustAlias = (Variable) lmaIter.next();
+				if (visitedVars.contains(localMustAlias)) {
+					continue;
+				}
+				Variable fShadow = this.callee.getSymbolTable().getFShadow(formalVar);
+				outInfo.setLocal(localMustAlias, calleeIn.getLiteral(fShadow));
+				visitedVars.add(localMustAlias);
+			}
+		}
 
-        // initialize local variables with the mappings at call-time
-        outInfo.copyLocals(origInfo);
+		for (Iterator<Variable> iter = localCallerVars.iterator(); iter.hasNext();) {
+			Variable localCallerVar = (Variable) iter.next();
 
-        // MUST WITH GLOBALS
+			if (visitedVars.contains(localCallerVar)) {
+				continue;
+			}
 
-        // for all local variables of the calling function
-        for (Variable localCallerVar : localCallerVars) {
-            // an arbitrary global must-alias of this local
-            Variable globalMustAlias = this.aliasAnalysis.getGlobalMustAlias(localCallerVar, this.prepNode);
-            if (globalMustAlias == null) {
-                continue;
-            }
+			Set<?> globalMayAliases = this.aliasAnalysis.getGlobalMayAliases(localCallerVar, this.prepNode);
 
-            // the shadow of this global must-alias
-            Variable globalMustAliasShadow = this.callee.getSymbolTable().getGShadow(globalMustAlias);
+			if (globalMayAliases.isEmpty()) {
+				continue;
+			}
 
-            // set & mark
-            if (globalMustAliasShadow == null) {
-                System.out.println("call: " + this.caller.getName() + " -> " + this.callee.getName());
-                throw new RuntimeException("no shadow for: " + globalMustAlias);
-            }
-            outInfo.setLocal(localCallerVar, calleeIn.getLiteral(globalMustAliasShadow));
-            visitedVars.add(localCallerVar);
-        }
+			Literal computedLit = origInfo.getLiteral(localCallerVar);
 
-        // MUST WITH FORMALS
+			for (Iterator<?> gmaIter = globalMayAliases.iterator(); gmaIter.hasNext();) {
+				Variable globalMayAlias = (Variable) gmaIter.next();
 
-        // for each call-by-reference parameter pair
-        for (List<Variable> paramPair : this.cbrParams) {
-            Iterator<Variable> paramPairIter = paramPair.iterator();
-            Variable actualVar = paramPairIter.next();
-            Variable formalVar = paramPairIter.next();
+				Variable globalMayAliasShadow = this.callee.getSymbolTable().getGShadow(globalMayAlias);
 
-            // local must-aliases of the actual parameter (including trivial ones,
-            // so this set contains at least one element)
-            Set<Variable> localMustAliases = this.aliasAnalysis.getLocalMustAliases(actualVar, this.prepNode);
+				Literal shadowLit = calleeIn.getLiteral(globalMayAliasShadow);
 
-            for (Variable localMustAlias : localMustAliases) {
-                // no need to handle visited variables again
-                if (visitedVars.contains(localMustAlias)) {
-                    continue;
-                }
+				computedLit = LiteralLatticeElement.lub(computedLit, shadowLit);
+			}
+			outInfo.setLocal(localCallerVar, computedLit);
+		}
 
-                // the formal parameter's f-shadow
-                Variable fShadow = this.callee.getSymbolTable().getFShadow(formalVar);
+		for (Iterator<List<Variable>> iter = this.cbrParams.iterator(); iter.hasNext();) {
 
-                // set & mark
-                outInfo.setLocal(localMustAlias, calleeIn.getLiteral(fShadow));
-                visitedVars.add(localMustAlias);
-            }
-        }
+			List<?> paramPair = (List<?>) iter.next();
+			Iterator<?> paramPairIter = paramPair.iterator();
+			Variable actualVar = (Variable) paramPairIter.next();
+			Variable formalVar = (Variable) paramPairIter.next();
 
-        // MAY WITH GLOBALS
+			Set<?> localMayAliases = this.aliasAnalysis.getLocalMayAliases(actualVar, this.prepNode);
 
-        // for each local variable that was not visited yet
-        for (Variable localCallerVar : localCallerVars) {
-            if (visitedVars.contains(localCallerVar)) {
-                continue;
-            }
+			for (Iterator<?> lmaIter = localMayAliases.iterator(); lmaIter.hasNext();) {
+				Variable localMayAlias = (Variable) lmaIter.next();
 
-            // global may-aliases of this variable (at the time of call)
-            Set<Variable> globalMayAliases = this.aliasAnalysis.getGlobalMayAliases(localCallerVar, this.prepNode);
+				if (visitedVars.contains(localMayAlias)) {
+					continue;
+				}
 
-            // if there are no such aliases: nothing to do
-            if (globalMayAliases.isEmpty()) {
-                continue;
-            }
+				Literal localLit = outInfo.getLiteral(localMayAlias);
 
-            // initialize this variable's literal with its original literal
-            Literal computedLit = origInfo.getLiteral(localCallerVar);
+				Variable fShadow = this.callee.getSymbolTable().getFShadow(formalVar);
 
-            // for all these global may-aliases...
-            for (Variable globalMayAlias : globalMayAliases) {
-                // its g-shadow
-                Variable globalMayAliasShadow = this.callee.getSymbolTable().getGShadow(globalMayAlias);
+				Literal shadowLit = calleeIn.getLiteral(fShadow);
 
-                // the shadow's literal (from flowback-info)
-                Literal shadowLit = calleeIn.getLiteral(globalMayAliasShadow);
+				Literal newLit = LiteralLatticeElement.lub(localLit, shadowLit);
+				outInfo.setLocal(localMayAlias, newLit);
+			}
+		}
 
-                // lub
-                computedLit = LiteralLatticeElement.lub(computedLit, shadowLit);
-            }
+		this.handleReturnValue(calleeIn, outInfo);
 
-            // set the local's literal to the computed literal in outInfo
-            outInfo.setLocal(localCallerVar, computedLit);
+		return outInfo;
 
-            // DON'T mark it as visited
-        }
+	}
 
-        // MAY WITH FORMALS
+	private void handleReturnValue(LiteralLatticeElement calleeIn, LiteralLatticeElement outInfo) {
+		Literal retLit = calleeIn.getLiteral(this.retNode.getRetVar());
+		outInfo.handleReturnValue(this.retNode.getTempVar(), retLit, this.retNode.getRetVar());
+	}
 
-        // for each call-by-reference parameter pair
-        for (List<Variable> paramPair : this.cbrParams) {
-            Iterator<Variable> paramPairIter = paramPair.iterator();
-            Variable actualVar = paramPairIter.next();
-            Variable formalVar = paramPairIter.next();
+	public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
+		throw new RuntimeException("SNH");
+	}
 
-            // local may-aliases of the actual parameter (at call-time)
-            Set<Variable> localMayAliases = this.aliasAnalysis.getLocalMayAliases(actualVar, this.prepNode);
-
-            // for each such may-alias that was not visited yet
-            for (Variable localMayAlias : localMayAliases) {
-                if (visitedVars.contains(localMayAlias)) {
-                    continue;
-                }
-
-                // the current literal of the local may-alias in output-info
-                Literal localLit = outInfo.getLiteral(localMayAlias);
-
-                // the formal parameter's f-shadow
-                Variable fShadow = this.callee.getSymbolTable().getFShadow(formalVar);
-
-                // the shadow's literal (from flowback-info)
-                Literal shadowLit = calleeIn.getLiteral(fShadow);
-
-                // lub & set
-                Literal newLit = LiteralLatticeElement.lub(localLit, shadowLit);
-                outInfo.setLocal(localMayAlias, newLit);
-            }
-        }
-
-        this.handleReturnValue(calleeIn, outInfo);
-
-        return outInfo;
-    }
-
-    private void handleReturnValue(LiteralLatticeElement calleeIn, LiteralLatticeElement outInfo) {
-
-        // literal of the return variable at the end of the called function
-        Literal retLit = calleeIn.getLiteral(this.retNode.getRetVar());
-
-        // assign this literal to the return node's temporary
-        // and clear the return variable afterwards
-        outInfo.handleReturnValue(this.retNode.getTempVar(), retLit, this.retNode.getRetVar());
-    }
-
-    // just a dummy method in order to make me conform to the interface;
-    // the Analysis uses the other transfer method instead
-    public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
-        throw new RuntimeException("SNH");
-    }
 }

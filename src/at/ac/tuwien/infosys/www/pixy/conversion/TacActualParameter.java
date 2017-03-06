@@ -1,38 +1,25 @@
 package at.ac.tuwien.infosys.www.pixy.conversion;
 
-/**
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public class TacActualParameter {
-    private AbstractTacPlace place;
-    private boolean isReference;
 
-// *********************************************************************************
-// CONSTRUCTORS ********************************************************************
-// *********************************************************************************
+	private AbstractTacPlace place;
+	private boolean isReference;
 
-    TacActualParameter(AbstractTacPlace place, boolean isReference) {
-        this.place = place;
-        this.isReference = isReference;
-    }
+	public TacActualParameter(AbstractTacPlace place, boolean isReference) {
+		this.place = place;
+		this.isReference = isReference;
+	}
 
-// *********************************************************************************
-// GET *****************************************************************************
-// *********************************************************************************
+	public AbstractTacPlace getPlace() {
+		return this.place;
+	}
 
-    public AbstractTacPlace getPlace() {
-        return this.place;
-    }
+	public boolean isReference() {
+		return this.isReference;
+	}
 
-    public boolean isReference() {
-        return this.isReference;
-    }
+	public void setPlace(AbstractTacPlace place) {
+		this.place = place;
+	}
 
-//  ********************************************************************************
-//  SET ****************************************************************************
-//  ********************************************************************************
-
-    public void setPlace(AbstractTacPlace place) {
-        this.place = place;
-    }
 }

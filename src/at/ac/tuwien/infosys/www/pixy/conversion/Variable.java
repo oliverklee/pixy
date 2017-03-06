@@ -2,321 +2,358 @@ package at.ac.tuwien.infosys.www.pixy.conversion;
 
 import java.util.*;
 
-/**
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public class Variable extends AbstractTacPlace {
-    private String name;
-    /** the symbol table this variable belongs to */
-    private SymbolTable symbolTable;
-    /** member of the superglobals symbol table? */
-    private boolean isSuperGlobal = false;
-    private boolean isLocal;
-    /** local variable of the main function? */
-    private boolean isGlobal;
-    // (temporaries excluded);
-    // hence, globals and superglobals are different
 
-    // a variable is either local or global or superglobal
+	private String name;
+	private SymbolTable symbolTable;
+	private boolean isSuperGlobal;
+	private boolean isLocal;
+	private boolean isGlobal;
+	private boolean isAbstract;
+	private boolean isStatic;
+	private boolean isFinal;
+	private String accessModifier;
+	private boolean isCustomObject;
+	private String CustomClass;
+	private boolean isArray;
+	private Map<AbstractTacPlace, Variable> elements;
+	private List<Variable> literalElements;
+	private boolean isArrayElement;
+	private Variable enclosingArray;
+	private Variable topEnclosingArray;
+	private AbstractTacPlace index;
+	private List<AbstractTacPlace> indices;
+	private boolean hasNonLiteralIndices;
+	private AbstractTacPlace dependsOn;
+	private List<Variable> indexFor;
+	private boolean isTemp;
+	private boolean isMember;
+	private boolean isReturnVariable;
 
-    /** array properties; array elements can also be arrays, if they have elements themselves */
-    private boolean isArray = false;
-    /** only direct elements, i.e., who are one dimension deeper */
-    private Map<AbstractTacPlace, Variable> elements = null;
-    // "shortcut": contains all elements with a literal last index;
-    // (only direct elements)
-    private List<Variable> literalElements = null;
+	public Variable(String name, SymbolTable symbolTable) {
+		this.name = name;
+		this.symbolTable = symbolTable;
+		this.isSuperGlobal = false;
+		if (symbolTable.isMain()) {
+			this.isLocal = false;
+			this.isGlobal = true;
+		} else {
+			this.isLocal = true;
+			this.isGlobal = false;
+		}
 
-    // array element properties
-    private boolean isArrayElement = false;
-    private Variable enclosingArray = null;
-    private Variable topEnclosingArray = null;
-    /** last index for multi-dimensions */
-    private AbstractTacPlace index = null;
-    /** all indices */
-    private List<AbstractTacPlace> indices = null;
-    private boolean hasNonLiteralIndices;
+		this.isArray = false;
+		this.elements = null;
+		this.literalElements = null;
 
-    /** additional information for variable variables */
-    private AbstractTacPlace dependsOn = null;
+		this.isArrayElement = false;
+		this.enclosingArray = null;
+		this.topEnclosingArray = null;
+		this.index = null;
+		this.indices = null;
 
-    /** list of array elements whose LAST index is this variable */
-    private List<Variable> indexFor = new LinkedList<>();
+		this.dependsOn = null;
+		this.indexFor = new LinkedList<Variable>();
 
-    /** is this a temporary variable? */
-    private boolean isTemp = false;
+		this.isTemp = false;
+		this.isMember = false;
+		this.isReturnVariable = false;
+	}
 
-    /** is this an object member variable? */
-    private boolean isMember = false;
+	public Variable(String name, SymbolTable symbolTable, boolean isTemp) {
+		this(name, symbolTable);
+		this.isTemp = isTemp;
+		if (isTemp) {
+			this.isGlobal = false;
+		}
+	}
 
-    /** is this a function return variable? */
-    private boolean isReturnVariable = false;
+	public String getName() {
+		return this.name;
+	}
 
-    public Variable(String name, SymbolTable symbolTable) {
-        this.name = name;
-        this.symbolTable = symbolTable;
-        if (symbolTable.isMain()) {
-            this.isLocal = false;
-            this.isGlobal = true;
-        } else {
-            this.isLocal = true;
-            this.isGlobal = false;
-        }
-    }
+	public SymbolTable getSymbolTable() {
+		return this.symbolTable;
+	}
 
-    public Variable(String name, SymbolTable symbolTable, boolean isTemp) {
-        this(name, symbolTable);
-        this.isTemp = isTemp;
-        if (isTemp) {
-            this.isGlobal = false;
-        }
-    }
+	public boolean isSuperGlobal() {
+		return this.isSuperGlobal;
+	}
 
-// *********************************************************************************
-// GET *****************************************************************************
-// *********************************************************************************
+	public boolean isArray() {
+		return this.isArray;
+	}
 
-    public String getName() {
-        return this.name;
-    }
+	public List<Variable> getElements() {
+		if (this.elements == null) {
+			return Collections.emptyList();
+		} else {
+			return new LinkedList<Variable>(this.elements.values());
+		}
+	}
 
-    public SymbolTable getSymbolTable() {
-        return this.symbolTable;
-    }
+	public List<Variable> getElementsRecursive() {
+		List<Variable> retMe = new LinkedList<Variable>();
+		Collection<Variable> directElements = this.elements.values();
+		retMe.addAll(directElements);
+		for (Variable directElement : directElements) {
+			if (directElement.isArray()) {
+				retMe.addAll(directElement.getElementsRecursive());
+			}
+		}
+		return retMe;
+	}
 
-    public boolean isSuperGlobal() {
-        return this.isSuperGlobal;
-    }
+	public Variable getElement(AbstractTacPlace index) {
+		if (this.elements == null) {
+			return null;
+		}
+		return (Variable) this.elements.get(index);
+	}
 
-    public boolean isArray() {
-        return this.isArray;
-    }
+	public List<Variable> getLiteralElements() {
+		return this.literalElements;
+	}
 
-    public List<Variable> getElements() {
-        if (this.elements == null) {
-            return Collections.emptyList();
-        } else {
-            return new LinkedList<>(this.elements.values());
-        }
-    }
+	public boolean isArrayElement() {
+		return this.isArrayElement;
+	}
 
-    // returns all elements recursively (i.e., the whole array tree, without
-    // the root)
-    public List<Variable> getElementsRecursive() {
-        List<Variable> retMe = new LinkedList<>();
-        Collection<Variable> directElements = this.elements.values();
-        retMe.addAll(directElements);
-        for (Variable directElement : directElements) {
-            if (directElement.isArray()) {
-                retMe.addAll(directElement.getElementsRecursive());
-            }
-        }
+	public Variable getEnclosingArray() {
+		return this.enclosingArray;
+	}
 
-        return retMe;
-    }
+	public Variable getTopEnclosingArray() {
+		return this.topEnclosingArray;
+	}
 
-    public Variable getElement(AbstractTacPlace index) {
-        if (this.elements == null) {
-            return null;
-        }
-        return this.elements.get(index);
-    }
+	public AbstractTacPlace getIndex() {
+		return this.index;
+	}
 
-    public List<Variable> getLiteralElements() {
-        return this.literalElements;
-    }
+	public List<AbstractTacPlace> getIndices() {
+		if (this.indices == null) {
+			return new LinkedList<AbstractTacPlace>();
+		} else {
+			return new LinkedList<AbstractTacPlace>(this.indices);
+		}
+	}
 
-    public boolean isArrayElement() {
-        return this.isArrayElement;
-    }
+	public boolean hasNonLiteralIndices() {
+		return this.hasNonLiteralIndices;
+	}
 
-    public Variable getEnclosingArray() {
-        return this.enclosingArray;
-    }
+	public AbstractTacPlace getDependsOn() {
+		return this.dependsOn;
+	}
 
-    public Variable getTopEnclosingArray() {
-        return this.topEnclosingArray;
-    }
+	public List<Variable> getIndexFor() {
+		return this.indexFor;
+	}
 
-    public AbstractTacPlace getIndex() {
-        return this.index;
-    }
+	public String toString() {
+		return this.symbolTable.getName() + "." + this.name;
+	}
 
-    public List<AbstractTacPlace> getIndices() {
-        if (this.indices == null) {
-            return new LinkedList<>();
-        } else {
-            return new LinkedList<>(this.indices);
-        }
-    }
+	public boolean isTemp() {
+		return this.isTemp;
+	}
 
-    // does this array element have non-literal indices?
-    public boolean hasNonLiteralIndices() {
-        return this.hasNonLiteralIndices;
-    }
+	public boolean isMember() {
+		return this.isMember;
+	}
 
-    public AbstractTacPlace getDependsOn() {
-        return this.dependsOn;
-    }
+	public boolean isReturnVariable() {
+		return this.isReturnVariable;
+	}
 
-    public List<Variable> getIndexFor() {
-        return this.indexFor;
-    }
+	public boolean isLocal() {
+		return this.isLocal;
+	}
 
-    public String toString() {
-        return this.symbolTable.getName() + "." + this.name;
-    }
+	public boolean isGlobal() {
+		return this.isGlobal;
+	}
 
-    public boolean isTemp() {
-        return this.isTemp;
-    }
+	public boolean belongsTo(SymbolTable symTab) {
+		return (symTab == this.symbolTable);
+	}
 
-    public boolean isMember() {
-        return this.isMember;
-    }
+	public boolean isVariableVariable() {
+		if (this.dependsOn == null) {
+			return false;
+		} else {
+			return true;
+		}
+	}
 
-    public boolean isReturnVariable() {
-        return this.isReturnVariable;
-    }
+	public boolean isArrayElementOf(Variable array) {
+		if (this.enclosingArray == null) {
+			return false;
+		}
+		if (this.enclosingArray.equals(array)) {
+			return true;
+		}
+		return this.enclosingArray.isArrayElementOf(array);
+	}
 
-    public boolean isLocal() {
-        return this.isLocal;
-    }
+	public boolean GetisCustomObject() {
+		return this.isCustomObject;
+	}
 
-    public boolean isGlobal() {
-        return this.isGlobal;
-    }
+	public String GetCustomClass() {
+		return this.CustomClass;
+	}
 
-    public boolean belongsTo(SymbolTable symTab) {
-        return (symTab == this.symbolTable);
-    }
+	void setIsSuperGlobal(boolean isSuperGlobal) {
+		this.isSuperGlobal = isSuperGlobal;
+		if (isSuperGlobal) {
+			this.isLocal = false;
+			this.isGlobal = false;
+		}
+	}
 
-    // is this a variable variable (such as "$$x")?
-    public boolean isVariableVariable() {
-        return this.dependsOn != null;
-    }
+	void setIsArray(boolean isArray) {
+		if (isArray == true && this.isArray == false) {
+			this.isArray = isArray;
+			this.elements = new LinkedHashMap<AbstractTacPlace, Variable>();
+			this.literalElements = new LinkedList<Variable>();
+		} else {
+			System.out.println("Warning: unchecked call to Variable.setIsArray()");
+		}
+	}
 
-    public boolean isArrayElementOf(Variable array) {
-        // if we don't even have an enclosing array: can't be true
-        if (this.enclosingArray == null) {
-            return false;
-        }
-        if (this.enclosingArray.equals(array)) {
-            // found it!
-            return true;
-        }
-        // walk upwards recursively
-        return this.enclosingArray.isArrayElementOf(array);
-    }
+	void addElement(Variable variable) {
+		if (!variable.isArrayElement()) {
+			throw new RuntimeException("SNH");
+		}
+		this.elements.put(variable.getIndex(), variable);
+		if (variable.getIndex() instanceof Literal) {
+			this.literalElements.add(variable);
+		}
+	}
 
-    void setIsSuperGlobal(boolean isSuperGlobal) {
-        this.isSuperGlobal = isSuperGlobal;
-        if (isSuperGlobal) {
-            this.isLocal = false;
-            this.isGlobal = false;
-        }
-    }
+	void setArrayElementAttributes(Variable enclosingArray, AbstractTacPlace index) {
 
-    void setIsArray(boolean isArray) {
-        if (isArray && !this.isArray) {
-            this.isArray = isArray;
-            this.elements = new LinkedHashMap<>();
-            this.literalElements = new LinkedList<>();
-        } else {
-            System.out.println("Warning: unchecked call to Variable.setIsArray()");
-        }
-    }
+		this.isArrayElement = true;
+		this.indices = new LinkedList<AbstractTacPlace>();
+		this.hasNonLiteralIndices = enclosingArray.hasNonLiteralIndices();
+		this.enclosingArray = enclosingArray;
+		if (enclosingArray.isArrayElement()) {
+			this.topEnclosingArray = enclosingArray.getTopEnclosingArray();
+			this.indices.addAll(enclosingArray.getIndices());
+		} else {
+			this.topEnclosingArray = enclosingArray;
+		}
+		this.index = index;
+		this.indices.add(index);
+		if (!(index instanceof Literal)) {
+			this.hasNonLiteralIndices = true;
+		}
 
-    void addElement(Variable variable) {
-        if (!variable.isArrayElement()) {
-            throw new RuntimeException("SNH");
-        }
-        this.elements.put(variable.getIndex(), variable);
-        if (variable.getIndex() instanceof Literal) {
-            this.literalElements.add(variable);
-        }
-    }
+		if (index.isVariable()) {
+			((Variable) index).addIndexFor(this);
+		}
 
-    void setArrayElementAttributes(Variable enclosingArray, AbstractTacPlace index) {
-        this.isArrayElement = true;
-        this.indices = new LinkedList<>();
-        this.hasNonLiteralIndices = enclosingArray.hasNonLiteralIndices();
-        this.enclosingArray = enclosingArray;
-        if (enclosingArray.isArrayElement()) {
-            this.topEnclosingArray = enclosingArray.getTopEnclosingArray();
-            this.indices.addAll(enclosingArray.getIndices());
-        } else {
-            this.topEnclosingArray = enclosingArray;
-        }
-        this.index = index;
-        this.indices.add(index);
-        if (!(index instanceof Literal)) {
-            this.hasNonLiteralIndices = true;
-        }
+		if (enclosingArray.isTemp()) {
+			this.isTemp = true;
+		}
 
-        if (index.isVariable()) {
-            ((Variable) index).addIndexFor(this);
-        }
+		if (enclosingArray.isGlobal()) {
+			this.isGlobal = true;
+		}
+	}
 
-        // if the enclosing array is a temporary, then this
-        // one also has to be a temporary
-        if (enclosingArray.isTemp()) {
-            this.isTemp = true;
-        }
+	void setDependsOn(AbstractTacPlace dependsOn) {
+		this.dependsOn = dependsOn;
+	}
 
-        // if the enclosing array is a global, then this
-        // one also has to be a global
-        if (enclosingArray.isGlobal()) {
-            this.isGlobal = true;
-        }
-    }
+	void setSymbolTable(SymbolTable symbolTable) {
+		this.symbolTable = symbolTable;
+	}
 
-    void setDependsOn(AbstractTacPlace dependsOn) {
-        this.dependsOn = dependsOn;
-    }
+	void addIndexFor(Variable var) {
+		this.indexFor.add(var);
+	}
 
-    void setSymbolTable(SymbolTable symbolTable) {
-        this.symbolTable = symbolTable;
-    }
+	void setIsMember(boolean isMember) {
+		this.isMember = isMember;
+	}
 
-    void addIndexFor(Variable var) {
-        this.indexFor.add(var);
-    }
+	void setIsReturnVariable(boolean isReturnVariable) {
+		this.isReturnVariable = isReturnVariable;
+	}
 
-    void setIsMember(boolean isMember) {
-        this.isMember = isMember;
-    }
+	void setIsGlobal() {
+		this.isGlobal = true;
+		this.isLocal = false;
+	}
 
-    void setIsReturnVariable(boolean isReturnVariable) {
-        this.isReturnVariable = isReturnVariable;
-    }
+	void setIsLocal() {
+		this.isLocal = true;
+		this.isGlobal = false;
+	}
 
-    void setIsGlobal() {
-        this.isGlobal = true;
-        this.isLocal = false;
-    }
+	void SetisCustomObject(boolean value) {
+		this.isCustomObject = value;
+	}
 
-    void setIsLocal() {
-        this.isLocal = true;
-        this.isGlobal = false;
-    }
+	void SetCustomClass(String value) {
+		this.CustomClass = value;
+	}
 
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof Variable)) {
-            return false;
-        }
-        Variable comp = (Variable) obj;
-        return this.symbolTable.equals(comp.getSymbolTable()) && this.name.equals(comp.getName());
-    }
+	public boolean equals(Object obj) {
+		if (obj == this) {
+			return true;
+		}
+		if (!(obj instanceof Variable)) {
+			return false;
+		}
+		Variable comp = (Variable) obj;
+		if (!this.symbolTable.equals(comp.getSymbolTable())) {
+			return false;
+		}
+		return (this.name.equals(comp.getName()));
+	}
 
-    // EFF: hashcode caching
-    public int hashCode() {
-        int hashCode = 17;
-        hashCode = 37 * hashCode + this.name.hashCode();
-        hashCode = 37 * hashCode + this.symbolTable.hashCode();
-        return hashCode;
-    }
+	public int hashCode() {
+
+		int hashCode = 17;
+		hashCode = 37 * hashCode + this.name.hashCode();
+		hashCode = 37 * hashCode + this.symbolTable.hashCode();
+		return hashCode;
+	}
+
+	public boolean IsAbstract() {
+		return isAbstract;
+	}
+
+	public void SetAbstract(boolean isAbstract) {
+		this.isAbstract = isAbstract;
+	}
+
+	public boolean IsStatic() {
+		return isStatic;
+	}
+
+	public void SetStatic(boolean isStatic) {
+		this.isStatic = isStatic;
+	}
+
+	public String getAccessModifier() {
+		return accessModifier;
+	}
+
+	public void setAccessModifier(String accessModifier) {
+		this.accessModifier = accessModifier;
+	}
+
+	public boolean IsFinal() {
+		return isFinal;
+	}
+
+	public void SetFinal(boolean isFinal) {
+		this.isFinal = isFinal;
+	}
+
 }

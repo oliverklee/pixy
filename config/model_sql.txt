@@ -1,5 +1,6 @@
 ########################## strong sanitization (0)
-
+sqlite_escape_string=0
+mysqli_prepare = 0
 imagesx=0
 imagesy=0
 imagecreatefromjpeg=0
@@ -20,13 +21,18 @@ filesize=0
 md5=0
 chr=0
 mysql_insert_id=0
-strrpos=0
-strpos=0
-imagecreatefrompng=0
-hexdec=0
-debug_backtrace=0
+strrpos = 0
+strpos = 0
+imagecreatefrompng = 0
+hexdec = 0
+debug_backtrace = 0
+pg_escape_string = 0
+mysqli_real_escape_string = 0
+mysqli_stmt_bind_param = 0:1 
 
 # "clean database" policy
+
+stripslashes=0
 
 mysql_fetch_array=0
 mysql_fetch_row=0
@@ -72,10 +78,11 @@ op(UNSET_CAST)=0
 
 ############################## weak sanitization (1)
 
-mysql_real_escape_string=1:0
+
 mysql_escape_string=1:0
 addslashes=1:0
 htmlspecialchars=1:0
+mysql_real_escape_string=1:0
 
 ############################## multi-dependency (2)
 
@@ -89,7 +96,7 @@ strftime=2:0
 gmdate=2:0
 strtolower=2:0
 ucfirst=2:0
-stripslashes=2:0
+
 trim=2:0
 ltrim=2:0
 rtrim=2:0

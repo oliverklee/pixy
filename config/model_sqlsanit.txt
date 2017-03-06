@@ -76,6 +76,8 @@ mysql_real_escape_string=1:0
 mysql_escape_string=1:0
 addslashes=1:0
 htmlspecialchars=1:0
+mysql_real_escape_string=1:0
+
 
 ############################## multi-dependency (2)
 

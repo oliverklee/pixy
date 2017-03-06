@@ -1,47 +1,30 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction;
 
+import java.util.*;
+
 import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyLabel;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencySet;
 
-import java.util.HashSet;
-import java.util.Set;
-
-/**
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public class CallBuiltinFunction extends AbstractTransferFunction {
-    private at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallBuiltinFunction cfgNode;
 
-// *********************************************************************************
-// CONSTRUCTORS ********************************************************************
-// *********************************************************************************
+	private at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallBuiltinFunction cfgNode;
 
-    public CallBuiltinFunction(at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallBuiltinFunction cfgNode) {
-        this.cfgNode = cfgNode;
-    }
+	public CallBuiltinFunction(at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallBuiltinFunction cfgNode) {
+		this.cfgNode = cfgNode;
+	}
 
-// *********************************************************************************
-// OTHER ***************************************************************************
-// *********************************************************************************
+	public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
 
-    public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
-
-        DependencyLatticeElement in = (DependencyLatticeElement) inX;
-        DependencyLatticeElement out = new DependencyLatticeElement(in);
-
-        // create an appropariate taint value (holding the function's name);
-        // the array label is identic to the taint value
-        Set<DependencyLabel> ets = new HashSet<>();
-        ets.add(DependencyLabel.create(this.cfgNode));
-        DependencySet retDependencySet = DependencySet.create(ets);
-        DependencySet retArrayLabel = retDependencySet;
-
-        // assign this taint/label to the node's temporary
-        out.handleReturnValueBuiltin(this.cfgNode.getTempVar(), retDependencySet, retArrayLabel);
-
-        return out;
-    }
+		DependencyLatticeElement in = (DependencyLatticeElement) inX;
+		DependencyLatticeElement out = new DependencyLatticeElement(in);
+		Set<DependencyLabel> ets = new HashSet<DependencyLabel>();
+		ets.add(DependencyLabel.create(this.cfgNode));
+		DependencySet retDepSet = DependencySet.create(ets);
+		DependencySet retArrayLabel = retDepSet;
+		out.handleReturnValueBuiltin(this.cfgNode.getTempVar(), retDepSet, retArrayLabel);
+		return out;
+	}
 }

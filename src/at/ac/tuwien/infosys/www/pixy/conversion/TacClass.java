@@ -1,85 +1,162 @@
 package at.ac.tuwien.infosys.www.pixy.conversion;
 
-import at.ac.tuwien.infosys.www.phpparser.ParseNode;
+import java.util.*;
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.Utils;
+import at.ac.tuwien.infosys.www.pixy.phpParser.ParseNode;
 
-import java.util.HashMap;
-import java.util.Map;
-
-/**
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public class TacClass {
-    // node where the class definition starts
-    private ParseNode parseNode;
 
-    // the name of the class
-    private String name;
+	private ParseNode parseNode;
+	private String name;
+	private String superClassName;
+	private TacClass superClass;
+	private Map<String, TacInterface> ImplementedInterfaces;
+	private boolean isAbstrace;
+	private boolean isFinal;
+	private Map<String, TacFunction> methods;
+	private Map<String, TacMember> members;
 
-    // method name -> TacFunction
-    private Map<String, TacFunction> methods;
+	TacClass(String name, ParseNode parseNode) {
+		this.name = name;
+		this.methods = new HashMap<String, TacFunction>();
+		this.members = new HashMap<String, TacMember>();
+		this.parseNode = parseNode;
+		this.superClassName = "";
+		this.superClass = null;
+		this.ImplementedInterfaces = new HashMap<String, TacInterface>();
+	}
 
-    // member name -> Pair(initializer controlFlowGraph, AbstractTacPlace that summarizes the controlFlowGraph)
-    private Map<String, TacMember> members;
+	boolean addMethod(String name, TacFunction function) {
+		if (this.methods.get(name) == null) {
+			this.methods.put(name, function);
+			return true;
+		} else {
+			return false;
+		}
+	}
 
-    TacClass(String name, ParseNode parseNode) {
-        this.name = name;
-        this.methods = new HashMap<>();
-        this.members = new HashMap<>();
-        this.parseNode = parseNode;
-    }
+	public boolean addImplmentedInterface(String name, TacInterface ImplmentedInterface) {
+		if (this.getImplementedInterfaces().get(name) == null) {
+			this.getImplementedInterfaces().put(name, ImplmentedInterface);
+			return true;
+		} else {
+			return false;
+		}
+	}
 
-    // if this class already contains a method with the given name,
-    // false is returned
-    boolean addMethod(String name, TacFunction function) {
-        if (this.methods.get(name) == null) {
-            this.methods.put(name, function);
-            return true;
-        } else {
-            return false;
-        }
-    }
+	public String getName() {
+		return this.name;
+	}
 
-    public String getName() {
-        return this.name;
-    }
+	public String getSuperClassName() {
+		return this.superClassName;
+	}
 
-    public String getFileName() {
-        return this.parseNode.getFileName();
-    }
+	public TacClass getSuperClass() {
+		return superClass;
+	}
 
-    public String getLoc() {
-        if (!MyOptions.optionB) {
-            return this.parseNode.getFileName() + ":" + this.parseNode.getLinenoLeft();
-        } else {
-            return Utils.basename(this.parseNode.getFileName()) + ":" + this.parseNode.getLinenoLeft();
-        }
-    }
+	public boolean getIsFinal() {
+		return this.isFinal;
+	}
 
-    public void addMember(String name, ControlFlowGraph controlFlowGraph, AbstractTacPlace place) {
-        TacMember member = new TacMember(name, controlFlowGraph, place);
-        this.members.put(name, member);
-    }
+	public Map<String, TacInterface> getImplementedInterfaces() {
+		return ImplementedInterfaces;
+	}
 
-// TacMember (private class) *******************************************************
+	public boolean getIsAbstrace() {
+		return this.isAbstrace;
+	}
 
-    private class TacMember {
+	public void setIsFinal(boolean value) {
+		isFinal = value;
+	}
 
-        // member name
-        private String name;
+	public void setSuperClassName(String value) {
+		superClassName = value;
+	}
 
-        // initializer controlFlowGraph
-        private ControlFlowGraph controlFlowGraph;
+	public void setSuperClass(TacClass value) {
+		this.superClass = value;
+	}
 
-        // place that summarizes the initializer controlFlowGraph; e.g., if you have
-        // a member declaration such as
-        private AbstractTacPlace place;
+	public void setIsAbstrace(boolean value) {
+		isAbstrace = value;
+	}
 
-        TacMember(String name, ControlFlowGraph controlFlowGraph, AbstractTacPlace place) {
-            this.name = name;
-            this.controlFlowGraph = controlFlowGraph;
-            this.place = place;
-        }
-    }
+	public String getFileName() {
+		return this.parseNode.getFileName();
+	}
+
+	public int getLine() {
+		return this.parseNode.getLinenoLeft();
+	}
+
+	public String getLoc() {
+		if (!MyOptions.optionB) {
+			return this.parseNode.getFileName() + ":" + this.parseNode.getLinenoLeft();
+		} else {
+			return Utils.basename(this.parseNode.getFileName()) + ":" + this.parseNode.getLinenoLeft();
+		}
+	}
+
+	public void addMember(String name, ControlFlowGraph cfg, AbstractTacPlace place) {
+		TacMember member = new TacMember(name, cfg, place);
+		this.members.put(name, member);
+	}
+
+	public String dump() {
+		StringBuilder b = new StringBuilder();
+		b.append("Class ");
+		b.append(this.name);
+		b.append("\n");
+		b.append("Functions:\n");
+		for (String methodName : this.methods.keySet()) {
+			b.append(methodName);
+			b.append("\n");
+		}
+		b.append("Members:\n");
+		for (TacMember member : this.members.values()) {
+			b.append(member.dump());
+		}
+		b.append("\n");
+
+		return b.toString();
+	}
+
+	private class TacMember {
+
+		private String name;
+		private ControlFlowGraph cfg;
+		private AbstractTacPlace place;
+
+		TacMember(String name, ControlFlowGraph cfg, AbstractTacPlace place) {
+			this.name = name;
+			this.cfg = cfg;
+			this.place = place;
+		}
+
+		@SuppressWarnings("unused")
+		public String getName() {
+			return this.name;
+		}
+
+		@SuppressWarnings("unused")
+		public ControlFlowGraph getCfg() {
+			return this.cfg;
+		}
+
+		@SuppressWarnings("unused")
+		public AbstractTacPlace getPlace() {
+			return this.place;
+		}
+
+		public String dump() {
+			StringBuilder b = new StringBuilder();
+			b.append(this.name);
+			b.append("\n");
+			return b.toString();
+		}
+	}
 }

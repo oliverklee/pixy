@@ -1,239 +1,194 @@
 package at.ac.tuwien.infosys.www.pixy.conversion;
 
+import java.util.*;
+
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Call;
 
-import java.util.*;
-
-/**
- * This class represents a control flow graph. This is a directed graph consisting of edges and nodes.
- *
- * There are two external access points: the head node and the tail node.
- *
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public final class ControlFlowGraph {
-    private AbstractCfgNode head;
-    private final AbstractCfgNode tail;
-    private final int tailEdgeType;
 
-    ControlFlowGraph(AbstractCfgNode head, AbstractCfgNode tail, int tailEdgeType) {
-        this.head = head;
-        this.tail = tail;
-        this.tailEdgeType = tailEdgeType;
-    }
+	private AbstractCfgNode head;
+	private final AbstractCfgNode tail;
+	private final int tailEdgeType;
 
-    ControlFlowGraph(AbstractCfgNode head, AbstractCfgNode tail) {
-        this.head = head;
-        this.tail = tail;
-        this.tailEdgeType = CfgEdge.NORMAL_EDGE;
-    }
+	ControlFlowGraph(AbstractCfgNode head, AbstractCfgNode tail, int tailEdgeType) {
+		this.head = head;
+		this.tail = tail;
+		this.tailEdgeType = tailEdgeType;
+	}
 
-    public AbstractCfgNode getHead() {
-        return this.head;
-    }
+	ControlFlowGraph(AbstractCfgNode head, AbstractCfgNode tail) {
+		this.head = head;
+		this.tail = tail;
+		this.tailEdgeType = CfgEdge.NORMAL_EDGE;
+	}
 
-    public AbstractCfgNode getTail() {
-        return this.tail;
-    }
+	public ControlFlowGraph() {
+		this.tail = null;
+		this.tailEdgeType = 0;
+	}
 
-    int getTailEdgeType() {
-        return this.tailEdgeType;
-    }
+	public AbstractCfgNode getHead() {
+		return this.head;
+	}
 
-    // returns the function that contains the given CFG node;
-    // throws an exception if it does not succeed
-    public static TacFunction getFunction(AbstractCfgNode cfgNode) {
-        return cfgNode.getEnclosingFunction();
-    }
+	public AbstractCfgNode getTail() {
+		return this.tail;
+	}
 
-    // EFF: this function should be called only once, and the result cached;
-    // this is what currently happens in ConnectorComputation
-    public List<Call> getContainedCalls() {
-        List<Call> retMe = new LinkedList<>();
-        for (AbstractCfgNode cfgNode : this.dfPreOrder()) {
-            if (cfgNode instanceof Call) {
-                retMe.add((Call) cfgNode);
-            }
-        }
+	int getTailEdgeType() {
+		return this.tailEdgeType;
+	}
 
-        return retMe;
-    }
+	public static TacFunction getFunction(AbstractCfgNode cfgNode) {
+		return cfgNode.getEnclosingFunction();
+	}
 
-    // returns the head of this cfg by walking backwards;
-    // only use this for linear cfgs (e.g., default param cfgs)
-    public static AbstractCfgNode getHead(AbstractCfgNode cfgNode) {
-        boolean goOn = true;
+	public List<Call> getContainedCalls() {
+		List<Call> retMe = new LinkedList<Call>();
+		Iterator<?> iter = this.dfPreOrder().iterator();
+		while (iter.hasNext()) {
+			AbstractCfgNode cfgNode = (AbstractCfgNode) iter.next();
+			if (cfgNode instanceof Call) {
+				retMe.add((Call) cfgNode);
+			}
+		}
+		return retMe;
+	}
 
-        while (goOn) {
-            List<AbstractCfgNode> pre = cfgNode.getPredecessors();
-            if (pre.size() == 0) {
-                // found the head!
-                goOn = false;
-            } else if (pre.size() == 1) {
-                // continue with predecessor
-                cfgNode = pre.get(0);
-            } else {
-                // more than one predecessor...
-                System.out.println(cfgNode.getLoc());
-                throw new RuntimeException("SNH");
-            }
-        }
-        return cfgNode;
-    }
+	public static AbstractCfgNode getHead(AbstractCfgNode cfgNode) {
 
-    void setHead(AbstractCfgNode head) {
-        this.head = head;
-    }
+		boolean goOn = true;
+		while (goOn) {
+			List<AbstractCfgNode> pre = cfgNode.getPredecessors();
+			if (pre.size() == 0) {
+				goOn = false;
+			} else if (pre.size() == 1) {
+				cfgNode = pre.get(0);
+			} else {
+				System.out.println(cfgNode.getLoc());
+				throw new RuntimeException("SNH");
+			}
+		}
+		return cfgNode;
+	}
 
-    public void assignReversePostOrder() {
-        LinkedList<AbstractCfgNode> postorder = this.dfPostOrder();
-        ListIterator<AbstractCfgNode> iter = postorder.listIterator(postorder.size());
-        int i = 0;
-        while (iter.hasPrevious()) {
-            AbstractCfgNode cfgNode = iter.previous();
-            cfgNode.setReversePostOrder(i);
-            i++;
-        }
-    }
+	void setHead(AbstractCfgNode head) {
+		this.head = head;
+	}
 
-    // returns the number of nodes in this ControlFlowGraph
-    public int size() {
-        Set<AbstractCfgNode> visited = new HashSet<>();
-        int s = size(this.head, visited);
-        //visited = null;
-        return s;
-    }
+	public void assignReversePostOrder() {
+		LinkedList<?> postorder = this.dfPostOrder();
+		ListIterator<?> iter = postorder.listIterator(postorder.size());
+		int i = 0;
+		while (iter.hasPrevious()) {
+			AbstractCfgNode cfgNode = (AbstractCfgNode) iter.previous();
+			cfgNode.setReversePostOrder(i);
+			i++;
+		}
+	}
 
-    // helper function for size();
-    // recursively calculates the number of successor nodes
-    int size(AbstractCfgNode node, Set<AbstractCfgNode> visited) {
-        if (!visited.contains(node)) {
-            visited.add(node);
-            int size = 1;
-            CfgEdge[] outEdges = node.getOutEdges();
-            for (CfgEdge outEdge : outEdges) {
-                if (outEdge != null) {
-                    size += size(outEdge.getDestination(), visited);
-                }
-            }
-            return size;
-        } else {
-            return 0;
-        }
-    }
+	public long size() {
+		Set<AbstractCfgNode> visited = new HashSet<AbstractCfgNode>();
+		long s = size(this.head, visited);
+		return s;
+	}
 
-    // breadth first iterator;
-    // NOTE: when iterating over large CFGs, use should better use
-    // dfPreOrderIterator; breadthFirstIterator tends to produce stack overflows
-    public Iterator<AbstractCfgNode> bfIterator() {
-        // list for the iterator
-        LinkedList<AbstractCfgNode> list = new LinkedList<>();
+	long size(AbstractCfgNode node, Set<AbstractCfgNode> visited) {
 
-        // queue for nodes that still have to be visited
-        LinkedList<AbstractCfgNode> queue = new LinkedList<>();
+		if (!visited.contains(node)) {
+			visited.add(node);
+			long size = 1;
+			CfgEdge[] outEdges = node.getOutEdges();
+			for (long i = 0; i < outEdges.length; i++) {
+				if (outEdges[(int) i] != null) {
+				}
+			}
+			return size;
+		} else {
+			return 0;
+		}
+	}
 
-        Set<AbstractCfgNode> visited = new HashSet<>();
+	public Iterator<AbstractCfgNode> bfIterator() {
 
-        queue.add(this.head);
-        visited.add(this.head);
+		LinkedList<AbstractCfgNode> list = new LinkedList<AbstractCfgNode>();
+		LinkedList<AbstractCfgNode> queue = new LinkedList<AbstractCfgNode>();
+		Set<AbstractCfgNode> visited = new HashSet<AbstractCfgNode>();
 
-        this.bfIteratorHelper(list, queue, visited);
+		queue.add(this.head);
+		visited.add(this.head);
 
-        return list.iterator();
-    }
+		this.bfIteratorHelper(list, queue, visited);
 
-    private void bfIteratorHelper(
-        List<AbstractCfgNode> list, LinkedList<AbstractCfgNode> queue, Set<AbstractCfgNode> visited
-    ) {
-        AbstractCfgNode cfgNode = queue.removeFirst();
-        list.add(cfgNode);
+		return list.iterator();
+	}
 
-        // handle successors
-        for (int i = 0; i < 2; i++) {
-            CfgEdge outEdge = cfgNode.getOutEdge(i);
-            if (outEdge != null) {
-                AbstractCfgNode succ = outEdge.getDestination();
-                // for all successors that have not been visited yet...
-                if (!visited.contains(succ)) {
-                    // add it to the queue
-                    queue.add(succ);
-                    // mark it as visited
-                    visited.add(succ);
-                }
-            }
-        }
+	private void bfIteratorHelper(List<AbstractCfgNode> list, LinkedList<AbstractCfgNode> queue,
+			Set<AbstractCfgNode> visited) {
 
-        // if the queue is non-empty: recurse
-        if (queue.size() > 0) {
-            bfIteratorHelper(list, queue, visited);
-        }
-    }
+		AbstractCfgNode cfgNode = (AbstractCfgNode) queue.removeFirst();
+		list.add(cfgNode);
 
-    // depth first iterator (preorder)
-    public LinkedList<AbstractCfgNode> dfPreOrder() {
-        LinkedList<AbstractCfgNode> preorder = new LinkedList<>();
-        LinkedList<AbstractCfgNode> postorder = new LinkedList<>();
-        this.dfIterator(preorder, postorder);
-        return preorder;
-    }
+		for (int i = 0; i < 2; i++) {
+			CfgEdge outEdge = cfgNode.getOutEdge(i);
+			if (outEdge != null) {
+				AbstractCfgNode succ = outEdge.getDest();
+				if (!visited.contains(succ)) {
+					queue.add(succ);
+					visited.add(succ);
+				}
+			}
+		}
+		if (queue.size() > 0) {
+			bfIteratorHelper(list, queue, visited);
+		}
+	}
 
-    // depth first iterator (postorder)
-    public LinkedList<AbstractCfgNode> dfPostOrder() {
-        LinkedList<AbstractCfgNode> preorder = new LinkedList<>();
-        LinkedList<AbstractCfgNode> postorder = new LinkedList<>();
-        this.dfIterator(preorder, postorder);
-        return postorder;
-    }
+	public LinkedList<AbstractCfgNode> dfPreOrder() {
+		LinkedList<AbstractCfgNode> preorder = new LinkedList<AbstractCfgNode>();
+		LinkedList<AbstractCfgNode> postorder = new LinkedList<AbstractCfgNode>();
+		this.dfIterator(preorder, postorder);
+		return preorder;
+	}
 
-    // uses the given lists as containers for preorder and postorder
-    private void dfIterator(LinkedList<AbstractCfgNode> preorder, LinkedList<AbstractCfgNode> postorder) {
-        // auxiliary stack and visited set
-        LinkedList<AbstractCfgNode> stack = new LinkedList<>();
-        Set<AbstractCfgNode> visited = new HashSet<>();
+	public LinkedList<AbstractCfgNode> dfPostOrder() {
+		LinkedList<AbstractCfgNode> preorder = new LinkedList<AbstractCfgNode>();
+		LinkedList<AbstractCfgNode> postorder = new LinkedList<AbstractCfgNode>();
+		this.dfIterator(preorder, postorder);
+		return postorder;
+	}
 
-        // visit head:
-        // mark it as visited, add it to stack and preorder
-        AbstractCfgNode current = this.head;
-        visited.add(current);
-        stack.add(current);
-        preorder.add(current);
+	private void dfIterator(LinkedList<AbstractCfgNode> preorder, LinkedList<AbstractCfgNode> postorder) {
 
-        // how it works:
-        // while there is something on the stack:
-        // - mark the top stack element as visited
-        // - add it to the preorder list
-        // - try to get an unvisited successor of this element
-        // - if there is such a successor: push it on the stack and continue
-        // - else: pop the stack and add the popped element to the postorder list
-        while (!stack.isEmpty()) {
-            // inspect the top stack element
-            current = stack.getLast();
+		LinkedList<AbstractCfgNode> stack = new LinkedList<AbstractCfgNode>();
+		Set<AbstractCfgNode> visited = new HashSet<AbstractCfgNode>();
 
-            // we will try to get an unvisited successor element
-            AbstractCfgNode next = null;
-            for (int i = 0; (i < 2) && (next == null); i++) {
-                CfgEdge outEdge = current.getOutEdge(i);
-                if (outEdge != null) {
-                    next = outEdge.getDestination();
-                    if (visited.contains(next)) {
-                        // try another one
-                        next = null;
-                    } else {
-                        // found it!
-                    }
-                }
-            }
+		AbstractCfgNode current = this.head;
+		visited.add(current);
+		stack.add(current);
+		preorder.add(current);
 
-            if (next == null) {
-                // pop from stack and add it to the postorder list
-                postorder.add(stack.removeLast());
-            } else {
-                // visit next
-                visited.add(next);
-                stack.add(next);
-                preorder.add(next);
-            }
-        }
-    }
+		while (!stack.isEmpty()) {
+			current = stack.getLast();
+			AbstractCfgNode next = null;
+			for (int i = 0; (i < 2) && (next == null); i++) {
+				CfgEdge outEdge = current.getOutEdge(i);
+				if (outEdge != null) {
+					next = outEdge.getDest();
+					if (visited.contains(next)) {
+						next = null;
+					} else {
+					}
+				}
+			}
+			if (next == null) {
+				postorder.add(stack.removeLast());
+			} else {
+				visited.add(next);
+				stack.add(next);
+				preorder.add(next);
+			}
+		}
+	}
 }

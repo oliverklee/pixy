@@ -1,5 +1,8 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction;
 
+import java.io.*;
+import java.util.*;
+
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
@@ -8,149 +11,111 @@ import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Literal;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParameter;
 
-import java.io.*;
-import java.util.List;
-
-/**
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public class CallBuiltinFunction extends AbstractTransferFunction {
-    private at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallBuiltinFunction cfgNode;
 
-// *********************************************************************************
-// CONSTRUCTORS ********************************************************************
-// *********************************************************************************
+	private at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallBuiltinFunction cfgNode;
 
-    public CallBuiltinFunction(at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallBuiltinFunction cfgNode) {
-        this.cfgNode = cfgNode;
-    }
+	public CallBuiltinFunction(at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallBuiltinFunction cfgNode) {
+		this.cfgNode = cfgNode;
+	}
 
-// *********************************************************************************
-// OTHER ***************************************************************************
-// *********************************************************************************
+	public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
 
-    public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
+		LiteralLatticeElement in = (LiteralLatticeElement) inX;
+		LiteralLatticeElement out = new LiteralLatticeElement(in);
+		String functionName = this.cfgNode.getFunctionName();
 
-        LiteralLatticeElement in = (LiteralLatticeElement) inX;
-        LiteralLatticeElement out = new LiteralLatticeElement(in);
+		if (MyOptions.phpBin == null) {
+			out.handleReturnValueBuiltin(this.cfgNode.getTempVar());
+		} else {
 
-        // SIMULATION OF BUILTIN FUNCTIONS
-        // ...by letting the php binary do the work
+			if (functionName.equals("realpath")) {
+				Literal resultLit = this.simulate(in, functionName);
+				out.handleReturnValue(this.cfgNode.getTempVar(), resultLit);
+			} else if (functionName.equals("dirname")) {
+				Literal resultLit = this.simulate(in, functionName);
+				out.handleReturnValue(this.cfgNode.getTempVar(), resultLit);
+			} else {
+				out.handleReturnValueBuiltin(this.cfgNode.getTempVar());
+			}
+		}
+		return out;
+	}
 
-        String functionName = this.cfgNode.getFunctionName();
+	private Literal simulate(LiteralLatticeElement in, String functionName) {
+		List<TacActualParameter> paramList = this.cfgNode.getParamList();
+		if (paramList.size() < 1) {
+			return Literal.TOP;
+		}
+		AbstractTacPlace param0 = paramList.get(0).getPlace();
+		Literal lit0 = in.getLiteral(param0);
+		if (lit0 == Literal.TOP) {
+			return Literal.TOP;
+		}
+		Runtime runtime = Runtime.getRuntime();
+		StringBuilder command = new StringBuilder("<? ");
 
-        if (MyOptions.phpBin == null) {
+		command.append("chdir('");
+		command.append(MyOptions.entryFile.getParent());
+		command.append("');");
 
-            // don't simulate
-            out.handleReturnValueBuiltin(this.cfgNode.getTempVar());
-        } else {
-            switch (functionName) {
-                case "realpath": {
-                    Literal resultLit = this.simulate(in, functionName);
-                    out.handleReturnValue(this.cfgNode.getTempVar(), resultLit);
-                    break;
-                }
-                case "dirname": {
-                    Literal resultLit = this.simulate(in, functionName);
-                    out.handleReturnValue(this.cfgNode.getTempVar(), resultLit);
-                    break;
-                }
-                default:
-                    // this function is not explicitly modelled
-                    out.handleReturnValueBuiltin(this.cfgNode.getTempVar());
-                    break;
-            }
-        }
+		command.append("var_dump(");
 
-        return out;
-    }
+		command.append(functionName);
+		command.append("(");
 
-    private Literal simulate(LiteralLatticeElement in, String functionName) {
+		command.append("'");
+		command.append(lit0);
+		command.append("'");
 
-        // retrieve the necessary parameters
-        List<TacActualParameter> paramList = this.cfgNode.getParamList();
-        if (paramList.size() < 1) {
-            // wrong number of params
-            return Literal.TOP;
-        }
-        AbstractTacPlace param0 = paramList.get(0).getPlace();
+		command.append(")); ?>");
 
-        // check if we can resolve the necessary params
-        Literal lit0 = in.getLiteral(param0);
-        if (lit0 == Literal.TOP) {
-            return Literal.TOP;
-        }
+		Literal resultLit = null;
+		try {
 
-        Runtime runtime = Runtime.getRuntime();
+			Process p = runtime.exec(MyOptions.phpBin);
+			OutputStream outstream = p.getOutputStream();
+			InputStream instream = p.getInputStream();
 
-        // assemble command.....
+			Writer outwriter = new OutputStreamWriter(outstream);
+			outwriter.write(command.toString());
+			outwriter.flush();
+			outwriter.close();
+			p.waitFor();
 
-        StringBuilder command = new StringBuilder("<? ");
+			resultLit = this.parseOutput(instream);
 
-        // change working directory
-        command.append("chdir('");
-        command.append(MyOptions.entryFile.getParent());
-        command.append("');");
+		} catch (IOException e) {
+			throw new RuntimeException(e.getMessage());
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e.getMessage());
+		}
 
-        // use "var_dump" to retrieve information about the output
-        command.append("var_dump(");
+		return resultLit;
 
-        // funcname plus opening bracket
-        command.append(functionName);
-        command.append("(");
+	}
 
-        // params
-        command.append("'");
-        command.append(lit0);
-        command.append("'");
+	private Literal parseOutput(InputStream instream) {
 
-        // finish
-        command.append(")); ?>");
+		String resultString = null;
+		try {
+			BufferedReader inreader = new BufferedReader(new InputStreamReader(instream));
+			resultString = inreader.readLine();
+			inreader.close();
+		} catch (IOException e) {
+			throw new RuntimeException(e.getMessage());
+		}
 
-        Literal resultLit = null;
-        try {
-            Process p = runtime.exec(MyOptions.phpBin);
-            OutputStream outstream = p.getOutputStream();   // input for php
-            InputStream instream = p.getInputStream();      // output of php
-
-            Writer outwriter = new OutputStreamWriter(outstream);
-            outwriter.write(command.toString());
-            outwriter.flush();
-            outwriter.close();
-            p.waitFor();
-
-            resultLit = this.parseOutput(instream);
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e.getMessage());
-        }
-
-        return resultLit;
-    }
-
-    // parses the output returned by the php invocation into a literal
-    private Literal parseOutput(InputStream instream) {
-
-        String resultString = null;
-        try {
-            BufferedReader inreader = new BufferedReader(new InputStreamReader(instream));
-            resultString = inreader.readLine();
-            inreader.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage());
-        }
-
-        if (resultString.startsWith("bool(")) {
-            if (resultString.equals("bool(true)")) {
-                return Literal.TRUE;
-            } else {
-                return Literal.FALSE;
-            }
-        } else if (resultString.startsWith("string(")) {
-            return new Literal(resultString.substring(
-                resultString.indexOf(')') + 3,
-                resultString.length() - 1));
-        } else {
-            return Literal.TOP;
-        }
-    }
+		if (resultString.startsWith("bool(")) {
+			if (resultString.equals("bool(true)")) {
+				return Literal.TRUE;
+			} else {
+				return Literal.FALSE;
+			}
+		} else if (resultString.startsWith("string(")) {
+			return new Literal(resultString.substring(resultString.indexOf(')') + 3, resultString.length() - 1));
+		} else {
+			return Literal.TOP;
+		}
+	}
 }

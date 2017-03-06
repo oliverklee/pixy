@@ -1,5 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.alias.transferfunction;
 
+import java.util.*;
+
 import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
@@ -11,225 +13,147 @@ import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AbstractInterproce
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-/**
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public class CallReturn extends AbstractTransferFunction {
-    private AbstractInterproceduralAnalysisNode analysisNodeAtCallPrep;
-    private TacFunction callee;
-    private List<List<Variable>> cbrParams;
-    private AliasAnalysis aliasAnalysis;
 
-// *********************************************************************************
-// CONSTRUCTORS ********************************************************************
-// *********************************************************************************
+	private AbstractInterproceduralAnalysisNode analysisNodeAtCallPrep;
+	private TacFunction callee;
+	private List<List<Variable>> cbrParams;
+	private AliasAnalysis aliasAnalysis;
 
-    public CallReturn(
-        AbstractInterproceduralAnalysisNode analysisNodeAtCallPrep,
-        TacFunction callee, AliasAnalysis aliasAnalysis,
-        at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreparation cfgNode) {
+	public CallReturn(AbstractInterproceduralAnalysisNode analysisNodeAtCallPrep, TacFunction callee,
+			AliasAnalysis aliasAnalysis, at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreparation cfgNode) {
 
-        this.analysisNodeAtCallPrep = analysisNodeAtCallPrep;
-        this.callee = callee;
-        this.aliasAnalysis = aliasAnalysis;
-        this.cbrParams = cfgNode.getCbrParams();
-    }
+		this.analysisNodeAtCallPrep = analysisNodeAtCallPrep;
+		this.callee = callee;
+		this.aliasAnalysis = aliasAnalysis;
+		this.cbrParams = cfgNode.getCbrParams();
+	}
 
-// *********************************************************************************
-// OTHER ***************************************************************************
-// *********************************************************************************
+	public AbstractLatticeElement transfer(AbstractLatticeElement inX, AbstractContext context) {
 
-    public AbstractLatticeElement transfer(AbstractLatticeElement inX, AbstractContext context) {
+		AliasLatticeElement origInfo = (AliasLatticeElement) this.analysisNodeAtCallPrep.getPhiValue(context);
+		AliasLatticeElement localInfo = new AliasLatticeElement(origInfo);
+		localInfo.removeGlobals();
 
-        // lattice element entering the call prep node under the current
-        // context (= base for local-info)
-        AliasLatticeElement origInfo =
-            (AliasLatticeElement) this.analysisNodeAtCallPrep.getPhiValue(context);
-        AliasLatticeElement localInfo = new AliasLatticeElement(origInfo);
-        localInfo.removeGlobals();
+		AliasLatticeElement calleeIn = (AliasLatticeElement) inX;
+		AliasLatticeElement interInfo = new AliasLatticeElement(calleeIn);
+		interInfo.removeLocals();
 
-        // lattice element coming in from the callee (= base for interprocedural info);
-        // still contains the callee's locals in the current implementation, so we
-        // have to remove them first
-        AliasLatticeElement calleeIn = (AliasLatticeElement) inX;
-        AliasLatticeElement interInfo = new AliasLatticeElement(calleeIn);
-        interInfo.removeLocals();
+		AliasLatticeElement outInfo = new AliasLatticeElement();
 
-        // start with empty alias information
-        AliasLatticeElement outInfo = new AliasLatticeElement();
+		outInfo.add(localInfo);
 
-        // add aliases between locals from local-info
-        outInfo.add(localInfo);
+		outInfo.add(interInfo);
 
-        // add aliases between globals from inter-info
-        outInfo.add(interInfo);
+		Set<MustAliasGroup> visitedGroups = new HashSet<MustAliasGroup>();
 
-        // COMPUTE ALIASES BETWEEN LOCALS AND GLOBALS
-        // USING G-SHADOWS AND F-SHADOWS
+		for (Iterator<?> iter = origInfo.getMustAliases().getGroups().iterator(); iter.hasNext();) {
+			MustAliasGroup group = (MustAliasGroup) iter.next();
+			Variable someGlobal = group.getArbitraryGlobal();
+			Set<?> groupLocals = group.getLocals();
+			Variable gShadow = this.callee.getSymbolTable().getGShadow(someGlobal);
+			if (someGlobal != null && !groupLocals.isEmpty()) {
+				Variable someLocal = (Variable) groupLocals.iterator().next();
+				visitedGroups.add(group);
+				MustAliasGroup gShadowGroup = calleeIn.getMustAliasGroup(gShadow);
+				if (gShadowGroup != null) {
+					Variable gShadowGlobalMustAlias = gShadowGroup.getArbitraryGlobal();
+					if (gShadowGlobalMustAlias != null) {
+						outInfo.merge(someLocal, gShadowGlobalMustAlias);
+					}
+				}
+			}
+			Set<?> gShadowGlobalMayAliases = calleeIn.getGlobalMayAliases(gShadow);
+			for (Iterator<?> globalIter = gShadowGlobalMayAliases.iterator(); globalIter.hasNext();) {
+				Variable globalMayAlias = (Variable) globalIter.next();
+				outInfo.addMayAliasPairs(groupLocals, globalMayAlias);
+			}
+		}
+		for (Iterator<MayAliasPair> iter = origInfo.getMayAliases().getPairs().iterator(); iter.hasNext();) {
 
-        // contains groups from orig-info that have been tagged as visited
-        Set<MustAliasGroup> visitedGroups = new HashSet<>();
+			MayAliasPair pair = (MayAliasPair) iter.next();
 
-        // G-SHADOWS, MUST
+			Variable[] localGlobal = pair.getLocalGlobal();
 
-        // for each must-alias-group in the orig-info
-        for (MustAliasGroup group : origInfo.getMustAliases().getGroups()) {
-            // pick an arbitrary global from this group
-            Variable someGlobal = group.getArbitraryGlobal();
+			if (localGlobal == null) {
+				continue;
+			}
 
-            // get all locals from this group
-            Set<Variable> groupLocals = group.getLocals();
+			Variable gShadow = this.callee.getSymbolTable().getGShadow(localGlobal[1]);
 
-            // retrieve the global's g-shadow
-            Variable gShadow = this.callee.getSymbolTable().getGShadow(someGlobal);
+			Set<?> globalAliases = calleeIn.getGlobalAliases(gShadow);
+			for (Iterator<?> globalIter = globalAliases.iterator(); globalIter.hasNext();) {
+				Variable globalAlias = (Variable) globalIter.next();
+				MayAliasPair addMePair = new MayAliasPair(globalAlias, localGlobal[0]);
+				outInfo.add(addMePair);
+			}
+		}
 
-            // if it contains at least one global and at least one local variable
-            if (someGlobal != null && !groupLocals.isEmpty()) {
-                // pick an arbitrary local
-                Variable someLocal = groupLocals.iterator().next();
+		for (Iterator<?> iter = this.cbrParams.iterator(); iter.hasNext();) {
 
-                // mark this group as visited
-                visitedGroups.add(group);
+			List<?> paramPair = (List<?>) iter.next();
+			Variable actual = (Variable) paramPair.get(0);
 
-                // get (non-trivial) must-alias-group for this g-shadow (=> can also be null!)
-                MustAliasGroup gShadowGroup = calleeIn.getMustAliasGroup(gShadow);
+			if (!actual.isLocal()) {
+				continue;
+			}
 
-                // if such a group exists...
-                if (gShadowGroup != null) {
+			Variable formal = (Variable) paramPair.get(1);
+			Variable fShadow = this.callee.getSymbolTable().getFShadow(formal);
 
-                    // pick an arbitrary global from this group
-                    Variable gShadowGlobalMustAlias = gShadowGroup.getArbitraryGlobal();
+			Set<?> fShadowGlobalMustAliases = calleeIn.getGlobalMustAliases(fShadow);
 
-                    // if there is such a global must-alias of the g-shadow
-                    if (gShadowGlobalMustAlias != null) {
+			Set<?> fShadowGlobalMayAliases = calleeIn.getGlobalMayAliases(fShadow);
 
-                        // in the output-info, merge the local's group with the group
-                        // that contains this global must-alias, considering implicit
-                        // one-element groups as well
-                        outInfo.merge(someLocal, gShadowGlobalMustAlias);
-                    }
-                }
-            }
+			MustAliasGroup actualGroup = origInfo.getMustAliasGroup(actual);
 
-            // for each global may-alias of the g-shadow...
-            // (note: it would be cleaner to move this loop into the above if-branch, since
-            // this loop has no final effect if the above branch is not entered;
-            // that's because of either:
-            // - groupLocals is empty
-            // - there is no global variable in this must-alias group, which leads to
-            //   the iteration over an empty set here
-            for (Variable globalMayAlias : calleeIn.getGlobalMayAliases(gShadow)) {
-                outInfo.addMayAliasPairs(groupLocals, globalMayAlias);
-            }
-        }
+			if (!visitedGroups.contains(actualGroup)) {
 
-        // G-SHADOWS, MAY
+				Set<Variable> actualGroupLocals = new HashSet<Variable>();
+				if (actualGroup == null) {
+					actualGroupLocals.add(actual);
+				} else {
+					visitedGroups.add(actualGroup);
+					actualGroupLocals = actualGroup.getLocals();
+				}
 
-        // for each may-alias-pair in the orig-info
-        for (MayAliasPair pair : origInfo.getMayAliases().getPairs()) {
+				if (!fShadowGlobalMustAliases.isEmpty()) {
 
-            Variable[] localGlobal = pair.getLocalGlobal();
+					Variable fShadowGlobalMustAlias = (Variable) fShadowGlobalMustAliases.iterator().next();
+					outInfo.merge(actual, fShadowGlobalMustAlias);
 
-            // we are only interested in pairs that contain one local
-            // and one global variable
-            if (localGlobal == null) {
-                continue;
-            }
+				}
 
-            Variable gShadow = this.callee.getSymbolTable().getGShadow(localGlobal[1]);
+				for (Iterator<?> iterator = fShadowGlobalMayAliases.iterator(); iterator.hasNext();) {
+					Variable fShadowGlobalMayAlias = (Variable) iterator.next();
+					outInfo.addMayAliasPairs(actualGroupLocals, fShadowGlobalMayAlias);
+				}
+			}
 
-            // for all global aliases (must and may) of the g-shadow...
-            for (Variable globalAlias : calleeIn.getGlobalAliases(gShadow)) {
-                MayAliasPair addMePair = new MayAliasPair(globalAlias, localGlobal[0]);
-                outInfo.add(addMePair);
-            }
-        }
+			for (Iterator<?> localIter = origInfo.getLocalMayAliases(actual).iterator(); localIter.hasNext();) {
+				Variable actualLocalMayAlias = (Variable) localIter.next();
 
-        // F-SHADOWS
+				for (Iterator<?> innerIter = fShadowGlobalMustAliases.iterator(); innerIter.hasNext();) {
+					Variable fShadowGlobalMustAlias = (Variable) innerIter.next();
+					outInfo.add(new MayAliasPair(fShadowGlobalMustAlias, actualLocalMayAlias));
+				}
 
-        // for all cbr-params...
-        for (List<Variable> paramPair : this.cbrParams) {
-            Variable actual = paramPair.get(0);
+				for (Iterator<?> innerIter = fShadowGlobalMayAliases.iterator(); innerIter.hasNext();) {
+					Variable fShadowGlobalMayAlias = (Variable) innerIter.next();
+					outInfo.add(new MayAliasPair(fShadowGlobalMayAlias, actualLocalMayAlias));
+				}
+			}
+		}
 
-            // we are only interested in *local* actual cbr-params
-            if (!actual.isLocal()) {
-                continue;
-            }
+		outInfo.removeConflictingPairs();
 
-            Variable formal = paramPair.get(1);
-            Variable fShadow = this.callee.getSymbolTable().getFShadow(formal);
+		outInfo = (AliasLatticeElement) this.aliasAnalysis.recycle(outInfo);
 
-            // the f-shadow's global must-aliases
-            Set<Variable> fShadowGlobalMustAliases = calleeIn.getGlobalMustAliases(fShadow);
+		return outInfo;
+	}
 
-            // the f-shadow's global may-aliases
-            Set<Variable> fShadowGlobalMayAliases = calleeIn.getGlobalMayAliases(fShadow);
+	public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
+		throw new RuntimeException("SNH");
+	}
 
-            // the actual param's (non-trivial) must-alias group (=> can also be null!)
-            MustAliasGroup actualGroup = origInfo.getMustAliasGroup(actual);
-
-            // if this group is not marked as visited...
-            if (!visitedGroups.contains(actualGroup)) {
-                // differentiate between implicit (null) and explicit group;
-                // LATER: maybe you should do this before coming to the if-branch
-                Set<Variable> actualGroupLocals = new HashSet<>();
-                if (actualGroup == null) {
-                    actualGroupLocals.add(actual);
-                } else {
-                    // mark the group as visited
-                    visitedGroups.add(actualGroup);
-                    actualGroupLocals = actualGroup.getLocals();
-                }
-
-                // if the f-shadow has at least one global must-alias...
-                if (!fShadowGlobalMustAliases.isEmpty()) {
-                    // pick one
-                    Variable fShadowGlobalMustAlias = fShadowGlobalMustAliases.iterator().next();
-
-                    // in the output-info, merge the actual's group with the group
-                    // that contains this global must-alias, considering implicit
-                    // one-element groups as well
-                    outInfo.merge(actual, fShadowGlobalMustAlias);
-                }
-
-                // for each global may-alias of the f-shadow...
-                for (Variable fShadowGlobalMayAlias : fShadowGlobalMayAliases) {
-                    outInfo.addMayAliasPairs(actualGroupLocals, fShadowGlobalMayAlias);
-                }
-            }
-
-            // for every local may-alias of the actual param...
-            for (Variable actualLocalMayAlias : origInfo.getLocalMayAliases(actual)) {
-                // for every global must-alias of the f-shadow...
-                for (Variable fShadowGlobalMustAlias : fShadowGlobalMustAliases) {
-                    outInfo.add(new MayAliasPair(fShadowGlobalMustAlias, actualLocalMayAlias));
-                }
-
-                // for every global may-alias of the f-shadow...
-                for (Variable fShadowGlobalMayAlias : fShadowGlobalMayAliases) {
-                    outInfo.add(new MayAliasPair(fShadowGlobalMayAlias, actualLocalMayAlias));
-                }
-            }
-        }
-
-        // FINAL
-
-        // eliminate alias pairs that "conflict" with must-alias information
-        outInfo.removeConflictingPairs();
-
-        // recycle
-        outInfo = (AliasLatticeElement) this.aliasAnalysis.recycle(outInfo);
-
-        return outInfo;
-    }
-
-    // just a dummy method in order to make me conform to the interface;
-    // the Analysis uses the other transfer method instead
-    public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
-        throw new RuntimeException("SNH");
-    }
 }

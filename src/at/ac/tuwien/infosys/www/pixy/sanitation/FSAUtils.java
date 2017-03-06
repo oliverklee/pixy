@@ -1,127 +1,96 @@
 package at.ac.tuwien.infosys.www.pixy.sanitation;
 
+import java.util.*;
+
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.Utils;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
-import java.util.List;
-
-/**
- * Helper class responsible for performing transductions using FSA Utilities.
- *
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public class FSAUtils {
-    private static String mohri = MyOptions.fsaHome + "/Examples/MohriSproat96/ops.pl";
 
-    public static FSAAutomaton reg_replace(FSAAutomaton phpPatternAuto,
-                                           FSAAutomaton replaceAuto, FSAAutomaton subjectAuto, boolean preg,
-                                           AbstractCfgNode cfgNode) {
+	private static String mohri = MyOptions.fsa_home + "/Examples/MohriSproat96/ops.pl";
 
-        // get a finite string from the pattern
-        List<String> finitePattern = phpPatternAuto.getFiniteString();
-        if (finitePattern == null) {
-            // the pattern is not a finite string, not supported
-            return FSAAutomaton.makeAnyString();
-        }
-        if (finitePattern.isEmpty()) {
-            // the pattern is empty for some reason;
-            // e.g., happens if the $pattern argument to preg_replace is an array
-            // => be conservative
-            return FSAAutomaton.makeAnyString();
-        }
+	public static FSAAutomaton reg_replace(FSAAutomaton phpPatternAuto, FSAAutomaton replaceAuto,
+			FSAAutomaton subjectAuto, boolean preg, AbstractCfgNode cfgNode) {
 
-        // convert the PHP pattern into a prolog regexp
-        boolean approximate = false;
-        FSAAutomaton prologPatternAuto = null;
-        try {
-            prologPatternAuto = FSAAutomaton.convertPhpRegex(finitePattern, preg);
-        } catch (UnsupportedRegexException e) {
-            // if the regex is not supported yet: just return .*
-            System.err.println("unsupported regex:");
-            System.err.println("- " + cfgNode.getLoc());
-            approximate = true;
-        } catch (Exception e) {
-            // if anything else goes wrong:
-            // - also return .*
-            // - but generate a different warning
-            System.err.println("Exception during regex conversion");
-            System.err.println("- " + cfgNode.getLoc());
-            System.err.println(e.getMessage());
-            e.printStackTrace();
-            approximate = true;
-        }
+		List<String> finitePattern = phpPatternAuto.getFiniteString();
+		if (finitePattern == null) {
+			return FSAAutomaton.makeAnyString();
+		}
+		if (finitePattern.isEmpty()) {
+			return FSAAutomaton.makeAnyString();
+		}
 
-        FSAAutomaton retMe;
-        if (approximate) {
-            retMe = FSAAutomaton.makeAnyString();
-        } else {
-            String patternFile = prologPatternAuto.toFile("temp1.auto");
-            String replaceFile = replaceAuto.toFile("temp2.auto");
-            String subjectFile = subjectAuto.toFile("temp3.auto");
+		boolean approximate = false;
+		FSAAutomaton prologPatternAuto = null;
+		try {
+			prologPatternAuto = FSAAutomaton.convertPhpRegex(finitePattern, preg);
+		} catch (UnsupportedRegexException e) {
+			System.err.println("unsupported regex:");
+			System.err.println("- " + cfgNode.getLoc());
+			approximate = true;
+		} catch (Exception e) {
+			System.err.println("Exception during regex conversion");
+			System.err.println("- " + cfgNode.getLoc());
+			System.err.println(e.getMessage());
+			e.printStackTrace();
+			approximate = true;
+		}
 
-            String c = MyOptions.fsaHome + "/" +
-                "fsa -aux " + mohri + " -r compose(file('" + subjectFile + "'),replace(file('" + patternFile + "'),file('" + replaceFile + "'))) ";
-            String autoString = Utils.exec(c);
-            retMe = new FSAAutomaton(autoString);
+		FSAAutomaton retMe;
+		if (approximate) {
+			retMe = FSAAutomaton.makeAnyString();
+		} else {
+			String patternFile = prologPatternAuto.toFile("temp1.auto");
+			String replaceFile = replaceAuto.toFile("temp2.auto");
+			String subjectFile = subjectAuto.toFile("temp3.auto");
 
-            // projection to the output side (turning a transducer into a recognizer)
-            retMe = retMe.projectOut();
-        }
+			String c = MyOptions.fsa_home + "/" + "fsa -aux " + mohri + " -r compose(file('" + subjectFile
+					+ "'),replace(file('" + patternFile + "'),file('" + replaceFile + "'))) ";
+			String autoString = Utils.exec(c);
+			retMe = new FSAAutomaton(autoString);
+			retMe = retMe.projectOut();
+		}
+		return retMe;
+	}
 
-        return retMe;
-    }
+	public static FSAAutomaton str_replace(FSAAutomaton searchAuto, FSAAutomaton replaceAuto, FSAAutomaton subjectAuto,
+			AbstractCfgNode cfgNode) {
 
-    public static FSAAutomaton str_replace(FSAAutomaton searchAuto,
-                                           FSAAutomaton replaceAuto, FSAAutomaton subjectAuto, AbstractCfgNode cfgNode) {
+		if (searchAuto.getFiniteString() == null) {
+			System.out.println("Warning: search automaton is not finite!");
+			System.out.println("- " + cfgNode.getLoc());
+			replaceAuto = FSAAutomaton.makeAnyString();
+		}
 
-        // current approximation:
-        // if the search automaton does not encode a finite string,
-        // we use .* for the replace automaton;
-        // alternatively (and more precisely), we could also use the following for
-        // the replace automaton:
-        // replace = union(replace, search)
-        // which covers the possibility that something that matches the search does
-        // not have to be replaced in every case
-        if (searchAuto.getFiniteString() == null) {
-            System.out.println("Warning: search automaton is not finite!");
-            System.out.println("- " + cfgNode.getLoc());
-            replaceAuto = FSAAutomaton.makeAnyString();
-        }
+		String searchFile = searchAuto.toFile("temp1.auto");
+		String replaceFile = replaceAuto.toFile("temp2.auto");
+		String subjectFile = subjectAuto.toFile("temp3.auto");
 
-        String searchFile = searchAuto.toFile("temp1.auto");
-        String replaceFile = replaceAuto.toFile("temp2.auto");
-        String subjectFile = subjectAuto.toFile("temp3.auto");
+		String c = MyOptions.fsa_home + "/" + "fsa -aux " + mohri + " -r compose(file('" + subjectFile
+				+ "'),replace(file('" + searchFile + "'),file('" + replaceFile + "'))) ";
 
-        String c = MyOptions.fsaHome + "/" +
-            "fsa -aux " + mohri + " -r compose(file('" + subjectFile + "'),replace(file('" + searchFile + "'),file('" + replaceFile + "'))) ";
+		String autoString = Utils.exec(c);
 
-        String autoString = Utils.exec(c);
+		FSAAutomaton retMe = new FSAAutomaton(autoString);
 
-        FSAAutomaton retMe = new FSAAutomaton(autoString);
+		retMe = retMe.projectOut();
 
-        // projection to the output side (turning a transducer into a recognizer)
-        retMe = retMe.projectOut();
+		return retMe;
+	}
 
-        return retMe;
-    }
+	public static FSAAutomaton addslashes(FSAAutomaton subjectAuto, AbstractCfgNode cfgNode) {
 
-    public static FSAAutomaton addslashes(FSAAutomaton subjectAuto, AbstractCfgNode cfgNode) {
-        // the easy way: addslashes is the same as applying str_replace
-        // several times:
-        // \ -> \\
-        FSAAutomaton searchAuto = FSAAutomaton.makeString("\\");
-        FSAAutomaton replaceAuto = FSAAutomaton.makeString("\\\\");
-        subjectAuto = str_replace(searchAuto, replaceAuto, subjectAuto, cfgNode);
-        // ' -> \'
-        searchAuto = FSAAutomaton.makeString("'");
-        replaceAuto = FSAAutomaton.makeString("\\'");
-        subjectAuto = str_replace(searchAuto, replaceAuto, subjectAuto, cfgNode);
-        // " -> \"
-        searchAuto = FSAAutomaton.makeString("\"");
-        replaceAuto = FSAAutomaton.makeString("\\\"");
-        subjectAuto = str_replace(searchAuto, replaceAuto, subjectAuto, cfgNode);
+		FSAAutomaton searchAuto = FSAAutomaton.makeString("\\");
+		FSAAutomaton replaceAuto = FSAAutomaton.makeString("\\\\");
+		subjectAuto = str_replace(searchAuto, replaceAuto, subjectAuto, cfgNode);
+		searchAuto = FSAAutomaton.makeString("'");
+		replaceAuto = FSAAutomaton.makeString("\\'");
+		subjectAuto = str_replace(searchAuto, replaceAuto, subjectAuto, cfgNode);
+		searchAuto = FSAAutomaton.makeString("\"");
+		replaceAuto = FSAAutomaton.makeString("\\\"");
+		subjectAuto = str_replace(searchAuto, replaceAuto, subjectAuto, cfgNode);
 
-        return subjectAuto;
-    }
+		return subjectAuto;
+	}
 }

@@ -1,60 +1,39 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction;
 
+import java.util.*;
+
 import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
-import java.util.Map;
-
-/**
- * Transfer function for function entries.
- *
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public class FunctionEntry extends AbstractTransferFunction {
-    private TacFunction function;
 
-// *********************************************************************************
-// CONSTRUCTORS ********************************************************************
-// *********************************************************************************
+	private TacFunction function;
 
-    public FunctionEntry(TacFunction function) {
-        this.function = function;
-    }
+	public FunctionEntry(TacFunction function) {
+		this.function = function;
+	}
 
-// *********************************************************************************
-// OTHER ***************************************************************************
-// *********************************************************************************
+	public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
 
-    public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
+		DependencyLatticeElement in = (DependencyLatticeElement) inX;
+		DependencyLatticeElement out = new DependencyLatticeElement(in);
 
-        DependencyLatticeElement in = (DependencyLatticeElement) inX;
-        DependencyLatticeElement out = new DependencyLatticeElement(in);
+		for (Map.Entry<Variable, Variable> entry : this.function.getSymbolTable().getGlobals2GShadows().entrySet()) {
+			Variable global = entry.getKey();
+			Variable gShadow = entry.getValue();
 
-        // initialize g-shadows
-        for (Map.Entry<Variable, Variable> entry : this.function.getSymbolTable().getGlobals2GShadows().entrySet()) {
-            Variable global = entry.getKey();
-            Variable gShadow = entry.getValue();
+			out.setShadow(gShadow, global);
+		}
 
-            // note: the TacConverter already took care that arrays and array elements
-            // don't get shadow variables, so you don't have to check this here again
+		for (Map.Entry<Variable, Variable> entry : this.function.getSymbolTable().getFormals2FShadows().entrySet()) {
+			Variable formal = entry.getKey();
+			Variable fShadow = entry.getValue();
+			out.setShadow(fShadow, formal);
+		}
 
-            // initialize shadow to the taint/label of its original
-            out.setShadow(gShadow, global);
-        }
-
-        // initialize f-shadows
-
-        for (Map.Entry<Variable, Variable> entry : this.function.getSymbolTable().getFormals2FShadows().entrySet()) {
-            Variable formal = entry.getKey();
-            Variable fShadow = entry.getValue();
-
-            // initialize
-            out.setShadow(fShadow, formal);
-        }
-
-        return out;
-    }
+		return out;
+	}
 }

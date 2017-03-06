@@ -1,5 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.alias.transferfunction;
 
+import java.util.*;
+
 import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
@@ -7,62 +9,45 @@ import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
-import java.util.Map;
-
-/**
- * Transfer function for function entries.
- *
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public class FunctionEntry extends AbstractTransferFunction {
-    private TacFunction function;
-    private AliasAnalysis aliasAnalysis;
 
-// *********************************************************************************
-// CONSTRUCTORS ********************************************************************
-// *********************************************************************************
+	private TacFunction function;
+	private AliasAnalysis aliasAnalysis;
 
-    public FunctionEntry(TacFunction function, AliasAnalysis aliasRepos) {
-        this.function = function;
-        this.aliasAnalysis = aliasRepos;
-    }
+	public FunctionEntry(TacFunction function, AliasAnalysis aliasRepos) {
+		this.function = function;
+		this.aliasAnalysis = aliasRepos;
+	}
 
-// *********************************************************************************
-// OTHER ***************************************************************************
-// *********************************************************************************
+	@SuppressWarnings("rawtypes")
+	public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
 
-    public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
+		AliasLatticeElement in = (AliasLatticeElement) inX;
+		AliasLatticeElement out = new AliasLatticeElement(in);
 
-        AliasLatticeElement in = (AliasLatticeElement) inX;
-        AliasLatticeElement out = new AliasLatticeElement(in);
+		Map<?, ?> globals2GShadows = this.function.getSymbolTable().getGlobals2GShadows();
 
-        // initialize g-shadows
-        for (Map.Entry<Variable, Variable> entry : this.function.getSymbolTable().getGlobals2GShadows().entrySet()) {
-            Variable global = entry.getKey();
-            Variable gShadow = entry.getValue();
+		for (Iterator<?> iter = globals2GShadows.entrySet().iterator(); iter.hasNext();) {
+			Map.Entry entry = (Map.Entry) iter.next();
+			Variable global = (Variable) entry.getKey();
+			Variable gShadow = (Variable) entry.getValue();
 
-            // note: the TacConverter already took care that arrays and array elements
-            // don't get shadow variables, so you don't have to check this here again
+			out.redirect(gShadow, global);
+		}
 
-            // perform redirection
-            out.redirect(gShadow, global);
-        }
+		Map<?, ?> formals2FShadows = this.function.getSymbolTable().getFormals2FShadows();
 
-        // initialize f-shadows
-        for (Map.Entry<Variable, Variable> entry : this.function.getSymbolTable().getFormals2FShadows().entrySet()) {
-            Variable formal = entry.getKey();
-            Variable fShadow = entry.getValue();
+		for (Iterator<?> iter = formals2FShadows.entrySet().iterator(); iter.hasNext();) {
+			Map.Entry entry = (Map.Entry) iter.next();
+			Variable formal = (Variable) entry.getKey();
+			Variable fShadow = (Variable) entry.getValue();
 
-            // note: the TacConverter already took care that arrays and array elements
-            // don't get shadow variables, so you don't have to check this here again
+			out.redirect(fShadow, formal);
+		}
 
-            // perform redirection
-            out.redirect(fShadow, formal);
-        }
+		out = (AliasLatticeElement) this.aliasAnalysis.recycle(out);
 
-        // recycle
-        out = (AliasLatticeElement) this.aliasAnalysis.recycle(out);
+		return out;
 
-        return out;
-    }
+	}
 }

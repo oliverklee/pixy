@@ -29,6 +29,7 @@ md5=0
 hexdec=0
 posix_getpwuid=0
 posix_getgrgid=0
+in_array=0
 
 # "clean database" policy
 

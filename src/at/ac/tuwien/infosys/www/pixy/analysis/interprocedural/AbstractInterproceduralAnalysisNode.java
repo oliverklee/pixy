@@ -1,143 +1,97 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.interprocedural;
 
+import java.util.*;
+
 import at.ac.tuwien.infosys.www.pixy.analysis.AbstractAnalysisNode;
 import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
-/**
- * An AnalysisNode holds analysis-specific information for a certain CFGNode.
- *
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public abstract class AbstractInterproceduralAnalysisNode extends AbstractAnalysisNode {
-    // context map for interprocedural analysis
-    // (Context -> input AbstractLatticeElement at current CFG node)
-    Map<AbstractContext, AbstractLatticeElement> phi;
 
-    // value resulting from lazy table folding; must only be modified
-    // via setFoldedValue, since we want it to be recycled for some analyses!
-    AbstractLatticeElement foldedValue;
+	Map<AbstractContext, AbstractLatticeElement> phi;
+	AbstractLatticeElement foldedValue;
 
-// *********************************************************************************
-// CONSTRUCTORS ********************************************************************
-// *********************************************************************************
+	protected AbstractInterproceduralAnalysisNode(AbstractTransferFunction tf) {
+		super(tf);
+		this.phi = new HashMap<AbstractContext, AbstractLatticeElement>();
+		this.foldedValue = null;
+	}
 
-    protected AbstractInterproceduralAnalysisNode(AbstractTransferFunction tf) {
-        super(tf);
-        this.phi = new HashMap<>();
-        this.foldedValue = null;
-    }
+	public Map<AbstractContext, AbstractLatticeElement> getPhi() {
+		return this.phi;
+	}
 
-// *********************************************************************************
-// GET *****************************************************************************
-// *********************************************************************************
+	public Set<AbstractContext> getContexts() {
+		return this.phi.keySet();
+	}
 
-    public Map<AbstractContext, AbstractLatticeElement> getPhi() {
-        return this.phi;
-    }
+	public AbstractLatticeElement getPhiValue(AbstractContext context) {
+		return ((AbstractLatticeElement) this.phi.get(context));
+	}
 
-    public Set<AbstractContext> getContexts() {
-        return this.phi.keySet();
-    }
+	public AbstractLatticeElement computeFoldedValue() {
 
-    // returns the lattice element currently stored in the PHI map under the
-    // given context; can be null
-    public AbstractLatticeElement getPhiValue(AbstractContext context) {
-        return this.phi.get(context);
-    }
+		if (this.hasFoldedValue()) {
+			return this.foldedValue;
+		}
 
-    // like getUnrecycledFoldedValue, but does not perform caching
-    public AbstractLatticeElement computeFoldedValue() {
-        if (this.hasFoldedValue()) {
-            return this.foldedValue;
-        }
+		Iterator<AbstractLatticeElement> iter = this.phi.values().iterator();
+		if (!iter.hasNext()) {
+			return null;
+		}
 
-        Iterator<? extends AbstractLatticeElement> iter = this.phi.values().iterator();
-        if (!iter.hasNext()) {
-            return null;
-        }
+		AbstractLatticeElement foldedValue = ((AbstractLatticeElement) iter.next()).cloneMe();
 
-        // initialize the folded value as a clone of the first value
-        // in the phi map
-        AbstractLatticeElement foldedValue = iter.next().cloneMe();
+		while (iter.hasNext()) {
+			foldedValue.lub((AbstractLatticeElement) iter.next());
+		}
+		return foldedValue;
+	}
 
-        // lub the rest of the values over the start value
-        while (iter.hasNext()) {
-            foldedValue.lub(iter.next());
-        }
+	public boolean hasFoldedValue() {
+		return (this.foldedValue != null || this.phi == null);
+	}
 
-        return foldedValue;
-    }
+	public void setFoldedValue(AbstractLatticeElement foldedValue) {
+		this.foldedValue = foldedValue;
+	}
 
-    public boolean hasFoldedValue() {
-        return (this.foldedValue != null || this.phi == null);
-    }
+	public void clearPhiMap() {
+		this.phi = null;
+	}
 
-    public void setFoldedValue(AbstractLatticeElement foldedValue) {
-        this.foldedValue = foldedValue;
-    }
+	public AbstractLatticeElement getRecycledFoldedValue() {
+		if (this.hasFoldedValue()) {
+			return this.foldedValue;
+		} else {
+			throw new RuntimeException("SNH");
+		}
+	}
 
-    // only do this after having set the folded value
-    public void clearPhiMap() {
-        this.phi = null;
-    }
+	public AbstractLatticeElement getUnrecycledFoldedValue() {
+		if (this.hasFoldedValue()) {
+			return this.foldedValue;
+		}
 
-    // don't call this function without having checked whether
-    // the folded value exists
-    public AbstractLatticeElement getRecycledFoldedValue() {
-        if (this.hasFoldedValue()) {
-            return this.foldedValue;
-        } else {
-            throw new RuntimeException("SNH");
-        }
-    }
+		Iterator<AbstractLatticeElement> iter = this.phi.values().iterator();
+		if (!iter.hasNext()) {
+			return null;
+		}
 
-    // returns the least upper bound of all values in the phi map;
-    // returns NULL if there is not a single value in the phi map
-    // DOESN'T PERFORM RECYCLING OF THE FOLDED ELEMENT,
-    // and performs caching (might become a memory-eater)
-    public AbstractLatticeElement getUnrecycledFoldedValue() {
-        // no need to recompute it if we already have it
-        if (this.hasFoldedValue()) {
-            return this.foldedValue;
-        }
+		this.foldedValue = ((AbstractLatticeElement) iter.next()).cloneMe();
+		while (iter.hasNext()) {
+			this.foldedValue.lub((AbstractLatticeElement) iter.next());
+		}
 
-        Iterator<? extends AbstractLatticeElement> iter = this.phi.values().iterator();
-        if (!iter.hasNext()) {
-            return null;
-        }
+		return this.foldedValue;
+	}
 
-        // initialize the folded value as a clone of the first value
-        // in the phi map
-        this.foldedValue = iter.next().cloneMe();
+	protected void setPhiValue(AbstractContext context, AbstractLatticeElement value) {
+		this.phi.put(context, value);
+	}
 
-        // lub the rest of the values over the start value
-        while (iter.hasNext()) {
-            this.foldedValue.lub(iter.next());
-        }
+	AbstractLatticeElement transfer(AbstractLatticeElement value, AbstractContext context) {
+		return ((AbstractLatticeElement) tf.transfer(value, context));
+	}
 
-        return this.foldedValue;
-    }
-
-// *********************************************************************************
-// SET *****************************************************************************
-// *********************************************************************************
-
-    // sets the PHI value for the given context
-    protected void setPhiValue(AbstractContext context, AbstractLatticeElement value) {
-        this.phi.put(context, value);
-    }
-
-// *********************************************************************************
-// OTHER ***************************************************************************
-// *********************************************************************************
-
-    AbstractLatticeElement transfer(AbstractLatticeElement value, AbstractContext context) {
-        return tf.transfer(value, context);
-    }
 }

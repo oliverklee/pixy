@@ -1,79 +1,61 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.interprocedural;
 
+import java.util.*;
+
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.CallStringContext;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-/**
- * Maps from position to position for a certain call node.
- *
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public class ConnectorFunction {
-    // CallStringContext -> CallStringContext
-    private Map<CallStringContext, CallStringContext> pos2pos;
 
-    // reverse mapping of pos2pos:
-    // CallStringContext -> Set of CSContexts
-    private Map<CallStringContext, Set<CallStringContext>> reverse;
+	private Map<CallStringContext, CallStringContext> pos2pos;
 
-    // creates an empty connector function
-    public ConnectorFunction() {
-        this.pos2pos = new HashMap<>();
-        this.reverse = new HashMap<>();
-    }
+	private Map<CallStringContext, Set<CallStringContext>> reverse;
 
-    // adds the given mapping
-    public void add(int from, int to) {
+	public ConnectorFunction() {
+		this.pos2pos = new HashMap<CallStringContext, CallStringContext>();
+		this.reverse = new HashMap<CallStringContext, Set<CallStringContext>>();
+	}
 
-        CallStringContext fromInt = new CallStringContext(from);
-        CallStringContext toInt = new CallStringContext(to);
+	public void add(int from, int to) {
 
-        this.pos2pos.put(fromInt, toInt);
+		CallStringContext fromInt = new CallStringContext(from);
+		CallStringContext toInt = new CallStringContext(to);
 
-        // maintain reverse mapping
+		this.pos2pos.put(fromInt, toInt);
 
-        Set<CallStringContext> reverseSet = this.reverse.get(toInt);
-        if (reverseSet == null) {
-            // there was no such reverse mapping:
-            // create it together with a new set
-            reverseSet = new HashSet<>();
-            reverseSet.add(fromInt);
-            this.reverse.put(toInt, reverseSet);
-        } else {
-            // add to already existing reverse mapping set
-            reverseSet.add(fromInt);
-        }
-    }
+		Set<CallStringContext> reverseSet = this.reverse.get(toInt);
+		if (reverseSet == null) {
+			reverseSet = new HashSet<CallStringContext>();
+			reverseSet.add(fromInt);
+			this.reverse.put(toInt, reverseSet);
+		} else {
+			reverseSet.add(fromInt);
+		}
+	}
 
-    // applies this connector function to the given input value
-    public CallStringContext apply(int input) {
-        CallStringContext output = this.pos2pos.get(new CallStringContext(input));
-        return output;
-    }
+	public CallStringContext apply(int input) {
+		CallStringContext output = (CallStringContext) this.pos2pos.get(new CallStringContext(input));
+		return output;
+	}
 
-    // reverse application: returns a set of inputs (CallStringContext's) for the given output
-    // (might be null if there is no such output)
-    public Set<CallStringContext> reverseApply(int output) {
-        return this.reverse.get(new CallStringContext(output));
-    }
+	public Set<CallStringContext> reverseApply(int output) {
+		return this.reverse.get(new CallStringContext(output));
+	}
 
-    public String toString() {
-        if (this.pos2pos.isEmpty()) {
-            return "<empty>";
-        }
-        StringBuilder myString = new StringBuilder();
-        for (Map.Entry<CallStringContext, CallStringContext> entry : this.pos2pos.entrySet()) {
-            CallStringContext from = entry.getKey();
-            CallStringContext to = entry.getValue();
-            myString.append(from);
-            myString.append(" -> ");
-            myString.append(to);
-            myString.append(System.getProperty("line.separator"));
-        }
-        return myString.substring(0, myString.length() - 1);
-    }
+	@SuppressWarnings("rawtypes")
+	public String toString() {
+		if (this.pos2pos.isEmpty()) {
+			return "<empty>";
+		}
+		StringBuilder myString = new StringBuilder();
+		for (Iterator<?> iter = this.pos2pos.entrySet().iterator(); iter.hasNext();) {
+			Map.Entry entry = (Map.Entry) iter.next();
+			CallStringContext from = (CallStringContext) entry.getKey();
+			CallStringContext to = (CallStringContext) entry.getValue();
+			myString.append(from);
+			myString.append(" -> ");
+			myString.append(to);
+			myString.append(System.getProperty("line.separator"));
+		}
+		return myString.substring(0, myString.length() - 1);
+	}
 }

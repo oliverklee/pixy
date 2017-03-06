@@ -1,0 +1,20 @@
+# standard SQL sinks
+
+# format:
+# <functionName> = <parameter list>
+# - use only lowercase characters for the function's name
+# - the parameter list's entries are separated with :
+query = 0
+# xyz = 0:1:3
+xpath = 0
+# xyz = 0:1:3
+xpath_eval = 0
+# xyz = 0:1:3
+xpath_eval_expression = 0
+# xyz = 0:1:3
+xptr_eval = 0
+# xyz = 0:1:3
+query<m> = 0
+# xyz = 0:1:3
+$xpath->query = 0
+# xyz = 0:1:3

@@ -1,39 +1,26 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.intraprocedural;
 
+import java.util.*;
+
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
-import java.util.LinkedList;
-
-/**
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public final class IntraproceduralWorklist {
-    private LinkedList<AbstractCfgNode> workList;
 
-// *********************************************************************************
-// CONSTRUCTORS ********************************************************************
-// *********************************************************************************
+	private LinkedList<AbstractCfgNode> workList;
 
-    IntraproceduralWorklist() {
-        this.workList = new LinkedList<>();
-    }
+	IntraproceduralWorklist() {
+		this.workList = new LinkedList<AbstractCfgNode>();
+	}
 
-// *********************************************************************************
-// OTHER ***************************************************************************
-// *********************************************************************************
+	void add(AbstractCfgNode cfgNode) {
+		this.workList.add(cfgNode);
+	}
 
-    void add(AbstractCfgNode cfgNode) {
-        this.workList.add(cfgNode);
-    }
+	AbstractCfgNode removeNext() {
+		return (AbstractCfgNode) this.workList.removeFirst();
+	}
 
-    // actually implemented as FIFO
-    // EFF: it would be more efficient to analyze all conditional branches first
-    // before going on to the code behind the branches (reverse postorder)
-    AbstractCfgNode removeNext() {
-        return this.workList.removeFirst();
-    }
-
-    boolean hasNext() {
-        return (this.workList.size() > 0);
-    }
+	boolean hasNext() {
+		return (this.workList.size() > 0 ? true : false);
+	}
 }

@@ -1,79 +1,61 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.interprocedural;
 
+import java.util.*;
+
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Call;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-/**
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public class CallGraphNode {
-    private TacFunction function;
 
-    // contained call nodes -> target call graph node
-    private Map<Call, CallGraphNode> outEdges;
+	private TacFunction function;
+	private Map<Call, CallGraphNode> outEdges;
+	private Map<Call, CallGraphNode> inEdges;
 
-    // call nodes from callers -> caller's call graph node
-    private Map<Call, CallGraphNode> inEdges;
+	CallGraphNode(TacFunction function) {
+		this.function = function;
+		this.outEdges = new HashMap<Call, CallGraphNode>();
+		this.inEdges = new HashMap<Call, CallGraphNode>();
+	}
 
-//  ********************************************************************************
+	public TacFunction getFunction() {
+		return this.function;
+	}
 
-    CallGraphNode(TacFunction function) {
-        this.function = function;
-        this.outEdges = new HashMap<>();
-        this.inEdges = new HashMap<>();
-    }
+	Collection<CallGraphNode> getSuccessors() {
+		return this.outEdges.values();
+	}
 
-//  ********************************************************************************
+	Collection<CallGraphNode> getPredecessors() {
+		return this.inEdges.values();
+	}
 
-    public TacFunction getFunction() {
-        return this.function;
-    }
+	Set<Call> getCallsTo() {
+		return this.inEdges.keySet();
+	}
 
-    Collection<CallGraphNode> getSuccessors() {
-        return this.outEdges.values();
-    }
+	public boolean equals(Object compX) {
 
-    Collection<CallGraphNode> getPredecessors() {
-        return this.inEdges.values();
-    }
+		if (compX == this) {
+			return true;
+		}
+		if (!(compX instanceof CallGraphNode)) {
+			return false;
+		}
+		CallGraphNode comp = (CallGraphNode) compX;
 
-    Set<Call> getCallsTo() {
-        return this.inEdges.keySet();
-    }
+		return this.function.equals(comp.function);
+	}
 
-//  ********************************************************************************
+	public int hashCode() {
+		return this.function.hashCode();
+	}
 
-    public boolean equals(Object compX) {
+	public void addCallee(Call callNode, CallGraphNode calleeNode) {
+		this.outEdges.put(callNode, calleeNode);
+	}
 
-        if (compX == this) {
-            return true;
-        }
-        if (!(compX instanceof CallGraphNode)) {
-            return false;
-        }
-        CallGraphNode comp = (CallGraphNode) compX;
+	public void addCaller(Call callNode, CallGraphNode callerNode) {
+		this.inEdges.put(callNode, callerNode);
+	}
 
-        return this.function.equals(comp.function);
-    }
-
-//  ********************************************************************************
-
-    public int hashCode() {
-        return this.function.hashCode();
-    }
-
-    public void addCallee(Call callNode, CallGraphNode calleeNode) {
-        //this.successors.add(calleeNode);
-        this.outEdges.put(callNode, calleeNode);
-    }
-
-    public void addCaller(Call callNode, CallGraphNode callerNode) {
-        //this.predecessors.add(callerNode);
-        this.inEdges.put(callNode, callerNode);
-    }
 }

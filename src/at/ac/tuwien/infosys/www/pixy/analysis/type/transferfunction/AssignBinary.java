@@ -5,34 +5,21 @@ import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.TypeLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
-/**
- * Transfer function for unary assignment nodes.
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public class AssignBinary extends AbstractTransferFunction {
-    private Variable left;
 
-// *********************************************************************************
-// CONSTRUCTORS ********************************************************************
-// *********************************************************************************
+	private Variable left;
 
-    // mustAliases, mayAliases: of setMe
-    public AssignBinary(Variable left) {
-        this.left = left;
-    }
+	public AssignBinary(Variable left) {
+		this.left = left;
+	}
 
-// *********************************************************************************
-// OTHER ***************************************************************************
-// *********************************************************************************
+	public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
 
-    public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
+		TypeLatticeElement in = (TypeLatticeElement) inX;
+		TypeLatticeElement out = new TypeLatticeElement(in);
 
-        TypeLatticeElement in = (TypeLatticeElement) inX;
-        TypeLatticeElement out = new TypeLatticeElement(in);
+		out.assignBinary(left);
 
-        // let the lattice element handle the details
-        out.assignBinary(left);
-
-        return out;
-    }
+		return out;
+	}
 }
