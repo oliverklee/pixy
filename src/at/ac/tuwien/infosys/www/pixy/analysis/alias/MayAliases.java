@@ -1,201 +1,158 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.alias;
 
+import java.util.*;
+
 import at.ac.tuwien.infosys.www.pixy.conversion.SymbolTable;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
-/**
- * A set of may-alias-pairs.
- *
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public class MayAliases {
-    // contains MayAliasPair's
-    private Set<MayAliasPair> pairs;
 
-//  ********************************************************************************
-//  CONSTRUCTORS *******************************************************************
-//  ********************************************************************************
+	private Set<MayAliasPair> pairs;
 
-    // creates empty may alias information
-    public MayAliases() {
-        this.pairs = new HashSet<>();
-    }
+	public MayAliases() {
+		this.pairs = new HashSet<MayAliasPair>();
+	}
 
-    // clones the given object
-    // (but no need to clone the underlying pairs)
-    public MayAliases(MayAliases cloneMe) {
-        this.pairs = new HashSet<>(cloneMe.getPairs());
-    }
+	public MayAliases(MayAliases cloneMe) {
+		this.pairs = new HashSet<MayAliasPair>(cloneMe.getPairs());
+	}
 
-//  ********************************************************************************
-//  GET ****************************************************************************
-//  ********************************************************************************
+	public Set<MayAliasPair> getPairs() {
+		return this.pairs;
+	}
 
-    public Set<MayAliasPair> getPairs() {
-        return this.pairs;
-    }
+	public Set<Variable> getGlobalAliases(Variable var) {
+		Set<Variable> retMe = new HashSet<Variable>();
+		for (Iterator<MayAliasPair> iter = this.pairs.iterator(); iter.hasNext();) {
+			MayAliasPair pair = (MayAliasPair) iter.next();
+			Variable globalMayAlias = pair.getGlobalMayAlias(var);
+			if (globalMayAlias != null) {
+				retMe.add(globalMayAlias);
+			}
+		}
+		return retMe;
+	}
 
-    // returns the global variables that are may-aliases of the given variable
-    // (a set of Variables)
-    public Set<Variable> getGlobalAliases(Variable var) {
-        Set<Variable> retMe = new HashSet<>();
-        for (MayAliasPair pair : this.pairs) {
-            Variable globalMayAlias = pair.getGlobalMayAlias(var);
-            if (globalMayAlias != null) {
-                retMe.add(globalMayAlias);
-            }
-        }
-        return retMe;
-    }
+	public Set<Variable> getLocalAliases(Variable var) {
+		Set<Variable> retMe = new HashSet<Variable>();
+		for (Iterator<MayAliasPair> iter = this.pairs.iterator(); iter.hasNext();) {
+			MayAliasPair pair = (MayAliasPair) iter.next();
+			Variable localMayAlias = pair.getLocalMayAlias(var);
+			if (localMayAlias != null) {
+				retMe.add(localMayAlias);
+			}
+		}
+		return retMe;
+	}
 
-    // returns the local variables that are may-aliases of the given variable
-    // (a set of Variables)
-    public Set<Variable> getLocalAliases(Variable var) {
-        Set<Variable> retMe = new HashSet<>();
-        for (MayAliasPair pair : this.pairs) {
-            Variable localMayAlias = pair.getLocalMayAlias(var);
-            if (localMayAlias != null) {
-                retMe.add(localMayAlias);
-            }
-        }
-        return retMe;
-    }
+	public Set<Variable> getAliases(Variable var) {
+		Set<Variable> retMe = new HashSet<Variable>();
+		for (Iterator<MayAliasPair> iter = this.pairs.iterator(); iter.hasNext();) {
+			MayAliasPair pair = (MayAliasPair) iter.next();
+			Variable mayAlias = pair.getMayAlias(var);
+			if (mayAlias != null) {
+				retMe.add(mayAlias);
+			}
+		}
+		return retMe;
+	}
 
-    // returns a set of variables that are may-aliases of the given variable
-    public Set<Variable> getAliases(Variable var) {
-        Set<Variable> retMe = new HashSet<>();
-        for (MayAliasPair pair : this.pairs) {
-            Variable mayAlias = pair.getMayAlias(var);
-            if (mayAlias != null) {
-                retMe.add(mayAlias);
-            }
-        }
-        return retMe;
-    }
+	public void add(MayAliases addUs) {
+		this.pairs.addAll(addUs.getPairs());
+	}
 
-//  ********************************************************************************
-//  OTHER **************************************************************************
-//  ********************************************************************************
+	public void add(MayAliasPair pair) {
+		this.pairs.add(pair);
+	}
 
-    // adds the given may-alias-pairs to the own pairs
-    // (without generating duplicate pairs)
-    public void add(MayAliases addUs) {
-        this.pairs.addAll(addUs.getPairs());
-    }
+	public void addAliasFor(Variable left, Variable right) {
+		HashSet<MayAliasPair> newPairs = new HashSet<MayAliasPair>();
+		for (Iterator<MayAliasPair> iter = this.pairs.iterator(); iter.hasNext();) {
+			MayAliasPair pair = (MayAliasPair) iter.next();
+			if (pair.contains(right)) {
+				MayAliasPair newPair = new MayAliasPair(pair);
+				newPair.replaceBy(right, left);
+				newPairs.add(newPair);
+			}
+		}
+		this.pairs.addAll(newPairs);
+	}
 
-    public void add(MayAliasPair pair) {
-        this.pairs.add(pair);
-    }
+	public void removePairsWith(Variable var) {
 
-    // copies all pairs in which "right" appears and replaces "right"
-    // through "left" in these copies
-    public void addAliasFor(Variable left, Variable right) {
-        HashSet<MayAliasPair> newPairs = new HashSet<>();
-        for (MayAliasPair pair : this.pairs) {
-            if (pair.contains(right)) {
-                MayAliasPair newPair = new MayAliasPair(pair);
-                newPair.replaceBy(right, left);
-                newPairs.add(newPair);
-            }
-        }
-        this.pairs.addAll(newPairs);
-    }
+		for (Iterator<MayAliasPair> iter = this.pairs.iterator(); iter.hasNext();) {
+			MayAliasPair pair = (MayAliasPair) iter.next();
+			if (pair.contains(var)) {
+				iter.remove();
+			}
+		}
+	}
 
-    // removes all pairs that contain the given variable
-    public void removePairsWith(Variable var) {
-        // EFF: it would be faster to locate the pairs to be
-        // removed by maintaining a map from variables to sets
-        // of pairs
-        for (Iterator<MayAliasPair> iter = this.pairs.iterator(); iter.hasNext(); ) {
-            MayAliasPair pair = iter.next();
-            if (pair.contains(var)) {
-                iter.remove();
-            }
-        }
-    }
+	public void removeLocals() {
+		for (Iterator<MayAliasPair> iter = this.pairs.iterator(); iter.hasNext();) {
+			MayAliasPair pair = (MayAliasPair) iter.next();
+			if (pair.containsLocals()) {
+				iter.remove();
+			}
+		}
+	}
 
-    public void removeLocals() {
-        for (Iterator<MayAliasPair> iter = this.pairs.iterator(); iter.hasNext(); ) {
-            MayAliasPair pair = iter.next();
-            // if the pair contains locals, it can be removed as a whole
-            if (pair.containsLocals()) {
-                iter.remove();
-            }
-        }
-    }
+	public void removeGlobals() {
+		for (Iterator<MayAliasPair> iter = this.pairs.iterator(); iter.hasNext();) {
+			MayAliasPair pair = (MayAliasPair) iter.next();
+			if (pair.containsGlobals()) {
+				iter.remove();
+			}
+		}
+	}
 
-    public void removeGlobals() {
-        for (Iterator<MayAliasPair> iter = this.pairs.iterator(); iter.hasNext(); ) {
-            MayAliasPair pair = iter.next();
-            // if the pair contains locals, it can be removed as a whole
-            if (pair.containsGlobals()) {
-                iter.remove();
-            }
-        }
-    }
+	public void removeVariables(SymbolTable symTab) {
+		for (Iterator<MayAliasPair> iter = this.pairs.iterator(); iter.hasNext();) {
+			MayAliasPair pair = (MayAliasPair) iter.next();
+			if (pair.containsVariables(symTab)) {
+				iter.remove();
+			}
+		}
+	}
 
-    public void removeVariables(SymbolTable symTab) {
-        for (Iterator<MayAliasPair> iter = this.pairs.iterator(); iter.hasNext(); ) {
-            MayAliasPair pair = iter.next();
-            // if the pair contains one or two variables from the given
-            // symbol table, it can be removed as a whole
-            if (pair.containsVariables(symTab)) {
-                iter.remove();
-            }
-        }
-    }
+	public void createAdjustedPairCopies(Variable findMe, Variable replacer) {
 
-    // for all may-alias-pairs that contain "findMe":
-    // a copy of this pair is added, and "findMe" is replaced by "replacer" in
-    // the copy
-    public void createAdjustedPairCopies(Variable findMe, Variable replacer) {
+		Set<MayAliasPair> newPairs = new HashSet<MayAliasPair>(this.pairs);
 
-        // EFF: there must be faster ways to do this
+		for (Iterator<MayAliasPair> iter = this.pairs.iterator(); iter.hasNext();) {
+			MayAliasPair pair = (MayAliasPair) iter.next();
 
-        // start by cloning the pair set; we will add adjusted copies to the
-        // new pair set and in the end, put it in place of the old pair set
-        Set<MayAliasPair> newPairs = new HashSet<>(this.pairs);
+			if (pair.contains(findMe)) {
 
-        // for each pair...
-        for (MayAliasPair pair : this.pairs) {
-            // if it contains the searched variable...
-            if (pair.contains(findMe)) {
+				Set<Variable> pairSet = new HashSet<Variable>(pair.getPair());
+				pairSet.remove(findMe);
+				if (pairSet.size() != 1) {
+					throw new RuntimeException("SNH");
+				}
+				MayAliasPair newPair = new MayAliasPair(replacer, (Variable) pairSet.iterator().next());
+				newPairs.add(newPair);
+			}
+		}
+		this.pairs = newPairs;
+	}
 
-                // create a copy of this set to work on
-                Set<Variable> pairSet = new HashSet<>(pair.getPair());
+	public void replace(Map<?, ?> replacements) {
+		for (Iterator<MayAliasPair> iter = this.pairs.iterator(); iter.hasNext();) {
+			MayAliasPair pair = (MayAliasPair) iter.next();
+			pair.replace(replacements);
+		}
+	}
 
-                // we are only interested in the other member of the pair
-                pairSet.remove(findMe);
-                if (pairSet.size() != 1) {
-                    throw new RuntimeException("SNH");
-                }
+	public boolean structureEquals(MayAliases comp) {
+		if (this.pairs.equals(comp.getPairs())) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
-                // create the adjusted copy and add it to the new set of pairs
-                MayAliasPair newPair =
-                    new MayAliasPair(replacer, pairSet.iterator().next());
-                newPairs.add(newPair);
-            }
-        }
+	public int structureHashCode() {
+		return this.pairs.hashCode();
+	}
 
-        this.pairs = newPairs;
-    }
-
-    public void replace(Map<Variable, Variable> replacements) {
-        for (MayAliasPair pair : this.pairs) {
-            pair.replace(replacements);
-        }
-    }
-
-    public boolean structureEquals(MayAliases comp) {
-        return this.pairs.equals(comp.getPairs());
-    }
-
-    public int structureHashCode() {
-        return this.pairs.hashCode();
-    }
 }

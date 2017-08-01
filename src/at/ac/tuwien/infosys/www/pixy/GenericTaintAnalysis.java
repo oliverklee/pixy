@@ -1,102 +1,102 @@
 package at.ac.tuwien.infosys.www.pixy;
 
+import java.util.*;
+
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.globalsmodification.GlobalsModificationAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.AbstractAnalysisType;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.InterproceduralWorklist;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacConverter;
 
-import java.lang.reflect.Constructor;
-import java.util.LinkedList;
-import java.util.List;
-
-/**
- * This is a helper class to prevent code redundancy and confusion.
- *
- * It is used in the Checker class.
- *
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public class GenericTaintAnalysis {
-    private List<AbstractVulnerabilityAnalysis> abstractVulnerabilityAnalyses;
 
-    public DependencyAnalysis dependencyAnalysis;
+	private List<AbstractVulnerabilityAnalysis> depClients;
 
-    private GenericTaintAnalysis() {
-        this.abstractVulnerabilityAnalyses = new LinkedList<>();
-    }
+	public DependencyAnalysis depAnalysis;
 
-    private void addDepClient(AbstractVulnerabilityAnalysis dependencyClient) {
-        this.abstractVulnerabilityAnalyses.add(dependencyClient);
-    }
+	private GenericTaintAnalysis() {
+		this.depClients = new LinkedList<AbstractVulnerabilityAnalysis>();
+	}
 
-    /**
-     * Returns null if the given taintString is illegal.
-     *
-     * @param tac
-     * @param enclosingAnalysis
-     * @param checker
-     * @param workList
-     * @param globalsModificationAnalysis
-     *
-     * @return
-     */
-    static GenericTaintAnalysis createAnalysis(
-        TacConverter tac, AbstractAnalysisType enclosingAnalysis, Checker checker, InterproceduralWorklist workList,
-        GlobalsModificationAnalysis globalsModificationAnalysis
-    ) {
-        GenericTaintAnalysis genericTaintAnalysis = new GenericTaintAnalysis();
+	private void addDepClient(AbstractVulnerabilityAnalysis depClient) {
+		this.depClients.add(depClient);
+	}
 
-        genericTaintAnalysis.dependencyAnalysis = new DependencyAnalysis(
-            tac, checker.aliasAnalysis, checker.literalAnalysis, enclosingAnalysis, workList, globalsModificationAnalysis
-        );
+	static GenericTaintAnalysis createAnalysis(TacConverter tac, AbstractAnalysisType enclosingAnalysis,
+			Checker checker, InterproceduralWorklist workList, GlobalsModificationAnalysis modAnalysis) {
 
-        try {
-            // each of the VulnerabilityAnalysis will get the dependencyAnalysis as parameter
-            Class<?>[] argumentsClass = new Class<?>[] {
-                Class.forName("at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyAnalysis")
-            };
-            Object[] arguments = new Object[]{genericTaintAnalysis.dependencyAnalysis};
+		GenericTaintAnalysis gta = new GenericTaintAnalysis();
 
-            // for each requested VulnerabilityAnalysis ...
-            for (VulnerabilityAnalysisInformation analysisInformation : MyOptions.getVulnerabilityAnalyses()) {
-                if (!analysisInformation.performMe()) {
-                    continue;
-                }
-                Class<?> clientDefinition = Class.forName(analysisInformation.getClassName());
-                Constructor<?> constructor = clientDefinition.getConstructor(argumentsClass);
-                AbstractVulnerabilityAnalysis dependencyClient = (AbstractVulnerabilityAnalysis) constructor.newInstance(arguments);
-                genericTaintAnalysis.addDepClient(dependencyClient);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+		gta.depAnalysis = new DependencyAnalysis(tac, checker.aliasAnalysis, checker.literalAnalysis, enclosingAnalysis,
+				workList, modAnalysis);
 
-        return genericTaintAnalysis;
-    }
+		try {
 
-    void analyze() {
-        this.dependencyAnalysis.analyze();
+			Class.forName("at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyAnalysis");
+			for (VulnerabilityAnalysisInformation dci : MyOptions.getDepClients()) {
+				if (!dci.performMe()) {
+					continue;
+				}
+				if (dci.getClassName() == "XssAnalysis" || dci.getClassName().equalsIgnoreCase("XssAnalysis")) {
+					DependencyAnalysis dep = gta.depAnalysis;
+					AbstractVulnerabilityAnalysis depClient = new XssAnalysis(dep);
+					gta.addDepClient(depClient);
+				}
 
-        // check for unreachable code
-        this.dependencyAnalysis.checkReachability();
-    }
+				if (dci.getClassName() == "SqlAnalysis" || dci.getClassName().equalsIgnoreCase("SqlAnalysis")) {
+					DependencyAnalysis dep = gta.depAnalysis;
+					AbstractVulnerabilityAnalysis depClient = new SqlAnalysis(dep);
+					gta.addDepClient(depClient);
+				}
 
-    /**
-     * Detects vulnerabilities and returns a list with the line numbers of the detected vulnerabilities.
-     *
-     * @return the line numbers of the detected vulnerabilities
-     */
-    List<Integer> detectVulnerabilities() {
-        List<Integer> lineNumbersOfVulnerabilities = new LinkedList<>();
-        for (AbstractVulnerabilityAnalysis dependencyClient : this.abstractVulnerabilityAnalyses) {
-            lineNumbersOfVulnerabilities.addAll(dependencyClient.detectVulnerabilities());
-        }
+				if (dci.getClassName() == "XPathAnalysis" || dci.getClassName().equalsIgnoreCase("XPathAnalysis")) {
+					DependencyAnalysis dep = gta.depAnalysis;
+					AbstractVulnerabilityAnalysis depClient = new XPathAnalysis(dep);
+					gta.addDepClient(depClient);
+				}
 
-        return lineNumbersOfVulnerabilities;
-    }
+				if (dci.getClassName() == "CommandExecutionAnalysis"
+						|| dci.getClassName().equalsIgnoreCase("CommandExecutionAnalysis")) {
+					DependencyAnalysis dep = gta.depAnalysis;
+					AbstractVulnerabilityAnalysis depClient = new CommandExecutionAnalysis(dep);
+					gta.addDepClient(depClient);
+				}
+				if (dci.getClassName() == "CodeEvaluatingAnalysis"
+						|| dci.getClassName().equalsIgnoreCase("CodeEvaluatingAnalysis")) {
+					DependencyAnalysis dep = gta.depAnalysis;
+					AbstractVulnerabilityAnalysis depClient = new CodeEvaluatingAnalysis(dep);
+					gta.addDepClient(depClient);
+				}
 
-    List<AbstractVulnerabilityAnalysis> getAbstractVulnerabilityAnalyses() {
-        return this.abstractVulnerabilityAnalyses;
-    }
+				if (dci.getClassName() == "FileAnalysis" || dci.getClassName().equalsIgnoreCase("FileAnalysis")) {
+					DependencyAnalysis dep = gta.depAnalysis;
+					AbstractVulnerabilityAnalysis depClient = new FileAnalysis(dep);
+					gta.addDepClient(depClient);
+				}
+			}
+
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+
+		return gta;
+	}
+
+	void analyze() {
+		this.depAnalysis.analyze();
+		this.depAnalysis.checkReachability();
+	}
+
+	List<Integer> detectVulns() {
+		List<Integer> retMe = new LinkedList<Integer>();
+		for (AbstractVulnerabilityAnalysis depClient : this.depClients) {
+			retMe.addAll(depClient.detectVulns());
+		}
+		return retMe;
+	}
+
+	List<AbstractVulnerabilityAnalysis> getDepClients() {
+		return this.depClients;
+	}
+
 }

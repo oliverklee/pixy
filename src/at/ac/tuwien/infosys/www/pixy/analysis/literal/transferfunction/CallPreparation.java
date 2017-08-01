@@ -1,106 +1,87 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.literal.transferfunction;
 
+import java.util.*;
+
 import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.literal.LiteralLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.conversion.*;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
+import at.ac.tuwien.infosys.www.pixy.conversion.ControlFlowGraph;
+import at.ac.tuwien.infosys.www.pixy.conversion.SymbolTable;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParameter;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacFormalParameter;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-
-/**
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public class CallPreparation extends AbstractTransferFunction {
-    private List<TacActualParameter> actualParams;
-    private List<TacFormalParameter> formalParams;
-    private TacFunction caller;
-    private TacFunction callee;
-    private LiteralAnalysis literalAnalysis;
-    private AbstractCfgNode cfgNode;
 
-//  *********************************************************************************
-//  CONSTRUCTORS ********************************************************************
-//  *********************************************************************************
+	private List<TacActualParameter> actualParams;
+	private List<TacFormalParameter> formalParams;
+	private TacFunction caller;
+	@SuppressWarnings("unused")
+	private TacFunction callee;
+	private LiteralAnalysis literalAnalysis;
+	@SuppressWarnings("unused")
+	private AbstractCfgNode cfgNode;
 
-    public CallPreparation(
-        List<TacActualParameter> actualParams, List<TacFormalParameter> formalParams, TacFunction caller, TacFunction callee,
-        LiteralAnalysis literalAnalysis, AbstractCfgNode cfgNode
-    ) {
-        this.actualParams = actualParams;
-        this.formalParams = formalParams;
-        this.caller = caller;
-        this.callee = callee;
-        this.literalAnalysis = literalAnalysis;
-        this.cfgNode = cfgNode;
-    }
+	public CallPreparation(List<TacActualParameter> actualParams, List<TacFormalParameter> formalParams,
+			TacFunction caller, TacFunction callee, LiteralAnalysis literalAnalysis, AbstractCfgNode cfgNode) {
 
-//  *********************************************************************************
-//  OTHER ***************************************************************************
-//  *********************************************************************************
+		this.actualParams = actualParams;
+		this.formalParams = formalParams;
+		this.caller = caller;
+		this.callee = callee;
+		this.literalAnalysis = literalAnalysis;
+		this.cfgNode = cfgNode;
+	}
 
-    public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
+	public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
 
-        LiteralLatticeElement in = (LiteralLatticeElement) inX;
-        LiteralLatticeElement out = new LiteralLatticeElement(in);
+		LiteralLatticeElement in = (LiteralLatticeElement) inX;
+		LiteralLatticeElement out = new LiteralLatticeElement(in);
 
-        // set formal params...
+		ListIterator<TacFormalParameter> formalIter = formalParams.listIterator();
+		Iterator<TacActualParameter> actualIter = actualParams.iterator();
 
-        // use a ListIterator for formals because we might need to step back (see below)
-        ListIterator<TacFormalParameter> formalIter = formalParams.listIterator();
-        Iterator<TacActualParameter> actualIter = actualParams.iterator();
+		while (formalIter.hasNext()) {
 
-        // for each formal parameter...
-        while (formalIter.hasNext()) {
-            TacFormalParameter formalParam = formalIter.next();
+			TacFormalParameter formalParam = (TacFormalParameter) formalIter.next();
 
-            if (actualIter.hasNext()) {
-                // there is a corresponding actual parameter
-                TacActualParameter actualParam = actualIter.next();
-                AbstractTacPlace actualPlace = actualParam.getPlace();
+			if (actualIter.hasNext()) {
+				TacActualParameter actualParam = (TacActualParameter) actualIter.next();
+				AbstractTacPlace actualPlace = actualParam.getPlace();
+				out.setFormal(formalParam, actualPlace);
+			} else {
+				formalIter.previous();
 
-                // set the literal of the formal to the literal of the actual
-                out.setFormal(formalParam, actualPlace);
-            } else {
-                // there is no corresponding actual parameter, use default values
-                // for the remaining formal parameters
+				while (formalIter.hasNext()) {
 
-                // make one step back (so we can use a while loop)
-                formalIter.previous();
+					formalParam = (TacFormalParameter) formalIter.next();
 
-                while (formalIter.hasNext()) {
-                    formalParam = formalIter.next();
+					if (formalParam.hasDefault()) {
 
-                    if (formalParam.hasDefault()) {
-                        ControlFlowGraph defaultControlFlowGraph = formalParam.getDefaultControlFlowGraph();
+						ControlFlowGraph defaultCfg = formalParam.getDefaultCfg();
 
-                        // default CFG's have no branches;
-                        // start at the CFG's head and apply all transfer functions
-                        AbstractCfgNode defaultNode = defaultControlFlowGraph.getHead();
-                        while (defaultNode != null) {
-                            AbstractTransferFunction tf = this.literalAnalysis.getTransferFunction(defaultNode);
-                            out = (LiteralLatticeElement) tf.transfer(out);
-                            defaultNode = defaultNode.getSuccessor(0);
-                        }
-                    } else {
-                        // we have already generated a warning for this during conversion;
-                        // simply ignore it (=ok, is exactly what PHP does)
-                    }
-                }
-            }
-        }
+						AbstractCfgNode defaultNode = defaultCfg.getHead();
+						while (defaultNode != null) {
+							AbstractTransferFunction tf = this.literalAnalysis.getTransferFunction(defaultNode);
+							out = (LiteralLatticeElement) tf.transfer(out);
+							defaultNode = defaultNode.getSuccessor(0);
+						}
 
-        // reset all local variables that belong to the symbol table of the
-        // caller; shortcut: if the caller is main, we don't have to do
-        // this (since there are no real local variables in the main function)
-        SymbolTable callerSymTab = this.caller.getSymbolTable();
-        if (!callerSymTab.isMain()) {
-            out.resetVariables(callerSymTab);
-        }
+					} else {
 
-        return out;
-    }
+					}
+				}
+			}
+		}
+		SymbolTable callerSymTab = this.caller.getSymbolTable();
+		if (!callerSymTab.isMain()) {
+			out.resetVariables(callerSymTab);
+		}
+
+		return out;
+	}
+
 }

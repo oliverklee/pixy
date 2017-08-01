@@ -1,95 +1,107 @@
 package at.ac.tuwien.infosys.www.pixy.conversion;
 
+import java.util.*;
+
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
-import java.util.List;
-
-/**
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public class TacAttributes {
-    private int arrayIndex = -1;
 
-    private AbstractTacPlace place;
-    private ControlFlowGraph controlFlowGraph;
+	private int arrayIndex = -1;
 
-    private AbstractCfgNode defaultNode;
+	private AbstractTacPlace place;
+	private ControlFlowGraph cfg;
 
-    private List<TacActualParameter> actualParamList;
-    private List<TacFormalParameter> formalParamList;
+	private AbstractCfgNode defaultNode;
 
-    private EncapsList encapsList;
+	private List<TacActualParameter> actualParamList;
+	private List<TacFormalParameter> formalParamList;
 
-    private boolean isKnownCall;
+	private EncapsList encapsList;
 
-    TacAttributes() {
-    }
+	private boolean isKnownCall;
 
-// GET *****************************************************************************
+	TacAttributes() {
+	}
 
-    AbstractTacPlace getPlace() {
-        return this.place;
-    }
+	AbstractTacPlace getPlace() {
+		return this.place;
+	}
 
-    ControlFlowGraph getControlFlowGraph() {
-        return this.controlFlowGraph;
-    }
+	ControlFlowGraph getCfg() {
+		return this.cfg;
+	}
 
-    int getArrayIndex() {
-        return this.arrayIndex;
-    }
+	int getArrayIndex() {
+		return this.arrayIndex;
+	}
 
-    AbstractCfgNode getDefaultNode() {
-        return this.defaultNode;
-    }
+	AbstractCfgNode getDefaultNode() {
+		return this.defaultNode;
+	}
 
-    List<TacActualParameter> getActualParamList() {
-        return this.actualParamList;
-    }
+	List<TacActualParameter> getActualParamList() {
+		return this.actualParamList;
+	}
 
-    List<TacFormalParameter> getFormalParamList() {
-        return this.formalParamList;
-    }
+	List<TacFormalParameter> getFormalParamList() {
+		return this.formalParamList;
+	}
 
-    public EncapsList getEncapsList() {
-        return encapsList;
-    }
+	public EncapsList getEncapsList() {
 
-    public boolean isKnownCall() {
-        return this.isKnownCall;
-    }
+		if (encapsList == null) {
+			encapsList = new EncapsList();
+		}
+		return encapsList;
+	}
 
-// SET *****************************************************************************
+	public String getEncapsListString() {
+		return this.encapsList.ToString();
 
-    void setPlace(AbstractTacPlace place) {
-        this.place = place;
-    }
+	}
 
-    void setArrayIndex(int arrayIndex) {
-        this.arrayIndex = arrayIndex;
-    }
+	public boolean isKnownCall() {
+		return this.isKnownCall;
+	}
 
-    void setControlFlowGraph(ControlFlowGraph controlFlowGraph) {
-        this.controlFlowGraph = controlFlowGraph;
-    }
+	void setPlace(AbstractTacPlace place) {
+		this.place = place;
+	}
 
-    void setDefaultNode(AbstractCfgNode defaultNode) {
-        this.defaultNode = defaultNode;
-    }
+	void setArrayIndex(int arrayIndex) {
+		this.arrayIndex = arrayIndex;
+	}
 
-    void setActualParamList(List<TacActualParameter> actualParamList) {
-        this.actualParamList = actualParamList;
-    }
+	void setCfg(ControlFlowGraph cfg) {
+		this.cfg = cfg;
+	}
 
-    void setFormalParamList(List<TacFormalParameter> formalParamList) {
-        this.formalParamList = formalParamList;
-    }
+	void setDefaultNode(AbstractCfgNode defaultNode) {
+		this.defaultNode = defaultNode;
+	}
 
-    public void setEncapsList(EncapsList encapsList) {
-        this.encapsList = encapsList;
-    }
+	void setActualParamList(List<TacActualParameter> actualParamList) {
+		this.actualParamList = actualParamList;
+	}
 
-    public void setIsKnownCall(boolean isKnownCall) {
-        this.isKnownCall = isKnownCall;
-    }
+	void setFormalParamList(List<TacFormalParameter> formalParamList) {
+		this.formalParamList = formalParamList;
+	}
+
+	void addActualParam(TacActualParameter param) {
+		this.actualParamList.add(param);
+	}
+
+	void addFormalParam(TacFormalParameter param) {
+		this.formalParamList.add(param);
+	}
+
+	public void setEncapsList(EncapsList encapsList) {
+		this.encapsList = encapsList;
+	}
+
+	public void setIsKnownCall(boolean isKnownCall) {
+		this.isKnownCall = isKnownCall;
+	}
+
 }

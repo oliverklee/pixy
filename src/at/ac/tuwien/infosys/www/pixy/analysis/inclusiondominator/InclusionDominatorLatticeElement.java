@@ -2,92 +2,70 @@ package at.ac.tuwien.infosys.www.pixy.analysis.inclusiondominator;
 
 import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
+import java.util.*;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
-/**
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public class InclusionDominatorLatticeElement extends AbstractLatticeElement {
-    // an ordered list of CfgNodes (more specifically: of IncludeStart and
-    // IncludeEnd) that dominate the current node
-    private List<AbstractCfgNode> dominators;
 
-//  ********************************************************************************
-//  CONSTRUCTORS *******************************************************************
-//  ********************************************************************************
+	private List<AbstractCfgNode> dominators;
 
-    // creates an empty lattice element
-    public InclusionDominatorLatticeElement() {
-        this.dominators = new LinkedList<>();
-    }
+	public InclusionDominatorLatticeElement() {
+		this.dominators = new LinkedList<AbstractCfgNode>();
+	}
 
-    // clones the given element
-    public InclusionDominatorLatticeElement(InclusionDominatorLatticeElement cloneMe) {
-        this.dominators = new LinkedList<>(cloneMe.getDominators());
-    }
+	public InclusionDominatorLatticeElement(InclusionDominatorLatticeElement cloneMe) {
+		this.dominators = new LinkedList<AbstractCfgNode>(cloneMe.getDominators());
+	}
 
-    public AbstractLatticeElement cloneMe() {
-        // uses the cloning constructor
-        return new InclusionDominatorLatticeElement(this);
-    }
+	public AbstractLatticeElement cloneMe() {
+		return new InclusionDominatorLatticeElement(this);
+	}
 
-//  ********************************************************************************
-//  GET ****************************************************************************
-//  ********************************************************************************
+	public List<AbstractCfgNode> getDominators() {
+		return this.dominators;
+	}
 
-    public List<AbstractCfgNode> getDominators() {
-        return this.dominators;
-    }
+	public void lub(AbstractLatticeElement element) {
+		if (!(element instanceof InclusionDominatorLatticeElement)) {
+			throw new RuntimeException("SNH");
+		}
+		this.lub((InclusionDominatorLatticeElement) element);
+	}
 
-//  ********************************************************************************
-//  OTHER **************************************************************************
-//  ********************************************************************************
+	public void lub(InclusionDominatorLatticeElement element) {
+		Iterator<AbstractCfgNode> foreignIter = element.getDominators().iterator();
+		Iterator<AbstractCfgNode> myIter = this.dominators.iterator();
+		List<AbstractCfgNode> newList = new LinkedList<AbstractCfgNode>();
+		boolean goOn = true;
+		while (foreignIter.hasNext() && myIter.hasNext() && goOn) {
+			AbstractCfgNode myNode = (AbstractCfgNode) myIter.next();
+			AbstractCfgNode foreignNode = (AbstractCfgNode) foreignIter.next();
+			if (myNode == foreignNode) {
+				newList.add(myNode);
+			} else {
+				goOn = false;
+			}
+		}
+		this.dominators = newList;
+	}
 
-    // lubs the given element over *this* element
-    public void lub(AbstractLatticeElement element) {
-        if (!(element instanceof InclusionDominatorLatticeElement)) {
-            throw new RuntimeException("SNH");
-        }
-        this.lub((InclusionDominatorLatticeElement) element);
-    }
+	public void add(AbstractCfgNode cfgNode) {
+		this.dominators.add(cfgNode);
+	}
 
-    public void lub(InclusionDominatorLatticeElement element) {
-        // longest matching prefix
-        Iterator<AbstractCfgNode> foreignIter = element.getDominators().iterator();
-        Iterator<AbstractCfgNode> myIter = this.dominators.iterator();
-        List<AbstractCfgNode> newList = new LinkedList<>();
-        boolean goOn = true;
-        while (foreignIter.hasNext() && myIter.hasNext() && goOn) {
-            AbstractCfgNode myNode = myIter.next();
-            AbstractCfgNode foreignNode = foreignIter.next();
-            if (myNode == foreignNode) {
-                newList.add(myNode);
-            } else {
-                goOn = false;
-            }
-        }
-        this.dominators = newList;
-    }
+	public boolean structureEquals(Object compX) {
+		InclusionDominatorLatticeElement comp = (InclusionDominatorLatticeElement) compX;
+		if (this.dominators.equals(comp.getDominators())) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
-    // apends the given CfgNode to the list of dominators
-    public void add(AbstractCfgNode cfgNode) {
-        this.dominators.add(cfgNode);
-    }
+	public int structureHashCode() {
+		return this.dominators.hashCode();
+	}
 
-    // thorough (and slower) structural comparison required by the repository
-    public boolean structureEquals(Object compX) {
-        InclusionDominatorLatticeElement comp = (InclusionDominatorLatticeElement) compX;
-        return this.dominators.equals(comp.getDominators());
-    }
-
-    public int structureHashCode() {
-        return this.dominators.hashCode();
-    }
-
-    public void dump() {
-        System.out.println("InclusionDominatorLatticeElement.dump(): not yet");
-    }
+	public void dump() {
+		System.out.println("InclusionDominatorLatticeElement.dump(): not yet");
+	}
 }

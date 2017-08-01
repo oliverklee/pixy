@@ -1,113 +1,91 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction;
 
+import java.util.*;
+
 import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.conversion.*;
+import at.ac.tuwien.infosys.www.pixy.conversion.ControlFlowGraph;
+import at.ac.tuwien.infosys.www.pixy.conversion.SymbolTable;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacFormalParameter;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-
-/**
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public class CallPreparation extends AbstractTransferFunction {
-    private List<TacActualParameter> actualParams;
-    private List<TacFormalParameter> formalParams;
-    private TacFunction caller;
-    private TacFunction callee;
-    private DependencyAnalysis dependencyAnalysis;
-    private AbstractCfgNode cfgNode;
 
-//  *********************************************************************************
-//  CONSTRUCTORS ********************************************************************
-//  *********************************************************************************
+	private List<?> actualParams;
+	private List<?> formalParams;
+	private TacFunction caller;
+	private TacFunction callee;
+	private DependencyAnalysis depAnalysis;
+	private AbstractCfgNode cfgNode;
 
-    public CallPreparation(
-        List<TacActualParameter> actualParams, List<TacFormalParameter> formalParams, TacFunction caller, TacFunction callee,
-        DependencyAnalysis dependencyAnalysis, AbstractCfgNode cfgNode
-    ) {
-        this.actualParams = actualParams;
-        this.formalParams = formalParams;
-        this.caller = caller;
-        this.callee = callee;
-        this.dependencyAnalysis = dependencyAnalysis;
-        this.cfgNode = cfgNode;
-    }
+	public CallPreparation(List<?> actualParams, List<?> formalParams, TacFunction caller, TacFunction callee,
+			DependencyAnalysis depAnalysis, AbstractCfgNode cfgNode) {
 
-//  *********************************************************************************
-//  OTHER ***************************************************************************
-//  *********************************************************************************
+		this.actualParams = actualParams;
+		this.formalParams = formalParams;
+		this.caller = caller;
+		this.callee = callee;
+		this.depAnalysis = depAnalysis;
+		this.cfgNode = cfgNode;
+	}
 
-    public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
-        DependencyLatticeElement in = (DependencyLatticeElement) inX;
-        DependencyLatticeElement out = new DependencyLatticeElement(in);
+	public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
 
-        // set formal params...
+		DependencyLatticeElement in = (DependencyLatticeElement) inX;
+		DependencyLatticeElement out = new DependencyLatticeElement(in);
 
-        // use a ListIterator for formals because we might need to step back (see below)
-        ListIterator<TacFormalParameter> formalIter = formalParams.listIterator();
-        Iterator<TacActualParameter> actualIter = actualParams.iterator();
+		ListIterator<?> formalIter = formalParams.listIterator();
+		Iterator<?> actualIter = actualParams.iterator();
 
-        // for each formal parameter...
-        while (formalIter.hasNext()) {
-            TacFormalParameter formalParam = formalIter.next();
+		while (formalIter.hasNext()) {
 
-            if (actualIter.hasNext()) {
-                // there is a corresponding actual parameter; advance iterator
-                actualIter.next();
+			TacFormalParameter formalParam = (TacFormalParameter) formalIter.next();
 
-                // set the formal
-                out.setFormal(formalParam, cfgNode);
-            } else {
-                // there is no corresponding actual parameter, use default values
-                // for the remaining formal parameters
+			if (actualIter.hasNext()) {
 
-                // make one step back (so we can use a while loop)
-                formalIter.previous();
+				actualIter.next();
 
-                while (formalIter.hasNext()) {
-                    formalParam = formalIter.next();
+				out.setFormal(formalParam, cfgNode);
 
-                    if (formalParam.hasDefault()) {
-                        ControlFlowGraph defaultControlFlowGraph = formalParam.getDefaultControlFlowGraph();
+			} else {
 
-                        // default CFG's have no branches;
-                        // start at the CFG's head and apply all transfer functions
-                        AbstractCfgNode defaultNode = defaultControlFlowGraph.getHead();
-                        while (defaultNode != null) {
-                            AbstractTransferFunction tf = this.dependencyAnalysis.getTransferFunction(defaultNode);
-                            out = (DependencyLatticeElement) tf.transfer(out);
-                            defaultNode = defaultNode.getSuccessor(0);
-                        }
-                    } else {
-                        // missing actual parameter;
-                        // we have already generated a warning for this during conversion;
-                        // simply ignore it (=ok, is exactly what PHP does)
-                    }
-                }
-            }
-        }
+				formalIter.previous();
 
-        // reset all local variables that belong to the symbol table of the
-        // caller; shortcut: if the caller is main, we don't have to do
-        // this (since there are no real local variables in the main function)
-        SymbolTable callerSymTab = this.caller.getSymbolTable();
-        if (!callerSymTab.isMain()) {
-            // only do this for non-recursive calls;
-            // EFF: it might be better to reset everything except the formal params;
-            // TODO: also think about correctness
-            if (!(callee == caller)) {
-                out.resetVariables(callerSymTab);
-            }
-        } else {
-            // for the main function, we can at least reset the temporary variables
-            out.resetTemporaries(callerSymTab);
-        }
+				while (formalIter.hasNext()) {
 
-        return out;
-    }
+					formalParam = (TacFormalParameter) formalIter.next();
+
+					if (formalParam.hasDefault()) {
+
+						ControlFlowGraph defaultCfg = formalParam.getDefaultCfg();
+
+						AbstractCfgNode defaultNode = defaultCfg.getHead();
+						while (defaultNode != null) {
+							AbstractTransferFunction tf = this.depAnalysis.getTransferFunction(defaultNode);
+							out = (DependencyLatticeElement) tf.transfer(out);
+							defaultNode = defaultNode.getSuccessor(0);
+						}
+
+					} else {
+
+					}
+				}
+			}
+		}
+
+		SymbolTable callerSymTab = this.caller.getSymbolTable();
+		if (!callerSymTab.isMain()) {
+
+			if (!(callee == caller)) {
+				out.resetVariables(callerSymTab);
+			}
+		} else {
+			out.resetTemporaries(callerSymTab);
+		}
+		return out;
+	}
+
 }

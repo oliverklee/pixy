@@ -1,5 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.dependency.transferfunction;
 
+import java.util.*;
+
 import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
@@ -12,241 +14,169 @@ import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreparation;
 
-import java.util.*;
-
-/**
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public class CallReturn extends AbstractTransferFunction {
-    private AbstractInterproceduralAnalysisNode analysisNodeAtCallPrep;
-    private TacFunction caller;
-    private TacFunction callee;
-    private CallPreparation prepNode;
-    private at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallReturn retNode;
-    private AliasAnalysis aliasAnalysis;
 
-    // contains the set of global-likes that have been modified by the callee
-    private Set<AbstractTacPlace> calleeMod;
+	private AbstractInterproceduralAnalysisNode analysisNodeAtCallPrep;
+	private TacFunction caller;
+	private TacFunction callee;
+	private CallPreparation prepNode;
+	private at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallReturn retNode;
+	private AliasAnalysis aliasAnalysis;
 
-    // call-by-reference parameter pairs
-    private List<List<Variable>> cbrParams;
+	private Set<AbstractTacPlace> calleeMod;
 
-    // local variables of the calling function
-    private Collection<Variable> localCallerVars;
+	private List<?> cbrParams;
 
-// *********************************************************************************
-// CONSTRUCTORS ********************************************************************
-// *********************************************************************************
+	private Collection<?> localCallerVars;
 
-    public CallReturn(
-        AbstractInterproceduralAnalysisNode analysisNodeAtCallPrep,
-        TacFunction caller,
-        TacFunction callee,
-        CallPreparation prepNode,
-        at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallReturn retNode,
-        AliasAnalysis aliasAnalysis,
-        Set<AbstractTacPlace> calleeMod) {
+	public CallReturn(AbstractInterproceduralAnalysisNode analysisNodeAtCallPrep, TacFunction caller,
+			TacFunction callee, CallPreparation prepNode,
+			at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallReturn retNode, AliasAnalysis aliasAnalysis,
+			Set<AbstractTacPlace> calleeMod) {
 
-        this.analysisNodeAtCallPrep = analysisNodeAtCallPrep;
-        this.caller = caller;
-        this.callee = callee;
+		this.analysisNodeAtCallPrep = analysisNodeAtCallPrep;
+		this.caller = caller;
+		this.callee = callee;
 
-        // call-by-reference parameter pairs
-        this.cbrParams = prepNode.getCbrParams();
+		this.cbrParams = prepNode.getCbrParams();
 
-        // local variables of the calling function
-        this.localCallerVars = caller.getLocals();
+		this.localCallerVars = caller.getLocals();
 
-        this.aliasAnalysis = aliasAnalysis;
-        this.calleeMod = calleeMod;
+		this.aliasAnalysis = aliasAnalysis;
+		this.calleeMod = calleeMod;
 
-        this.prepNode = prepNode;
-        this.retNode = retNode;
-    }
+		this.prepNode = prepNode;
+		this.retNode = retNode;
 
-// *********************************************************************************
-// OTHER ***************************************************************************
-// *********************************************************************************
+	}
 
-    public AbstractLatticeElement transfer(AbstractLatticeElement inX, AbstractContext context) {
+	public AbstractLatticeElement transfer(AbstractLatticeElement inX, AbstractContext context) {
+		DependencyLatticeElement origInfo = (DependencyLatticeElement) this.analysisNodeAtCallPrep.getPhiValue(context);
+		DependencyLatticeElement calleeIn = (DependencyLatticeElement) inX;
 
-        // lattice element entering the call prep node under the current
-        // context
-        DependencyLatticeElement origInfo =
-            (DependencyLatticeElement) this.analysisNodeAtCallPrep.getPhiValue(context);
+		DependencyLatticeElement outInfo = new DependencyLatticeElement();
 
-        // lattice element coming in from the callee (= base for interprocedural info);
-        // still contains the callee's locals
-        DependencyLatticeElement calleeIn = (DependencyLatticeElement) inX;
+		Set<Variable> visitedVars = new HashSet<Variable>();
 
-        // start only with default mappings
-        DependencyLatticeElement outInfo = new DependencyLatticeElement();
+		if (this.calleeMod == null) {
+			outInfo.copyGlobalLike(calleeIn);
+		} else {
+			outInfo.copyGlobalLike(calleeIn, origInfo, this.calleeMod);
+		}
+		if (this.caller.isMain()) {
+			outInfo.copyMainTemporaries(origInfo);
+			outInfo.handleReturnValue(this.retNode);
+			return outInfo;
+		}
+		outInfo.copyLocals(origInfo);
 
-        // contains variables that have been tagged as visited
-        Set<Variable> visitedVars = new HashSet<>();
+		for (Iterator<?> iter = localCallerVars.iterator(); iter.hasNext();) {
+			Variable localCallerVar = (Variable) iter.next();
 
-        // copy mappings of "global-like" places from calleeIn to outInfo
-        // ("global-like": globals, superglobals, and constants)
-        if (this.calleeMod == null) {
-            outInfo.copyGlobalLike(calleeIn);
-        } else {
-            // if we have MOD-info for the callee, use it!
-            outInfo.copyGlobalLike(calleeIn, origInfo, this.calleeMod);
-        }
+			Variable globalMustAlias = this.aliasAnalysis.getGlobalMustAlias(localCallerVar, this.prepNode);
+			if (globalMustAlias == null) {
+				continue;
+			}
 
-        // LOCAL VARIABLES *************
+			Variable globalMustAliasShadow = this.callee.getSymbolTable().getGShadow(globalMustAlias);
+			if (globalMustAliasShadow == null) {
+				System.out.println(globalMustAlias + " is global? " + globalMustAlias.isGlobal());
+				throw new RuntimeException("SNH: " + globalMustAlias);
+			}
 
-        // no need to do the steps below if the caller is main:
-        // its local variables are global variables;
-        // instead, do the following:
-        if (this.caller.isMain()) {
+			outInfo.setLocal(localCallerVar, calleeIn.getDep(globalMustAliasShadow),
+					calleeIn.getArrayLabel(globalMustAliasShadow));
+			visitedVars.add(localCallerVar);
 
-            // don't forget the main function's temporaries
-            outInfo.copyMainTemporaries(origInfo);
+		}
 
-            outInfo.handleReturnValue(this.retNode/*, calleeIn*/);
+		for (Iterator<?> iter = this.cbrParams.iterator(); iter.hasNext();) {
 
-            return outInfo;
-        }
+			List<?> paramPair = (List<?>) iter.next();
+			Iterator<?> paramPairIter = paramPair.iterator();
+			Variable actualVar = (Variable) paramPairIter.next();
+			Variable formalVar = (Variable) paramPairIter.next();
 
-        // initialize local variables with the mappings at call-time
-        outInfo.copyLocals(origInfo);
+			Set<?> localMustAliases = this.aliasAnalysis.getLocalMustAliases(actualVar, this.prepNode);
 
-        // MUST WITH GLOBALS
+			for (Iterator<?> lmaIter = localMustAliases.iterator(); lmaIter.hasNext();) {
+				Variable localMustAlias = (Variable) lmaIter.next();
 
-        // for all local variables of the calling function
-        for (Variable localCallerVar : localCallerVars) {
-            // an arbitrary global must-alias of this local
-            Variable globalMustAlias = this.aliasAnalysis.getGlobalMustAlias(localCallerVar, this.prepNode);
-            if (globalMustAlias == null) {
-                continue;
-            }
+				if (visitedVars.contains(localMustAlias)) {
+					continue;
+				}
 
-            // the shadow of this global must-alias
-            Variable globalMustAliasShadow = this.callee.getSymbolTable().getGShadow(globalMustAlias);
-            if (globalMustAliasShadow == null) {
-                System.out.println(globalMustAlias + " is global? " + globalMustAlias.isGlobal());
-                throw new RuntimeException("SNH: " + globalMustAlias);
-            }
+				Variable fShadow = this.callee.getSymbolTable().getFShadow(formalVar);
 
-            // set & mark
-            outInfo.setLocal(
-                localCallerVar,
-                calleeIn.getDep(globalMustAliasShadow),
-                calleeIn.getArrayLabel(globalMustAliasShadow));
-            visitedVars.add(localCallerVar);
-        }
+				outInfo.setLocal(localMustAlias, calleeIn.getDep(fShadow), calleeIn.getArrayLabel(fShadow));
+				visitedVars.add(localMustAlias);
 
-        // MUST WITH FORMALS
+			}
+		}
 
-        // for each call-by-reference parameter pair
-        for (List<Variable> paramPair : this.cbrParams) {
-            Iterator<Variable> paramPairIterator = paramPair.iterator();
-            Variable actualVar = paramPairIterator.next();
-            Variable formalVar = paramPairIterator.next();
+		for (Iterator<?> iter = localCallerVars.iterator(); iter.hasNext();) {
+			Variable localCallerVar = (Variable) iter.next();
 
-            // local must-aliases of the actual parameter (including trivial ones,
-            // so this set contains at least one element)
-            for (Variable localMustAlias : this.aliasAnalysis.getLocalMustAliases(actualVar, this.prepNode)) {
-                // no need to handle visited variables again
-                if (visitedVars.contains(localMustAlias)) {
-                    continue;
-                }
+			if (visitedVars.contains(localCallerVar)) {
+				continue;
+			}
+			Set<?> globalMayAliases = this.aliasAnalysis.getGlobalMayAliases(localCallerVar, this.prepNode);
 
-                // the formal parameter's f-shadow
-                Variable fShadow = this.callee.getSymbolTable().getFShadow(formalVar);
+			if (globalMayAliases.isEmpty()) {
+				continue;
+			}
 
-                // set & mark
-                outInfo.setLocal(
-                    localMustAlias,
-                    calleeIn.getDep(fShadow),
-                    calleeIn.getArrayLabel(fShadow));
-                visitedVars.add(localMustAlias);
-            }
-        }
+			DependencySet computedTaint = origInfo.getDep(localCallerVar);
+			DependencySet computedArrayLabel = origInfo.getArrayLabel(localCallerVar);
 
-        // MAY WITH GLOBALS
+			for (Iterator<?> gmaIter = globalMayAliases.iterator(); gmaIter.hasNext();) {
+				Variable globalMayAlias = (Variable) gmaIter.next();
 
-        // for each local variable that was not visited yet
-        for (Variable localCallerVar : localCallerVars) {
-            if (visitedVars.contains(localCallerVar)) {
-                continue;
-            }
+				Variable globalMayAliasShadow = this.callee.getSymbolTable().getGShadow(globalMayAlias);
 
-            // global may-aliases of this variable (at the time of call)
-            Set<Variable> globalMayAliases = this.aliasAnalysis.getGlobalMayAliases(localCallerVar, this.prepNode);
+				DependencySet shadowTaint = calleeIn.getDep(globalMayAliasShadow);
+				DependencySet shadowArrayLabel = calleeIn.getArrayLabel(globalMayAliasShadow);
 
-            // if there are no such aliases: nothing to do
-            if (globalMayAliases.isEmpty()) {
-                continue;
-            }
+				computedTaint = DependencyLatticeElement.lub(computedTaint, shadowTaint);
+				computedArrayLabel = DependencyLatticeElement.lub(computedArrayLabel, shadowArrayLabel);
+			}
+			outInfo.setLocal(localCallerVar, computedTaint, computedArrayLabel);
+		}
 
-            // initialize this variable's taint/arrayLabel with its original taint/arrayLabel
-            DependencySet computedTaint = origInfo.getDep(localCallerVar);
-            DependencySet computedArrayLabel = origInfo.getArrayLabel(localCallerVar);
+		for (Iterator<?> iter = this.cbrParams.iterator(); iter.hasNext();) {
 
-            // for all these global may-aliases...
-            for (Variable globalMayAlias : globalMayAliases) {
-                 // its g-shadow
-                Variable globalMayAliasShadow = this.callee.getSymbolTable().getGShadow(globalMayAlias);
+			List<?> paramPair = (List<?>) iter.next();
+			Iterator<?> paramPairIter = paramPair.iterator();
+			Variable actualVar = (Variable) paramPairIter.next();
+			Variable formalVar = (Variable) paramPairIter.next();
+			Set<?> localMayAliases = this.aliasAnalysis.getLocalMayAliases(actualVar, this.prepNode);
+			for (Iterator<?> lmaIter = localMayAliases.iterator(); lmaIter.hasNext();) {
+				Variable localMayAlias = (Variable) lmaIter.next();
 
-                // the shadow's taint/label (from flowback-info)
-                DependencySet shadowTaint = calleeIn.getDep(globalMayAliasShadow);
-                DependencySet shadowArrayLabel = calleeIn.getArrayLabel(globalMayAliasShadow);
+				if (visitedVars.contains(localMayAlias)) {
+					continue;
+				}
 
-                // lub
-                computedTaint = DependencyLatticeElement.lub(computedTaint, shadowTaint);
-                computedArrayLabel = DependencyLatticeElement.lub(computedArrayLabel, shadowArrayLabel);
-            }
+				DependencySet localTaint = outInfo.getDep(localMayAlias);
+				DependencySet localArrayLabel = outInfo.getArrayLabel(localMayAlias);
 
-            // set the local's taint/label to the computed taint/label in outInfo
-            outInfo.setLocal(localCallerVar, computedTaint, computedArrayLabel);
+				Variable fShadow = this.callee.getSymbolTable().getFShadow(formalVar);
 
-            // DON'T mark it as visited
-        }
+				DependencySet shadowTaint = calleeIn.getDep(fShadow);
+				DependencySet shadowArrayLabel = calleeIn.getArrayLabel(fShadow);
 
-        // MAY WITH FORMALS
+				DependencySet newTaint = DependencyLatticeElement.lub(localTaint, shadowTaint);
+				DependencySet newArrayLabel = DependencyLatticeElement.lub(localArrayLabel, shadowArrayLabel);
+				outInfo.setLocal(localMayAlias, newTaint, newArrayLabel);
+			}
+		}
+		outInfo.handleReturnValue(this.retNode);
+		return outInfo;
 
-        // for each call-by-reference parameter pair
-        for (List<Variable> paramPair : this.cbrParams) {
-            Iterator<Variable> paramPairIterator = paramPair.iterator();
-            Variable actualVar = paramPairIterator.next();
-            Variable formalVar = paramPairIterator.next();
+	}
 
-            // local may-aliases of the actual parameter (at call-time)
-            // for each such may-alias that was not visited yet
-            for (Variable localMayAlias : this.aliasAnalysis.getLocalMayAliases(actualVar, this.prepNode)) {
-                if (visitedVars.contains(localMayAlias)) {
-                    continue;
-                }
+	public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
+		throw new RuntimeException("SNH");
+	}
 
-                // the current taint/label of the local may-alias in output-info
-                DependencySet localTaint = outInfo.getDep(localMayAlias);
-                DependencySet localArrayLabel = outInfo.getArrayLabel(localMayAlias);
-
-                // the formal parameter's f-shadow
-                Variable fShadow = this.callee.getSymbolTable().getFShadow(formalVar);
-
-                // the shadow's taint/label (from flowback-info)
-                DependencySet shadowTaint = calleeIn.getDep(fShadow);
-                DependencySet shadowArrayLabel = calleeIn.getArrayLabel(fShadow);
-
-                // lub & set
-                DependencySet newTaint = DependencyLatticeElement.lub(localTaint, shadowTaint);
-                DependencySet newArrayLabel = DependencyLatticeElement.lub(localArrayLabel, shadowArrayLabel);
-
-                outInfo.setLocal(localMayAlias, newTaint, newArrayLabel);
-            }
-        }
-
-        outInfo.handleReturnValue(this.retNode/*, calleeIn*/);
-
-        return outInfo;
-    }
-
-    // just a dummy method in order to make me conform to the interface;
-    // the Analysis uses the other transfer method instead
-    public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
-        throw new RuntimeException("SNH");
-    }
 }

@@ -1,70 +1,64 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring;
 
+import java.util.*;
+
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Call;
 
-import java.util.LinkedList;
-
-/**
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public class CallString {
-    // a list of Call's; never longer than the k-size of the analysis
-    private LinkedList<Call> callNodeList;
 
-    // creates the empty call string
-    public CallString() {
-        this.callNodeList = new LinkedList<>();
-    }
+	private LinkedList<Call> callNodeList;
 
-    // shall only be used by CallString.append
-    private CallString(LinkedList<Call> callNodeList) {
-        this.callNodeList = callNodeList;
-    }
+	public CallString() {
+		this.callNodeList = new LinkedList<Call>();
+	}
 
-    public CallString append(Call callNode, int kSize) {
-        LinkedList<Call> newList = new LinkedList<>(this.callNodeList);
-        newList.add(callNode);
-        if (newList.size() > kSize) {
-            newList.remove(0);
-        }
-        return new CallString(newList);
-    }
+	private CallString(LinkedList<Call> callNodeList) {
+		this.callNodeList = callNodeList;
+	}
 
-    // returns the last (rightmost) call node
-    public Call getLast() {
-        return this.callNodeList.getLast();
-    }
+	public CallString append(Call callNode, int kSize) {
+		LinkedList<Call> newList = new LinkedList<Call>(this.callNodeList);
+		newList.add(callNode);
+		if (newList.size() > kSize) {
+			newList.remove(0);
+		}
+		return new CallString(newList);
+	}
 
-    public LinkedList<Call> getCallNodeList() {
-        return this.callNodeList;
-    }
+	public Call getLast() {
+		return (Call) this.callNodeList.getLast();
+	}
 
-    public int hashCode() {
-        return this.callNodeList.hashCode();
-    }
+	public List<Call> getCallNodeList() {
+		return this.callNodeList;
+	}
 
-    public boolean equals(Object obj) {
+	public int hashCode() {
+		return this.callNodeList.hashCode();
+	}
 
-        if (obj == this) {
-            return true;
-        }
+	public boolean equals(Object obj) {
 
-        if (!(obj instanceof CallString)) {
-            return false;
-        }
-        CallString comp = (CallString) obj;
+		if (obj == this) {
+			return true;
+		}
 
-        return this.callNodeList.equals(comp.getCallNodeList());
-    }
+		if (!(obj instanceof CallString)) {
+			return false;
+		}
+		CallString comp = (CallString) obj;
 
-    public String dump() {
-        StringBuilder b = new StringBuilder();
-        for (Call callNode : this.callNodeList) {
-            b.append(callNode.getFileName());
-            b.append(":");
-            b.append(callNode.getOriginalLineNumber());
-            b.append("\n");
-        }
-        return b.toString();
-    }
+		return this.callNodeList.equals(comp.getCallNodeList());
+	}
+
+	public String dump() {
+		StringBuilder b = new StringBuilder();
+		for (Call callNode : this.callNodeList) {
+			b.append(callNode.getFileName());
+			b.append(":");
+			b.append(callNode.getOriginalLineNumber());
+			b.append("\n");
+		}
+		return b.toString();
+	}
 }

@@ -8,60 +8,42 @@ import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
-/**
- * Transfer function for simple assignment nodes.
- *
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public class Assign extends AbstractTransferFunction {
-    private Variable left;
-    private Variable right;
 
-    private boolean supported;
-    private AliasAnalysis aliasAnalysis;
+	private Variable left;
+	private Variable right;
 
-// *********************************************************************************
-// CONSTRUCTORS ********************************************************************
-// *********************************************************************************
+	private boolean supported;
+	private AliasAnalysis aliasAnalysis;
 
-    public Assign(AbstractTacPlace left, AbstractTacPlace right, AliasAnalysis aliasAnalysis, AbstractCfgNode cfgNode) {
+	public Assign(AbstractTacPlace left, AbstractTacPlace right, AliasAnalysis aliasAnalysis, AbstractCfgNode cfgNode) {
 
-        // both arguments are variables if the PHP input is correct
-        this.left = (Variable) left;
-        this.right = (Variable) right;
+		this.left = (Variable) left;
+		this.right = (Variable) right;
 
-        this.aliasAnalysis = aliasAnalysis;
+		this.aliasAnalysis = aliasAnalysis;
 
-        // check for unsupported features
-        this.supported =
-            AliasAnalysis.isSupported(this.left, this.right, true, cfgNode.getOriginalLineNumber());
-    }
+		this.supported = AliasAnalysis.isSupported(this.left, this.right, true, cfgNode.getOriginalLineNumber());
 
-// *********************************************************************************
-// OTHER ***************************************************************************
-// *********************************************************************************
+	}
 
-    public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
+	public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
 
-        // ignore unsupported operations
-        if (!this.supported) {
-            return inX;
-        }
+		if (!this.supported) {
+			return inX;
+		}
 
-        // ignore useless statements like "$a =& $a"
-        if (this.left == this.right) {
-            return inX;
-        }
+		if (this.left == this.right) {
+			return inX;
+		}
 
-        AliasLatticeElement in = (AliasLatticeElement) inX;
-        AliasLatticeElement out = new AliasLatticeElement(in);
+		AliasLatticeElement in = (AliasLatticeElement) inX;
+		AliasLatticeElement out = new AliasLatticeElement(in);
 
-        // perform redirect operation on "out"
-        out.redirect(this.left, this.right);
+		out.redirect(this.left, this.right);
 
-        // recycle
-        out = (AliasLatticeElement) this.aliasAnalysis.recycle(out);
+		out = (AliasLatticeElement) this.aliasAnalysis.recycle(out);
 
-        return out;
-    }
+		return out;
+	}
 }

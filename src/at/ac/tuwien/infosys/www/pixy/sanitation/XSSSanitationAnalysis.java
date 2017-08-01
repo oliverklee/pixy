@@ -1,5 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.sanitation;
 
+import java.util.*;
+
 import at.ac.tuwien.infosys.www.pixy.VulnerabilityInformation;
 import at.ac.tuwien.infosys.www.pixy.XssAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.dependency.DependencyAnalysis;
@@ -11,103 +13,71 @@ import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallBuiltinFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.CallPreparation;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.Echo;
 
-import java.util.List;
-import java.util.Set;
-
-/**
- * XSS detection.
- *
- * Note: This class will be instantiated via reflection in GenericTaintAnalysis.createAnalysis. It is registered in
- * MyOptions.VulnerabilityAnalysisInformation.
- *
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public class XSSSanitationAnalysis extends AbstractSanitationAnalysis {
-//  ********************************************************************************
 
-    public XSSSanitationAnalysis(DependencyAnalysis dependencyAnalysis) {
-        super("xss", dependencyAnalysis, FSAAutomaton.getUndesiredXSSTest());
-    }
+	public XSSSanitationAnalysis(DependencyAnalysis depAnalysis) {
+		super("xss", depAnalysis, FSAAutomaton.getUndesiredXSSTest());
+	}
 
-//  ********************************************************************************
+	public List<Integer> detectVulns() {
+		return detectVulns(new XssAnalysis(this.depAnalysis));
+	}
 
-    public List<Integer> detectVulnerabilities() {
-        return detectVulnerabilities(new XssAnalysis(this.dependencyAnalysis));
-    }
+	public VulnerabilityInformation detectAlternative() {
+		throw new RuntimeException("not yet");
+	}
 
-    public VulnerabilityInformation detectAlternative() {
-        throw new RuntimeException("not yet");
-    }
+	protected void checkForSink(AbstractCfgNode cfgNodeX, TacFunction traversedFunction, List<Sink> sinks) {
 
-//  ********************************************************************************
+		if (cfgNodeX instanceof Echo) {
 
-    // checks if the given node (inside the given function) is a sensitive sink;
-    // adds an appropriate sink object to the given list if it is a sink
-    protected void checkForSink(AbstractCfgNode cfgNodeX, TacFunction traversedFunction,
-                                List<Sink> sinks) {
+			Echo cfgNode = (Echo) cfgNodeX;
 
-        if (cfgNodeX instanceof Echo) {
+			Sink sink = new Sink(cfgNode, traversedFunction);
+			sink.addSensitivePlace(cfgNode.getPlace());
 
-            // echo() or print()
-            Echo cfgNode = (Echo) cfgNodeX;
+			sinks.add(sink);
 
-            // create sink object for this node
-            Sink sink = new Sink(cfgNode, traversedFunction);
-            sink.addSensitivePlace(cfgNode.getPlace());
+		} else if (cfgNodeX instanceof CallBuiltinFunction) {
 
-            // add it to the list of sensitive sinks
-            sinks.add(sink);
-        } else if (cfgNodeX instanceof CallBuiltinFunction) {
+			CallBuiltinFunction cfgNode = (CallBuiltinFunction) cfgNodeX;
+			String functionName = cfgNode.getFunctionName();
 
-            // builtin function sinks
+			checkForSinkHelper(functionName, cfgNode, cfgNode.getParamList(), traversedFunction, sinks);
 
-            CallBuiltinFunction cfgNode = (CallBuiltinFunction) cfgNodeX;
-            String functionName = cfgNode.getFunctionName();
+		} else if (cfgNodeX instanceof CallPreparation) {
 
-            checkForSinkHelper(functionName, cfgNode, cfgNode.getParamList(), traversedFunction, sinks);
-        } else if (cfgNodeX instanceof CallPreparation) {
+			CallPreparation cfgNode = (CallPreparation) cfgNodeX;
+			String functionName = cfgNode.getFunctionNamePlace().toString();
 
-            CallPreparation cfgNode = (CallPreparation) cfgNodeX;
-            String functionName = cfgNode.getFunctionNamePlace().toString();
+			checkForSinkHelper(functionName, cfgNode, cfgNode.getParamList(), traversedFunction, sinks);
+		} else {
+		}
+	}
 
-            // user-defined custom sinks
+	private void checkForSinkHelper(String functionName, AbstractCfgNode cfgNode, List<TacActualParameter> paramList,
+			TacFunction traversedFunction, List<Sink> sinks) {
 
-            checkForSinkHelper(functionName, cfgNode, cfgNode.getParamList(), traversedFunction, sinks);
-        } else {
-            // not a sink
-        }
-    }
-
-//  ********************************************************************************
-
-    // LATER: this method looks very similar in all client analyses;
-    // possibility to reduce code redundancy
-    private void checkForSinkHelper(String functionName, AbstractCfgNode cfgNode,
-                                    List<TacActualParameter> paramList, TacFunction traversedFunction, List<Sink> sinks) {
-
-        if (this.vulnerabilityAnalysisInformation.getSinks().containsKey(functionName)) {
-            Sink sink = new Sink(cfgNode, traversedFunction);
-            Set<Integer> indexList = this.vulnerabilityAnalysisInformation.getSinks().get(functionName);
-            if (indexList == null) {
-                // special treatment is necessary here
-                if (functionName.equals("printf")) {
-                    // none of the arguments to printf must be tainted
-                    for (TacActualParameter param : paramList) {
-                        sink.addSensitivePlace(param.getPlace());
-                    }
-                    sinks.add(sink);
-                }
-            } else {
-                for (Integer index : indexList) {
-                    if (paramList.size() > index) {
-                        sink.addSensitivePlace(paramList.get(index).getPlace());
-                        // add this sink to the list of sensitive sinks
-                        sinks.add(sink);
-                    }
-                }
-            }
-        } else {
-            // not a sink
-        }
-    }
+		if (this.dci.getSinks().containsKey(functionName)) {
+			Sink sink = new Sink(cfgNode, traversedFunction);
+			Set<Integer> indexList = this.dci.getSinks().get(functionName);
+			if (indexList == null) {
+				if (functionName.equals("printf")) {
+					for (Iterator<TacActualParameter> iter = paramList.iterator(); iter.hasNext();) {
+						TacActualParameter param = (TacActualParameter) iter.next();
+						sink.addSensitivePlace(param.getPlace());
+					}
+					sinks.add(sink);
+				}
+			} else {
+				for (Integer index : indexList) {
+					if (paramList.size() > index) {
+						sink.addSensitivePlace(paramList.get(index).getPlace());
+						sinks.add(sink);
+					}
+				}
+			}
+		} else {
+		}
+	}
 }

@@ -2,57 +2,51 @@ package at.ac.tuwien.infosys.www.pixy.conversion;
 
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
-/**
- * This class represents a (directed) edge in the control flow graph. An edge always is between two
- * AbstractCfgNodes.
- *
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public final class CfgEdge {
-    static final int FALSE_EDGE = 0;
-    static final int TRUE_EDGE = 1;
-    static public final int NORMAL_EDGE = 2;
-    static final int NO_EDGE = 3;
 
-    private final int type;
-    private final AbstractCfgNode source;
-    private AbstractCfgNode destination;
+	static final int FALSE_EDGE = 0;
+	static final int TRUE_EDGE = 1;
+	static public final int NORMAL_EDGE = 2;
+	static final int NO_EDGE = 3;
 
-    CfgEdge(AbstractCfgNode source, AbstractCfgNode destination, int type) {
-        this.source = source;
-        this.destination = destination;
-        this.type = type;
-    }
+	private final int type;
+	private final AbstractCfgNode source;
+	private AbstractCfgNode dest;
 
-    public AbstractCfgNode getSource() {
-        return this.source;
-    }
+	CfgEdge(AbstractCfgNode source, AbstractCfgNode dest, int type) {
+		this.source = source;
+		this.dest = dest;
+		this.type = type;
+	}
 
-    public AbstractCfgNode getDestination() {
-        return this.destination;
-    }
+	public AbstractCfgNode getSource() {
+		return this.source;
+	}
 
-    public int getType() {
-        return this.type;
-    }
+	public AbstractCfgNode getDest() {
+		return this.dest;
+	}
 
-    public String getName() {
-        switch (this.type) {
-            case CfgEdge.FALSE_EDGE:
-                return "false";
-            case CfgEdge.TRUE_EDGE:
-                return "true";
-            case CfgEdge.NORMAL_EDGE:
-                return "normal";
-            case CfgEdge.NO_EDGE:
-                return "none";
-            default:
-                return "unknown";
-        }
-    }
+	public int getType() {
+		return this.type;
+	}
 
-    // don't forget to inform the destination node about me with "addInEdge"
-    void setDestination(AbstractCfgNode destination) {
-        this.destination = destination;
-    }
+	public String getName() {
+		switch (this.type) {
+		case CfgEdge.FALSE_EDGE:
+			return "false";
+		case CfgEdge.TRUE_EDGE:
+			return "true";
+		case CfgEdge.NORMAL_EDGE:
+			return "normal";
+		case CfgEdge.NO_EDGE:
+			return "none";
+		default:
+			return "unknown";
+		}
+	}
+
+	void setDest(AbstractCfgNode dest) {
+		this.dest = dest;
+	}
 }

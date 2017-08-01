@@ -1,5 +1,7 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.intraprocedural;
 
+import java.util.*;
+
 import at.ac.tuwien.infosys.www.pixy.Dumper;
 import at.ac.tuwien.infosys.www.pixy.analysis.AbstractAnalysis;
 import at.ac.tuwien.infosys.www.pixy.analysis.AbstractAnalysisNode;
@@ -9,185 +11,97 @@ import at.ac.tuwien.infosys.www.pixy.conversion.CfgEdge;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
-import java.util.LinkedList;
-
-/**
- * Base class for intraprocedural analyses.
- *
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public abstract class AbstractIntraproceduralAnalysis extends AbstractAnalysis {
-    // INPUT ***********************************************************************
 
-    // <see superclass>
+	protected IntraproceduralAnalysisInformation analysisInfo;
 
-    // OUTPUT **********************************************************************
+	IntraproceduralWorklist workList;
 
-    // analysis information (maps each CfgNode to an IntraproceduralAnalysisNode)
-    protected IntraproceduralAnalysisInformation analysisInfo;
+	protected void initGeneral(TacFunction function) {
 
-    // OTHER ***********************************************************************
+		if (this.functions == null) {
+			this.functions = new LinkedList<TacFunction>();
+			this.initLattice();
+		}
 
-    // worklist consisting of pairs (ControlFlowGraph node, lattice element)
-    IntraproceduralWorklist workList;
+		this.functions.add(function);
+		this.workList = new IntraproceduralWorklist();
+		this.workList.add(function.getCfg().getHead());
+		this.analysisInfo = new IntraproceduralAnalysisInformation();
+		this.genericAnalysisInfo = analysisInfo;
+		this.traverseCfg(function.getCfg(), function);
+		IntraproceduralAnalysisNode startAnalysisNode = (IntraproceduralAnalysisNode) this.analysisInfo
+				.getAnalysisNode(function.getCfg().getHead());
+		startAnalysisNode.setInValue(this.startValue);
+	}
 
-// *********************************************************************************
-// CONSTRUCTORS ********************************************************************
-// *********************************************************************************
+	public AbstractTransferFunction getTransferFunction(AbstractCfgNode cfgNode) {
+		return this.analysisInfo.getAnalysisNode(cfgNode).getTransferFunction();
+	}
 
-// initGeneral *********************************************************************
+	public IntraproceduralAnalysisInformation getAnalysisInfo() {
+		return this.analysisInfo;
+	}
 
-    // general initialization work; taken out of the constructor to bypass the
-    // restriction that superclass constructors have to be called first;
-    protected void initGeneral(TacFunction function) {
+	public IntraproceduralAnalysisNode getAnalysisNode(AbstractCfgNode cfgNode) {
+		return (IntraproceduralAnalysisNode) this.analysisInfo.getAnalysisNode(cfgNode);
+	}
 
-        // first-time initialization
-        if (this.functions == null) {
-            this.functions = new LinkedList<>();
-            // initialize carrier lattice
-            this.initLattice();
-        }
+	protected AbstractAnalysisNode makeAnalysisNode(AbstractCfgNode node, AbstractTransferFunction tf) {
+		return new IntraproceduralAnalysisNode(tf);
+	}
 
-        this.functions.add(function);
+	public abstract AbstractLatticeElement recycle(AbstractLatticeElement recycleMe);
 
-        // initialize worklist
-        this.workList = new IntraproceduralWorklist();
-        this.workList.add(function.getControlFlowGraph().getHead());
+	public void analyze() {
 
-        // initialize analysis nodes
-        this.analysisInfo = new IntraproceduralAnalysisInformation();
-        this.genericAnalysisInformation = analysisInfo;
+		while (this.workList.hasNext()) {
+			AbstractCfgNode node = this.workList.removeNext();
+			IntraproceduralAnalysisNode analysisNode = (IntraproceduralAnalysisNode) this.analysisInfo
+					.getAnalysisNode(node);
+			AbstractLatticeElement inValue = analysisNode.getInValue();
+			if (inValue == null) {
+				throw new RuntimeException("SNH");
+			}
+			try {
+				AbstractLatticeElement outValue;
+				outValue = this.analysisInfo.getAnalysisNode(node).transfer(inValue);
+				CfgEdge[] outEdges = node.getOutEdges();
+				for (int i = 0; i < outEdges.length; i++) {
+					if (outEdges[i] != null) {
+						AbstractCfgNode succ = outEdges[i].getDest();
+						propagate(outValue, succ);
+					}
+				}
+			} catch (RuntimeException ex) {
+				System.out.println("File:" + node.getFileName() + ", Line: " + node.getOriginalLineNumber());
+				throw ex;
+			}
+		}
+	}
 
-        // assign transfer functions to analysis nodes
-        this.traverseCfg(function.getControlFlowGraph(), function);
-        // this.asfsafsaf: initTransferFunctions
+	void propagate(AbstractLatticeElement value, AbstractCfgNode target) {
 
-        // initialize inValue for start node
-        IntraproceduralAnalysisNode startAnalysisNode = this.analysisInfo.getAnalysisNode(function.getControlFlowGraph().getHead());
-        startAnalysisNode.setInValue(this.startValue);
-    }
+		IntraproceduralAnalysisNode analysisNode = this.analysisInfo.getAnalysisNode(target);
+		if (analysisNode == null) {
+			System.out.println(Dumper.makeCfgNodeName(target));
+			throw new RuntimeException("SNH: " + target.getClass());
+		}
+		AbstractLatticeElement oldInValue = analysisNode.getInValue();
+		if (oldInValue == null) {
+			oldInValue = this.initialValue;
+		}
+		if (value == oldInValue) {
+			return;
+		}
+		AbstractLatticeElement newInValue = this.lattice.lub(value, oldInValue);
 
-// *********************************************************************************
-// GET *****************************************************************************
-// *********************************************************************************
+		if (!oldInValue.equals(newInValue)) {
 
-// getTransferFunction *************************************************************
+			analysisNode.setInValue(newInValue);
 
-    public AbstractTransferFunction getTransferFunction(AbstractCfgNode cfgNode) {
-        return this.analysisInfo.getAnalysisNode(cfgNode).getTransferFunction();
-    }
+			this.workList.add(target);
+		}
+	}
 
-//  getAnalysisInfo *****************************************************************
-
-    public IntraproceduralAnalysisInformation getAnalysisInfo() {
-        return this.analysisInfo;
-    }
-
-//  getAnalysisNode ****************************************************************
-
-    public IntraproceduralAnalysisNode getAnalysisNode(AbstractCfgNode cfgNode) {
-        return this.analysisInfo.getAnalysisNode(cfgNode);
-    }
-
-// *********************************************************************************
-// OTHER ***************************************************************************
-// *********************************************************************************
-
-//  makeAnalysisNode ***************************************************************
-
-    // creates and returns an analysis node for the given parameters
-    protected AbstractAnalysisNode makeAnalysisNode(AbstractCfgNode node, AbstractTransferFunction tf) {
-        return new IntraproceduralAnalysisNode(tf);
-    }
-
-//  recycle ************************************************************************
-
-    public abstract AbstractLatticeElement recycle(AbstractLatticeElement recycleMe);
-
-// analyze *************************************************************************
-
-    // this method applies the worklist algorithm
-    public void analyze() {
-
-        // for each element in the worklist...
-        while (this.workList.hasNext()) {
-
-            // remove the element from the worklist
-            AbstractCfgNode node = this.workList.removeNext();
-
-            // get incoming value at node n
-            IntraproceduralAnalysisNode analysisNode = this.analysisInfo.getAnalysisNode(node);
-            AbstractLatticeElement inValue = analysisNode.getInValue();
-            if (inValue == null) {
-                throw new RuntimeException("SNH");
-            }
-
-            try {
-
-                // apply transfer function to incoming value
-                AbstractLatticeElement outValue;
-                outValue = this.analysisInfo.getAnalysisNode(node).transfer(inValue);
-
-                // for each outgoing edge...
-                CfgEdge[] outEdges = node.getOutEdges();
-                for (CfgEdge outEdge : outEdges) {
-                    if (outEdge != null) {
-
-                        // determine the successor
-                        AbstractCfgNode succ = outEdge.getDestination();
-
-                        // propagate the result of applying the transfer function
-                        // to the successor
-                        propagate(outValue, succ);
-                    }
-                }
-            } catch (RuntimeException ex) {
-                System.out.println("File:" + node.getFileName() + ", Line: " + node.getOriginalLineNumber());
-                throw ex;
-            }
-        }
-
-        // worklist algorithm finished!
-    }
-
-//  propagate ***********************************************************************
-
-    // helper method for analyze();
-    // propagates a value to the target node
-    void propagate(AbstractLatticeElement value, AbstractCfgNode target) {
-
-        // analysis information for the target node
-        IntraproceduralAnalysisNode analysisNode = this.analysisInfo.getAnalysisNode(target);
-
-        if (analysisNode == null) {
-            System.out.println(Dumper.makeCfgNodeName(target));
-            throw new RuntimeException("SNH: " + target.getClass());
-        }
-
-        // determine the target's old invalue
-        AbstractLatticeElement oldInValue = analysisNode.getInValue();
-        if (oldInValue == null) {
-            // initial value of this analysis
-            oldInValue = this.initialValue;
-        }
-
-        // speedup: if incoming value and target value are exactly the same
-        // object, then the result certainly can't change
-        if (value == oldInValue) {
-            return;
-        }
-
-        // the new invalue is computed as usual (with lub)
-        AbstractLatticeElement newInValue = this.lattice.lub(value, oldInValue);
-
-        // if the invalue changed...
-        if (!oldInValue.equals(newInValue)) {
-
-            // update analysis information
-            analysisNode.setInValue(newInValue);
-
-            // add this node to the worklist
-            this.workList.add(target);
-        }
-    }
 }

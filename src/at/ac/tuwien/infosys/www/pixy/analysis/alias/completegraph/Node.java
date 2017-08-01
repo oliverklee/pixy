@@ -1,40 +1,29 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.alias.completegraph;
 
+import java.util.*;
+
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-/**
- * AbstractNode in the Graph.
- *
- * SCC stands for "strongly connected component".
- *
- * Note: This term is not really correct here, it should be "complete graph" instead.
- *
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public class Node {
-    private Variable label;
-    // Map AbstractNode -> Edge (i.e., target node -> edge)
-    private Map<Node, Edge> doubleEdges;
 
-    public Node(Variable label) {
-        this.label = label;
-        this.doubleEdges = new HashMap<>();
-    }
+	private Variable label;
+	private Map<Node, Edge> doubleEdges;
 
-    public Variable getLabel() {
-        return this.label;
-    }
+	public Node(Variable label) {
+		this.label = label;
+		this.doubleEdges = new HashMap<Node, Edge>();
+	}
 
-    public Set<Node> getDoubleTargets() {
-        return new HashSet<>(this.doubleEdges.keySet());
-    }
+	public Variable getLabel() {
+		return this.label;
+	}
 
-    public void addDoubleEdge(Edge edge, Node target) {
-        this.doubleEdges.put(target, edge);
-    }
+	public Set<Node> getDoubleTargets() {
+		return new HashSet<Node>(this.doubleEdges.keySet());
+	}
+
+	public void addDoubleEdge(Edge edge, Node target) {
+		this.doubleEdges.put(target, edge);
+	}
+
 }

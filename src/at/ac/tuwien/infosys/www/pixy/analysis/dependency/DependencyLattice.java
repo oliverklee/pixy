@@ -1,69 +1,44 @@
 package at.ac.tuwien.infosys.www.pixy.analysis.dependency;
 
+import java.util.*;
+
 import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLattice;
 import at.ac.tuwien.infosys.www.pixy.analysis.AbstractLatticeElement;
-import at.ac.tuwien.infosys.www.pixy.conversion.*;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
+import at.ac.tuwien.infosys.www.pixy.conversion.ConstantsTable;
+import at.ac.tuwien.infosys.www.pixy.conversion.SymbolTable;
+import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
-import java.util.List;
-
-/**
- * A lattice of source labels.
- *
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 class DependencyLattice extends AbstractLattice {
-    DependencyLattice(
-        List<AbstractTacPlace> places, ConstantsTable constantsTable, List<TacFunction> functions, SymbolTable superSymbolTable,
-        Variable memberPlace
-    ) {
-        DependencyLatticeElement.initDefault(places, constantsTable, functions, superSymbolTable, memberPlace);
-    }
 
-// *********************************************************************************
-// OTHER ***************************************************************************
-// *********************************************************************************
+	@SuppressWarnings("rawtypes")
+	DependencyLattice(List<AbstractTacPlace> places, ConstantsTable constantsTable, List functions,
+			SymbolTable superSymbolTable, Variable memberPlace) {
 
-    // input elements (incoming and target) are not modified,
-    // output element is newly allocated
-    public AbstractLatticeElement lub(
-        AbstractLatticeElement incomingElementX,
-        AbstractLatticeElement targetElementX) {
+		DependencyLatticeElement.initDefault(places, constantsTable, functions, superSymbolTable, memberPlace);
+	}
 
-        // if the incoming element is the bottom element: return the other element
-        if (incomingElementX == this.bottom) {
-            if (targetElementX != this.bottom) {
-                return targetElementX.cloneMe();
-            } else {
-                return this.bottom;
-            }
-        }
+	public AbstractLatticeElement lub(AbstractLatticeElement incomingElementX, AbstractLatticeElement targetElementX) {
 
-        // if the target element is the bottom element: return the other element
-        if (targetElementX == this.bottom) {
-            // return new TaintLatticeElement((TaintLatticeElement) incomingElementX);
-            return incomingElementX.cloneMe();
-        }
+		if (incomingElementX == this.bottom) {
+			if (targetElementX != this.bottom) {
+				return targetElementX.cloneMe();
+			} else {
+				return this.bottom;
+			}
+		}
 
-        // if one of the elements is the top element: return the top element;
-        // not necessary here: we will never encounter the top element
+		if (targetElementX == this.bottom) {
+			return incomingElementX.cloneMe();
+		}
 
-        // class cast
-        DependencyLatticeElement incomingElement = (DependencyLatticeElement) incomingElementX;
-        DependencyLatticeElement targetElement = (DependencyLatticeElement) targetElementX;
+		DependencyLatticeElement incomingElement = (DependencyLatticeElement) incomingElementX;
+		DependencyLatticeElement targetElement = (DependencyLatticeElement) targetElementX;
+		DependencyLatticeElement resultElement = new DependencyLatticeElement(targetElement);
 
-        // initialize the resulting lattice element as clone of the target
-        // lattice element (we don't want to modify the target lattice element
-        // given by the caller of this method);
-        // EFF: note that we must not modify the incoming element either: while
-        // most transfer functions generate a new lattice element object which
-        // could be reused, the ID transfer function simply passes on the
-        // reference; if you reuse here, the ID transfer function must return
-        // a new element (not clear which method is more efficient)
-        DependencyLatticeElement resultElement = new DependencyLatticeElement(targetElement);
+		resultElement.lub(incomingElement);
 
-        // lub the incoming element over the clone of the target element
-        resultElement.lub(incomingElement);
+		return resultElement;
+	}
 
-        return resultElement;
-    }
 }

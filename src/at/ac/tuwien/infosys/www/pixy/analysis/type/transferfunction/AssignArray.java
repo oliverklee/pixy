@@ -5,31 +5,21 @@ import at.ac.tuwien.infosys.www.pixy.analysis.AbstractTransferFunction;
 import at.ac.tuwien.infosys.www.pixy.analysis.type.TypeLatticeElement;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 
-/**
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public class AssignArray extends AbstractTransferFunction {
-    private Variable operand;
 
-// *********************************************************************************
-// CONSTRUCTORS ********************************************************************
-// *********************************************************************************
+	private Variable operand;
 
-    public AssignArray(Variable operand) {
-        this.operand = operand;
-    }
+	public AssignArray(Variable operand) {
+		this.operand = operand;
+	}
 
-// *********************************************************************************
-// OTHER ***************************************************************************
-// *********************************************************************************
+	public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
 
-    public AbstractLatticeElement transfer(AbstractLatticeElement inX) {
+		TypeLatticeElement in = (TypeLatticeElement) inX;
+		TypeLatticeElement out = new TypeLatticeElement(in);
 
-        TypeLatticeElement in = (TypeLatticeElement) inX;
-        TypeLatticeElement out = new TypeLatticeElement(in);
+		out.assignArray(operand);
 
-        out.assignArray(operand);
-
-        return out;
-    }
+		return out;
+	}
 }

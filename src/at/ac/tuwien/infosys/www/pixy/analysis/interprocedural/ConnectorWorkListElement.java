@@ -3,33 +3,21 @@ package at.ac.tuwien.infosys.www.pixy.analysis.interprocedural;
 import at.ac.tuwien.infosys.www.pixy.analysis.interprocedural.callstring.CallString;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
 
-/**
- * Worklist element for connector computation.
- *
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public final class ConnectorWorkListElement {
-    private final TacFunction function;
-    private final CallString callString;
 
-// *********************************************************************************
-// CONSTRUCTORS ********************************************************************
-// *********************************************************************************
+	private final TacFunction function;
+	private final CallString callString;
 
-    ConnectorWorkListElement(TacFunction function, CallString callString) {
-        this.function = function;
-        this.callString = callString;
-    }
+	ConnectorWorkListElement(TacFunction function, CallString callString) {
+		this.function = function;
+		this.callString = callString;
+	}
 
-// *********************************************************************************
-// GET *****************************************************************************
-// *********************************************************************************
+	TacFunction getFunction() {
+		return this.function;
+	}
 
-    TacFunction getFunction() {
-        return this.function;
-    }
-
-    CallString getCallString() {
-        return this.callString;
-    }
+	CallString getCallString() {
+		return this.callString;
+	}
 }

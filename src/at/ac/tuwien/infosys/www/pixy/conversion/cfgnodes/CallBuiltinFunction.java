@@ -1,70 +1,57 @@
 package at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes;
 
-import at.ac.tuwien.infosys.www.phpparser.ParseNode;
+import java.util.*;
+
 import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
 import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParameter;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
+import at.ac.tuwien.infosys.www.pixy.phpParser.ParseNode;
 
-import java.util.LinkedList;
-import java.util.List;
-
-/**
- * A call of a PHP builtin function.
- *
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public class CallBuiltinFunction extends AbstractCfgNode {
-    // name of the called builtin function
-    private String functionName;
 
-    // parameter list
-    private List<TacActualParameter> paramList;
+	private String functionName;
 
-    // temporary variable to hold the return value
-    private Variable tempVar;
+	private List<TacActualParameter> paramList;
 
-// CONSTRUCTORS ********************************************************************
+	private Variable tempVar;
 
-    public CallBuiltinFunction(String functionName,
-                               List<TacActualParameter> paramList, AbstractTacPlace tempPlace, ParseNode node) {
+	public CallBuiltinFunction(String functionName, List<TacActualParameter> paramList, AbstractTacPlace tempPlace,
+			ParseNode node) {
 
-        super(node);
-        this.functionName = functionName.toLowerCase();
-        this.paramList = paramList;
-        this.tempVar = (Variable) tempPlace;
-    }
+		super(node);
+		this.functionName = functionName.toLowerCase();
+		this.paramList = paramList;
+		this.tempVar = (Variable) tempPlace;
+	}
 
-// GET *****************************************************************************
+	public String getFunctionName() {
+		return this.functionName;
+	}
 
-    public String getFunctionName() {
-        return this.functionName;
-    }
+	public List<TacActualParameter> getParamList() {
+		return this.paramList;
+	}
 
-    public List<TacActualParameter> getParamList() {
-        return this.paramList;
-    }
+	public Variable getTempVar() {
+		return this.tempVar;
+	}
 
-    public Variable getTempVar() {
-        return this.tempVar;
-    }
+	public List<Variable> getVariables() {
+		List<Variable> retMe = new LinkedList<Variable>();
+		for (Iterator<TacActualParameter> iter = this.paramList.iterator(); iter.hasNext();) {
+			TacActualParameter param = (TacActualParameter) iter.next();
+			AbstractTacPlace paramPlace = param.getPlace();
+			if (paramPlace instanceof Variable) {
+				retMe.add((Variable) paramPlace);
+			} else {
+				retMe.add(null);
+			}
+		}
+		return retMe;
+	}
 
-    public List<Variable> getVariables() {
-        List<Variable> retMe = new LinkedList<>();
-        for (TacActualParameter param : this.paramList) {
-            AbstractTacPlace paramPlace = param.getPlace();
-            if (paramPlace instanceof Variable) {
-                retMe.add((Variable) paramPlace);
-            } else {
-                retMe.add(null);
-            }
-        }
-        return retMe;
-    }
-
-// SET *****************************************************************************
-
-    public void replaceVariable(int index, Variable replacement) {
-        TacActualParameter param = this.paramList.get(index);
-        param.setPlace(replacement);
-    }
+	public void replaceVariable(int index, Variable replacement) {
+		TacActualParameter param = (TacActualParameter) this.paramList.get(index);
+		param.setPlace(replacement);
+	}
 }

@@ -1,178 +1,153 @@
 package at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes;
 
-import at.ac.tuwien.infosys.www.phpparser.ParseNode;
+import java.util.*;
+
 import at.ac.tuwien.infosys.www.pixy.analysis.alias.AliasAnalysis;
-import at.ac.tuwien.infosys.www.pixy.conversion.*;
+import at.ac.tuwien.infosys.www.pixy.conversion.AbstractTacPlace;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacActualParameter;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacFormalParameter;
+import at.ac.tuwien.infosys.www.pixy.conversion.TacFunction;
+import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
+import at.ac.tuwien.infosys.www.pixy.phpParser.ParseNode;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
-/**
- * This class represents a function call.
- *
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public class Call extends AbstractCfgNode {
-    // can also be a variable
-    private AbstractTacPlace functionNamePlace;
 
-    private TacFunction callee;
+	private AbstractTacPlace functionNamePlace;
+	private TacFunction callee;
 
-    // the return variable of the called function
-    private Variable retVar;
-    // temporary variable to hold the return value
-    private Variable tempVar;
+	private Variable retVar;
+	private Variable tempVar;
+	private List<TacActualParameter> paramList;
+	private List<List<Variable>> cbrParamList;
 
-    // a list of actual params (TacActualParameter objects)
-    private List<TacActualParameter> paramList;
+	private String calleeClassName;
 
-    // list of cbr params; description see getCbrParams()
-    private List<List<Variable>> cbrParamList;
+	private Variable object;
 
-    // if this is a method call, this field CAN contain the name of the
-    // class that contains the callee method; is null if the name could
-    // not be resolved during tac conversion
-    private String calleeClassName;
+	public Call(AbstractTacPlace functionNamePlace, TacFunction calledFunction, ParseNode node,
+			TacFunction enclosingFunction, Variable retVar, AbstractTacPlace tempPlace,
+			List<TacActualParameter> paramList, Variable object) {
 
-    // object upon which this method was invoked;
-    // is null if
-    // - this is not a method invocation
-    // - or if it is a static one
-    // - of it it is a constructor invocation ("new")
-    private Variable object;
+		super(node);
+		this.functionNamePlace = functionNamePlace;
+		if (calledFunction != null) {
+			calledFunction.addCalledFrom(this);
+		}
+		this.setEnclosingFunction(enclosingFunction);
 
-    // if you pass "null" for "function", don't forget to call "setFunction" later
-    public Call(
-        AbstractTacPlace functionNamePlace, TacFunction calledFunction, ParseNode node,
-        TacFunction enclosingFunction, Variable retVar, AbstractTacPlace tempPlace,
-        List<TacActualParameter> paramList, Variable object
-    ) {
+		this.retVar = retVar;
+		this.tempVar = (Variable) tempPlace;
 
-        super(node);
-        this.functionNamePlace = functionNamePlace;
-        //this.callee = calledFunction;
-        if (calledFunction != null) {
-            calledFunction.addCalledFrom(this);
-        }
-        this.setEnclosingFunction(enclosingFunction);
+		this.paramList = paramList;
+		this.cbrParamList = null;
 
-        this.retVar = retVar;
-        this.tempVar = (Variable) tempPlace;    // must be a variable
+		this.calleeClassName = null;
+		this.object = object;
 
-        this.paramList = paramList;
-        this.cbrParamList = null;
+	}
 
-        this.calleeClassName = null;
-        this.object = object;
-    }
+	public TacFunction getCallee() {
+		return this.callee;
+	}
 
-    public TacFunction getCallee() {
-        return this.callee;
-    }
+	public AbstractTacPlace getFunctionNamePlace() {
+		return this.functionNamePlace;
+	}
 
-    public AbstractTacPlace getFunctionNamePlace() {
-        return this.functionNamePlace;
-    }
+	public List<Variable> getVariables() {
+		List<Variable> retMe = new LinkedList<Variable>();
+		for (Iterator<TacActualParameter> iter = this.paramList.iterator(); iter.hasNext();) {
+			TacActualParameter param = (TacActualParameter) iter.next();
+			AbstractTacPlace paramPlace = param.getPlace();
+			if (paramPlace instanceof Variable) {
+				retMe.add((Variable) paramPlace);
+			} else {
+				retMe.add(null);
+			}
+		}
+		return retMe;
+	}
 
-    public List<Variable> getVariables() {
-        // only the params are relevant for globals replacement
-        List<Variable> retMe = new LinkedList<>();
-        for (TacActualParameter param : this.paramList) {
-            AbstractTacPlace paramPlace = param.getPlace();
-            if (paramPlace instanceof Variable) {
-                retMe.add((Variable) paramPlace);
-            } else {
-                retMe.add(null);
-            }
-        }
-        return retMe;
-    }
+	public Variable getRetVar() {
+		return this.retVar;
+	}
 
-    public Variable getRetVar() {
-        return this.retVar;
-    }
+	public Variable getTempVar() {
+		return this.tempVar;
+	}
 
-    public Variable getTempVar() {
-        return this.tempVar;
-    }
+	public List<TacActualParameter> getParamList() {
+		return this.paramList;
+	}
 
-    public List<TacActualParameter> getParamList() {
-        return this.paramList;
-    }
+	public List<List<Variable>> getCbrParams() {
 
-    // returns a list consisting of two-element-lists consisting of
-    // (actual cbr-param, formal cbr-param) (Variable objects)
-    public List<List<Variable>> getCbrParams() {
-        if (this.cbrParamList != null) {
-            return this.cbrParamList;
-        }
+		if (this.cbrParamList != null) {
+			return this.cbrParamList;
+		}
 
-        List<TacActualParameter> actualParams = this.paramList;
-        List<TacFormalParameter> formalParams = this.getCallee().getParams();
+		List<TacActualParameter> actualParams = this.paramList;
+		List<?> formalParams = this.getCallee().getParams();
 
-        this.cbrParamList = new LinkedList<>();
+		this.cbrParamList = new LinkedList<List<Variable>>();
 
-        Iterator<TacActualParameter> actualIter = actualParams.iterator();
-        Iterator<TacFormalParameter> formalIter = formalParams.iterator();
+		Iterator<TacActualParameter> actualIter = actualParams.iterator();
+		Iterator<?> formalIter = formalParams.iterator();
 
-        while (actualIter.hasNext()) {
-            TacActualParameter actualParam = actualIter.next();
-            TacFormalParameter formalParam = formalIter.next();
+		while (actualIter.hasNext()) {
 
-            // if this is a cbr-param...
-            if (actualParam.isReference() || formalParam.isReference()) {
-                // the actual part of a cbr-param must always be a variable
-                if (!(actualParam.getPlace() instanceof Variable)) {
-                    throw new RuntimeException("Error in the PHP file!");
-                }
+			TacActualParameter actualParam = (TacActualParameter) actualIter.next();
+			TacFormalParameter formalParam = (TacFormalParameter) formalIter.next();
 
-                Variable actualVar = (Variable) actualParam.getPlace();
-                Variable formalVar = formalParam.getVariable();
+			if (actualParam.isReference() || formalParam.isReference()) {
 
-                // check for unsupported features;
-                // none of the variables must be an array or etc.;
-                // in such a case, ignore it and continue with the next cbr-param
-                boolean supported = AliasAnalysis.isSupported(
-                    formalVar, actualVar, true, this.getOriginalLineNumber());
+				if (!(actualParam.getPlace() instanceof Variable)) {
+					throw new RuntimeException("Error in the PHP file!");
+				}
 
-                if (!supported) {
-                    continue;
-                }
+				Variable actualVar = (Variable) actualParam.getPlace();
+				Variable formalVar = formalParam.getVariable();
 
-                List<Variable> pairList = new LinkedList<>();
-                pairList.add(actualVar);
-                pairList.add(formalVar);
-                cbrParamList.add(pairList);
-            }
-        }
+				boolean supported = AliasAnalysis.isSupported(formalVar, actualVar, true, this.getOriginalLineNumber());
 
-        return cbrParamList;
-    }
+				if (!supported) {
+					continue;
+				}
 
-    public String getCalleeClassName() {
-        return this.calleeClassName;
-    }
+				List<Variable> pairList = new LinkedList<Variable>();
+				pairList.add(actualVar);
+				pairList.add(formalVar);
+				cbrParamList.add(pairList);
+			}
+		}
 
-    public Variable getObject() {
-        return this.object;
-    }
+		return cbrParamList;
+	}
 
-    public void replaceVariable(int index, Variable replacement) {
-        TacActualParameter param = this.paramList.get(index);
-        param.setPlace(replacement);
-    }
+	public String getCalleeClassName() {
+		return this.calleeClassName;
+	}
 
-    public void setCallee(TacFunction function) {
-        this.callee = function;
-        function.addCalledFrom(this);
-    }
+	public Variable getObject() {
+		return this.object;
+	}
 
-    public void setRetVar(Variable retVar) {
-        this.retVar = retVar;
-    }
+	public void replaceVariable(int index, Variable replacement) {
+		TacActualParameter param = (TacActualParameter) this.paramList.get(index);
+		param.setPlace(replacement);
+	}
 
-    public void setCalleeClassName(String s) {
-        this.calleeClassName = s;
-    }
+	public void setCallee(TacFunction function) {
+		this.callee = function;
+		function.addCalledFrom(this);
+	}
+
+	public void setRetVar(Variable retVar) {
+		this.retVar = retVar;
+	}
+
+	public void setCalleeClassName(String s) {
+		this.calleeClassName = s;
+	}
+
 }

@@ -7,3 +7,12 @@
 printf = 
 # xyz = 0:1:3
 
+echo =  
+# xyz = 0:1:3
+
+print = 
+# xyz = 0:1:3
+
+header = 0
+# xyz = 0:1:3
+

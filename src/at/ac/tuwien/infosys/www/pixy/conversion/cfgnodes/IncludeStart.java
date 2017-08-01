@@ -1,39 +1,38 @@
 package at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes;
 
-import at.ac.tuwien.infosys.www.phpparser.ParseNode;
-import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
-
 import java.io.File;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
-/**
- * Indicates the start of an included section (inserted during include resolution).
- *
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
+import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
+import at.ac.tuwien.infosys.www.pixy.phpParser.ParseNode;
+
 public class IncludeStart extends AbstractCfgNode {
-    private File containingFile;  // file in which this node occurs
-    private IncludeEnd peer;
 
-    public IncludeStart(File file, ParseNode parseNode) {
-        super(parseNode);
-        this.containingFile = file;
-        this.peer = null;
-    }
+	private File containingFile;
+	private IncludeEnd peer;
 
-    public File getContainingFile() {
-        return this.containingFile;
-    }
+	public IncludeStart(File file, ParseNode parseNode) {
+		super(parseNode);
+		this.containingFile = file;
+		this.peer = null;
+	}
 
-    public List<Variable> getVariables() {
-        return Collections.emptyList();
-    }
+	public File getContainingFile() {
+		return this.containingFile;
+	}
 
-    public void replaceVariable(int index, Variable replacement) {
-    }
+	public List<Variable> getVariables() {
+		return Collections.emptyList();
+	}
 
-    public void setPeer(IncludeEnd peer) {
-        this.peer = peer;
-    }
+	public IncludeEnd getPeer() {
+		return this.peer;
+	}
+
+	public void replaceVariable(int index, Variable replacement) {
+	}
+
+	public void setPeer(IncludeEnd peer) {
+		this.peer = peer;
+	}
 }

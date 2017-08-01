@@ -1,5 +1,8 @@
 package at.ac.tuwien.infosys.www.pixy.transduction;
 
+import java.io.*;
+import java.util.*;
+
 import at.ac.tuwien.infosys.www.pixy.MyOptions;
 import at.ac.tuwien.infosys.www.pixy.automaton.Automaton;
 import rationals.State;
@@ -7,213 +10,178 @@ import rationals.Transition;
 import rationals.transductions.TransducerNivat;
 import rationals.transductions.TransducerRelation;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
-/**
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public class MyTransductions {
-    private MyAlphabet alphabet;
 
-    public MyTransductions() {
-        this.alphabet = new MyAlphabet();
-    }
+	private MyAlphabet alphabet;
 
-    // applies a str_replace transduction with the given inputs and returns the
-    // resulting automaton;
-    // WARNING: only works if MyAlphabet.java covers all characters that are in use
-    public Automaton str_replace(String search, String replace, Automaton subject) {
+	public MyTransductions() {
+		this.alphabet = new MyAlphabet();
+	}
 
-        String subjectAutoFSM = subject.toFsmTools();
-        String tempDir = MyOptions.pixyHome + "/transducers/temp/";
-        new File(tempDir).mkdir();
+	public Automaton str_replace(String search, String replace, Automaton subject) {
 
-        write(tempDir + "subject.txt", subjectAutoFSM);
-        write(tempDir + "subject-sym.txt", this.alphabet.getFSMSymbols());
+		String subjectAutoFSM = subject.toFsmTools();
+		String tempDir = MyOptions.pixy_home + "/transducers/temp/";
+		new File(tempDir).mkdir();
 
-        try {
-            MyTransducer t = str_replace_transducer(search, replace);
-            t.toFsmFile(tempDir + "transducer");
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("");
-        }
+		write(tempDir + "subject.txt", subjectAutoFSM);
+		write(tempDir + "subject-sym.txt", this.alphabet.getFSMSymbols());
 
-        try {
-            Process p = Runtime.getRuntime().exec(MyOptions.pixyHome + "/scripts/transduce.sh");
-            p.waitFor();
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-            throw new RuntimeException("");
-        }
+		try {
+			MyTransducer t = str_replace_transducer(search, replace);
+			t.toFsmFile(tempDir + "transducer");
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException("");
+		}
 
-        // read result back into an Automaton
-        Automaton result = Automaton.fromFsmTools(tempDir + "result.txt");
+		try {
+			Process p = Runtime.getRuntime().exec(MyOptions.pixy_home + "/scripts/transduce.sh");
+			p.waitFor();
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new RuntimeException("");
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			throw new RuntimeException("");
+		}
 
-        return result;
-    }
+		Automaton result = Automaton.fromFsmTools(tempDir + "result.txt");
+		return result;
+	}
 
-    private void write(String filename, String contents) {
+	private void write(String filename, String contents) {
+		try {
+			Writer writer = new FileWriter(filename);
+			writer.write(contents);
+			writer.close();
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+		}
+	}
 
-        try {
-            Writer writer = new FileWriter(filename);
-            writer.write(contents);
-            writer.close();
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-    }
+	private MyTransducer str_replace_transducer(String search, String replace) throws Exception {
 
-    private MyTransducer str_replace_transducer(String search, String replace)
-        throws Exception {
+		if (search.length() == 0 || replace.length() == 0) {
+			throw new RuntimeException("not yet");
+		}
 
-        if (search.length() == 0 || replace.length() == 0) {
-            throw new RuntimeException("not yet");
-        }
+		TransducerNivat t = new TransducerNivat();
+		State start = t.addState(true, true);
+		State firstAccept = null;
+		State trap = t.addState(false, true);
+		firstAccept = t.addState(false, false);
+		t.addTransition(new Transition(start, new TransducerRelation(search.charAt(0), null), firstAccept));
 
-        TransducerNivat t = new TransducerNivat();
+		State current = firstAccept;
+		List<Object> pushback = new LinkedList<Object>();
+		for (int i = 1; i < search.length(); i++) {
+			State next = t.addState(false, false);
 
-        // the start state
-        State start = t.addState(true, true);
-        // the first state of the acceptor
-        State firstAccept = null;
-        // the "loopless trap" state
-        State trap = t.addState(false, true);
+			pushback.add(search.charAt(i - 1));
 
-        // from start to first state of the acceptor
-        firstAccept = t.addState(false, false);
-        t.addTransition(new Transition(start, new TransducerRelation(search.charAt(0), null), firstAccept));
+			t.addTransition(new Transition(current, new TransducerRelation(search.charAt(i), null), next));
 
-        State current = firstAccept;
-        List<Object> pushback = new LinkedList<>();
-        // for all but the first and the last state of the acceptor
-        for (int i = 1; i < search.length(); i++) {
-            State next = t.addState(false, false);
+			makeCompositeTransition(t, pushback, null, current, trap);
 
-            pushback.add(search.charAt(i - 1));
+			makeCompositeTransition(t, pushback, search.charAt(0), current, firstAccept);
 
-            // outgoing linear acceptor transition
-            t.addTransition(new Transition(current, new TransducerRelation(search.charAt(i), null), next));
+			addPrefixedRemainingTransitions(t, alphabet, pushback, current, start);
 
-            // trap transition
-            makeCompositeTransition(t, pushback, null, current, trap);
+			current = next;
 
-            // "back to first" transition
-            makeCompositeTransition(t, pushback, search.charAt(0), current, firstAccept);
+		}
 
-            // "back to start" transition
-            addPrefixedRemainingTransitions(t, alphabet, pushback, current, start);
+		State lastAccept = current;
 
-            current = next;
-        }
+		List<Object> replaceWithList = new LinkedList<Object>();
+		for (char c : replace.toCharArray()) {
+			replaceWithList.add(c);
+		}
+		makeCompositeTransition(t, replaceWithList, null, lastAccept, start);
 
-        // the last acceptor state
-        State lastAccept = current;
+		addRemainingTransitions(t, alphabet, start, start);
 
-        // back to start with replacement
-        List<Object> replaceWithList = new LinkedList<>();
-        for (char c : replace.toCharArray()) {
-            replaceWithList.add(c);
-        }
-        makeCompositeTransition(t, replaceWithList, null, lastAccept, start);
+		return new MyTransducer(t);
+	}
 
-        // create loop transitions for start state
-        addRemainingTransitions(t, alphabet, start, start);
+	public static void makeCompositeTransition(TransducerNivat t, List<Object> composite, Object firstInLabel,
+			State from, State to) throws Exception {
 
-        return new MyTransducer(t);
-    }
+		if (composite.size() == 0) {
+			throw new RuntimeException("SNH");
+		}
+		if (composite.size() == 1) {
+			Object compositeElement = composite.iterator().next();
+			t.addTransition(new Transition(from, new TransducerRelation(firstInLabel, compositeElement), to));
+			return;
+		}
 
-    public static void makeCompositeTransition(
-        TransducerNivat t, List<Object> composite, Object firstInLabel, State from, State to)
-        throws Exception {
+		int i = 0;
+		State previous = from;
+		for (Object compositeElement : composite) {
 
-        if (composite.size() == 0) {
-            throw new RuntimeException("SNH");
-        }
-        if (composite.size() == 1) {
-            Object compositeElement = composite.iterator().next();
-            t.addTransition(new Transition(from, new TransducerRelation(firstInLabel, compositeElement), to));
-            return;
-        }
+			Object inLabel;
+			if (i == 0) {
+				inLabel = firstInLabel;
+			} else {
+				inLabel = null;
+			}
 
-        int i = 0;
-        State previous = from;
-        for (Object compositeElement : composite) {
-            Object inLabel;
-            if (i == 0) {
-                inLabel = firstInLabel;
-            } else {
-                inLabel = null;
-            }
+			State targetState;
+			if (i == composite.size() - 1) {
+				targetState = to;
+			} else {
+				targetState = t.addState(false, false);
+			}
 
-            State targetState;
-            if (i == composite.size() - 1) {
-                targetState = to;
-            } else {
-                targetState = t.addState(false, false);
-            }
+			t.addTransition(new Transition(previous, new TransducerRelation(inLabel, compositeElement), targetState));
+			previous = targetState;
 
-            t.addTransition(new Transition(previous, new TransducerRelation(inLabel, compositeElement), targetState));
-            previous = targetState;
+			i++;
+		}
 
-            i++;
-        }
-    }
+	}
 
-    public static void addPrefixedRemainingTransitions(
-        TransducerNivat t, MyAlphabet alphabet, List<Object> prefix, State from, State to
-    ) throws Exception {
-        @SuppressWarnings("unchecked") Set<Transition> fromTrans = t.delta(from);
-        Set<Object> existingInLabels = new HashSet<>();
+	public static void addPrefixedRemainingTransitions(TransducerNivat t, MyAlphabet alphabet, List<Object> prefix,
+			State from, State to) throws Exception {
 
-        // collect existing in-labels from all transitions leaving "from"
-        for (Transition transition : fromTrans) {
-            TransducerRelation relation = (TransducerRelation) transition.label();
-            Object inLabel = relation.getIn();
-            existingInLabels.add(inLabel);
-        }
+		Set<?> fromTrans = t.delta(from);
+		Set<Object> existingInLabels = new HashSet<Object>();
 
-        // for each label in the alphabet:
-        // add transition if this label was not found in the previous loop;
-        for (Character c : alphabet.getAlphabet()) {
-            if (!existingInLabels.contains(c)) {
-                List<Object> composite = new LinkedList<>(prefix);
-                composite.add(c);
-                makeCompositeTransition(t, composite, c, from, to);
-            }
-        }
-    }
+		for (Iterator<?> iter = fromTrans.iterator(); iter.hasNext();) {
+			Transition trans = (Transition) iter.next();
+			TransducerRelation rel = (TransducerRelation) trans.label();
+			Object inLabel = rel.getIn();
+			existingInLabels.add(inLabel);
+		}
 
-    // adds id-transducer-transitions for all labels for which there is no
-    // transition yet
-    public static void addRemainingTransitions(
-        TransducerNivat t, MyAlphabet alphabet, State from, State to
-    ) throws Exception {
+		for (Object c : alphabet.getAlphabet()) {
+			if (!existingInLabels.contains(c)) {
+				List<Object> composite = new LinkedList<Object>(prefix);
+				composite.add(c);
+				makeCompositeTransition(t, composite, c, from, to);
+			}
+		}
+	}
 
-        @SuppressWarnings("unchecked") Set<Transition> fromTrans = t.delta(from);
-        Set<Object> existingInLabels = new HashSet<>();
+	public static void addRemainingTransitions(TransducerNivat t, MyAlphabet alphabet, State from, State to)
+			throws Exception {
 
-        // collect existing in-labels from all transitions leaving "from"
-        for (Transition trans : fromTrans) {
-            TransducerRelation rel = (TransducerRelation) trans.label();
-            Object inLabel = rel.getIn();
-            existingInLabels.add(inLabel);
-        }
+		Set<?> fromTrans = t.delta(from);
+		Set<Object> existingInLabels = new HashSet<Object>();
 
-        // for each label in the alphabet:
-        // add transition if this label was not found in the previous loop;
-        // use the same label as out-label
-        for (Character c : alphabet.getAlphabet()) {
-            if (!existingInLabels.contains(c)) {
-                t.addTransition(new Transition(from, new TransducerRelation(c, c), to));
-            }
-        }
-    }
+		for (Iterator<?> iter = fromTrans.iterator(); iter.hasNext();) {
+			Transition trans = (Transition) iter.next();
+			TransducerRelation rel = (TransducerRelation) trans.label();
+			Object inLabel = rel.getIn();
+			existingInLabels.add(inLabel);
+		}
+
+		for (Object c : alphabet.getAlphabet()) {
+			if (!existingInLabels.contains(c)) {
+				t.addTransition(new Transition(from, new TransducerRelation(c, c), to));
+			}
+		}
+	}
 }

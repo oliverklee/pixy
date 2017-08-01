@@ -8,105 +8,116 @@ import at.ac.tuwien.infosys.www.pixy.conversion.Literal;
 import at.ac.tuwien.infosys.www.pixy.conversion.Variable;
 import at.ac.tuwien.infosys.www.pixy.conversion.cfgnodes.AbstractCfgNode;
 
-/**
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public class NormalNode extends AbstractNode {
-    private AbstractTacPlace place;
-    private AbstractCfgNode cfgNode;
-    private boolean isTainted;
 
-    public NormalNode(AbstractTacPlace place, AbstractCfgNode cfgNode) {
-        this.place = place;
-        this.cfgNode = cfgNode;
-        this.isTainted = false;
-    }
+	private AbstractTacPlace place;
+	private AbstractCfgNode cfgNode;
+	private boolean isTainted;
 
-    /**
-     * Returns a name that can be used in dot file representation.
-     *
-     * @return
-     */
-    public String dotName() {
-        return Dumper.escapeDot(this.place.toString(), 0) + " (" + this.cfgNode.getOriginalLineNumber() + ")" +
-            "\\n" + this.cfgNode.getFileName();
-    }
+	public NormalNode(AbstractTacPlace place, AbstractCfgNode cfgNode) {
+		this.place = place;
+		this.cfgNode = cfgNode;
+		this.isTainted = false;
+	}
 
-    public String comparableName() {
-        return Dumper.escapeDot(this.place.toString(), 0) + " (" + this.cfgNode.getOriginalLineNumber() + ")" +
-            "\\n" + this.cfgNode.getFileName();
-    }
+	public String dotName() {
+		return Dumper.escapeDot(this.place.toString(), 0) + " (" + this.cfgNode.getOriginalLineNumber() + ")" + "\\n"
+				+ this.cfgNode.getFileName();
+	}
 
-    /**
-     * No path.
-     *
-     * @return
-     */
-    public String dotNameShort() {
-        String fileName = this.cfgNode.getFileName();
-        return Dumper.escapeDot(this.place.toString(), 0) + " (" + this.cfgNode.getOriginalLineNumber() + ")" +
-            "\\n" + fileName.substring(fileName.lastIndexOf('/') + 1);
-    }
+	public String comparableName() {
+		return Dumper.escapeDot(this.place.toString(), 0) + " (" + this.cfgNode.getOriginalLineNumber() + ")" + "\\n"
+				+ this.cfgNode.getFileName();
+	}
 
-    public String dotNameVerbose(boolean isModelled) {
-        String retme = "";
+	public String dotNameShort() {
+		String fileName = this.cfgNode.getFileName();
+		return Dumper.escapeDot(this.place.toString(), 0) + " (" + this.cfgNode.getOriginalLineNumber() + ")" + "\\n"
+				+ fileName.substring(fileName.lastIndexOf('/') + 1);
+	}
 
-        if (!MyOptions.optionW) {
-            // don't print file name for web interface
-            retme += this.cfgNode.getFileName() + " : " + this.cfgNode.getOriginalLineNumber() + "\\n";
-        } else {
-            retme += "Line " + this.cfgNode.getOriginalLineNumber() + "\\n";
-        }
+	public String dotNameVerbose(boolean isModelled) {
 
-        if (this.place instanceof Variable) {
-            Variable var = (Variable) this.place;
-            retme += "Var: " + Dumper.escapeDot(var.getName(), 0) + "\\n";
-            retme += "Func: " + Dumper.escapeDot(var.getSymbolTable().getName(), 0) + "\\n";
-        } else if (this.place instanceof Constant) {
-            retme += "Const: " + Dumper.escapeDot(this.place.toString(), 0) + "\\n";
-        } else if (this.place instanceof Literal) {
-            retme += "Lit: " + Dumper.escapeDot(this.place.toString(), 0) + "\\n";
-        } else {
-            throw new RuntimeException("SNH");
-        }
+		String retme = "";
 
-        return retme;
-    }
+		if (!MyOptions.optionW) {
+			retme += this.cfgNode.getFileName() + " : " + this.cfgNode.getOriginalLineNumber() + "\\n";
+		} else {
+			retme += "Line " + this.cfgNode.getOriginalLineNumber() + "\\n";
+		}
 
-    public AbstractTacPlace getPlace() {
-        return this.place;
-    }
+		if (this.place instanceof Variable) {
+			Variable var = (Variable) this.place;
+			retme += "Var: " + Dumper.escapeDot(var.getName(), 0) + "\\n";
+			retme += "Func: " + Dumper.escapeDot(var.getSymbolTable().getName(), 0) + "\\n";
+		} else if (this.place instanceof Constant) {
+			retme += "Const: " + Dumper.escapeDot(this.place.toString(), 0) + "\\n";
+		} else if (this.place instanceof Literal) {
+			retme += "Lit: " + Dumper.escapeDot(this.place.toString(), 0) + "\\n";
+		} else {
+			throw new RuntimeException("SNH");
+		}
 
-    public AbstractCfgNode getCfgNode() {
-        return this.cfgNode;
-    }
+		return retme;
+	}
 
-    public int getLine() {
-        return this.cfgNode.getOriginalLineNumber();
-    }
+	public void setTainted(boolean isTainted) {
+		this.isTainted = isTainted;
+	}
 
-    public boolean equals(Object compX) {
+	public boolean isTainted() {
+		return this.isTainted;
+	}
 
-        if (compX == this) {
-            return true;
-        }
-        if (!(compX instanceof NormalNode)) {
-            return false;
-        }
-        NormalNode comp = (NormalNode) compX;
+	public boolean isString() {
+		if (this.place.isLiteral()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
-        return this.place.equals(comp.place) && this.cfgNode.equals(comp.cfgNode);
-    }
+	public AbstractTacPlace getPlace() {
+		return this.place;
+	}
 
-    public int hashCode() {
-        int hashCode = 17;
-        hashCode = 37 * hashCode + this.place.hashCode();
-        hashCode = 37 * hashCode + this.cfgNode.hashCode();
-        return hashCode;
-    }
+	public AbstractCfgNode getCfgNode() {
+		return this.cfgNode;
+	}
 
-    public String toString() {
-        return this.place.toString() + " (" + this.cfgNode.getOriginalLineNumber() + ") " +
-            this.cfgNode.getFileName();
-    }
+	public int getLine() {
+		return this.cfgNode.getOriginalLineNumber();
+	}
+
+	public boolean equals(Object compX) {
+
+		if (compX == this) {
+			return true;
+		}
+		if (!(compX instanceof NormalNode)) {
+			return false;
+		}
+		NormalNode comp = (NormalNode) compX;
+
+		if (!this.place.equals(comp.place)) {
+			return false;
+		}
+		if (!this.cfgNode.equals(comp.cfgNode)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	public int hashCode() {
+		int hashCode = 17;
+		hashCode = 37 * hashCode + this.place.hashCode();
+		hashCode = 37 * hashCode + this.cfgNode.hashCode();
+		return hashCode;
+	}
+
+	public String toString() {
+		return this.place.toString() + " (" + this.cfgNode.getOriginalLineNumber() + ") " + this.cfgNode.getFileName();
+	}
+
 }

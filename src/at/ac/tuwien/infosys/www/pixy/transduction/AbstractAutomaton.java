@@ -1,180 +1,376 @@
 package at.ac.tuwien.infosys.www.pixy.transduction;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 
-/**
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public abstract class AbstractAutomaton {
-    // STATE INFO ***********************************
 
-    // counter for state labels
-    protected int counter;
+	protected int counter;
 
-    // The set of all states of this automaton.
-    protected Set<MyState> states;
+	protected Set<MyState> states;
 
-    protected MyState initial;
+	protected MyState initial;
 
-    //the set of terminal states
-    protected Set<MyState> terminals;
+	protected Set<MyState> terminals;
 
-    // TRANSITION INFO *************************************************
+	protected Map<MyState, Set<MyTransition>> state2trans;
 
-    // state -> set of transitions that have this state as start node
-    protected Map<MyState, Set<MyTransition>> state2trans;
+	protected Map<MyState, Set<MyTransition>> reverseState2trans;
 
-    // state -> set of transitions that have this state as end node
-    protected Map<MyState, Set<MyTransition>> reverseState2trans;
+	public AbstractAutomaton() {
+		this.counter = 0;
+		this.states = new HashSet<MyState>();
+		this.initial = null;
+		this.terminals = new HashSet<MyState>();
+		this.state2trans = new HashMap<MyState, Set<MyTransition>>();
+		this.reverseState2trans = new HashMap<MyState, Set<MyTransition>>();
+	}
 
-//  ********************************************************************************
-//  CONSTRUCTORS *******************************************************************
-//  ********************************************************************************
+	public AbstractAutomaton(AbstractAutomaton orig) {
 
-//  ********************************************************************************
+		this();
 
-    // constructs a new, empty automaton
-    public AbstractAutomaton() {
-        this.counter = 0;
-        this.states = new HashSet<>();
-        this.initial = null;
-        this.terminals = new HashSet<>();
-        this.state2trans = new HashMap<>();
-        this.reverseState2trans = new HashMap<>();
-    }
+		Map<MyState, MyState> map = new HashMap<MyState, MyState>();
 
-//  ********************************************************************************
-//  GET ****************************************************************************
-//  ********************************************************************************
+		for (MyState origState : orig.states) {
+			map.put(origState, this.addState(origState.isInitial(), origState.isTerminal()));
+		}
 
-    // returns all transitions that start at the given state (including loops)
-    Set<MyTransition> getOutgoingTransitions(MyState from) {
-        Set<MyTransition> outgoing = this.state2trans.get(from);
-        if (outgoing == null) {
-            return new HashSet<>();
-        } else {
-            return new HashSet<>(outgoing);
-        }
-    }
+		for (Set<MyTransition> origTransSet : orig.state2trans.values()) {
+			for (MyTransition t : origTransSet) {
+				this.addTransition(new MyTransition(map.get(t.getStart()), t.getLabel(), map.get(t.getEnd())));
+			}
+		}
+	}
 
-//  ********************************************************************************
+	public AbstractAutomaton(rationals.Automaton a) {
 
-    // returns all states
-    public Set<MyState> getStates() {
-        return new HashSet<>(this.states);
-    }
+		this();
 
-//  ********************************************************************************
+		Map<rationals.State, MyState> map = new HashMap<rationals.State, MyState>();
 
-    // returns the initial state
-    public MyState getInitial() {
-        return this.initial;
-    }
+		for (Iterator<?> iter = a.states().iterator(); iter.hasNext();) {
+			rationals.State e = (rationals.State) iter.next();
+			map.put(e, this.addState(e.isInitial(), e.isTerminal()));
+		}
 
-//  ********************************************************************************
+		for (Iterator<?> iter = a.delta().iterator(); iter.hasNext();) {
+			rationals.Transition t = (rationals.Transition) iter.next();
+			this.addTransition(new MyTransition(map.get(t.start()), t.label(), map.get(t.end())));
+		}
+	}
 
-    // returns the terminal states
-    public Set<MyState> getTerminals() {
-        return new HashSet<>(this.terminals);
-    }
+	public MyTransition getTransition(MyState from, MyState to) {
+		Set<MyTransition> transitions = this.getTransitions(from, to);
+		if (transitions.size() > 1) {
+			throw new RuntimeException("SNH");
+		} else if (transitions.isEmpty()) {
+			return null;
+		} else {
+			return transitions.iterator().next();
+		}
+	}
 
-//  ********************************************************************************
+	Set<MyTransition> getIncomingNoLoop(MyState into) {
+		Set<MyTransition> ret = new HashSet<MyTransition>();
+		Set<MyTransition> toSet = this.reverseState2trans.get(into);
+		if (toSet != null) {
+			for (MyTransition trans : toSet) {
+				if (!into.equals(trans.getStart())) {
+					ret.add(trans);
+				}
+			}
+		}
+		return ret;
+	}
 
-    // returns all transitions
-    public Set<MyTransition> getDelta() {
-        Set<MyTransition> s = new HashSet<>();
-        for (Set<MyTransition> transSet : this.state2trans.values()) {
-            s.addAll(transSet);
-        }
-        return s;
-    }
+	Set<MyTransition> getOutgoingNoLoop(MyState from) {
+		Set<MyTransition> ret = new HashSet<MyTransition>();
+		Set<MyTransition> fromSet = this.state2trans.get(from);
+		if (fromSet != null) {
+			for (MyTransition trans : fromSet) {
+				if (!from.equals(trans.getEnd())) {
+					ret.add(trans);
+				}
+			}
+		}
+		return ret;
+	}
 
-//  ********************************************************************************
-//  OTHER **************************************************************************
-//  ********************************************************************************
+	Set<MyTransition> getOutgoingTransitions(MyState from) {
+		Set<MyTransition> outgoing = this.state2trans.get(from);
+		if (outgoing == null) {
+			return new HashSet<MyTransition>();
+		} else {
+			return new HashSet<MyTransition>(outgoing);
+		}
+	}
 
-    // adds the given state
-    public MyState addState(boolean initial, boolean terminal) {
+	public Set<MyState> getStates() {
+		return new HashSet<MyState>(this.states);
+	}
 
-        MyState state = new MyState(counter++, initial, terminal);
-        if (initial) {
-            if (this.initial == null) {
-                this.initial = state;
-            } else {
-                throw new RuntimeException("SNH");
-            }
-        }
-        if (terminal)
-            terminals.add(state);
-        states.add(state);
-        return state;
-    }
-//  ********************************************************************************
+	public MyState getInitial() {
+		return this.initial;
+	}
 
-    // returns the transitions between the given states
-    public Set<MyTransition> getTransitions(MyState from, MyState to) {
-        Set<MyTransition> retme = new HashSet<>();
-        Set<MyTransition> fromSet = this.state2trans.get(from);
-        if (fromSet != null) {
-            for (MyTransition t : fromSet) {
-                if (to.equals(t.getEnd())) {
-                    retme.add(t);
-                }
-            }
-        }
-        return retme;
-    }
+	public Set<MyState> getTerminals() {
+		return new HashSet<MyState>(this.terminals);
+	}
 
-//  ********************************************************************************
+	public Set<MyTransition> getDelta() {
+		Set<MyTransition> s = new HashSet<MyTransition>();
+		for (Set<MyTransition> transSet : this.state2trans.values()) {
+			s.addAll(transSet);
+		}
+		return s;
+	}
 
-    // adds the given transition
-    public void addTransition(MyTransition transition) {
+	public void addUniqueStartEnd() {
 
-        if (!states.contains(transition.getStart()))
-            throw new RuntimeException("SNH: start " + transition.getStart());
+		MyState oldInitial = this.initial;
+		oldInitial.setInitial(false);
 
-        if (!states.contains(transition.getEnd())) {
-            System.out.println("states: " + this.states);
-            throw new RuntimeException("SNH: end " + transition.getEnd());
-        }
+		this.initial = null;
 
-        MyState start = transition.getStart();
-        MyState end = transition.getEnd();
+		this.initial = this.addState(true, false);
 
-        // add to state2trans
-        Set<MyTransition> transSet = state2trans.get(start);
-        if (transSet == null) {
-            transSet = new HashSet<>();
-            transSet.add(transition);
-            state2trans.put(start, transSet);
-        } else {
-            transSet.add(transition);
-        }
+		this.addTransition(new MyTransition(this.initial, null, oldInitial));
 
-        // add to reverseState2trans
-        Set<MyTransition> reverseTransSet = reverseState2trans.get(end);
-        if (reverseTransSet == null) {
-            reverseTransSet = new HashSet<>();
-            reverseTransSet.add(transition);
-            reverseState2trans.put(end, reverseTransSet);
-        } else {
-            reverseTransSet.add(transition);
-        }
-    }
+		List<MyState> oldTerminals = new LinkedList<MyState>(this.terminals);
 
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Q = ").append(this.states.toString()).append("\n");
-        sb.append("I = ").append(this.initial.toString()).append("\n");
-        sb.append("T = ").append(this.terminals.toString()).append("\n");
-        sb.append("delta = [\n");
-        for (MyTransition t : this.getDelta()) {
-            sb.append(t.toString()).append("\n");
-        }
-        sb.append("]\n");
-        return sb.toString();
-    }
+		MyState newTerminal = this.addState(false, true);
+
+		for (MyState oldTerminal : oldTerminals) {
+			oldTerminal.setTerminal(false);
+			this.addTransition(new MyTransition(oldTerminal, null, newTerminal));
+		}
+		this.terminals.clear();
+		this.terminals.add(newTerminal);
+	}
+
+	public MyState addState(boolean initial, boolean terminal) {
+
+		MyState state = new MyState(counter++, initial, terminal);
+		if (initial) {
+			if (this.initial == null) {
+				this.initial = state;
+			} else {
+				throw new RuntimeException("SNH");
+			}
+		}
+		if (terminal)
+			terminals.add(state);
+		states.add(state);
+		return state;
+	}
+
+	public Set<MyTransition> getTransitions(MyState from, MyState to) {
+		Set<MyTransition> retme = new HashSet<MyTransition>();
+		Set<MyTransition> fromSet = this.state2trans.get(from);
+		if (fromSet != null) {
+			for (MyTransition t : fromSet) {
+				if (to.equals(t.getEnd())) {
+					retme.add(t);
+				}
+			}
+		}
+		return retme;
+	}
+
+	public void addTransition(MyTransition transition) {
+
+		if (!states.contains(transition.getStart()))
+			throw new RuntimeException("SNH: start " + transition.getStart());
+
+		if (!states.contains(transition.getEnd())) {
+			System.out.println("states: " + this.states);
+			throw new RuntimeException("SNH: end " + transition.getEnd());
+		}
+
+		MyState start = transition.getStart();
+		MyState end = transition.getEnd();
+
+		Set<MyTransition> transSet = state2trans.get(start);
+		if (transSet == null) {
+			transSet = new HashSet<MyTransition>();
+			transSet.add(transition);
+			state2trans.put(start, transSet);
+		} else {
+			transSet.add(transition);
+		}
+
+		Set<MyTransition> reverseTransSet = reverseState2trans.get(end);
+		if (reverseTransSet == null) {
+			reverseTransSet = new HashSet<MyTransition>();
+			reverseTransSet.add(transition);
+			reverseState2trans.put(end, reverseTransSet);
+		} else {
+			reverseTransSet.add(transition);
+		}
+	}
+
+	public void removeTransitions(MyState from, MyState to) {
+
+		Set<MyTransition> fromSet = this.state2trans.get(from);
+		for (Iterator<MyTransition> iter = fromSet.iterator(); iter.hasNext();) {
+			MyTransition trans = (MyTransition) iter.next();
+			if (to.equals(trans.getEnd())) {
+				iter.remove();
+			}
+		}
+
+		Set<MyTransition> toSet = this.reverseState2trans.get(to);
+		for (Iterator<MyTransition> iter = toSet.iterator(); iter.hasNext();) {
+			MyTransition trans = (MyTransition) iter.next();
+			if (from.equals(trans.getStart())) {
+				iter.remove();
+			}
+		}
+	}
+
+	public void removeTransition(MyTransition t) {
+
+		Set<MyTransition> fromSet = this.state2trans.get(t.getStart());
+		fromSet.remove(t);
+
+		Set<MyTransition> toSet = this.reverseState2trans.get(t.getEnd());
+		toSet.remove(t);
+	}
+
+	public void removeState(MyState state) {
+
+		if (this.initial.equals(state)) {
+			throw new RuntimeException("SNH");
+		}
+
+		Set<MyTransition> fromTransSet = new HashSet<MyTransition>(this.state2trans.get(state));
+		for (MyTransition t : fromTransSet) {
+			this.removeTransitions(t.getStart(), t.getEnd());
+		}
+		Set<MyTransition> toTransSet = new HashSet<MyTransition>(this.reverseState2trans.get(state));
+		for (MyTransition t : toTransSet) {
+			this.removeTransitions(t.getStart(), t.getEnd());
+		}
+
+		this.states.remove(state);
+		this.terminals.remove(state);
+	}
+
+	public void mergeTransitions() {
+
+		LinkedList<MyTransition> origList = new LinkedList<MyTransition>(this.getDelta());
+
+		LinkedList<MyTransition> newList = new LinkedList<MyTransition>();
+
+		while (!origList.isEmpty()) {
+
+			List<MyTransition> competing = new LinkedList<MyTransition>();
+
+			Iterator<MyTransition> iter = origList.iterator();
+			MyTransition trans1 = iter.next();
+			competing.add(trans1);
+			iter.remove();
+			while (iter.hasNext()) {
+				MyTransition trans_next = iter.next();
+				if (trans1.getStart().equals(trans_next.getStart()) && trans1.getEnd().equals(trans_next.getEnd())) {
+					competing.add(trans_next);
+					iter.remove();
+				}
+			}
+
+			StringBuilder regex_merged = new StringBuilder();
+			regex_merged.append("(");
+			for (MyTransition ctrans : competing) {
+				String label = (String) ctrans.getLabel();
+				if (label == null) {
+					label = "(1)";
+				}
+				regex_merged.append(label);
+				regex_merged.append("+");
+			}
+			regex_merged.deleteCharAt(regex_merged.length() - 1);
+			regex_merged.append(")");
+
+			newList.add(new MyTransition(trans1.getStart(), regex_merged.toString(), trans1.getEnd()));
+		}
+
+		this.clearTransitions();
+		for (MyTransition t : newList) {
+			this.addTransition(t);
+		}
+	}
+
+	public void clearTransitions() {
+		this.state2trans.clear();
+		this.reverseState2trans.clear();
+	}
+
+	public void setTerminal(MyState state, boolean terminal) {
+		state.setTerminal(terminal);
+		if (terminal) {
+			this.terminals.add(state);
+		} else {
+			this.terminals.remove(state);
+		}
+	}
+
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Q = ").append(this.states.toString()).append("\n");
+		sb.append("I = ").append(this.initial.toString()).append("\n");
+		sb.append("T = ").append(this.terminals.toString()).append("\n");
+		sb.append("delta = [\n");
+		for (MyTransition t : this.getDelta()) {
+			sb.append(t.toString()).append("\n");
+		}
+		sb.append("]\n");
+		return sb.toString();
+	}
+
+	public void toDot(String filename) {
+
+		OutputStream stream = null;
+		try {
+			stream = new FileOutputStream(filename);
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException(e.getMessage());
+		}
+		PrintWriter pw = new PrintWriter(new OutputStreamWriter(stream));
+
+		String name = "jauto";
+		pw.println("digraph " + name + " {");
+
+		MyState initial = this.getInitial();
+		if (initial.isTerminal()) {
+			pw.println("node [shape=doublecircle, color=black, fontcolor=white];");
+		} else {
+			pw.println("node [shape=circle, color=black, fontcolor=white];");
+		}
+		pw.println("s" + initial + ";");
+
+		pw.println("node [shape=doublecircle,color=white, fontcolor=black];");
+		for (Iterator<?> i = this.getTerminals().iterator(); i.hasNext();) {
+			MyState st = (MyState) i.next();
+			if (st.isInitial())
+				continue;
+			pw.println("s" + st + ";");
+		}
+
+		pw.println("node [shape=circle,color=white, fontcolor=black];");
+		for (Iterator<?> i = this.getStates().iterator(); i.hasNext();) {
+			MyState st = (MyState) i.next();
+			if (st.isInitial() || st.isTerminal())
+				continue;
+			pw.println("s" + st + ";");
+		}
+
+		for (Iterator<?> i = this.getDelta().iterator(); i.hasNext();) {
+			MyTransition tr = (MyTransition) i.next();
+			pw.println("s" + tr.getStart() + " -> " + "s" + tr.getEnd() + " [ label=\"" + tr.getLabel() + "\" ];");
+		}
+		pw.println("}");
+		pw.flush();
+		pw.close();
+	}
 }

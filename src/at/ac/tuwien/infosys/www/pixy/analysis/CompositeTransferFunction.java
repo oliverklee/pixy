@@ -1,33 +1,29 @@
 package at.ac.tuwien.infosys.www.pixy.analysis;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
-/**
- * @author Nenad Jovanovic <enji@seclab.tuwien.ac.at>
- */
 public class CompositeTransferFunction extends AbstractTransferFunction {
-    // a list of TransferFunctions to be applied in sequence
-    private List<AbstractTransferFunction> tfs;
 
-    public CompositeTransferFunction() {
-        this.tfs = new LinkedList<>();
-    }
+	private List<AbstractTransferFunction> tfs;
 
-    public void add(AbstractTransferFunction tf) {
-        this.tfs.add(tf);
-    }
+	public CompositeTransferFunction() {
+		this.tfs = new LinkedList<AbstractTransferFunction>();
+	}
 
-    // returns an iterator over the contained transfer functions
-    public Iterator<AbstractTransferFunction> iterator() {
-        return this.tfs.iterator();
-    }
+	public void add(AbstractTransferFunction tf) {
+		this.tfs.add(tf);
+	}
 
-    public AbstractLatticeElement transfer(AbstractLatticeElement in) {
-        for (AbstractTransferFunction tf : this.tfs) {
-            in = tf.transfer(in);
-        }
-        return in;
-    }
+	public Iterator<AbstractTransferFunction> iterator() {
+		return this.tfs.iterator();
+	}
+
+	public AbstractLatticeElement transfer(AbstractLatticeElement in) {
+		for (Iterator<AbstractTransferFunction> iter = this.tfs.iterator(); iter.hasNext();) {
+			AbstractTransferFunction tf = (AbstractTransferFunction) iter.next();
+			in = tf.transfer(in);
+		}
+		return in;
+	}
+
 }
