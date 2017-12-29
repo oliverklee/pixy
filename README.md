@@ -272,15 +272,3 @@ Pixy makes use of the sub-project PhpParser. It already brings the compiled clas
     - the production's symbol name
     - the production's length
    since that makes the generation of explicit parse trees much easier
-
-## Licenses
-* Pixy: GPL V3
-* jFlex: GPL V2
-* Cup: custom license, derived from "Standard ML of New Jersey", GPL-compatible
-* CLI: Apache license
-* Cobertura: GPL V2
-* Java Automata Library (jauto): GPL V2
-* Log4J: Apache license
-* Jakarta: Apache license
-* ASM, ASM-Tree: BSD
-* rest: GPL V2
