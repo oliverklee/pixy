@@ -1,0 +1,17 @@
+<?php
+
+$x = $_GET['x'];
+
+	$y = addslashes($x);
+	
+	mysql_query("SELECT * FROM articles WHERE id = '1'");  // harmless
+	
+	mysql_query("SELECT * FROM articles WHERE id = '$x'");  // dangerous
+	
+	mysql_query("SELECT * FROM articles WHERE id = '$y'");  // harmless
+	
+	mysql_query("SELECT * FROM articles WHERE id = $y");   // dangerous
+	
+	
+	
+?>	
