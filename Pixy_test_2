@@ -1,0 +1,10 @@
+<?php
+
+$id  = addslashes($_GET['id']);
+$pwd = addslashes($_GET['pwd']);
+
+mysql_query("SELECT * FROM mytable WHERE id= $id ");
+
+mysql_query("SELECT * FROM mytable WHERE id=$id AND pwd='$pwd'");
+
+?>
