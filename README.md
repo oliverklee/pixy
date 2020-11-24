@@ -1,8 +1,5 @@
 # Pixy
 
-[![Build Status](https://travis-ci.org/oliverklee/pixy.svg?branch=master)](https://travis-ci.org/oliverklee/pixy)
-
-
 ## Authors and maintainer
 
 Jenad Jovanonic was the original author of Pixy. The current maintainer is Oliver Klee, pixy@oliverklee.de.
