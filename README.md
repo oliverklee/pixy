@@ -2,7 +2,8 @@
 
 ## Authors and maintainer
 
-Jenad Jovanonic was the original author of Pixy. The current maintainer is Oliver Klee, pixy@oliverklee.de.
+[Nenad Jovanonic](https://enji.systems/) was the original author of Pixy.
+The current maintainer is Oliver Klee, pixy@oliverklee.de.
 
 
 ## Available Ant targets
